@@ -77,27 +77,6 @@
     }, 1000);
   }
 
-  async function changePassword(oldPassword, newPassword){
-    const pwStatus = $('#pwStatus');
-    pwStatus.textContent = 'Updating...';
-    pwStatus.className = 'status';
-    try {
-      const r = await fetch(U('/auth/change-password'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ oldPassword, newPassword }) });
-      const j = await r.json();
-      if (!j.success) {
-        pwStatus.textContent = j.error || 'Update failed';
-        pwStatus.classList.add('error');
-        return;
-      }
-      pwStatus.textContent = 'Password updated';
-      pwStatus.classList.add('success');
-      setTimeout(()=>{ $('#pwForm').reset(); }, 600);
-    } catch(e){
-      pwStatus.textContent = 'Network error';
-      pwStatus.classList.add('error');
-    }
-  }
-
   document.addEventListener('DOMContentLoaded', () => {
     // Flash messaging based on query params
     const params = new URLSearchParams(location.search);
@@ -115,22 +94,6 @@
       const p = $('#password').value;
       if (!u || !p) return;
       login(u,p);
-    });
-    $('#togglePw').addEventListener('click', () => {
-      const chg = $('#pwChange');
-      const visible = chg.style.display === 'block';
-      chg.style.display = visible ? 'none' : 'block';
-    });
-    $('#pwForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const oldPw = $('#oldPw').value;
-      const newPw = $('#newPw').value;
-      if (newPw.length < 8) {
-        $('#pwStatus').textContent = 'Password too short';
-        $('#pwStatus').classList.add('error');
-        return;
-      }
-      changePassword(oldPw, newPw);
     });
   });
 })();

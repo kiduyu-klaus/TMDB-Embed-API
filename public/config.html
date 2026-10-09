@@ -1,18 +1,22 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8" />
-  <title>TMDB Embed Admin</title>
+  <title>KiduyuTvProviders</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="icon" href="./favicon.ico" type="image/x-icon" />
   <link rel="icon" href="./assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="./assets/kiduyutv-providers-icon.png" />
   <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./material.css" />
   <script defer src="./index.js"></script>
 </head>
 <body>
   <button class="burger" aria-label="Toggle navigation">☰</button>
   <div class="overlay"></div>
   <aside class="sidebar" id="sidebar">
-  <div class="brand"><img class="brand-logo" src="./assets/kiduyutv-providers-icon.png" width="40" height="40" alt="" /><span>TMDB Embed API</span></div>
+  <div class="brand" aria-label="KiduyuTv Providers">
+    <img class="brand-logo" src="./assets/kiduyutv-providers-icon.png" width="44" height="44" alt="" />
+    <div class="brand-text"><span class="brand-name">KiduyuTv</span><span class="brand-subtitle">Providers</span></div>
+  </div>
   <nav class="nav">
   <button class="nav-item" id="logoutBtn" data-action="logout">Logout</button>
   <button class="nav-item" id="restartBtn" type="button">Restart Server</button>
@@ -27,16 +31,6 @@
     <button class="nav-item" data-target="panel-live">Live Config</button>
       <div class="grow"></div>
     </nav>
-    <footer class="side-footer">
-      <a class="hint" style="margin-top: .5rem; color: var(--primary-fg);" href="https://github.com/Inside4ndroid" target="_blank">Github</a>
-      <a class="hint" style="margin-top: .5rem; color: var(--primary-fg);"  href="https://x.com/Inside_4ndroid" target="_blank">X (Twitter)</a>
-    </footer>
-  
-    <footer class="side-footer">Credits to :<a class="hint" style="margin-top: .5rem; color: var(--primary-fg);" href="https://github.com/tapframe/NuvioStreamsAddon" target="_blank">NuvioStreamsAddon for Stremio</a></footer>
-    <div class="bmc-widget-container" style="text-align: center;">
-      <iframe src="https://github.com/sponsors/Inside4ndroid/button" title="Sponsor Inside4ndroid" height="32" width="114" style="border:0;border-radius:6px;margin-top:.5rem;"></iframe>
-    </div>
-    <footer class="side-footer">Made with ❤️ by Inside4ndroid</footer>
   </aside>
   <main class="main">
   <div id="bootWarn" class="alert warning" style="display:none;">No FEBBOX_COOKIES configured. Showbox / PStream streams may be unavailable.</div>

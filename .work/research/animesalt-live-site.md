@@ -1,7 +1,7 @@
-# AnimeSalt live test findings
 
-The provider source supplied for testing was `https://raw.githubusercontent.com/D3adlyRocket/Anime-Nuvio/refs/heads/main/providers/animesalt.js`. Its embedded TMDB API key is intentionally not copied into the project; the local adaptation uses the shared rotating-key TMDB utility.
 
-A live lookup through the adapted provider for TMDB `82684`, season 1, episode 2 returned zero streams because the search request redirects from `animesalt.ac` to `animesalt.cx`, while the first local parser version accepted only `.ac` result URLs. The live search results page was reachable and returned the expected series title on `animesalt.cx`.
+## Correction and current provider result
 
-The public series page `https://animesalt.cx/series/that-time-i-got-reincarnated-as-a-slime/` reports four seasons and includes the expected episode link `https://animesalt.cx/episode/that-time-i-got-reincarnated-as-a-slime-1x2/`. This confirms a host migration mismatch in the initial implementation; the series page's current links use `.cx`.
+The earlier broad URL scan interpreted the text `16-hin.mp4` in Abyss's HTML `<title>` as a stream URL. A full inspection shows that `.mp4` occurs only in the title, with no `<video>`, `<source>`, or direct player file declaration in the HTML. The page embeds a base64 JSON `datas` value whose `media` field is encrypted; the inline code passes it to `window.SoTrym` from `iamcdn.net/player-v2/lite.bundle.js` (about 135 KB and obfuscated). Therefore Abyss is **not** a verified direct MP4 source; the guessed `/16-hin.mp4` URL was a false positive and its range request returned 404.
+
+The adapted provider now enumerates the three `data-src` server entries and attempts their supported resolvers concurrently. The live S2E16 provider call returned one source: MyStream's Ravok HLS playlist (HTTP 200 when range-checked). Abyss remained unresolved because its `media` field requires its obfuscated player decoder; StreamHG remained unresolved because its loader is also obfuscated and contains no direct source in the page HTML. The guessed English subtitle endpoint returned 404 for S2E16, so the presence of that metadata should not be treated as proof the caption file is available.

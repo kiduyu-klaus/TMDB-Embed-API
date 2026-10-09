@@ -1,4 +1,4 @@
-/*TMDB Embed Admin Panel Styles */
+/*KiduyuTvProviders Admin Panel Styles */
 :root {
   --bg: #f7f9fc;
   --bg-alt: #ffffff;
@@ -386,5 +386,8 @@ input.invalid, textarea.invalid { border-color: var(--danger)!important; animati
 
 /* Site branding */
 .login-logo { display:block; width:96px; height:96px; object-fit:contain; margin:0 auto 1rem; }
-.brand { display:flex; align-items:center; gap:.6rem; }
-.brand-logo { width:40px; height:40px; object-fit:contain; flex-shrink:0; }
+.brand { gap:14px; padding:12px 8px 18px; border-bottom:1px solid var(--border-strong); }
+.brand-logo { width:44px; height:44px; padding:4px; object-fit:contain; flex-shrink:0; border-radius:14px; background:#080c12; box-shadow:0 3px 10px rgba(0,0,0,.25); }
+.brand-text { display:flex; flex-direction:column; gap:2px; }
+.brand-name { font-size:17px; line-height:20px; font-weight:800; letter-spacing:0; }
+.brand-subtitle { font-size:12px; line-height:16px; font-weight:400; letter-spacing:.4px; color:var(--text-dim); }

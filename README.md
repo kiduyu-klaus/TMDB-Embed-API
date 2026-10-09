@@ -1,4 +1,4 @@
-# 🍿 TMDB Embed API
+# 🍿 KiduyuTvProviders
 
 > Modern, configurable streaming metadata + source aggregation API with a secure admin panel and multi-key TMDB rotation.
 

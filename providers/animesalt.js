@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const tmdb = require('../utils/tmdb');
 
 const BASE_URL = 'https://animesalt.cx';
+const ANIMESALT_HOSTS = new Set(['animesalt.ac', 'animesalt.cx']);
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36';
 const REQUEST_TIMEOUT_MS = 15_000;
 
@@ -14,7 +15,7 @@ function cleanTitle(title) {
 function isAnimeSaltUrl(value) {
     try {
         const url = new URL(value, BASE_URL);
-        return url.protocol === 'https:' && url.hostname === 'animesalt.ac';
+        return url.protocol === 'https:' && ANIMESALT_HOSTS.has(url.hostname.toLowerCase());
     } catch {
         return false;
     }
@@ -134,69 +135,204 @@ async function getEpisodeUrl(seriesUrl, season, episode) {
     return findEpisodeUrlFromHtml(episodeHtml, season, episode);
 }
 
-function isAnimeSaltCdnHost(hostname) {
-    return /^as-cdn\d+\.top$/i.test(hostname);
+function isTrustedPlayerUrl(url) {
+    if (!url || url.protocol !== 'https:') return false;
+    const host = url.hostname.toLowerCase();
+    if (host === 'ravok.buzz' || /^as-cdn\d+\.top$/.test(host)) {
+        return /^\/video\/[a-f0-9]+\/?$/i.test(url.pathname);
+    }
+    if (host === 'animesalt.cx') {
+        return url.pathname === '/wp-content/themes/torofilm/public/plyr/player.php';
+    }
+    if (host === 'cybervynx.com') return /^\/e\/[a-z0-9]+\/?$/i.test(url.pathname);
+    return false;
 }
 
-async function getStreamFromPage(pageUrl) {
-    const html = await request(pageUrl, { headers: { Referer: `${BASE_URL}/` } });
-    const iframeSrc = cheerio.load(html)('iframe[src]').first().attr('src');
-    if (!iframeSrc) {
-        console.warn(`[AnimeSalt] No player iframe on ${new URL(pageUrl).pathname}`);
-        return null;
-    }
+function parsePlayerServers(html, pageUrl) {
+    const $ = cheerio.load(html || '');
+    const containers = $('.video.aa-tb');
+    const buttons = $('.server-grid .server-btn');
+    const elements = containers.length ? containers : $('iframe[src], iframe[data-src]');
+    const servers = [];
 
-    const playerUrl = new URL(iframeSrc, pageUrl);
-    const hashMatch = playerUrl.pathname.match(/^\/video\/([a-f0-9]+)\/?$/i);
-    if (playerUrl.protocol !== 'https:' || !isAnimeSaltCdnHost(playerUrl.hostname) || !hashMatch) {
-        console.warn(`[AnimeSalt] Unsupported player host/path: ${playerUrl.hostname}${playerUrl.pathname}`);
-        return null;
-    }
+    elements.each((index, element) => {
+        const container = $(element);
+        const iframe = containers.length ? container.find('iframe').first() : container;
+        const source = iframe.attr('data-src') || iframe.attr('src');
+        if (!source) return;
 
-    const hash = hashMatch[1];
-    const apiUrl = new URL('/player/index.php', playerUrl.origin);
-    apiUrl.searchParams.set('data', hash);
-    apiUrl.searchParams.set('do', 'getVideo');
-    const body = new URLSearchParams({ hash, r: `${BASE_URL}/` }).toString();
-    const data = await request(apiUrl.href, {
-        method: 'POST',
-        body,
-        json: true,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Referer: `${BASE_URL}/`,
-            Origin: playerUrl.origin,
-            'X-Requested-With': 'XMLHttpRequest'
+        try {
+            const url = new URL(source, pageUrl);
+            if (!isTrustedPlayerUrl(url)) {
+                console.warn(`[AnimeSalt] Ignoring unsupported server URL ${url.hostname}${url.pathname}`);
+                return;
+            }
+            const button = buttons.eq(index);
+            const labelParts = [button.find('.server-name').first().text().trim(), button.find('.server-info').first().text().trim()].filter(Boolean);
+            const label = labelParts.join(' ') || button.text().replace(/\s+/g, ' ').trim() || `Server ${index + 1}`;
+            servers.push({ label, url: url.href });
+        } catch {
+            console.warn(`[AnimeSalt] Ignoring invalid server URL in ${new URL(pageUrl).pathname}`);
         }
     });
 
-    const sourceValue = data && (data.videoSource || data.securedLink);
-    if (typeof sourceValue !== 'string' || !sourceValue) return null;
-    const streamUrl = new URL(sourceValue, playerUrl.origin);
-    if (!['http:', 'https:'].includes(streamUrl.protocol)) return null;
+    return servers;
+}
 
-    const contentHashMatch = streamUrl.pathname.match(/\/hls\/([a-f0-9]+)\//i);
-    const contentHash = contentHashMatch ? contentHashMatch[1] : hash;
-    const hlsMarker = '/cdn/hls/';
-    const markerPosition = streamUrl.href.indexOf(hlsMarker);
-    const cdnBase = markerPosition >= 0 ? streamUrl.href.slice(0, markerPosition).replace(/\/$/, '') : streamUrl.origin;
-    const cdnOrigin = new URL(cdnBase).origin;
-    const subtitleUrl = `${cdnBase}/cdn/down/${contentHash}/Subtitle/subtitle_eng.srt`;
+function getPlayableSourceUrl(value, baseUrl) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    try {
+        const url = new URL(value.trim().replace(/\\\//g, '/').replace(/\\u0026/gi, '&'), baseUrl);
+        if (url.protocol !== 'https:' || !/\.(?:m3u8|mp4|mpd)(?:$|[?#])/i.test(url.href)) return null;
+        return url.href;
+    } catch {
+        return null;
+    }
+}
 
-    return {
-        url: streamUrl.href,
-        quality: '720p',
-        headers: { Referer: `${cdnOrigin}/`, Origin: cdnOrigin, 'User-Agent': USER_AGENT },
-        subtitles: [{
-            id: 'animesalt-en',
-            url: subtitleUrl,
-            lang: 'en',
-            label: 'English',
-            language: 'en',
-            mimeType: 'application/x-subrip',
-            headers: { Referer: `${cdnOrigin}/`, 'User-Agent': USER_AGENT }
-        }]
+function extractPlayableSources(html, baseUrl) {
+    const $ = cheerio.load(html || '');
+    const candidates = [];
+    const add = value => {
+        const url = getPlayableSourceUrl(value, baseUrl);
+        if (url && !candidates.includes(url)) candidates.push(url);
     };
+
+    $('video[src], source[src]').each((_, element) => add($(element).attr('src')));
+    const text = String(html || '').replace(/\\\//g, '/').replace(/\\u0026/gi, '&').replace(/&amp;/gi, '&');
+    const patterns = [
+        /\b(?:file|src)\s*:\s*["'`]([^"'`]+)["'`]/gi,
+        /["'](?:file|src)["']\s*:\s*["']([^"']+)["']/gi,
+        /(?:https?:)?\/\/[^\s"'<>\\]+\.(?:m3u8|mp4|mpd)(?:\?[^\s"'<>\\]*)?/gi
+    ];
+    for (const pattern of patterns) {
+        let match;
+        while ((match = pattern.exec(text))) add(match[1] || match[0]);
+    }
+    return candidates;
+}
+
+function buildRavokStream(sourceUrl, playerUrl, pageUrl, label, sourceData) {
+    const streamUrl = getPlayableSourceUrl(sourceUrl, playerUrl);
+    if (!streamUrl) return null;
+    const cdnOrigin = new URL(streamUrl).origin;
+    const stream = {
+        url: streamUrl,
+        quality: '720p',
+        server: label,
+        headers: { Referer: `${cdnOrigin}/`, Origin: cdnOrigin, 'User-Agent': USER_AGENT },
+        subtitles: []
+    };
+
+    if (Array.isArray(sourceData && sourceData.tracks) && sourceData.tracks.length) {
+        stream.subtitles = sourceData.tracks.filter(track => track && (track.file || track.url)).map((track, index) => ({
+            id: `animesalt-${index}-en`,
+            url: track.file || track.url,
+            lang: track.language || track.label || 'en',
+            label: track.label || track.language || 'English',
+            language: track.language || track.label || 'en',
+            mimeType: /\.srt(?:$|\?)/i.test(track.file || track.url) ? 'application/x-subrip' : 'text/vtt',
+            headers: { Referer: pageUrl, 'User-Agent': USER_AGENT }
+        }));
+    }
+    return stream;
+}
+
+async function resolveRavokPlayer(playerUrl, pageUrl, label) {
+    const parsedUrl = new URL(playerUrl);
+    const hashMatch = parsedUrl.pathname.match(/^\/video\/([a-f0-9]+)\/?$/i);
+    if (!hashMatch) return [];
+    const hash = hashMatch[1];
+    const apiUrl = new URL('/player/index.php', parsedUrl.origin);
+    apiUrl.searchParams.set('data', hash);
+    apiUrl.searchParams.set('do', 'getVideo');
+    const data = await request(apiUrl.href, {
+        method: 'POST', body: new URLSearchParams({ hash, r: pageUrl }).toString(), json: true,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', Referer: playerUrl,
+            Origin: parsedUrl.origin, 'X-Requested-With': 'XMLHttpRequest'
+        }
+    });
+    const values = [data && data.videoSource, data && data.securedLink];
+    if (Array.isArray(data && data.videoSources)) {
+        values.push(...data.videoSources.map(source => typeof source === 'string' ? source : source && (source.file || source.src)));
+    }
+    const streams = [];
+    for (const value of values) {
+        const stream = buildRavokStream(value, playerUrl, pageUrl, label, data);
+        if (stream && !streams.some(existing => existing.url === stream.url)) streams.push(stream);
+    }
+    if (!streams.length) console.warn(`[AnimeSalt] ${label} returned no playable source`);
+    return streams;
+}
+
+async function resolveAbyssPlayer(playerUrl, pageUrl, label) {
+    const html = await request(playerUrl, { headers: { Referer: pageUrl } });
+    let sources = extractPlayableSources(html, playerUrl);
+    let sourcePageUrl = playerUrl;
+    if (!sources.length) {
+        const $ = cheerio.load(html || '');
+        const iframeSrc = $('iframe[src], iframe[data-src]').first().attr('data-src') || $('iframe[src], iframe[data-src]').first().attr('src');
+        if (iframeSrc) {
+            const nestedUrl = new URL(iframeSrc, playerUrl);
+            if (nestedUrl.protocol === 'https:' && nestedUrl.hostname.toLowerCase() === 'player.abyssplayer.com') {
+                sourcePageUrl = nestedUrl.href;
+                const nestedHtml = await request(sourcePageUrl, { headers: { Referer: playerUrl } });
+                sources = extractPlayableSources(nestedHtml, sourcePageUrl);
+            }
+        }
+    }
+    return sources.map(url => {
+        const qualityMatch = url.match(/\b(\d{3,4})p\b/i);
+        return {
+            url, quality: qualityMatch ? `${qualityMatch[1]}p` : 'Auto', server: label,
+            headers: { Referer: sourcePageUrl, Origin: new URL(sourcePageUrl).origin, 'User-Agent': USER_AGENT },
+            subtitles: []
+        };
+    });
+}
+
+async function resolveServer(player, pageUrl) {
+    const playerUrl = new URL(player.url);
+    const host = playerUrl.hostname.toLowerCase();
+    if (host === 'ravok.buzz' || /^as-cdn\d+\.top$/.test(host)) {
+        return resolveRavokPlayer(player.url, pageUrl, player.label);
+    }
+    if (host === 'animesalt.cx') return resolveAbyssPlayer(player.url, pageUrl, player.label);
+    if (host === 'cybervynx.com') {
+        const html = await request(player.url, { headers: { Referer: pageUrl } });
+        const sources = extractPlayableSources(html, player.url);
+        if (!sources.length) {
+            console.warn(`[AnimeSalt] ${player.label} has no source in its HTML; its packed client script is not executed`);
+        }
+        return sources.map(url => ({
+            url, quality: 'Auto', server: player.label,
+            headers: { Referer: player.url, Origin: playerUrl.origin, 'User-Agent': USER_AGENT },
+            subtitles: []
+        }));
+    }
+    return [];
+}
+
+async function getStreamsFromPage(pageUrl) {
+    const html = await request(pageUrl, { headers: { Referer: `${BASE_URL}/` } });
+    const servers = parsePlayerServers(html, pageUrl);
+    if (!servers.length) {
+        console.warn(`[AnimeSalt] No supported player servers on ${new URL(pageUrl).pathname}`);
+        return [];
+    }
+    console.log(`[AnimeSalt] Resolving ${servers.length} server(s): ${servers.map(server => server.label).join(', ')}`);
+    const results = await Promise.all(servers.map(async server => {
+        try {
+            const streams = await resolveServer(server, pageUrl);
+            if (!streams.length) console.warn(`[AnimeSalt] ${server.label} did not yield a playable source`);
+            return streams;
+        } catch (error) {
+            console.warn(`[AnimeSalt] ${server.label} resolution failed: ${error.message}`);
+            return [];
+        }
+    }));
+    return results.flat();
 }
 
 async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) {
@@ -222,6 +358,7 @@ async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) 
         const searchHtml = await request(searchUrl.href, { headers: { Referer: `${BASE_URL}/` } });
         const results = parseSearchResults(searchHtml, isMovie ? 'movie' : 'anime');
         const candidates = rankSearchResults(results, title, year);
+        console.log(`[AnimeSalt] Search parsed ${results.length} ${isMovie ? 'movie' : 'series'} result(s); ranked ${candidates.length} candidate(s)`);
         if (!candidates.length) {
             console.warn(`[AnimeSalt] No matching ${isMovie ? 'movie' : 'series'} found for ${title}`);
             return [];
@@ -240,17 +377,17 @@ async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) 
             }
         }
 
-        const stream = await getStreamFromPage(pageUrl);
-        if (!stream) return [];
-        return [{
+        console.log(`[AnimeSalt] Fetching sources from ${new URL(pageUrl).pathname}`);
+        const streams = await getStreamsFromPage(pageUrl);
+        return streams.map(stream => ({
             name: 'AnimeSalt',
-            title: `${title} - AnimeSalt ${isMovie ? 'Movie' : `S${seasonNumber}E${episodeNumber}`}`,
+            title: `${title} - AnimeSalt ${isMovie ? 'Movie' : `S${seasonNumber}E${episodeNumber}`} - ${stream.server}`,
             ...stream
-        }];
+        }));
     } catch (error) {
         console.error(`[AnimeSalt] Failed for TMDB ${id} S${seasonNumber}E${episodeNumber}: ${error.message}`);
         return [];
     }
 }
 
-module.exports = { getStreams, parseSearchResults, rankSearchResults, findEpisodeUrlFromHtml, getEpisodeUrl };
+module.exports = { getStreams, parseSearchResults, rankSearchResults, findEpisodeUrlFromHtml, getEpisodeUrl, parsePlayerServers, extractPlayableSources };

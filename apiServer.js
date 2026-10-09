@@ -514,7 +514,7 @@ const PORT = config.port;
 const HOST = process.env.BIND_HOST || '0.0.0.0';
 const server = app.listen(PORT, HOST, () => {
   const base = `http://${HOST}:${PORT}${MOUNT_PATH}`;
-  console.log(`TMDB Embed REST API listening on ${base}`);
+  console.log(`KiduyuTvProviders listening on ${base}`);
   if (HOST !== 'localhost') {
     console.log(`Local access (if running on your machine): http://localhost:${PORT}${MOUNT_PATH}`);
   }
