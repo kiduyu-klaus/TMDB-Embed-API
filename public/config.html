@@ -2,8 +2,8 @@
   <meta charset="utf-8" />
   <title>TMDB Embed Admin</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
-  <script defer src="/index.js"></script>
+  <link rel="stylesheet" href="./style.css" />
+  <script defer src="./index.js"></script>
 </head>
 <body>
   <button class="burger" aria-label="Toggle navigation">☰</button>
@@ -128,7 +128,21 @@
           <div id="tmdbKeyList" class="key-list" aria-live="polite"></div>
           <input type="hidden" name="tmdbApiKeysHidden" />
         </label></div>
-        
+        <div class="field"><label>Stream API Token Password<p class="hint">Use 8-64 letters or numbers only. The server hashes the password before saving it; the original password is never displayed or stored.</p>
+          <div class="key-add-row">
+            <input id="streamTokenInput" type="password" placeholder="Enter a new token password" autocomplete="off" />
+            <button id="updateStreamTokenBtn" type="button" class="small">Update Token</button>
+          </div>
+          <p class="hint" id="streamTokenState">Stream endpoints are currently open &mdash; no token required.</p>
+          <p class="hint" style="margin-top:.75rem;">Hashed token to pass as</p>
+          <pre class="status-pre" id="streamTokenExample">?token=...</pre>
+          <p class="hint">;</p>
+          <div class="key-add-row">
+            <input id="streamTokenDisplay" type="text" readonly placeholder="No token set" autocomplete="off" />
+            <button id="copyStreamTokenBtn" type="button" class="small">Copy</button>
+          </div>
+          <p class="hint" style="margin-top:.75rem;"><button id="disableStreamTokenBtn" type="button" class="small danger">Disable Stream Auth</button></p>
+        </label></div>
       </section>
       <section id="panel-febbox" class="panel">
         <h1>FebBox / PStream</h1>

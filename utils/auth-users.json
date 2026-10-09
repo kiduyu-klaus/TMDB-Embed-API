@@ -1,9 +1,8 @@
 {
-  "info": "Initial default credentials. CHANGE THE PASSWORD IMMEDIATELY using /auth/change-password after logging in.",
   "users": [
     {
-      "username": "admin",
-      "hash": "3c2efa431b6de0bee19847236e2c296b:d88ccc2ee950eda254a03d073bc55bbc8d0efc263c93c4e20307154dc90fadbc3141dcc9556a150b39b52088bb8ad06b120bc8832d7d8dc35918e710803d207c"
+      "username": "kiduyutv",
+      "hash": "2e7c856982018446b91342856e7b6514:82d35a20bb3a065a11d009b307fc71f0d6aab089b62aa3dbbd9cb1e9359d8dc1a43cea3429799ab476ff934807601e770b32d93cab90d41b27b70e195e99361a"
     }
   ]
 }

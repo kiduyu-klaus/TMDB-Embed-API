@@ -9,17 +9,32 @@ const { listProviders, getProvider, getCookieStats } = require('./providers/regi
 const { createProxyRoutes, processStreamsForProxy } = require('./proxy/proxyServer');
 const { resolveImdbId } = require('./utils/tmdb');
 const { applyFilters } = require('./utils/streamFilters');
+const { requireStreamToken, hashStreamToken, isValidStreamTokenFormat, normalizeTokenHash } = require('./utils/streamToken');
 
 const app = express();
 app.set('trust proxy', 1);
 
-// Conditionally mount proxy routes early so downstream handlers can use them
+// --- Sub-path mounting (e.g. hosted at https://host/kiduyuTv_providers) ---
+// MOUNT_PATH lets the whole app live under a prefix. Everything below is
+// registered on a router, which is then mounted at the prefix. Leave it empty
+// to serve from the domain root (plain localhost / Docker setups).
+function normalizeMountPath(raw) {
+  if (typeof raw !== 'string') return '';
+  let value = raw.trim();
+  if (!value || value === '/') return '';
+  if (!value.startsWith('/')) value = '/' + value;
+  return value.replace(/\/+$/, '');
+}
+const MOUNT_PATH = normalizeMountPath(process.env.MOUNT_PATH);
+const router = express.Router();
+
 if (config.enableProxy) {
   console.log('[startup] enableProxy flag active: mounting proxy routes');
-  createProxyRoutes(app);
+  createProxyRoutes(router, MOUNT_PATH);
 } else {
   console.log('[startup] enableProxy flag disabled: proxy routes not mounted');
 }
+if (MOUNT_PATH) console.log(`[startup] MOUNT_PATH active: serving under ${MOUNT_PATH}`);
 
 // --- Simple In-Memory Rate Limiting for /auth/login ---
 const loginAttempts = new Map(); // key: ip, value: { count, first, last, lockedUntil }
@@ -85,11 +100,11 @@ process.exit = function(code){
   // keep process alive for debugging
 };
 setImmediate(()=>console.log('[diagnostic] post-start setImmediate fired'));
-app.use(cors());
-app.use(express.json());
+router.use(cors());
+router.use(express.json());
 
 // --- Auth Routes (login before static serving) ---
-app.post('/auth/login', (req,res) => {
+router.post('/auth/login', (req,res) => {
   const { username, password } = req.body || {};
   const ip = getClientIp(req);
   const attemptState = canAttempt(ip);
@@ -113,18 +128,18 @@ app.post('/auth/login', (req,res) => {
   res.json({ success:true, username });
 });
 
-app.post('/auth/logout', (req,res) => {
+router.post('/auth/logout', (req,res) => {
   res.setHeader('Set-Cookie', 'session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0');
   res.json({ success:true });
 });
 
-app.get('/auth/session', (req,res) => {
+router.get('/auth/session', (req,res) => {
   const sess = getSession(req);
   if (!sess) return res.json({ authenticated:false });
   res.json({ authenticated:true, username: sess.u });
 });
 
-app.post('/auth/change-password', requireAuth, (req,res) => {
+router.post('/auth/change-password', requireAuth, (req,res) => {
   const { oldPassword, newPassword } = req.body || {};
   if (!oldPassword || !newPassword) return res.status(400).json({ success:false, error:'MISSING_FIELDS' });
   const sess = req.session;
@@ -135,9 +150,9 @@ app.post('/auth/change-password', requireAuth, (req,res) => {
 });
 
 // Protect config panel (HTML) explicitly before static middleware
-app.get('/config.html', (req,res,next) => {
+router.get('/config.html', (req,res,next) => {
   const sess = getSession(req);
-  if (!sess) return res.redirect(302, '/');
+  if (!sess) return res.redirect(302, `${MOUNT_PATH}/`);
   res.setHeader('Cache-Control','no-store, must-revalidate');
   res.setHeader('Pragma','no-cache');
   res.setHeader('Expires','0');
@@ -145,7 +160,7 @@ app.get('/config.html', (req,res,next) => {
 });
 
 // Explicit root handler for login page to ensure no-store
-app.get('/', (req,res) => {
+router.get('/', (req,res) => {
   res.setHeader('Cache-Control','no-store, must-revalidate');
   res.setHeader('Pragma','no-cache');
   res.setHeader('Expires','0');
@@ -187,21 +202,35 @@ const metrics = {
   tmdbToImdbLookups: 0
 };
 
-app.use((req,res,next)=>{ metrics.requestsTotal++; metrics.lastRequestAt = Date.now(); next(); });
+router.use((req,res,next)=>{ metrics.requestsTotal++; metrics.lastRequestAt = Date.now(); next(); });
 // Serve static UI (login page at /)
-app.use(express.static(path.join(process.cwd(),'public')));
+router.use(express.static(path.join(process.cwd(),'public')));
 
 // Config API
-app.get('/api/config', (req,res) => {
+// The stream token hash doubles as a bearer credential, so it is only ever
+// disclosed to a caller holding a valid admin session.
+const REDACTED_TOKEN = '(set — admin session required)';
+function redactTokenHashes(source){
+  if (!source || typeof source !== 'object') return source;
+  if (source.streamTokenHash) source.streamTokenHash = REDACTED_TOKEN;
+  return source;
+}
+router.get('/api/config', (req,res) => {
   const fs = require('fs');
   let override = {};
   try { if (fs.existsSync(OVERRIDE_PATH)) override = JSON.parse(fs.readFileSync(OVERRIDE_PATH,'utf8')); } catch (e) {
     // ignore JSON parse or fs errors reading override; return base config
   }
-  res.json({ success:true, merged: config, override, overridePath: OVERRIDE_PATH });
+  const isAdmin = !!getSession(req);
+  const mergedOut = isAdmin ? config : redactTokenHashes({ ...config });
+  const overrideOut = isAdmin ? override : redactTokenHashes({ ...override });
+  res.json({ success:true, merged: mergedOut, override: overrideOut, overridePath: OVERRIDE_PATH });
 });
-app.post('/api/config', (req,res) => {
+router.post('/api/config', (req,res) => {
   const patch = req.body || {};
+  // Token changes go through the session-guarded /api/stream-token endpoint only.
+  delete patch.streamTokenHash;
+  delete patch.STREAM_TOKEN_HASH;
   if (patch.port) {
     const p = Number(patch.port); if (!Number.isFinite(p) || p<=0 || p>65535) return res.status(400).json({ success:false, error:'INVALID_PORT'});
     patch.port = p;
@@ -211,8 +240,39 @@ app.post('/api/config', (req,res) => {
   res.json({ success: ok, merged: config });
 });
 
+// --- Stream API token management (session required) ---
+// The plaintext password is hashed here and discarded; only the digest is stored.
+router.post('/api/stream-token', requireAuth, (req,res) => {
+  const password = (req.body || {}).password;
+  if (!isValidStreamTokenFormat(password)) {
+    return res.status(400).json({
+      success:false,
+      error:'INVALID_TOKEN_PASSWORD',
+      message:'Token password must be 8-64 letters or numbers only.'
+    });
+  }
+  const hash = hashStreamToken(password.trim());
+  if (!normalizeTokenHash(hash)) {
+    return res.status(500).json({ success:false, error:'HASH_FAILED' });
+  }
+  const ok = saveConfigPatch({ streamTokenHash: hash, STREAM_TOKEN_HASH: null });
+  if (!ok) return res.status(500).json({ success:false, error:'SAVE_FAILED' });
+  res.json({ success:true, streamTokenHash: normalizeTokenHash(config.streamTokenHash) });
+});
+
+// Disable stream endpoint auth by clearing the stored hash.
+// NOTE: an empty string (not null) is written on purpose. saveConfigPatch drops
+// null keys so they fall back to env, and .env may define STREAM_TOKEN_HASH.
+// An explicit '' still normalizes to "unset" but keeps shadowing the env value,
+// so this button actually turns auth off.
+router.delete('/api/stream-token', requireAuth, (req,res) => {
+  const ok = saveConfigPatch({ streamTokenHash: '', STREAM_TOKEN_HASH: null });
+  if (!ok) return res.status(500).json({ success:false, error:'SAVE_FAILED' });
+  res.json({ success:true, streamTokenHash: null });
+});
+
 // Restart endpoint (requires auth via session cookie on /config.html UI)
-app.post('/api/restart', (req,res) => {
+router.post('/api/restart', (req,res) => {
   const sess = getSession(req);
   if(!sess) return res.status(401).json({ success:false, error:'UNAUTHORIZED' });
   res.json({ success:true, message:'RESTARTING' });
@@ -234,12 +294,12 @@ app.post('/api/restart', (req,res) => {
 });
 
 // --- Basic informational endpoints ---
-app.get('/api/health', (req, res) => {
+router.get('/api/health', (req, res) => {
   res.json({ ok: true, service: 'tmdb-embed-api', time: new Date().toISOString() });
 });
 
 // Metrics endpoint
-app.get('/api/metrics', (req,res) => {
+router.get('/api/metrics', (req,res) => {
   res.json({
     uptimeSeconds: Math.round((Date.now()-metrics.startTime)/1000),
     requestsTotal: metrics.requestsTotal,
@@ -262,7 +322,7 @@ app.get('/api/metrics', (req,res) => {
 });
 
 // Consolidated status (metrics + providers + endpoints)
-app.get('/api/status', (req,res) => {
+router.get('/api/status', (req,res) => {
   const endpoints = [
     'GET /api/health',
     'GET /api/metrics',
@@ -294,12 +354,12 @@ app.get('/api/status', (req,res) => {
 });
 
 // Providers list
-app.get('/api/providers', (req,res) => {
+router.get('/api/providers', (req,res) => {
   res.json({ success: true, providers: listProviders() });
 });
 
 // Debug environment/config endpoint (do not expose publicly in production)
-app.get('/api/debug/env', (req,res) => {
+router.get('/api/debug/env', (req,res) => {
   const cookieStats = getCookieStats ? getCookieStats() : null;
   res.json({
     port: config.port,
@@ -312,14 +372,14 @@ app.get('/api/debug/env', (req,res) => {
 });
 
 // Single provider info
-app.get('/api/providers/:name', (req,res) => {
+router.get('/api/providers/:name', (req,res) => {
   const p = getProvider(req.params.name);
   if (!p) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
   res.json({ success:true, provider:{ name: p.name, enabled: p.enabled } });
 });
 
 // Aggregate streams across all enabled providers
-app.get('/api/streams/:type/:tmdbId', async (req,res) => {
+router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => {
   const { type, tmdbId } = req.params;
   if (!['movie','series'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
   const season = req.query.season ? Number(req.query.season) : null;
@@ -351,7 +411,7 @@ app.get('/api/streams/:type/:tmdbId', async (req,res) => {
     streams = applyFilters(streams, 'aggregate', config.minQualities, config.excludeCodecs);
     metrics.streamsReturned += streams.length;
     if (config.enableProxy) {
-      const serverUrl = `${req.protocol}://${req.get('host')}`;
+      const serverUrl = `${req.protocol}://${req.get('host')}${MOUNT_PATH}`;
       streams = processStreamsForProxy(streams, serverUrl);
       // Omit original headers when proxying to avoid leaking upstream requirements
       streams = streams.map(s => { if (s && typeof s === 'object') { const { headers, ...rest } = s; return rest; } return s; });
@@ -364,7 +424,7 @@ app.get('/api/streams/:type/:tmdbId', async (req,res) => {
 });
 
 // Provider-specific streams
-app.get('/api/streams/:provider/:type/:tmdbId', async (req,res) => {
+router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (req,res) => {
   const { provider, type, tmdbId } = req.params;
   if (!['movie','series'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
   const season = req.query.season ? Number(req.query.season) : null;
@@ -383,7 +443,7 @@ app.get('/api/streams/:provider/:type/:tmdbId', async (req,res) => {
     streams = applyFilters(streams, prov.name, config.minQualities, config.excludeCodecs);
     metrics.streamsReturned += streams.length;
     if (config.enableProxy) {
-      const serverUrl = `${req.protocol}://${req.get('host')}`;
+      const serverUrl = `${req.protocol}://${req.get('host')}${MOUNT_PATH}`;
       streams = processStreamsForProxy(streams, serverUrl);
       streams = streams.map(s => { if (s && typeof s === 'object') { const { headers, ...rest } = s; return rest; } return s; });
     }
@@ -394,19 +454,47 @@ app.get('/api/streams/:provider/:type/:tmdbId', async (req,res) => {
   }
 });
 
+// --- Mount the router, then start listening ---
+if (MOUNT_PATH) {
+  // Canonicalize the bare prefix to a trailing slash so the browser always
+  // resolves relative asset URLs and the client-side BASE the same way.
+  // This must run before the router mount, otherwise the router's own '/'
+  // handler would answer first and the browser would keep the slashless URL.
+  app.use((req, res, next) => {
+    if (req.path === MOUNT_PATH) return res.redirect(301, `${MOUNT_PATH}/`);
+    return next();
+  });
+  app.use(MOUNT_PATH, router);
+  app.use((req, res, next) => {
+    if (req.path === MOUNT_PATH || req.path.startsWith(`${MOUNT_PATH}/`)) return next();
+    // A 302 degrades a POST to a GET in most clients, which would break stale
+    // cached clients posting to the unprefixed path. Forward them instead.
+    // The router's own routes are registered WITHOUT the prefix (Express strips
+    // it when mounting), and req.url is already prefix-free here, so hand it
+    // over untouched rather than re-adding MOUNT_PATH.
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      return router(req, res, next);
+    }
+    return res.redirect(302, MOUNT_PATH + req.originalUrl);
+  });
+} else {
+  app.use(router);
+}
+
 const PORT = config.port;
 const HOST = process.env.BIND_HOST || '0.0.0.0';
 const server = app.listen(PORT, HOST, () => {
-  console.log(`TMDB Embed REST API listening on http://${HOST}:${PORT}`);
+  const base = `http://${HOST}:${PORT}${MOUNT_PATH}`;
+  console.log(`TMDB Embed REST API listening on ${base}`);
   if (HOST !== 'localhost') {
-    console.log(`Local access (if running on your machine): http://localhost:${PORT}`);
+    console.log(`Local access (if running on your machine): http://localhost:${PORT}${MOUNT_PATH}`);
   }
   console.log('Endpoints:');
-  console.log('  GET  /api/health');
-  console.log('  GET  /api/metrics');
-  console.log('  GET  /api/providers');
-  console.log('  GET  /api/streams/:type/:id');
-  console.log('  POST /api/streams/:type/:id');
+  console.log(`  GET  ${MOUNT_PATH}/api/health`);
+  console.log(`  GET  ${MOUNT_PATH}/api/metrics`);
+  console.log(`  GET  ${MOUNT_PATH}/api/providers`);
+  console.log(`  GET  ${MOUNT_PATH}/api/streams/:type/:id`);
+  console.log(`  POST ${MOUNT_PATH}/api/streams/:type/:id`);
   if (!config.febboxCookies || config.febboxCookies.length === 0) {
     console.warn('[startup][warning] No FEBBOX_COOKIES configured. Showbox / PStream related streams may be unavailable. Set FEBBOX_COOKIES in your environment to enable these sources.');
   }

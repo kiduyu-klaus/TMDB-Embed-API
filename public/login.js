@@ -1,12 +1,20 @@
 /* eslint-env browser */
 (function(){
   const $ = sel => document.querySelector(sel);
+  // Support hosting under a sub-path (e.g. /kiduyuTv_providers). The prefix is
+  // whatever directory the page itself was served from, so this works whether
+  // or not MOUNT_PATH is configured on the server.
+  // Support hosting under a sub-path (e.g. /kiduyuTv_providers). Strip a
+  // trailing slash and any page filename, but never strip a bare mount segment
+  // (e.g. "/kiduyuTv_providers" with no trailing slash is a valid page URL).
+  const BASE = window.location.pathname.replace(/\/+$/, '').replace(/\/[^/]*\.[^/]*$/, '');
+  const U = p => BASE + p;
   async function checkSession(){
     try {
-      const r = await fetch('/auth/session');
+      const r = await fetch(U('/auth/session'));
       const j = await r.json();
       if (j.authenticated) {
-        window.location.href = '/config.html';
+        window.location.href = U('/config.html');
       }
     } catch(e) { /* ignore */ }
   }
@@ -16,7 +24,7 @@
     status.textContent = 'Authenticating...';
     status.className = 'status';
     try {
-      const r = await fetch('/auth/login', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ username, password }) });
+      const r = await fetch(U('/auth/login'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ username, password }) });
       const j = await r.json();
       if (!j.success) {
         if (j.error === 'LOCKED' || j.error === 'TOO_MANY_ATTEMPTS') {
@@ -35,10 +43,11 @@
       }
       status.textContent = 'Success! Redirecting...';
       status.classList.add('success');
-      setTimeout(()=>{ window.location.href = '/config.html'; }, 400);
+      setTimeout(()=>{ window.location.href = U('/config.html'); }, 400);
       return true;
     } catch (e) {
-      status.textContent = 'Network error';
+      status.textContent = 'Network error'+(e.message ? `: ${e.message}` : '');
+      console.log('[login] network error', e);
       status.classList.add('error');
       return false;
     }
@@ -73,7 +82,7 @@
     pwStatus.textContent = 'Updating...';
     pwStatus.className = 'status';
     try {
-      const r = await fetch('/auth/change-password', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ oldPassword, newPassword }) });
+      const r = await fetch(U('/auth/change-password'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ oldPassword, newPassword }) });
       const j = await r.json();
       if (!j.success) {
         pwStatus.textContent = j.error || 'Update failed';

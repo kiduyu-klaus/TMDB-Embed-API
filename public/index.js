@@ -1,12 +1,20 @@
 // Admin panel logic (refactored into IIFE, no inline handlers)
 (function(){
+// Support hosting under a sub-path (e.g. /kiduyuTv_providers). The prefix is
+// whatever directory the page itself was served from, so this works whether or
+// not MOUNT_PATH is configured on the server.
+// Support hosting under a sub-path (e.g. /kiduyuTv_providers). Strip a trailing
+// slash and any page filename, but never strip a bare mount segment (e.g.
+// "/kiduyuTv_providers" with no trailing slash is a valid page URL).
+const BASE = window.location.pathname.replace(/\/+$/, '').replace(/\/[^/]*\.[^/]*$/, '');
+const U = p => BASE + p;
 async function fetchConfig(){
-	const r = await fetch('/api/config');
+	const r = await fetch(U('/api/config'));
 	if(!r.ok) throw new Error('Failed to fetch config');
 	return r.json();
 }
 async function fetchProviders(){
-	const r = await fetch('/api/providers');
+	const r = await fetch(U('/api/providers'));
 	if(!r.ok) throw new Error('Failed to fetch providers');
 	return r.json();
 }
@@ -80,6 +88,89 @@ document.addEventListener('click',(e)=>{
 });
 document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='tmdbKeyInput'){ e.preventDefault(); addTmdbKey(); }});
 
+// --- Stream API token ---
+const REDACTED_TOKEN = '(set — admin session required)';
+function currentStreamTokenHash(){
+	const display = document.getElementById('streamTokenDisplay');
+	const value = (display && display.value || '').trim();
+	// The server redacts the hash for non-admins; never treat the redaction marker as a real token
+	return /^[0-9a-f]{64}$/.test(value) ? value : null;
+}
+function renderStreamToken(hash){
+	const display = document.getElementById('streamTokenDisplay');
+	const example = document.getElementById('streamTokenExample');
+	const state = document.getElementById('streamTokenState');
+	const copyBtn = document.getElementById('copyStreamTokenBtn');
+	const disableBtn = document.getElementById('disableStreamTokenBtn');
+	const has = typeof hash === 'string' && /^[0-9a-f]{64}$/.test(hash);
+	if (display) display.value = typeof hash === 'string' ? hash : '';
+	if (example) example.textContent = has ? `?token=${hash}` : '?token=...';
+	if (state) state.textContent = has
+		? 'Stream endpoints require this token via ?token=.'
+		: 'Stream endpoints are currently open — no token required.';
+	if (copyBtn) copyBtn.disabled = !has;
+	if (disableBtn) disableBtn.disabled = !has;
+}
+async function updateStreamToken(){
+	const input = document.getElementById('streamTokenInput');
+	if (!input) return;
+	const password = (input.value || '').trim();
+	if (!password) { setStatus('Enter a token password first', true); return; }
+	if (!/^[A-Za-z0-9]{8,64}$/.test(password)) {
+		setStatus('Token password must be 8-64 letters or numbers only', true);
+		return;
+	}
+	const btn = document.getElementById('updateStreamTokenBtn');
+	if (btn) btn.disabled = true;
+	try {
+		const r = await fetch(U('/api/stream-token'), {
+			method:'POST',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify({ password })
+		});
+		const js = await r.json();
+		if (!r.ok || !js.success) throw new Error(js.message || js.error || 'Update failed');
+		renderStreamToken(js.streamTokenHash);
+		input.value = '';
+		setStatus('Token updated ✔');
+	} catch(e){ setStatus(e.message, true); }
+	finally { if (btn) btn.disabled = false; }
+}
+async function disableStreamToken(){
+	const btn = document.getElementById('disableStreamTokenBtn');
+	if (btn) btn.disabled = true;
+	try {
+		const r = await fetch(U('/api/stream-token'), { method:'DELETE' });
+		const js = await r.json();
+		if (!r.ok || !js.success) throw new Error(js.error || 'Disable failed');
+		renderStreamToken(null);
+		setStatus('Stream auth disabled');
+	} catch(e){
+		setStatus(e.message, true);
+		// Re-render from the current value so the buttons reflect real state
+		renderStreamToken(currentStreamTokenHash());
+	}
+}
+async function copyStreamToken(){
+	const hash = currentStreamTokenHash();
+	if (!hash) { setStatus('No token set', true); return; }
+	try {
+		await navigator.clipboard.writeText(hash);
+		setStatus('Token copied ✔');
+	} catch(e){
+		// Clipboard API needs a secure context; fall back to selecting the text
+		const display = document.getElementById('streamTokenDisplay');
+		if (display) { display.select(); display.setSelectionRange(0, display.value.length); }
+		setStatus('Press Ctrl+C to copy the selected token', true);
+	}
+}
+document.addEventListener('click',(e)=>{
+	if (e.target.closest('#updateStreamTokenBtn')) updateStreamToken();
+	if (e.target.closest('#copyStreamTokenBtn')) copyStreamToken();
+	if (e.target.closest('#disableStreamTokenBtn')) disableStreamToken();
+});
+document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='streamTokenInput'){ e.preventDefault(); updateStreamToken(); }});
+
 function fillForm(data){
 	const merged = data.merged || {};
 	const override = data.override || {};
@@ -111,6 +202,10 @@ function fillForm(data){
 			else keys = [];
 		}
 		setTmdbKeys(keys);
+	})();
+	(function(){
+		const tokenHash = override.streamTokenHash !== undefined ? override.streamTokenHash : merged.streamTokenHash;
+		renderStreamToken(typeof tokenHash === 'string' ? tokenHash : null);
 	})();
 	const mqRaw = override.minQualitiesRaw !== undefined ? override.minQualitiesRaw : (merged.minQualitiesRaw || '');
 	const presetValues = ['all','480p','720p','1080p','1440p','2160p'];
@@ -257,7 +352,7 @@ async function save(){
 		payload.tmdbApiKey = null;
 	}
 	try {
-		const r = await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+		const r = await fetch(U('/api/config'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
 		const js = await r.json();
 		if(!js.success) throw new Error(js.error||'Save failed');
 		setStatus('Saved ✔');
@@ -338,10 +433,12 @@ async function clearAll(){
 		disableUrlValidation: false,
 		disable4khdhubUrlValidation: false,
 		showboxCacheDir: null,
-		providerCheckTmdbId: null
+		providerCheckTmdbId: null,
+		// Stream auth returns to "disabled" (env may still supply a hash)
+		streamTokenHash: null
 	};
 	try {
-		const r = await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+		const r = await fetch(U('/api/config'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
 		const js = await r.json();
 		if(!js.success) throw new Error(js.error||'Clear failed');
 		setStatus('All settings reset to defaults');
@@ -392,10 +489,10 @@ function bindShellControls(){
 }
 async function verifySession(){
 	try {
-		const r = await fetch('/auth/session',{cache:'no-store'});
+		const r = await fetch(U('/auth/session'),{cache:'no-store'});
 		const j = await r.json();
-		if(!j.authenticated){ location.replace('/?expired=1'); }
-	} catch { location.replace('/?expired=1'); }
+		if(!j.authenticated){ location.replace(U('/?expired=1')); }
+	} catch { location.replace(U('/?expired=1')); }
 }
 
 async function loadServerStatus(){
@@ -407,7 +504,7 @@ async function loadServerStatus(){
 	if(endpointsEl) endpointsEl.textContent = 'Loading...';
 	if(provEnhanced) provEnhanced.innerHTML = '<div class="prov-row">Loading...</div>';
 	try {
-		const r = await fetch('/api/status');
+		const r = await fetch(U('/api/status'));
 		if(!r.ok) throw new Error('Status fetch failed');
 		const j = await r.json();
 		if(!j.success) throw new Error('Status error');
@@ -461,7 +558,9 @@ async function runProviderFunctionalChecks(){
 			completed++; continue;
 		}
 		try {
-			const r = await fetch(`/api/streams/${name}/movie/${targetTmdb}`);
+			const token = currentStreamTokenHash();
+		const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
+		const r = await fetch(U(`/api/streams/${name}/movie/${targetTmdb}${tokenQuery}`));
 			if(!r.ok) throw new Error('HTTP '+r.status);
 			const j = await r.json();
 			const isOk = j && Array.isArray(j.streams) && j.streams.length>0;
@@ -488,7 +587,7 @@ async function saveProviderCheckTmdbId(){
 	if(!val){ setStatus('Enter a TMDB ID to save', true); return; }
 	if(!/^\d+$/.test(val)){ setStatus('TMDB ID must be numeric', true); return; }
 	try {
-		const r = await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ providerCheckTmdbId: val })});
+		const r = await fetch(U('/api/config'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ providerCheckTmdbId: val })});
 		const js = await r.json();
 		if(!js.success) throw new Error(js.error||'Save failed');
 		setStatus('Provider check TMDB ID saved: '+val);
@@ -502,9 +601,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	const logoutBtn = document.getElementById('logoutBtn');
 	if(logoutBtn){
 		logoutBtn.addEventListener('click', async ()=>{
-			try { await fetch('/auth/logout',{method:'POST'}); } catch {}
+			try { await fetch(U('/auth/logout'),{method:'POST'}); } catch {}
 			// Use replace to avoid creating extra history entry
-			location.replace('/?loggedOut=1');
+			location.replace(U('/?loggedOut=1'));
 		});
 	}
 	const restartBtn = document.getElementById('restartBtn');
@@ -514,7 +613,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 			if(!ok) return;
 			setStatus('Restarting server…');
 			try {
-				const r = await fetch('/api/restart',{ method:'POST' });
+				const r = await fetch(U('/api/restart'),{ method:'POST' });
 				if(!r.ok){ const t = await r.text().catch(()=>r.statusText); throw new Error(t||('HTTP '+r.status)); }
 				// Server will shut down soon; start polling until it comes back
 				await new Promise(resolve => setTimeout(resolve, 1000));
@@ -522,7 +621,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 				const timeoutMs = 60_000;
 				(async function poll(){
 					try {
-						const pr = await fetch('/api/health',{ cache:'no-store' });
+						const pr = await fetch(U('/api/health'),{ cache:'no-store' });
 						if(pr.ok){ location.reload(); return; }
 					} catch {}
 					if(Date.now()-start > timeoutMs){ setStatus('Restart timed out', true); return; }
@@ -607,7 +706,7 @@ async function renderProviderMatrix(merged){
 	// Fetch available providers from API
 	let availableProviders = [];
 	try {
-		const providersResponse = await fetch('/api/providers');
+		const providersResponse = await fetch(U('/api/providers'));
 		if (providersResponse.ok) {
 			const providersData = await providersResponse.json();
 			availableProviders = providersData.providers || [];
@@ -652,7 +751,7 @@ async function renderProviderMatrix(merged){
 				patch.defaultProviders = defaultsNow;
 			}
 			try {
-				await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+				await fetch(U('/api/config'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
 				const updated = await fetchConfig();
 				fillForm(updated);
 				renderProviderMatrix(updated.merged);

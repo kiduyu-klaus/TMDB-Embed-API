@@ -2,7 +2,7 @@ const { createHash } = require('crypto');
 const { getDetails, resolveImdbId } = require('../utils/tmdb');
 
 const PORTALS = ['https://zxcstream.xyz', 'https://zxcprime.xyz'];
-const INITIAL_BASE = 'https://r1.zxcstream.xyz';
+const INITIAL_BASE = 'https://zxcprime.xyz';
 const SALT = '3435443433';
 const SERVERS = ['icarus', 'berkas', 'orion', 'athena'];
 const BASE_TTL = 10 * 60 * 1000;

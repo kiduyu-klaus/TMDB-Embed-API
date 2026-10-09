@@ -154,7 +154,7 @@ function rewriteM3u8(content, targetUrl, baseProxyUrl, headers) {
     return out.join('\n');
 }
 
-function createProxyRoutes(app) {
+function createProxyRoutes(app, mountPath = '') {
     // m3u8 playlist proxy
     app.get('/m3u8-proxy', cors(), async (req, res) => {
         const targetUrl = req.query.url; if (!targetUrl) return res.status(400).json({ error: 'URL parameter required' });
@@ -167,7 +167,7 @@ function createProxyRoutes(app) {
             if (!response.ok) return res.status(response.status).json({ error: `M3U8 fetch failed: ${response.status}` });
             const text = await response.text();
             const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-            const baseProxyUrl = `${protocol}://${req.get('host')}`;
+            const baseProxyUrl = `${protocol}://${req.get('host')}${mountPath}`;
             const rewritten = rewriteM3u8(text, targetUrl, baseProxyUrl, headers);
             res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

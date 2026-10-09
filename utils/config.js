@@ -1,6 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const { normalizeTokenHash } = require('./streamToken');
 // Relocated user-config.json into utils directory; maintain backward-compatible fallback
 const NEW_OVERRIDE_PATH = path.join(process.cwd(), 'utils', 'user-config.json');
 const LEGACY_OVERRIDE_PATH = path.join(process.cwd(), 'user-config.json');
@@ -116,6 +117,12 @@ function normalizeConfig(base) {
   if (cfg.disable4khdhubUrlValidation === undefined) cfg.disable4khdhubUrlValidation = false;
   // TMDB ID used by the dashboard's "Run Provider Functional Checks" feature
   if (!cfg.providerCheckTmdbId) cfg.providerCheckTmdbId = '278';
+  // Stream API token: accept the env-style uppercase alias too (people paste
+  // STREAM_TOKEN_HASH straight out of .env into the override file), then keep
+  // only a canonical sha256 hex string; anything else means "unset".
+  if (!cfg.streamTokenHash && cfg.STREAM_TOKEN_HASH) cfg.streamTokenHash = cfg.STREAM_TOKEN_HASH;
+  cfg.streamTokenHash = normalizeTokenHash(cfg.streamTokenHash);
+  delete cfg.STREAM_TOKEN_HASH;
   return cfg;
 }
 
@@ -148,6 +155,8 @@ function applyConfigToEnv(cfg){
   process.env.ENABLE_PROXY = cfg.enableProxy ? 'true':'false';
   if (cfg.providerCheckTmdbId) process.env.PROVIDER_CHECK_TMDB_ID = String(cfg.providerCheckTmdbId);
   else delete process.env.PROVIDER_CHECK_TMDB_ID;
+  if (cfg.streamTokenHash) process.env.STREAM_TOKEN_HASH = cfg.streamTokenHash;
+  else delete process.env.STREAM_TOKEN_HASH;
   // Showbox specific
   if (cfg.showboxCacheDir) process.env.SHOWBOX_CACHE_DIR = cfg.showboxCacheDir; else delete process.env.SHOWBOX_CACHE_DIR;
   // Proxy settings removed; ensure legacy envs are cleared
@@ -179,7 +188,8 @@ function loadConfig() {
     disableUrlValidation: process.env.DISABLE_URL_VALIDATION,
     disable4khdhubUrlValidation: process.env.DISABLE_4KHDHUB_URL_VALIDATION,
     enableProxy: process.env.ENABLE_PROXY,
-    providerCheckTmdbId: process.env.PROVIDER_CHECK_TMDB_ID || null
+    providerCheckTmdbId: process.env.PROVIDER_CHECK_TMDB_ID || null,
+    streamTokenHash: process.env.STREAM_TOKEN_HASH || null
   };
   
   // Dynamic provider enable flags from env

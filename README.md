@@ -323,7 +323,59 @@ The system automatically:
 | `GET /api/config` | `{ merged, override, overridePath }` |
 | `POST /api/config` | Apply override patch (persisted to `utils/user-config.json`) |
 | `POST /api/restart` | Graceful restart (writes `restart.trigger` + exits) |
+| `POST /api/stream-token` | Set the stream token (admin session required) |
+| `DELETE /api/stream-token` | Disable stream token auth (admin session required) |
 | `GET /api/debug/env` | Debug environment/config snapshot |
+
+### 🔐 Stream API token
+The `/api/streams/*` endpoints can require a token. Manage it in the admin UI under
+**Config → Keys → Stream API Token Password**, or by setting `STREAM_TOKEN_HASH`
+(a SHA-256 hex digest) in your environment.
+
+```bash
+curl "http://localhost:8787/api/streams/series/1396?season=1&episode=1&token=YOUR_TOKEN"
+curl "http://localhost:8787/api/streams/movie/550?token=YOUR_TOKEN"
+curl "http://localhost:8787/api/streams/4khdhub/movie/550?token=YOUR_TOKEN"
+```
+
+Either form of `YOUR_TOKEN` is accepted:
+
+- the **hash itself** (this is what the Keys panel displays and copies), or
+- the **plaintext password** it was hashed from.
+
+Both are compared in constant time. Only the digest is ever stored — the plaintext
+is never written to disk or returned by any endpoint. Requests with no token get
+`401 AUTHENTICATION_REQUIRED`; a wrong token gets `403 INVALID_TOKEN`. Leave
+`STREAM_TOKEN_HASH` empty to keep the stream endpoints open.
+
+> The stored hash doubles as the bearer credential, so `GET /api/config` redacts
+> `streamTokenHash` for callers without an admin session.
+
+### 📁 Hosting under a sub-path
+If the app sits behind a reverse proxy or a Plesk/CPanel *Application root*, set
+`MOUNT_PATH` to the prefix and every route, static asset, redirect and proxy URL
+moves under it:
+
+```bash
+MOUNT_PATH=/kiduyuTv_providers
+```
+
+```bash
+# now served as:
+http://localhost:8787/kiduyuTv_providers/
+http://localhost:8787/kiduyuTv_providers/config.html
+http://localhost:8787/kiduyuTv_providers/api/health
+http://localhost:8787/kiduyuTv_providers/api/streams/movie/550?token=...
+```
+
+Leave it empty (the default) to keep serving from the domain root — plain
+localhost and Docker setups need no change. The proxy layer also prefixes the
+`/m3u8-proxy`, `/ts-proxy` and `/sub-proxy` URLs it writes into playlists, so
+sub-path deployments stream correctly without extra configuration.
+
+> Your reverse proxy must forward the **full** path including the prefix. If it
+> strips `/kiduyuTv_providers` before proxying, set `MOUNT_PATH` to empty instead
+> so the app expects root-level paths.
 
 Proxy routes (mounted only when `enableProxy` is on):
 | Endpoint | Description |

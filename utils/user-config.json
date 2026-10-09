@@ -1,9 +1,14 @@
 {
   "defaultProviders": [],
   "configVersion": 1,
-  "tmdbApiKeys": [],
+  "tmdbApiKeys": [
+    "9de3de623b579f6e127c6ec603b9f74d"
+  ],
+  "STREAM_TOKEN_HASH": "0a965c3877cd30510c014d81a5d400536a99bc65831d7af57caf479915d57186",
   "enableShowboxProvider": true,
-  "febboxCookies": [],
+  "febboxCookies": [
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODQ1ODM0NjksIm5iZiI6MTc4NDU4MzQ2OSwiZXhwIjoxODE1Njg3NDg5LCJkYXRhIjp7InVpZCI6MTcwNjMzNSwidG9rZW4iOiIxZTZjMTdkYWU4ZGNjMmJkYmM5YWVkYWIyMDM4YTAwZiJ9fQ.Rs6Uvh7faH1m1z767o0o4hFMivaLlABr7xxmnn_UWfE"
+  ],
   "enable4khdhubProvider": true,
   "enableVixsrcProvider": true,
   "enableProxy": false,
@@ -19,5 +24,12 @@
   "enableLordflixProvider": false,
   "enableNotorrentProvider": false,
   "enableDahmermoviesProvider": true,
-  "port": 8787
+  "port": 8787,
+  "providerCheckTmdbId": "550",
+  "enableVaplayerProvider": true,
+  "enableNetmirrorProvider": true,
+  "enableCastletvProvider": true,
+  "enableOnetouchtvProvider": true,
+  "enableHdghartvProvider": true,
+  "enableStreamflixProvider": true
 }
