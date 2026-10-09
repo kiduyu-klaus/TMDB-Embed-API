@@ -21,6 +21,26 @@ const providerFunctionMap = {
   'netmirror.js': 'getNetmirrorStreams',
   'onetouchtv.js': 'getOnetouchtvStreams',
   'zxcstreams.js': 'getZxcstreamsStreams',
+  'animekai.js': 'getAnimekaiStreams',
+};
+
+// Every registered provider belongs to exactly one media category.
+// New providers default to MoviesTv until explicitly classified otherwise.
+const providerCategoryMap = {
+  'Showbox.js': 'MoviesTv',
+  '4khdhub.js': 'MoviesTv',
+  'vixsrc.js': 'MoviesTv',
+  'videasy.js': 'MoviesTv',
+  'vidlink.js': 'MoviesTv',
+  'dahmermovies.js': 'MoviesTv',
+  'streamflix.js': 'MoviesTv',
+  'vaplayer.js': 'MoviesTv',
+  'castletv.js': 'MoviesTv',
+  'hdghartv.js': 'MoviesTv',
+  'netmirror.js': 'MoviesTv',
+  'onetouchtv.js': 'MoviesTv',
+  'zxcstreams.js': 'MoviesTv',
+  'animekai.js': 'Anime',
 };
 
 // Stats for debug endpoint
@@ -38,7 +58,8 @@ function getProviderFiles() {
     .map(file => ({
       name: path.parse(file).name.toLowerCase(),
       file: file,
-      functionName: providerFunctionMap[file]
+      functionName: providerFunctionMap[file],
+      category: providerCategoryMap[file] || 'MoviesTv'
     }));
 }
 
@@ -68,7 +89,7 @@ function createFetchFunction(providerInfo) {
     }
 
     try {
-      const mediaType = ctx.type === 'movie' ? 'movie' : 'tv';
+      const mediaType = ctx.type === 'movie' ? 'movie' : (ctx.type === 'anime' ? 'anime' : 'tv');
       const t0 = Date.now();
 
       let result;
@@ -123,6 +144,7 @@ const providers = [];
 for (const providerInfo of providerFiles) {
   providers.push({
     name: providerInfo.name,
+    category: providerInfo.category,
     fetch: createFetchFunction(providerInfo)
   });
   console.log(`[registry] ${providerInfo.name} provider loaded`);
@@ -133,7 +155,7 @@ function isProviderEnabled(name) {
   return config[flag] !== false;
 }
 
-function listProviders() { return providers.map(p => ({ name: p.name, enabled: isProviderEnabled(p.name) })); }
+function listProviders() { return providers.map(p => ({ name: p.name, category: p.category, enabled: isProviderEnabled(p.name) })); }
 function getProvider(name) {
   const p = providers.find(p => p.name === name.toLowerCase());
   if (!p) return null;

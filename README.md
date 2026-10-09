@@ -33,7 +33,7 @@
 ---
 
 ## ✨ Features
-- **13 Built-in Providers** – Showbox/FebBox, 4KHDHub, VixSrc, Videasy, Vidlink, DahmerMovies, StreamFlix, VaPlayer, CastleTV, HDGharTV, NetMirror, OneTouchTV, ZXCStreams — with per-provider enable toggles + default selection.
+- **14 Built-in Providers** – 13 MoviesTv sources plus AnimeKai for Anime, with per-provider enable toggles + default selection.
 - **Multi-TMDB Key Rotation** – Supply multiple API keys; one is chosen randomly per request.
 - **🔥 Plugin System** – Drop new provider files in `providers/` and add its exported function to the registry map (`providers/registry.js` → `providerFunctionMap`). No core file edits required.
 - **Dynamic Filtering** – Minimum quality presets, custom JSON quality map, codec exclusion rules (presets + JSON).
@@ -238,7 +238,7 @@ Session is revalidated on visibility and back/forward navigation to prevent stal
 ---
 
 ## 🔌 Providers
-The API supports a plugin system. Drop a new provider file in the `providers/` folder and register its exported function in `providers/registry.js` under `providerFunctionMap`.
+The API supports a plugin system. Drop a new provider file in the `providers/` folder and register its exported function in `providers/registry.js` under `providerFunctionMap`. Also classify it in `providerCategoryMap` as `MoviesTv` or `Anime`; new providers default to `MoviesTv`.
 
 ### Current Built-in Providers
 - `showbox` - Showbox/FebBox streams (requires FebBox JWT cookie)
@@ -254,6 +254,7 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `netmirror` - NetMirror streams (Netflix direct + NewTV platform fallback)
 - `onetouchtv` - OneTouchTV streams (AES-256 encrypted API)
 - `zxcstreams` - ZXCStreams streams (multi-server backend, dynamic domain discovery)
+- `animekai` - AnimeKai anime streams (Anime category)
 
 Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`) require at least one TMDB API key configured.
 
@@ -318,8 +319,10 @@ The system automatically:
 | `GET /api/status` | Metrics + providers + endpoints + `providerCheckTmdbId` |
 | `GET /api/providers` | All providers with enabled status |
 | `GET /api/providers/:name` | Single provider status |
-| `GET /api/streams/:type/:tmdbId` | Aggregate streams (`type` = movie\|series; supports `?season=&episode=`) |
-| `GET /api/streams/:provider/:type/:tmdbId` | Provider-specific streams (same query params) |
+| `GET /api/streams/:type/:tmdbId` | Aggregate MoviesTv streams (`type` = movie\|series; supports `?season=&episode=`) |
+| `GET /api/streams/:provider/:type/:tmdbId` | Provider-specific MoviesTv streams (same query params) |
+| `GET /api/streams/anime/:tmdbId` | Aggregate streams from Anime-category providers |
+| `GET /api/streams/:provider/anime/:tmdbId` | Anime-category provider-specific streams |
 | `GET /api/config` | `{ merged, override, overridePath }` |
 | `POST /api/config` | Apply override patch (persisted to `utils/user-config.json`) |
 | `POST /api/restart` | Graceful restart (writes `restart.trigger` + exits) |

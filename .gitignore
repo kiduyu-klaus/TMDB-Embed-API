@@ -3,3 +3,4 @@ restart.trigger
 .vscode/
 .env
 /tmp_context
+.tmp-proto.js

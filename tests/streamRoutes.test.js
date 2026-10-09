@@ -17,12 +17,14 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     const registryFile = path.join(root, 'providers/registry.js');
     const registryRequire = createRequire(registryFile);
     const registryModule = { exports: {} };
+    let animeMediaType;
     vm.runInNewContext(fs.readFileSync(registryFile, 'utf8'), {
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
         if (name === '../utils/config') return { config };
-        if (name === 'fs') return { readdirSync: () => ['vidlink.js'] };
+        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js'] };
         if (name === path.join(root, 'providers/vidlink.js')) return { getVidlinkStreams: async () => [raw] };
+        if (name === path.join(root, 'providers/animekai.js')) return { getAnimekaiStreams: async (_id, type) => { animeMediaType = type; return [raw]; } };
         return registryRequire(name);
       },
     });
@@ -66,5 +68,36 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       assert.deepEqual(stream.subtitles[0].headers, raw.headers);
       assert.equal(stream.url.startsWith('http://localhost:8787/m3u8-proxy?'), enableProxy);
     }
+
+    const aggregateRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/streams/:type/:tmdbId').route;
+    let animeResponse;
+    await aggregateRoute.stack[aggregateRoute.stack.length - 1].handle({
+      params: { type: 'anime', tmdbId: '123' }, query: {}, protocol: 'http', get: () => 'localhost:8787'
+    }, { json(value) { animeResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+    assert.equal(animeResponse.success, true);
+    assert.equal(animeResponse.count, 1);
+    assert.equal(animeResponse.providerTimings.animekai >= 0, true);
+    assert.equal(animeMediaType, 'anime');
+
+    const providerRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/streams/:provider/:type/:tmdbId').route;
+    let providerStatus;
+    let providerError;
+    const animeProviderRes = {
+      status(code) { providerStatus = code; return this; },
+      json(value) { providerError = value; }
+    };
+    await providerRoute.stack[providerRoute.stack.length - 1].handle({
+      params: { provider: 'vidlink', type: 'anime', tmdbId: '123' }, query: {}
+    }, animeProviderRes);
+    assert.equal(providerStatus, 404);
+    assert.equal(providerError.error, 'PROVIDER_NOT_IN_CATEGORY');
+
+    let animeProviderResponse;
+    await providerRoute.stack[providerRoute.stack.length - 1].handle({
+      params: { provider: 'animekai', type: 'anime', tmdbId: '123' }, query: {}, protocol: 'http', get: () => 'localhost:8787'
+    }, { json(value) { animeProviderResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+    assert.equal(animeProviderResponse.success, true);
+    assert.equal(animeProviderResponse.provider, 'animekai');
+    assert.equal(animeMediaType, 'anime');
   }
 });

@@ -330,6 +330,7 @@ router.get('/api/status', (req,res) => {
     'GET /api/providers',
     'GET /api/providers/:name',
     'GET /api/streams/:type/:tmdbId',
+    'GET /api/streams/anime/:tmdbId',
     'GET /api/streams/:provider/:type/:tmdbId',
     'POST /api/config',
     'GET /api/config'
@@ -375,24 +376,30 @@ router.get('/api/debug/env', (req,res) => {
 router.get('/api/providers/:name', (req,res) => {
   const p = getProvider(req.params.name);
   if (!p) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
-  res.json({ success:true, provider:{ name: p.name, enabled: p.enabled } });
+  res.json({ success:true, provider:{ name: p.name, category: p.category, enabled: p.enabled } });
 });
 
 // Aggregate streams across all enabled providers
 router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => {
   const { type, tmdbId } = req.params;
-  if (!['movie','series'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
+  if (!['movie','series','anime'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
+  const category = type === 'anime' ? 'Anime' : 'MoviesTv';
   const season = req.query.season ? Number(req.query.season) : null;
   const episode = req.query.episode ? Number(req.query.episode) : null;
   try {
     metrics.streamRequests++;
     const tmdbType = type === 'movie' ? 'movie' : 'tv';
     const imdbId = await resolveImdbId(tmdbType, tmdbId); if (imdbId) metrics.tmdbToImdbLookups++;
-    const selectedProviders = (config.defaultProviders.length ? config.defaultProviders : listProviders().map(p=>p.name));
+    const availableProviders = listProviders().filter(p => p.category === category).map(p => p.name);
+    const configuredProviders = config.defaultProviders.length ? config.defaultProviders : availableProviders;
+    const categoryConfiguredProviders = configuredProviders.filter(name => availableProviders.includes(name));
+    const selectedProviders = category === 'Anime' && categoryConfiguredProviders.length === 0
+      ? availableProviders
+      : categoryConfiguredProviders;
     const providerTimings = {};
     const results = await Promise.all(selectedProviders.map(async name => {
       const prov = getProvider(name);
-      if (!prov || !prov.enabled) return [];
+      if (!prov || !prov.enabled || prov.category !== category) return [];
       metrics.providerCalls[name] = (metrics.providerCalls[name]||0)+1;
       try {
         console.log(`[api] invoking provider ${name} for tmdbId=${tmdbId}`);
@@ -424,11 +431,13 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
 // Provider-specific streams
 router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (req,res) => {
   const { provider, type, tmdbId } = req.params;
-  if (!['movie','series'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
+  if (!['movie','series','anime'].includes(type)) return res.status(400).json({ success:false, error:'INVALID_TYPE' });
+  const category = type === 'anime' ? 'Anime' : 'MoviesTv';
   const season = req.query.season ? Number(req.query.season) : null;
   const episode = req.query.episode ? Number(req.query.episode) : null;
   const prov = getProvider(provider);
   if (!prov) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
+  if (prov.category !== category) return res.status(404).json({ success:false, error:'PROVIDER_NOT_IN_CATEGORY' });
   if (!prov.enabled) return res.status(503).json({ success:false, error:'PROVIDER_DISABLED' });
   try {
     metrics.streamRequests++;
