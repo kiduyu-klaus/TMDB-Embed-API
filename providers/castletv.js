@@ -222,11 +222,20 @@ function buildCastleStreams(raw, langLabel, titleLine, resolution) {
 
     const subtitles = (data.subtitles || [])
         .filter((s) => typeof s.url === 'string' && s.url.length > 0)
-        .map((s, i) => ({
-            url: s.url.replace(/ /g, '%20'),
-            lang: s.abbreviate || s.title || 'Unknown',
-            id: `castle-${s.languageId || s.abbreviate || i}`
-        }));
+        .map((s, i) => {
+            const url = s.url.replace(/ /g, '%20');
+            const language = s.abbreviate || s.title || 'und';
+            const label = s.title || s.languageName || s.abbreviate || 'Subtitle';
+            return {
+                url,
+                mimeType: 'text/vtt',
+                language,
+                label,
+                headers: {},
+                lang: language,
+                id: `castle-${s.languageId || s.abbreviate || i}`
+            };
+        });
 
     const streams = [];
 
@@ -254,7 +263,7 @@ function buildCastleStreams(raw, langLabel, titleLine, resolution) {
                     quality: qual,
                     provider: 'CastleTV',
                     headers: PLAYBACK_HEADERS,
-                    ...(subtitles.length ? { subtitles } : {})
+                    subtitles
                 }
             });
         }

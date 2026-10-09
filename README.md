@@ -33,7 +33,7 @@
 ---
 
 ## ✨ Features
-- **15 Built-in Providers** – 14 MoviesTv sources plus AnimeKai for Anime, with per-provider enable toggles + default selection.
+- **18 Built-in Providers** – 15 MoviesTv sources plus AnimeKai, AllWish, and AnimeSalt for Anime, with per-provider enable toggles + default selection.
 - **Multi-TMDB Key Rotation** – Supply multiple API keys; one is chosen randomly per request.
 - **🔥 Plugin System** – Drop new provider files in `providers/` and add its exported function to the registry map (`providers/registry.js` → `providerFunctionMap`). No core file edits required.
 - **Dynamic Filtering** – Minimum quality presets, custom JSON quality map, codec exclusion rules (presets + JSON).
@@ -260,8 +260,9 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `allwish` - AllWish anime streams (Anime category; season/episode-aware)
 - `animesalt` - AnimeSalt anime streams (Anime category; season/episode-aware)
 - `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
+- `goojara` - Goojara movie and TV streams (MoviesTv category; requires a TMDB API key)
 
-Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`) require at least one TMDB API key configured.
+Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `goojara`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
 1. **Create** `providers/yourprovider.js` with your stream fetching logic
@@ -284,6 +285,7 @@ Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `o
      'onetouchtv.js': 'getOnetouchtvStreams',
      'zxcstreams.js': 'getZxcstreamsStreams',
      'moviebox.js': 'getMovieboxStreams',
+     'goojara.js': 'getStreams',
      'yourprovider.js': 'getYourproviderStreams'
    };
    ```

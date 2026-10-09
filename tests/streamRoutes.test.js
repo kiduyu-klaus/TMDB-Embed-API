@@ -20,6 +20,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     let animeMediaType;
     let allwishArgs;
     let animeSaltArgs;
+    let goojaraArgs;
     let requestedLogSince;
     let imdbType;
     let streamFailure;
@@ -28,11 +29,12 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
         if (name === '../utils/config') return { config };
-        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js', 'animesalt.js'] };
+        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js', 'animesalt.js', 'goojara.js'] };
         if (name === path.join(root, 'providers/vidlink.js')) return { getVidlinkStreams: async () => [raw] };
         if (name === path.join(root, 'providers/animekai.js')) return { getAnimekaiStreams: async (_id, type) => { animeMediaType = type; return [raw]; } };
         if (name === path.join(root, 'providers/allwish.js')) return { getStreams: async (...args) => { allwishArgs = args; return [raw]; } };
         if (name === path.join(root, 'providers/animesalt.js')) return { getStreams: async (...args) => { animeSaltArgs = args; return [raw]; } };
+        if (name === path.join(root, 'providers/goojara.js')) return { getStreams: async (...args) => { goojaraArgs = args; return args[1] === 'tv' ? [raw] : []; } };
         return registryRequire(name);
       },
     });
@@ -134,6 +136,14 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(animeSaltResponse.success, true);
     assert.equal(animeSaltResponse.provider, 'animesalt');
     assert.deepEqual(animeSaltArgs, ['82684', 'anime', 1, 2]);
+
+    let goojaraResponse;
+    await providerRoute.stack[providerRoute.stack.length - 1].handle({
+      params: { provider: 'goojara', type: 'series', tmdbId: '1399' }, query: { season: '1', episode: '1' }, protocol: 'http', get: () => 'localhost:8787'
+    }, { json(value) { goojaraResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+    assert.equal(goojaraResponse.success, true);
+    assert.equal(goojaraResponse.provider, 'goojara');
+    assert.deepEqual(goojaraArgs, ['1399', 'tv', 1, 1]);
 
     for (const route of [aggregateRoute, providerRoute]) {
       for (const query of [{}, { season: '2' }, { episode: '16' }, { season: '2', episode: '16' }]) {
