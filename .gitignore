@@ -4,3 +4,8 @@ restart.trigger
 .env
 /tmp_context
 .tmp-proto.js
+.work/research/animekai-player-trace.md
+.work/research/megaplay-app.main.js
+.work/research/megaplay-newclient.min.js
+.work/research/megaplay-videojs-newclient.min.js
+

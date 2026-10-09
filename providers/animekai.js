@@ -1,9 +1,27 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { getTmdbApiKey } = require('../utils/tmdbKey');
-const { getDetails, getSeasonDetails } = require('../utils/tmdb');
+const crypto = require('crypto');
+const tmdb = require('../utils/tmdb');
 
 const ANIKAI_BASE = 'https://animekai.com.ro';
+const MEGAPLAY_AES_KEY = 'i?LMTAx0Q6,:}50U';
+const MEGAPLAY_AES_IV = "W0;27ToaUpl_P%'c";
+const SUBTITLE_LANGUAGES = {
+    english: 'en', arabic: 'ar', bengali: 'bn', filipino: 'fil', hindi: 'hi',
+    french: 'fr', spanish: 'es', german: 'de', portuguese: 'pt', russian: 'ru',
+    japanese: 'ja', korean: 'ko', chinese: 'zh', tamil: 'ta', telugu: 'te',
+    italian: 'it', turkish: 'tr', ukrainian: 'uk', thai: 'th', vietnamese: 'vi',
+    persian: 'fa', indonesian: 'id', dutch: 'nl', polish: 'pl', greek: 'el'
+};
+const SUBTITLE_MIME_TYPES = {
+    vtt: 'text/vtt', srt: 'application/x-subrip', ass: 'text/x-ass', ssa: 'text/x-ssa'
+};
+const PLAYER_IFRAME_HOSTS = new Set([
+    'gogoanime.me.uk',
+    'gogoanime.me',
+    'megaplay.buzz',
+    'megaplay.su'
+]);
 
 const ANIKAI_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
@@ -32,7 +50,9 @@ function logError(msg) { log('error', msg); }
 function sanitizeMediaUrl(value) {
     try {
         const url = new URL(value);
-        const safePath = url.pathname.replace(/(\/uploads\/hls\/)[^/]+/i, '$1[REDACTED]');
+        const safePath = url.pathname
+            .replace(/(\/uploads\/hls\/)[^/]+/i, '$1[REDACTED]')
+            .replace(/(\/anime\/)[^/]+\/[^/]+/i, '$1[REDACTED]/[REDACTED]');
         return `${url.origin}${safePath}${url.search ? '?[query redacted]' : ''}`;
     } catch {
         return '(invalid URL)';
@@ -45,7 +65,7 @@ async function getTitleFromTmdb(tmdbId, mediaType) {
     try {
         const type = mediaType === 'tv' ? 'tv' : 'movie';
         logInfo(`getTitleFromTmdb() -> fetching TMDB /${type}/${tmdbId}`);
-        const data = await getDetails(type, tmdbId);
+        const data = await tmdb.getDetails(type, tmdbId);
         const resolved = data.name || data.title || null;
         logInfo(`getTitleFromTmdb() <- resolved title="${resolved}" (original_name="${data.original_name || data.original_title || 'n/a'}")`);
         return resolved;
@@ -55,8 +75,97 @@ async function getTitleFromTmdb(tmdbId, mediaType) {
     }
 }
 
-// Helper: Extract direct m3u8 link from megaplay/vidtube players
-async function resolveDirectM3u8(playerUrl) {
+function decryptMegaPlaySources(encodedPayload) {
+    if (typeof encodedPayload !== 'string' || !encodedPayload) return null;
+
+    const base64 = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
+    const paddedBase64 = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+    const key = Buffer.alloc(32);
+    Buffer.from(MEGAPLAY_AES_KEY, 'utf8').copy(key, 0, 0, 32);
+    const iv = Buffer.alloc(16);
+    Buffer.from(MEGAPLAY_AES_IV, 'utf8').copy(iv, 0, 0, 16);
+
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    const plaintext = Buffer.concat([
+        decipher.update(Buffer.from(paddedBase64, 'base64')),
+        decipher.final()
+    ]).toString('utf8');
+    return JSON.parse(plaintext);
+}
+
+function getPlayableSourceUrl(value, baseUrl) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    try {
+        const url = new URL(value.trim(), baseUrl);
+        if (!['http:', 'https:'].includes(url.protocol)) return null;
+        if (!/\.(?:m3u8|mp4|mpd)(?:$|[?#])/i.test(url.href)) return null;
+        return url.href;
+    } catch {
+        return null;
+    }
+}
+
+function normalizeMegaPlayTracks(tracks, playerUrl) {
+    if (!Array.isArray(tracks)) return [];
+    const subtitleHeaders = {
+        Referer: `${new URL(playerUrl).origin}/`,
+        'User-Agent': ANIKAI_HEADERS['User-Agent']
+    };
+
+    return tracks.map((track, index) => {
+        if (!track || typeof track !== 'object') return null;
+        const kind = String(track.kind || '').toLowerCase();
+        if (kind && !/caption|subtitle/.test(kind)) return null;
+        const rawUrl = track.file || track.url;
+        if (typeof rawUrl !== 'string' || !rawUrl) return null;
+
+        let subtitleUrl;
+        let extension = '';
+        try {
+            const parsedUrl = new URL(rawUrl, playerUrl);
+            if (!['http:', 'https:'].includes(parsedUrl.protocol)) return null;
+            subtitleUrl = parsedUrl.href;
+            extension = parsedUrl.pathname.split('.').pop().toLowerCase();
+        } catch {
+            return null;
+        }
+
+        const hint = String(track.language || track.lang || track.label || '').trim();
+        const lowerHint = hint.toLowerCase();
+        const languageMatch = lowerHint.match(/^[a-z]{2,3}(?:[-_][a-z0-9]+)*$/i);
+        const namedLanguage = Object.entries(SUBTITLE_LANGUAGES)
+            .find(([name]) => lowerHint === name || lowerHint.startsWith(`${name} `) || lowerHint.startsWith(`${name} (`));
+        const language = languageMatch
+            ? lowerHint.replace(/_/g, '-')
+            : (namedLanguage ? namedLanguage[1] : 'und');
+
+        return {
+            id: `animekai-${index}-${language}`,
+            url: subtitleUrl,
+            lang: language,
+            label: String(track.label || track.language || track.lang || language).trim(),
+            mimeType: track.mimeType || SUBTITLE_MIME_TYPES[extension] || 'text/vtt',
+            language,
+            headers: { ...subtitleHeaders }
+        };
+    }).filter(Boolean);
+}
+
+function buildMegaPlayMetadata(sourceData, sourceUrl, playerUrl) {
+    const result = { url: sourceUrl, referer: playerUrl };
+    const subtitles = normalizeMegaPlayTracks(sourceData && sourceData.tracks, playerUrl);
+    if (subtitles.length) result.subtitles = subtitles;
+    if (sourceData && sourceData.intro != null) result.intro = sourceData.intro;
+    if (sourceData && sourceData.outro != null) result.outro = sourceData.outro;
+    return result;
+}
+
+// Resolve direct player URLs, GoGoAnime iframe wrappers, and MegaPlay source payloads.
+async function resolveDirectM3u8(playerUrl, depth = 0) {
+    if (depth > 3) {
+        logWarn('resolveDirectM3u8() stopped following player iframes after maximum depth');
+        return null;
+    }
     logInfo(`resolveDirectM3u8() called | playerUrl=${sanitizeMediaUrl(playerUrl)}`);
     try {
         const parsedUrl = new URL(playerUrl);
@@ -89,6 +198,16 @@ async function resolveDirectM3u8(playerUrl) {
             logWarn(`resolveDirectM3u8() JWPlayer file field was not a supported media URL | ${sanitizeMediaUrl(directSourceUrl)}`);
         } else {
             logInfo('resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction');
+        }
+
+        const iframeSrc = cheerio.load(html)('iframe[src]').first().attr('src');
+        if (iframeSrc) {
+            const iframeUrl = new URL(iframeSrc, playerUrl);
+            const iframeHost = iframeUrl.hostname.toLowerCase();
+            if (['http:', 'https:'].includes(iframeUrl.protocol) && PLAYER_IFRAME_HOSTS.has(iframeHost)) {
+                logInfo(`resolveDirectM3u8() following trusted player iframe | ${sanitizeMediaUrl(iframeUrl.href)}`);
+                return resolveDirectM3u8(iframeUrl.href, depth + 1);
+            }
         }
 
         let fileId = null;
@@ -126,13 +245,28 @@ async function resolveDirectM3u8(playerUrl) {
         logInfo(`resolveDirectM3u8() sourcesJson keys=${sourcesJson ? Object.keys(sourcesJson).join(',') : 'null'}`);
 
         if (sourcesJson && sourcesJson.sources && sourcesJson.sources.file) {
-            logInfo(`resolveDirectM3u8() SUCCESS | m3u8=${sanitizeMediaUrl(sourcesJson.sources.file)}`);
-            return {
-                url: sourcesJson.sources.file,
-                referer: playerUrl
-            };
+            const sourceUrl = getPlayableSourceUrl(sourcesJson.sources.file, playerUrl);
+            if (sourceUrl) {
+                logInfo(`resolveDirectM3u8() SUCCESS | source=${sanitizeMediaUrl(sourceUrl)}`);
+                return buildMegaPlayMetadata(sourcesJson, sourceUrl, playerUrl);
+            }
         }
-        logWarn(`resolveDirectM3u8() no .sources.file in response`);
+
+        if (sourcesJson && sourcesJson.enc) {
+            try {
+                const decrypted = decryptMegaPlaySources(sourcesJson.enc);
+                const sourceUrl = getPlayableSourceUrl(decrypted && decrypted.file, playerUrl);
+                if (sourceUrl) {
+                    logInfo(`resolveDirectM3u8() decrypted MegaPlay source | ${sanitizeMediaUrl(sourceUrl)}`);
+                    return buildMegaPlayMetadata({ ...sourcesJson, ...decrypted }, sourceUrl, playerUrl);
+                }
+                logWarn(`resolveDirectM3u8() decrypted MegaPlay payload had no supported media file`);
+            } catch (error) {
+                logWarn(`resolveDirectM3u8() could not decrypt MegaPlay enc payload: ${error.message}`);
+            }
+        } else {
+            logWarn(`resolveDirectM3u8() response had neither .sources.file nor an enc payload`);
+        }
         return null;
     } catch (e) {
         logError(`resolveDirectM3u8() failed for ${sanitizeMediaUrl(playerUrl)}: ${e.message}`);
@@ -180,11 +314,86 @@ function parseAnimeKaiSearchResults(html) {
     return results;
 }
 
+function buildAnimeSearchQuery(title, seasonNum) {
+    return seasonNum > 1 ? `${title} season ${seasonNum}` : title;
+}
+
+function matchAnimeSearchResults(results, title, seasonNum = 1, seasonName = null) {
+    const normalizedTitle = normalize(title);
+    const normalizedSeasonName = seasonName ? normalize(seasonName) : '';
+
+    return results.filter((result) => {
+        const normalizedResult = normalize(result.title);
+        if (!normalizedResult.includes(normalizedTitle)) return false;
+        if (result.type && result.type !== 'tv') return false;
+
+        const seasonNumbers = [...normalizedResult.matchAll(/\bseason\s*(\d+)\b|\bs(\d+)\b/gi)]
+            .map((match) => Number(match[1] || match[2]));
+        if (seasonNumbers.some((number) => number !== Number(seasonNum || 1))) return false;
+
+        if (Number(seasonNum || 1) > 1) {
+            const hasRequestedSeason = seasonNumbers.includes(Number(seasonNum)) ||
+                (normalizedSeasonName && normalizedResult.includes(normalizedSeasonName));
+            if (!hasRequestedSeason) return false;
+        }
+
+        return true;
+    });
+}
+
+function findEpisodeUrl(html, episodeNum, baseUrl) {
+    const $ = cheerio.load(html || '');
+    const targetEpisode = String(episodeNum || 1);
+    const episodeNumber = $('.epl-num').filter((_, element) => $(element).text().trim() === targetEpisode).first();
+    const linkedHref = episodeNumber.closest('a').attr('href');
+    if (linkedHref) return new URL(linkedHref, baseUrl).href;
+
+    const escapedEpisode = targetEpisode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const fallback = html.match(new RegExp(`href=["']([^"']*episode-${escapedEpisode}[^"']*)["']`, 'i'));
+    return fallback ? new URL(fallback[1], baseUrl).href : null;
+}
+
+function extractAnimeKaiServerOptions(html) {
+    const $ = cheerio.load(html || '');
+    const servers = [];
+    const parseEmbed = (encoded, name, language = '') => {
+        try {
+            const decoded = Buffer.from(encoded, 'base64').toString('utf8');
+            const $embed = cheerio.load(decoded);
+            const iframeUrl = $embed('iframe').first().attr('src');
+            if (iframeUrl) servers.push({ name: name.trim() || 'Server', language: language.trim(), url: iframeUrl });
+            else logWarn(`extractAnimeKaiServerOptions() decoded server "${name.trim()}" without an iframe src`);
+        } catch (error) {
+            logWarn(`extractAnimeKaiServerOptions() could not decode server "${name.trim()}": ${error.message}`);
+        }
+    };
+
+    $('.ak-srv-links .ak-srv-btn[data-value]').each((_, button) => {
+        const element = $(button);
+        parseEmbed(element.attr('data-value'), element.text(), element.attr('data-lang') || '');
+    });
+
+    // Keep support for older AnimeKai episode pages that expose mirrors as <option>s.
+    if (servers.length === 0) {
+        $('option[value]').each((_, option) => {
+            const element = $(option);
+            const value = element.attr('value') || '';
+            if (/^[A-Za-z0-9+/=]{20,}$/.test(value)) parseEmbed(value, element.text());
+        });
+    }
+
+    return servers;
+}
+
 // Helper: Resolve season name from TMDB
 async function getSeasonNameFromTmdb(tmdbId, seasonNum) {
     logInfo(`getSeasonNameFromTmdb() called | tmdbId=${tmdbId} seasonNum=${seasonNum}`);
     try {
-        const data = await getSeasonDetails(tmdbId, seasonNum);
+        const data = await tmdb.getSeasonDetails(tmdbId, seasonNum);
+        if (!data) {
+            logWarn(`getSeasonNameFromTmdb() returned no TMDB data for tmdbId=${tmdbId} season=${seasonNum}`);
+            return null;
+        }
         logInfo(`getSeasonNameFromTmdb() <- name="${data.name}" episode_count=${data.episodes ? data.episodes.length : 'n/a'}`);
         return data.name || null;
     } catch (e) {
@@ -194,10 +403,9 @@ async function getSeasonNameFromTmdb(tmdbId, seasonNum) {
 }
 
 async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, episodeNum = null) {
-    logInfo(`================================================================`);
-    logInfo(`getAnimekaiStreams() START | tmdbId=${tmdbId} mediaType=${mediaType} seasonNum=${seasonNum} episodeNum=${episodeNum}`);
-    logInfo(`getAnimekaiStreams() TMDB API key configured=${Boolean(getTmdbApiKey())}`);
-    logInfo(`================================================================`);
+    const requestedSeason = Number(seasonNum || 1);
+    const requestedEpisode = Number(episodeNum || 1);
+    logInfo(`getAnimekaiStreams() START | tmdbId=${tmdbId} mediaType=${mediaType} season=${requestedSeason} episode=${requestedEpisode}`);
     try {
         const tmdbMediaType = mediaType === 'anime' ? 'tv' : mediaType;
         const title = await getTitleFromTmdb(tmdbId, tmdbMediaType);
@@ -205,241 +413,96 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
             logWarn('getAnimekaiStreams() aborting: TMDB returned no title');
             return [];
         }
-        logInfo(`getAnimekaiStreams() -> resolved title="${title}"`);
 
-        // Search Animekai using WordPress search query
-        const searchUrl = `${ANIKAI_BASE}/?s=${encodeURIComponent(title)}`;
-        logInfo(`getAnimekaiStreams() -> GET search ${searchUrl}`);
+        let seasonName = null;
+        if (tmdbMediaType === 'tv' && requestedSeason > 1) {
+            seasonName = await getSeasonNameFromTmdb(tmdbId, requestedSeason);
+        }
+
+        const searchTitle = buildAnimeSearchQuery(title, requestedSeason);
+        const searchUrl = `${ANIKAI_BASE}/?s=${encodeURIComponent(searchTitle)}`;
+        logInfo(`getAnimekaiStreams() searching title="${searchTitle}"`);
         const searchStart = Date.now();
         const { data: searchHtml, status: searchStatus } = await axios.get(searchUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
-        logInfo(`getAnimekaiStreams() <- GET search | status=${searchStatus} bytes=${searchHtml.length} took=${Date.now() - searchStart}ms`);
+        logInfo(`getAnimekaiStreams() search response status=${searchStatus} bytes=${searchHtml.length} took=${Date.now() - searchStart}ms`);
 
-        // Parse AnimeKai .aitem cards and their .title anchors.
         const results = parseAnimeKaiSearchResults(searchHtml);
-        logInfo(`getAnimekaiStreams() parsed ${results.length} candidate(s) from search results`);
-        if (results.length > 0) {
-            results.forEach((r, i) => logInfo(`  [search #${i + 1}] "${r.title}" -> ${r.href}`));
-        }
-
-        let bestMatchUrl = null;
-        let bestScore = -1;
-        let bestTitle = null;
-        if (results.length > 0) {
-            // Fetch season name from TMDB if TV series
-            let seasonName = null;
-            if (tmdbMediaType === 'tv' && seasonNum) {
-                seasonName = await getSeasonNameFromTmdb(tmdbId, seasonNum);
-                logInfo(`getAnimekaiStreams() resolved TMDB Season ${seasonNum} name="${seasonName}"`);
-            }
-
-            const targetTitle = title;
-            const normTarget = normalize(targetTitle);
-            const normSeasonName = seasonName ? normalize(seasonName) : '';
-            logInfo(`getAnimekaiStreams() scoring | normTarget="${normTarget}" normSeasonName="${normSeasonName}"`);
-
-            for (const item of results) {
-                const normItem = normalize(item.title);
-                let score = 0;
-                const scoreBreakdown = [];
-
-                // 1. Contains main title
-                if (normItem.includes(normTarget)) {
-                    score += 10;
-                    scoreBreakdown.push('+10 contains main title');
-                }
-
-                // 2. Exact match on main title (highly relevant for Season 1/no-season anime)
-                if (normItem === normTarget) {
-                    score += 30;
-                    scoreBreakdown.push('+30 exact title match');
-                }
-
-                // 3. Season matching
-                if (tmdbMediaType === 'tv' && seasonNum) {
-                    // Check TMDB season name
-                    if (normSeasonName && normItem.includes(normSeasonName)) {
-                        score += 100;
-                        scoreBreakdown.push(`+100 season name match ("${normSeasonName}")`);
-                    }
-
-                    // Check season number indicators (e.g. "season 2", "2nd season", "s2")
-                    const seasonIndicators = [
-                        `season ${seasonNum}`,
-                        `season${seasonNum}`,
-                        `${seasonNum}nd season`,
-                        `${seasonNum}rd season`,
-                        `${seasonNum}th season`,
-                        `${seasonNum}st season`
-                    ];
-
-                    if (seasonIndicators.some(ind => normItem.includes(ind))) {
-                        score += 50;
-                        scoreBreakdown.push(`+50 season number indicator`);
-                    }
-
-                    // S2 word boundaries check
-                    const sRegex = new RegExp(`\\bs${seasonNum}\\b`, 'i');
-                    if (sRegex.test(item.title)) {
-                        score += 50;
-                        scoreBreakdown.push(`+50 \\bs${seasonNum}\\b match`);
-                    }
-
-                    // Penalty for incorrect seasons
-                    for (let s = 1; s <= 10; s++) {
-                        if (s !== seasonNum) {
-                            const otherIndicators = [
-                                `season ${s}`,
-                                `season${s}`,
-                                `${s}nd season`,
-                                `${s}rd season`,
-                                `${s}th season`,
-                                `${s}st season`
-                            ];
-                            if (otherIndicators.some(ind => normItem.includes(ind))) {
-                                score -= 80;
-                                scoreBreakdown.push(`-80 wrong season ${s} indicator`);
-                            }
-                            const otherSRegex = new RegExp(`\\bs${s}\\b`, 'i');
-                            if (otherSRegex.test(item.title)) {
-                                score -= 80;
-                                scoreBreakdown.push(`-80 wrong \\bs${s}\\b`);
-                            }
-                        }
-                    }
-                }
-
-                logInfo(`  [score] candidate="${item.title}" url=${item.href} total=${score} breakdown=[${scoreBreakdown.join(', ')}]`);
-
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestMatchUrl = item.href;
-                    bestTitle = item.title;
-                }
-            }
-            logInfo(`getAnimekaiStreams() best match: score=${bestScore} title="${bestTitle}" url=${bestMatchUrl}`);
-        }
-
-        if (!bestMatchUrl) {
-            logWarn('getAnimekaiStreams() no scored match — attempting fallback first-article regex');
-            // Fallback: use first article link found
-            if (results.length > 0) {
-                bestMatchUrl = results[0].href;
-                logInfo(`getAnimekaiStreams() fallback matched first parsed card: ${bestMatchUrl}`);
-            } else {
-                logWarn('getAnimekaiStreams() fallback regex also failed');
-            }
-        }
-
-        if (!bestMatchUrl) {
-            logWarn('getAnimekaiStreams() aborting: no search results found on site');
+        const matchingResults = matchAnimeSearchResults(results, title, requestedSeason, seasonName);
+        logInfo(`getAnimekaiStreams() found ${results.length} search cards; ${matchingResults.length} match the requested title/season`);
+        matchingResults.forEach((item, index) => logInfo(`  [match ${index + 1}] "${item.title}" (${item.type || 'type unknown'})`));
+        if (matchingResults.length === 0) {
+            logWarn(`getAnimekaiStreams() no matching AnimeKai results for "${searchTitle}"`);
             return [];
         }
 
-        logInfo(`getAnimekaiStreams() -> using series page: ${bestMatchUrl}`);
-
-        // Fetch the series page to get the list of episodes
-        logInfo(`getAnimekaiStreams() -> GET series page ${bestMatchUrl}`);
-        const seriesStart = Date.now();
-        const { data: seriesHtml, status: seriesStatus } = await axios.get(bestMatchUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
-        logInfo(`getAnimekaiStreams() <- GET series page | status=${seriesStatus} bytes=${seriesHtml.length} took=${Date.now() - seriesStart}ms`);
-
-        // For TV/Series, look for the matching episode number
-        let episodeUrl = bestMatchUrl;
-        let episodeSource = 'series page (no TV, using as-is)';
-        if (tmdbMediaType === 'tv') {
-            const targetEpNum = episodeNum || 1;
-            logInfo(`getAnimekaiStreams() searching series page for episode ${targetEpNum}`);
-            const epRegex = new RegExp(`<a\\s+href="([^"]+)"[^>]*>\\s*<div\\s+class="epl-num"[^>]*>\\s*${targetEpNum}\\s*<\\/div>`, 'i');
-            const epMatch = seriesHtml.match(epRegex);
-            if (epMatch) {
-                episodeUrl = epMatch[1];
-                episodeSource = 'epl-num regex';
-            } else {
-                logWarn(`getAnimekaiStreams() epl-num regex failed for ep ${targetEpNum}, trying general ep-N regex`);
-                // Fallback: look for general ep number in links
-                const generalEpRegex = new RegExp(`href="([^"]+episode-${targetEpNum}[^"]+)"`, 'i');
-                const genMatch = seriesHtml.match(generalEpRegex);
-                if (genMatch) {
-                    episodeUrl = genMatch[1];
-                    episodeSource = 'general ep-N regex';
-                } else {
-                    logError(`getAnimekaiStreams() Episode ${targetEpNum} not found on series page — aborting`);
-                    return [];
-                }
-            }
-        }
-        logInfo(`getAnimekaiStreams() -> episode page: ${episodeUrl} (source: ${episodeSource})`);
-
-        // Fetch episode page HTML
-        logInfo(`getAnimekaiStreams() -> GET episode page ${episodeUrl}`);
-        const epStart = Date.now();
-        const { data: epHtml, status: epStatus } = await axios.get(episodeUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
-        logInfo(`getAnimekaiStreams() <- GET episode page | status=${epStatus} bytes=${epHtml.length} took=${Date.now() - epStart}ms`);
-
-        // Extract and decode base64 mirror options
-        const optionRegex = /<option[^>]*value="([A-Za-z0-9+/=]{20,})"[^>]*>([^<]+)<\/option>/g;
-        let optMatch;
-        const streams = [];
-        let optionCount = 0;
-        let decodedCount = 0;
-        let resolvedCount = 0;
-        let skippedNoIframe = 0;
-
-        while ((optMatch = optionRegex.exec(epHtml)) !== null) {
-            optionCount += 1;
-            const base64Val = optMatch[1];
-            const serverName = optMatch[2].trim();
-            logInfo(`[option #${optionCount}] server="${serverName}" base64.len=${base64Val.length}`);
+        // Fetch every matching SUB/DUB result concurrently, then resolve all its server buttons concurrently.
+        const candidateSettlements = await Promise.allSettled(matchingResults.map(async (item) => {
             try {
-                const decoded = Buffer.from(base64Val, 'base64').toString();
-                decodedCount += 1;
-                if (decodedCount <= 3) {
-                    logInfo(`  [option #${optionCount}] decoded (first 120 chars): ${decoded.slice(0, 120)}`);
-                }
-                const srcMatch = decoded.match(/src="([^"]+)"/);
-                const iframeUrl = srcMatch ? srcMatch[1] : null;
+                const seriesStart = Date.now();
+                const { data: seriesHtml, status: seriesStatus } = await axios.get(item.href, { headers: ANIKAI_HEADERS, timeout: 8000 });
+                logInfo(`AnimeKai result "${item.title}" page status=${seriesStatus} bytes=${seriesHtml.length} took=${Date.now() - seriesStart}ms`);
 
-                if (iframeUrl) {
-                    logInfo(`  [option #${optionCount}] iframeUrl=${sanitizeMediaUrl(iframeUrl)}`);
-                    const resolved = await resolveDirectM3u8(iframeUrl);
-                    if (resolved) {
-                        resolvedCount += 1;
-                        streams.push({
-                            name: `Anikai - ${serverName}`,
-                            title: `Anikai - ${serverName}`,
-                            url: resolved.url,
-                            quality: 'Auto',
-                            type: 'hls',
-                            provider: 'anikai',
-                            headers: {
-                                'Referer': new URL(resolved.referer).origin + '/',
-                                'Origin': new URL(resolved.referer).origin
-                            }
-                        });
-                        logInfo(`  [option #${optionCount}] ADDED stream #${streams.length}`);
-                    } else {
-                        logWarn(`  [option #${optionCount}] resolveDirectM3u8 returned null — skipped`);
+                let episodeUrl = item.href;
+                if (tmdbMediaType === 'tv') {
+                    episodeUrl = findEpisodeUrl(seriesHtml, requestedEpisode, item.href);
+                    if (!episodeUrl) {
+                        logWarn(`No episode ${requestedEpisode} link found for "${item.title}"`);
+                        return [];
                     }
-                } else {
-                    skippedNoIframe += 1;
-                    logWarn(`  [option #${optionCount}] no src= in decoded value — skipped`);
                 }
-            } catch (err) {
-                logWarn(`  [option #${optionCount}] decode/parse error: ${err.message}`);
-                // Skip individual server parse failures
+
+                const episodeStart = Date.now();
+                const { data: episodeHtml, status: episodeStatus } = await axios.get(episodeUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
+                logInfo(`AnimeKai episode page for "${item.title}" status=${episodeStatus} bytes=${episodeHtml.length} took=${Date.now() - episodeStart}ms`);
+
+                const servers = extractAnimeKaiServerOptions(episodeHtml);
+                logInfo(`AnimeKai result "${item.title}" has ${servers.length} decoded server button(s)`);
+                const serverSettlements = await Promise.allSettled(servers.map(async (server) => {
+                    const resolved = await resolveDirectM3u8(server.url);
+                    if (!resolved) return null;
+                    const origin = new URL(resolved.referer).origin;
+                    const language = server.language ? ` - ${server.language}` : '';
+                    const stream = {
+                        name: `AnimeKai - ${item.title} - ${server.name}${language}`,
+                        title: `${item.title} - ${server.name}${language}`,
+                        url: resolved.url,
+                        quality: 'Auto',
+                        type: 'hls',
+                        provider: 'animekai',
+                        headers: { Referer: `${origin}/`, Origin: origin }
+                    };
+                    if (resolved.subtitles && resolved.subtitles.length) stream.subtitles = resolved.subtitles;
+                    if (resolved.intro != null) stream.intro = resolved.intro;
+                    if (resolved.outro != null) stream.outro = resolved.outro;
+                    return stream;
+                }));
+
+                return serverSettlements.flatMap((settlement) => {
+                    if (settlement.status === 'rejected') {
+                        logWarn(`Server resolution failed for "${item.title}": ${settlement.reason.message}`);
+                        return [];
+                    }
+                    return settlement.value ? [settlement.value] : [];
+                });
+            } catch (error) {
+                logError(`Failed processing AnimeKai result "${item.title}": ${error.message}`);
+                return [];
             }
-        }
+        }));
 
-        logInfo(`getAnimekaiStreams() option summary | total=${optionCount} decoded=${decodedCount} resolved=${resolvedCount} skippedNoIframe=${skippedNoIframe}`);
-        logInfo(`getAnimekaiStreams() END | streams=${streams.length}`);
+        const streams = candidateSettlements.flatMap((settlement) => {
+            if (settlement.status === 'rejected') {
+                logWarn(`AnimeKai result task failed: ${settlement.reason.message}`);
+                return [];
+            }
+            return settlement.value;
+        });
+        logInfo(`getAnimekaiStreams() END | matchingResults=${matchingResults.length} streams=${streams.length}`);
         return streams;
-
-    } catch (err) {
-        logError(`getAnimekaiStreams() unhandled error: ${err.message}`);
-        if (err.stack) logError(err.stack);
+    } catch (error) {
+        logError(`getAnimekaiStreams() unhandled error: ${error.message}`);
+        if (error.stack) logError(error.stack);
         return [];
     }
 }
-
-
-module.exports = { getAnimekaiStreams, parseAnimeKaiSearchResults, resolveDirectM3u8 };
+module.exports = { getAnimekaiStreams, parseAnimeKaiSearchResults, resolveDirectM3u8, decryptMegaPlaySources, normalizeMegaPlayTracks, buildAnimeSearchQuery, matchAnimeSearchResults, findEpisodeUrl, extractAnimeKaiServerOptions };

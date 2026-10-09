@@ -56,12 +56,16 @@ test('normalizes mixed providers and rejects malformed entries', () => {
 });
 
 test('proxy mode preserves response metadata and headers, including extensionless MP4', () => {
+  const intro = { start: 0, end: 88 };
+  const outro = { start: 1326, end: 1414 };
   const streams = normalizeStreams([{ url: 'https://cdn.example/api?id=1', format: 'mp4',
-    headers: { Referer: 'https://player.example/' }, subtitles: [{ url: 'https://subs.example/en.vtt', lang: 'en' }] }], 'fixture');
+    headers: { Referer: 'https://player.example/' }, subtitles: [{ url: 'https://subs.example/en.vtt', lang: 'en' }], intro, outro }], 'fixture');
   const [proxied] = processStreamsForProxy(streams, 'http://localhost:8787/mount');
   assert.equal(new URL(proxied.url).pathname, '/mount/ts-proxy');
   assert.deepEqual(proxied.headers, streams[0].headers);
   assert.deepEqual(proxied.subtitles, streams[0].subtitles);
   assert.equal(proxied.mimeType, 'video/mp4');
+  assert.deepEqual(proxied.intro, intro);
+  assert.deepEqual(proxied.outro, outro);
   assert.equal(streams[0].url, 'https://cdn.example/api?id=1');
 });
