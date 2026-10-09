@@ -1,8 +1,9 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 const { getDetails, getSeasonDetails } = require('../utils/tmdb');
 
-const ANIKAI_BASE = 'https://anikai.watch';
+const ANIKAI_BASE = 'https://animekai.com.ro';
 
 const ANIKAI_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
@@ -28,6 +29,16 @@ function logInfo(msg)  { log('info', msg); }
 function logWarn(msg)  { log('warn', msg); }
 function logError(msg) { log('error', msg); }
 
+function sanitizeMediaUrl(value) {
+    try {
+        const url = new URL(value);
+        const safePath = url.pathname.replace(/(\/uploads\/hls\/)[^/]+/i, '$1[REDACTED]');
+        return `${url.origin}${safePath}${url.search ? '?[query redacted]' : ''}`;
+    } catch {
+        return '(invalid URL)';
+    }
+}
+
 // Helper: Resolve title from TMDB
 async function getTitleFromTmdb(tmdbId, mediaType) {
     logInfo(`getTitleFromTmdb() called | tmdbId=${tmdbId} mediaType=${mediaType}`);
@@ -46,13 +57,13 @@ async function getTitleFromTmdb(tmdbId, mediaType) {
 
 // Helper: Extract direct m3u8 link from megaplay/vidtube players
 async function resolveDirectM3u8(playerUrl) {
-    logInfo(`resolveDirectM3u8() called | playerUrl=${playerUrl}`);
+    logInfo(`resolveDirectM3u8() called | playerUrl=${sanitizeMediaUrl(playerUrl)}`);
     try {
         const parsedUrl = new URL(playerUrl);
         const host = parsedUrl.host;
         logInfo(`resolveDirectM3u8() parsed host=${host}`);
 
-        logInfo(`resolveDirectM3u8() -> GET ${playerUrl}`);
+        logInfo(`resolveDirectM3u8() -> GET ${sanitizeMediaUrl(playerUrl)}`);
         const t0 = Date.now();
         const { data: html, status: status1 } = await axios.get(playerUrl, {
             headers: {
@@ -61,7 +72,24 @@ async function resolveDirectM3u8(playerUrl) {
             },
             timeout: 8000
         });
-        logInfo(`resolveDirectM3u8() <- GET ${playerUrl} | status=${status1} bytes=${html.length} took=${Date.now() - t0}ms`);
+        logInfo(`resolveDirectM3u8() <- GET ${sanitizeMediaUrl(playerUrl)} | status=${status1} bytes=${html.length} took=${Date.now() - t0}ms`);
+
+        // MegaPlay currently places the actual HLS URL directly in JWPlayer's
+        // setup({ file: "..." }). It has no numeric title file-ID or data-id.
+        const jwFileMatch = html.match(/\bfile\s*:\s*["']([^"']+)["']/i);
+        if (jwFileMatch) {
+            const sourceCandidate = jwFileMatch[1]
+                .replace(/\\\//g, '/')
+                .replace(/\\u0026/gi, '&');
+            const directSourceUrl = new URL(sourceCandidate, playerUrl).href;
+            if (/\.(?:m3u8|mp4|mpd)(?:$|[?#])/i.test(directSourceUrl)) {
+                logInfo(`resolveDirectM3u8() found JWPlayer direct source | ${sanitizeMediaUrl(directSourceUrl)}`);
+                return { url: directSourceUrl, referer: playerUrl };
+            }
+            logWarn(`resolveDirectM3u8() JWPlayer file field was not a supported media URL | ${sanitizeMediaUrl(directSourceUrl)}`);
+        } else {
+            logInfo('resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction');
+        }
 
         let fileId = null;
         let fileIdSource = null;
@@ -98,7 +126,7 @@ async function resolveDirectM3u8(playerUrl) {
         logInfo(`resolveDirectM3u8() sourcesJson keys=${sourcesJson ? Object.keys(sourcesJson).join(',') : 'null'}`);
 
         if (sourcesJson && sourcesJson.sources && sourcesJson.sources.file) {
-            logInfo(`resolveDirectM3u8() SUCCESS | m3u8=${sourcesJson.sources.file}`);
+            logInfo(`resolveDirectM3u8() SUCCESS | m3u8=${sanitizeMediaUrl(sourcesJson.sources.file)}`);
             return {
                 url: sourcesJson.sources.file,
                 referer: playerUrl
@@ -107,7 +135,7 @@ async function resolveDirectM3u8(playerUrl) {
         logWarn(`resolveDirectM3u8() no .sources.file in response`);
         return null;
     } catch (e) {
-        logError(`resolveDirectM3u8() failed for ${playerUrl}: ${e.message}`);
+        logError(`resolveDirectM3u8() failed for ${sanitizeMediaUrl(playerUrl)}: ${e.message}`);
         return null;
     }
 }
@@ -126,6 +154,32 @@ function normalize(str) {
     return out;
 }
 
+// AnimeKai result cards use <div class="aitem"> with a nested <a class="title">.
+// Parse attributes independent of their order instead of assuming legacy markup.
+function parseAnimeKaiSearchResults(html) {
+    const $ = cheerio.load(html || '');
+    const results = [];
+
+    $('.aitem').each((_, card) => {
+        const anchor = $(card).find('a.title').first();
+        const href = anchor.attr('href');
+        const title = anchor.attr('data-en') || anchor.attr('title') || anchor.text().trim();
+        if (!href || !title) return;
+
+        try {
+            results.push({
+                href: new URL(href, ANIKAI_BASE).href,
+                title: title.trim(),
+                type: $(card).find('.info b').first().text().trim().toLowerCase()
+            });
+        } catch (error) {
+            logWarn(`parseAnimeKaiSearchResults() skipped invalid href: ${error.message}`);
+        }
+    });
+
+    return results;
+}
+
 // Helper: Resolve season name from TMDB
 async function getSeasonNameFromTmdb(tmdbId, seasonNum) {
     logInfo(`getSeasonNameFromTmdb() called | tmdbId=${tmdbId} seasonNum=${seasonNum}`);
@@ -142,10 +196,11 @@ async function getSeasonNameFromTmdb(tmdbId, seasonNum) {
 async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, episodeNum = null) {
     logInfo(`================================================================`);
     logInfo(`getAnimekaiStreams() START | tmdbId=${tmdbId} mediaType=${mediaType} seasonNum=${seasonNum} episodeNum=${episodeNum}`);
-    logInfo(`getAnimekaiStreams() using TMDB_API_KEY=${getTmdbApiKey() ? getTmdbApiKey().slice(0, 6) + '…' : 'MISSING'}`);
+    logInfo(`getAnimekaiStreams() TMDB API key configured=${Boolean(getTmdbApiKey())}`);
     logInfo(`================================================================`);
     try {
-        const title = await getTitleFromTmdb(tmdbId, mediaType);
+        const tmdbMediaType = mediaType === 'anime' ? 'tv' : mediaType;
+        const title = await getTitleFromTmdb(tmdbId, tmdbMediaType);
         if (!title) {
             logWarn('getAnimekaiStreams() aborting: TMDB returned no title');
             return [];
@@ -159,16 +214,8 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         const { data: searchHtml, status: searchStatus } = await axios.get(searchUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
         logInfo(`getAnimekaiStreams() <- GET search | status=${searchStatus} bytes=${searchHtml.length} took=${Date.now() - searchStart}ms`);
 
-        // Find series or episode watch url matching title
-        const searchRegex = /<article[^>]*>[\s\S]*?<a\s+href="([^"]+)"\s+itemprop="url"\s+title="([^"]+)"/gi;
-        const results = [];
-        let match;
-        while ((match = searchRegex.exec(searchHtml)) !== null) {
-            results.push({
-                href: match[1],
-                title: match[2].trim()
-            });
-        }
+        // Parse AnimeKai .aitem cards and their .title anchors.
+        const results = parseAnimeKaiSearchResults(searchHtml);
         logInfo(`getAnimekaiStreams() parsed ${results.length} candidate(s) from search results`);
         if (results.length > 0) {
             results.forEach((r, i) => logInfo(`  [search #${i + 1}] "${r.title}" -> ${r.href}`));
@@ -180,7 +227,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         if (results.length > 0) {
             // Fetch season name from TMDB if TV series
             let seasonName = null;
-            if (mediaType === 'tv' && seasonNum) {
+            if (tmdbMediaType === 'tv' && seasonNum) {
                 seasonName = await getSeasonNameFromTmdb(tmdbId, seasonNum);
                 logInfo(`getAnimekaiStreams() resolved TMDB Season ${seasonNum} name="${seasonName}"`);
             }
@@ -208,7 +255,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
                 }
 
                 // 3. Season matching
-                if (mediaType === 'tv' && seasonNum) {
+                if (tmdbMediaType === 'tv' && seasonNum) {
                     // Check TMDB season name
                     if (normSeasonName && normItem.includes(normSeasonName)) {
                         score += 100;
@@ -275,10 +322,9 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         if (!bestMatchUrl) {
             logWarn('getAnimekaiStreams() no scored match — attempting fallback first-article regex');
             // Fallback: use first article link found
-            const fallbackMatch = searchHtml.match(/<article[^>]*>[\s\S]*?<a\s+href="([^"]+)"/i);
-            if (fallbackMatch) {
-                bestMatchUrl = fallbackMatch[1];
-                logInfo(`getAnimekaiStreams() fallback matched: ${bestMatchUrl}`);
+            if (results.length > 0) {
+                bestMatchUrl = results[0].href;
+                logInfo(`getAnimekaiStreams() fallback matched first parsed card: ${bestMatchUrl}`);
             } else {
                 logWarn('getAnimekaiStreams() fallback regex also failed');
             }
@@ -300,7 +346,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         // For TV/Series, look for the matching episode number
         let episodeUrl = bestMatchUrl;
         let episodeSource = 'series page (no TV, using as-is)';
-        if (mediaType === 'tv') {
+        if (tmdbMediaType === 'tv') {
             const targetEpNum = episodeNum || 1;
             logInfo(`getAnimekaiStreams() searching series page for episode ${targetEpNum}`);
             const epRegex = new RegExp(`<a\\s+href="([^"]+)"[^>]*>\\s*<div\\s+class="epl-num"[^>]*>\\s*${targetEpNum}\\s*<\\/div>`, 'i');
@@ -354,7 +400,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
                 const iframeUrl = srcMatch ? srcMatch[1] : null;
 
                 if (iframeUrl) {
-                    logInfo(`  [option #${optionCount}] iframeUrl=${iframeUrl}`);
+                    logInfo(`  [option #${optionCount}] iframeUrl=${sanitizeMediaUrl(iframeUrl)}`);
                     const resolved = await resolveDirectM3u8(iframeUrl);
                     if (resolved) {
                         resolvedCount += 1;
@@ -396,4 +442,4 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
 }
 
 
-module.exports = { getAnimekaiStreams };
+module.exports = { getAnimekaiStreams, parseAnimeKaiSearchResults, resolveDirectM3u8 };

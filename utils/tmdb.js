@@ -4,6 +4,7 @@ const { getTmdbApiKey } = require('./tmdbKey');
 const cache = {
   imdbByTmdb: new Map(),
   details: new Map(),
+  seasons: new Map(),
 };
 const TTL_MS = 6 * 60 * 60 * 1000;
 function isFresh(entry) { return entry && (Date.now() - entry.ts) < TTL_MS; }
@@ -33,7 +34,20 @@ async function getDetails(type, tmdbId) {
   cache.details.set(key, { data: json, ts: Date.now() });
   return json;
 }
+async function getSeasonDetails(tmdbId, seasonNumber) {
+  const key = `tv:${tmdbId}:season:${seasonNumber}`;
+  const cached = cache.seasons.get(key);
+  if (isFresh(cached)) return cached.data;
+
+  try {
+    const json = await tmdbFetchJson(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}`);
+    cache.seasons.set(key, { data: json, ts: Date.now() });
+    return json;
+  } catch {
+    return null;
+  }
+}
 async function resolveImdbId(type, tmdbId) {
   try { const ext = await getExternalIds(type, tmdbId); return ext.imdb_id || null; } catch { return null; }
 }
-module.exports = { getExternalIds, getDetails, resolveImdbId };
+module.exports = { getExternalIds, getDetails, getSeasonDetails, resolveImdbId };
