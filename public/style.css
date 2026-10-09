@@ -326,6 +326,10 @@ input.invalid, textarea.invalid { border-color: var(--danger)!important; animati
 .status-block h2 { margin:0 0 12px; font-size:1rem; letter-spacing:.5px; }
 .status-block.wide { grid-column: 1 / -1; }
 .status-pre { max-height:260px; }
+.console-log-toolbar { display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; margin-bottom:.5rem; }
+.console-log-toolbar .hint { margin:0; }
+.console-log-output { height:calc(100vh - 330px); min-height:320px; max-height:75vh; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; background:#0b1020; color:#d7e0f0; font-family:var(--mono); font-size:.72rem; }
+#panel-logs { max-width:none; }
 .providers-table { display:flex; flex-direction:column; gap:6px; font-size:.65rem; }
 .prov-row { display:grid; grid-template-columns: 110px 70px 90px 90px 110px 1fr; gap:6px; align-items:center; background: var(--bg-accent); border:1px solid var(--border); padding:6px 8px; border-radius: var(--radius-sm); }
 .prov-row.header { background: var(--primary); color: var(--primary-fg); font-weight:700; text-transform:uppercase; letter-spacing:.5px; border-color: var(--primary-accent); }

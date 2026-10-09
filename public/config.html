@@ -15,6 +15,7 @@
   <button class="nav-item" id="restartBtn" type="button">Restart Server</button>
   <div class="nav-sep" role="separator" aria-hidden="true"></div>
   <button class="nav-item" data-target="panel-status">Server Status</button>
+    <button class="nav-item" data-target="panel-logs">Logs</button>
     <button class="nav-item" data-target="panel-core">Core</button>
     <button class="nav-item" data-target="panel-quality">Quality / Filters</button>
     <button class="nav-item" data-target="panel-keys">Keys</button>
@@ -212,8 +213,17 @@
         <p class="hint">This section shows the currently active configuration, including all merged settings from various sources.</p>
         <pre id="currentCfg">loading...</pre>
         <h2>Overrides (user-config.json)</h2>
-        <p class="hint">These are the user-defined settings from this panel that override the default configuration.</p>
+        <p class="hint">These are the user-defined settings from this panel that override the defaults.</p>
         <pre id="overrideCfg">(none)</pre>
+      </section>
+      <section id="panel-logs" class="panel">
+        <h1>Console Logs</h1>
+        <div class="console-log-toolbar">
+          <p id="consoleLogStatus" class="hint" aria-live="polite">Loading console logs...</p>
+          <button id="refreshConsoleLogsBtn" type="button">Refresh now</button>
+        </div>
+        <p class="hint">All captured console levels are shown. This view refreshes every 5 seconds while open; older entries may roll off the server's bounded history.</p>
+        <pre id="consoleLogOutput" class="console-log-output" aria-label="Captured console output" aria-live="off">Waiting for logs...</pre>
       </section>
     </form>
     <div class="actions-bar">

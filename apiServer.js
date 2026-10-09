@@ -1,3 +1,5 @@
+const { installConsoleLogCapture, getConsoleLogs } = require('./utils/consoleLogs');
+installConsoleLogCapture();
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -327,6 +329,7 @@ router.get('/api/status', (req,res) => {
     'GET /api/health',
     'GET /api/metrics',
     'GET /api/status',
+    'GET /api/logs (admin session required)',
     'GET /api/providers',
     'GET /api/providers/:name',
     'GET /api/streams/:type/:tmdbId',
@@ -352,6 +355,14 @@ router.get('/api/status', (req,res) => {
     lastRequestAt: metrics.lastRequestAt,
     memoryMB: Math.round(process.memoryUsage().rss/1024/1024)
   }, endpoints, providers });
+});
+
+// Console log history is private because provider output can contain request details.
+router.get('/api/logs', requireAuth, (req, res) => {
+  const rawSince = Number(req.query.since || 0);
+  const since = Number.isSafeInteger(rawSince) && rawSince >= 0 ? rawSince : 0;
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  res.json({ success: true, ...getConsoleLogs(since) });
 });
 
 // Providers list

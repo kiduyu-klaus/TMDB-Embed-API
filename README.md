@@ -33,7 +33,7 @@
 ---
 
 ## ✨ Features
-- **14 Built-in Providers** – 13 MoviesTv sources plus AnimeKai for Anime, with per-provider enable toggles + default selection.
+- **15 Built-in Providers** – 14 MoviesTv sources plus AnimeKai for Anime, with per-provider enable toggles + default selection.
 - **Multi-TMDB Key Rotation** – Supply multiple API keys; one is chosen randomly per request.
 - **🔥 Plugin System** – Drop new provider files in `providers/` and add its exported function to the registry map (`providers/registry.js` → `providerFunctionMap`). No core file edits required.
 - **Dynamic Filtering** – Minimum quality presets, custom JSON quality map, codec exclusion rules (presets + JSON).
@@ -171,6 +171,8 @@ If both `TMDB_API_KEY` and `TMDB_API_KEYS` are provided, rotation uses the array
 | `SHOWBOX_CACHE_DIR` | Custom Showbox cache directory | Optional |
 | `NETMIRROR_API_BASE` | NetMirror embed base URL | Optional override |
 | `NETMIRROR_STREAM_REFERER` | NetMirror stream Referer header | Optional override |
+| `MOVIEBOX_API_URL` | MovieBox API base URL | Defaults to `https://api3.aoneroom.com` |
+| `MOVIEBOX_THROTTLE_MS` | Minimum delay between MovieBox API requests | Defaults to `100` ms |
 
 ### Updating the Image
 ```bash
@@ -255,8 +257,10 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `onetouchtv` - OneTouchTV streams (AES-256 encrypted API)
 - `zxcstreams` - ZXCStreams streams (multi-server backend, dynamic domain discovery)
 - `animekai` - AnimeKai anime streams (Anime category)
+- `allwish` - AllWish anime streams (Anime category; season/episode-aware)
+- `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
 
-Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`) require at least one TMDB API key configured.
+Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
 1. **Create** `providers/yourprovider.js` with your stream fetching logic
@@ -278,6 +282,7 @@ Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `o
      'netmirror.js': 'getNetmirrorStreams',
      'onetouchtv.js': 'getOnetouchtvStreams',
      'zxcstreams.js': 'getZxcstreamsStreams',
+     'moviebox.js': 'getMovieboxStreams',
      'yourprovider.js': 'getYourproviderStreams'
    };
    ```
@@ -317,6 +322,7 @@ The system automatically:
 | `GET /api/health` | Basic heartbeat |
 | `GET /api/metrics` | Runtime counters & summary |
 | `GET /api/status` | Metrics + providers + endpoints + `providerCheckTmdbId` |
+| `GET /api/logs` | Incremental console log history (admin session required) |
 | `GET /api/providers` | All providers with enabled status |
 | `GET /api/providers/:name` | Single provider status |
 | `GET /api/streams/:type/:tmdbId` | Aggregate MoviesTv streams (`type` = movie\|series; supports `?season=&episode=`) |

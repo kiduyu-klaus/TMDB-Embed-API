@@ -8,6 +8,55 @@
 // "/kiduyuTv_providers" with no trailing slash is a valid page URL).
 const BASE = window.location.pathname.replace(/\/+$/, '').replace(/\/[^/]*\.[^/]*$/, '');
 const U = p => BASE + p;
+let consoleLogCursor = 0;
+let consoleLogsTimer = null;
+let consoleLogsLoading = false;
+let consoleLogsLoaded = false;
+async function refreshConsoleLogs(){
+	const output = document.getElementById('consoleLogOutput');
+	const status = document.getElementById('consoleLogStatus');
+	if(!output || consoleLogsLoading) return;
+	consoleLogsLoading = true;
+	try {
+		const response = await fetch(U(`/api/logs?since=${consoleLogCursor}`), { cache:'no-store' });
+		if(response.status === 401){ location.replace(U('/?expired=1')); return; }
+		if(!response.ok) throw new Error(`HTTP ${response.status}`);
+		const data = await response.json();
+		const additions = [];
+		if(data.missedCount > 0){
+			additions.push(`[${new Date().toISOString()}] [warning] ${data.missedCount} earlier log entr${data.missedCount === 1 ? 'y was' : 'ies were'} dropped from server memory.`);
+		}
+		for(const entry of data.entries || []){
+			additions.push(`[${entry.timestamp}] [${String(entry.level || 'log').toUpperCase()}] ${entry.message}`);
+		}
+		if(output.textContent === 'Waiting for logs...' || (additions.length && output.textContent === 'No console output captured yet.')) output.textContent = '';
+		if(additions.length) output.append(document.createTextNode(`${additions.join('\n')}\n`));
+		if(!consoleLogsLoaded && !data.totalEntries) output.textContent = 'No console output captured yet.';
+		consoleLogsLoaded = true;
+		consoleLogCursor = Number(data.cursor) || consoleLogCursor;
+		output.scrollTop = output.scrollHeight;
+		if(status){
+			const captured = Number(data.totalEntries || 0).toLocaleString();
+			const retained = Number(data.retainedEntries || 0).toLocaleString();
+			const dropped = Number(data.droppedEntries || 0).toLocaleString();
+			status.textContent = `${retained} retained / ${captured} captured; ${dropped} older entries dropped. Updated ${new Date().toLocaleTimeString()}.`;
+		}
+	} catch(error){
+		if(status) status.textContent = `Log refresh failed: ${error.message}`;
+	} finally {
+		consoleLogsLoading = false;
+	}
+}
+function startConsoleLogPolling(){
+	if(consoleLogsTimer) return;
+	refreshConsoleLogs();
+	consoleLogsTimer = setInterval(()=>{
+		if(document.visibilityState === 'visible') refreshConsoleLogs();
+	}, 5000);
+}
+function stopConsoleLogPolling(){
+	if(consoleLogsTimer){ clearInterval(consoleLogsTimer); consoleLogsTimer = null; }
+}
 async function fetchConfig(){
 	const r = await fetch(U('/api/config'));
 	if(!r.ok) throw new Error('Failed to fetch config');
@@ -461,10 +510,12 @@ function toggleTheme(){
 	setTheme(document.documentElement.dataset.theme === 'dark' ? 'light':'dark');
 }
 function navTo(id){
-	document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===id));
-	document.querySelectorAll('.nav-item').forEach(a=>a.classList.toggle('active', a.dataset.target===id));
-	if(history.replaceState) history.replaceState(null,'', '#'+id);
-	if(id==='panel-status') loadServerStatus();
+document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===id));
+document.querySelectorAll('.nav-item').forEach(a=>a.classList.toggle('active', a.dataset.target===id));
+if(history.replaceState) history.replaceState(null,'', '#'+id);
+if(id==='panel-status') loadServerStatus();
+if(id==='panel-logs') startConsoleLogPolling();
+else stopConsoleLogPolling();
 }
 function attachCoreListeners(){
 	const saveBtn = document.getElementById('saveBtn');
@@ -664,9 +715,11 @@ document.addEventListener('DOMContentLoaded', ()=> {
 			validate();
 		}
 	});
-	const rsb = document.getElementById('refreshStatusBtn');
-	if(rsb) rsb.addEventListener('click', loadServerStatus);
-	const rpc = document.getElementById('runProviderChecksBtn');
+		const rsb = document.getElementById('refreshStatusBtn');
+		if(rsb) rsb.addEventListener('click', loadServerStatus);
+		const rlb = document.getElementById('refreshConsoleLogsBtn');
+		if(rlb) rlb.addEventListener('click', refreshConsoleLogs);
+		const rpc = document.getElementById('runProviderChecksBtn');
 	if(rpc) rpc.addEventListener('click', runProviderFunctionalChecks);
 	const spc = document.getElementById('saveProviderCheckTmdbBtn');
 	if(spc) spc.addEventListener('click', saveProviderCheckTmdbId);

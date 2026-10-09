@@ -22,6 +22,8 @@ const providerFunctionMap = {
   'onetouchtv.js': 'getOnetouchtvStreams',
   'zxcstreams.js': 'getZxcstreamsStreams',
   'animekai.js': 'getAnimekaiStreams',
+  'allwish.js': 'getStreams',
+  'moviebox.js': 'getMovieboxStreams',
 };
 
 // Every registered provider belongs to exactly one media category.
@@ -41,6 +43,8 @@ const providerCategoryMap = {
   'onetouchtv.js': 'MoviesTv',
   'zxcstreams.js': 'MoviesTv',
   'animekai.js': 'Anime',
+  'allwish.js': 'Anime',
+  'moviebox.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint

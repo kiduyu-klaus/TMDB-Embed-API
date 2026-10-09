@@ -18,13 +18,16 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     const registryRequire = createRequire(registryFile);
     const registryModule = { exports: {} };
     let animeMediaType;
+    let allwishArgs;
+    let requestedLogSince;
     vm.runInNewContext(fs.readFileSync(registryFile, 'utf8'), {
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
         if (name === '../utils/config') return { config };
-        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js'] };
+        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js'] };
         if (name === path.join(root, 'providers/vidlink.js')) return { getVidlinkStreams: async () => [raw] };
         if (name === path.join(root, 'providers/animekai.js')) return { getAnimekaiStreams: async (_id, type) => { animeMediaType = type; return [raw]; } };
+        if (name === path.join(root, 'providers/allwish.js')) return { getStreams: async (...args) => { allwishArgs = args; return [raw]; } };
         return registryRequire(name);
       },
     });
@@ -40,6 +43,13 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
         if (name === 'dotenv') return { config() {} };
         if (name === 'express') return expressStub;
         if (name === './utils/config') return { config };
+        if (name === './utils/consoleLogs') return {
+          installConsoleLogCapture() {},
+          getConsoleLogs(since) {
+            requestedLogSince = since;
+            return { entries: [{ id: 4, timestamp: '2026-01-01T00:00:00.000Z', level: 'info', message: 'fixture log' }], cursor: 4, truncated: false };
+          }
+        };
         if (name === './utils/auth') return { requireAuth: pass };
         if (name === './utils/streamToken') return { requireStreamToken: pass };
         if (name === './providers/registry') return registryModule.exports;
@@ -75,8 +85,9 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       params: { type: 'anime', tmdbId: '123' }, query: {}, protocol: 'http', get: () => 'localhost:8787'
     }, { json(value) { animeResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
     assert.equal(animeResponse.success, true);
-    assert.equal(animeResponse.count, 1);
+    assert.equal(animeResponse.count, 2);
     assert.equal(animeResponse.providerTimings.animekai >= 0, true);
+    assert.equal(animeResponse.providerTimings.allwish >= 0, true);
     assert.equal(animeMediaType, 'anime');
 
     const providerRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/streams/:provider/:type/:tmdbId').route;
@@ -99,5 +110,24 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(animeProviderResponse.success, true);
     assert.equal(animeProviderResponse.provider, 'animekai');
     assert.equal(animeMediaType, 'anime');
+
+    let allwishResponse;
+    await providerRoute.stack[providerRoute.stack.length - 1].handle({
+      params: { provider: 'allwish', type: 'anime', tmdbId: '82684' }, query: { season: '1', episode: '2' }, protocol: 'http', get: () => 'localhost:8787'
+    }, { json(value) { allwishResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+    assert.equal(allwishResponse.success, true);
+    assert.equal(allwishResponse.provider, 'allwish');
+    assert.deepEqual(allwishArgs, ['82684', 'anime', 1, 2]);
+
+    const logsRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/logs').route;
+    assert.equal(logsRoute.stack[0].handle, pass, 'logs endpoint must require an admin session');
+    let logsResponse;
+    await logsRoute.stack[logsRoute.stack.length - 1].handle({ query: { since: '3' } }, {
+      setHeader(name, value) { assert.equal(name, 'Cache-Control'); assert.match(value, /no-store/); },
+      json(value) { logsResponse = value; }
+    });
+    assert.equal(requestedLogSince, 3);
+    assert.equal(logsResponse.success, true);
+    assert.equal(logsResponse.entries[0].message, 'fixture log');
   }
 });
