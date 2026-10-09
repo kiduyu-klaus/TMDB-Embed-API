@@ -413,8 +413,6 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
     if (config.enableProxy) {
       const serverUrl = `${req.protocol}://${req.get('host')}${MOUNT_PATH}`;
       streams = processStreamsForProxy(streams, serverUrl);
-      // Omit original headers when proxying to avoid leaking upstream requirements
-      streams = streams.map(s => { if (s && typeof s === 'object') { const { headers, ...rest } = s; return rest; } return s; });
     }
     res.json({ success:true, tmdbId, imdbId, count: streams.length, providerTimings, streams });
   } catch (e) {
@@ -445,7 +443,6 @@ router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (re
     if (config.enableProxy) {
       const serverUrl = `${req.protocol}://${req.get('host')}${MOUNT_PATH}`;
       streams = processStreamsForProxy(streams, serverUrl);
-      streams = streams.map(s => { if (s && typeof s === 'object') { const { headers, ...rest } = s; return rest; } return s; });
     }
     res.json({ success:true, provider: prov.name, tmdbId, imdbId, count: streams.length, providerTimings, streams });
   } catch (e) {

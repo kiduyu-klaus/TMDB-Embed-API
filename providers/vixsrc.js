@@ -96,7 +96,8 @@ function parsePlaylist(content, masterUrl, pageApiUrl) {
         const url = line.match(/URI="([^"]+)"/)?.[1];
         if (!url) continue;
         const label = line.match(/NAME="([^"]+)"/)?.[1] ?? 'unknown';
-        subtitles.push({ url, label, format: 'vtt' });
+        subtitles.push({ url: new URL(url, masterUrl).href, label,
+            lang: line.match(/LANGUAGE="([^"]+)"/)?.[1] });
     }
 
     // Quality variants — find the highest resolution
@@ -174,7 +175,7 @@ async function getVixsrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
     }
 
     console.log(`[Vixsrc] Successfully extracted ${sources.length} stream(s). Subtitles: ${subtitles.length}`);
-    return sources;
+    return sources.map(source => ({ ...source, subtitles }));
 }
 
 module.exports = { getVixsrcStreams };

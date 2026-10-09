@@ -443,7 +443,7 @@ function processStreamsForProxy(streams, serverUrl) {
         if (host.includes('pixeldrain.') || host === 'video-downloads.googleusercontent.com') {
             return { ...s, url: `${serverUrl}/ts-proxy?url=${encodeURIComponent(original)}${hParam}` };
         }
-        if (/\.(mp4|mkv)(\?|$)/i.test(original)) {
+        if (['mp4', 'mkv', 'webm', 'avi', 'ts'].includes(s.format) || /\.(mp4|mkv|webm|avi|ts)(\?|$)/i.test(original)) {
             return { ...s, url: `${serverUrl}/ts-proxy?url=${encodeURIComponent(original)}${hParam}` };
         }
         return { ...s, url: `${serverUrl}/m3u8-proxy?url=${encodeURIComponent(original)}${hParam}` };

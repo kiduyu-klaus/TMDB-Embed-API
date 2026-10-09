@@ -537,16 +537,21 @@ async function loadServerStatus(){
 		if(provEnhanced) provEnhanced.innerHTML = '<div class="prov-row">Status load failed</div>';
 	}
 }
+let providerChecksRunning = false;
 async function runProviderFunctionalChecks(){
+	if(providerChecksRunning) return;
 	const checkTmdbEl = document.getElementById('providerCheckTmdbId');
 	const targetTmdb = (checkTmdbEl && checkTmdbEl.value.trim()) || '278'; // TMDB ID (editable on status page)
 	const provEnhanced = document.getElementById('statusProvidersEnhanced');
 	const summary = document.getElementById('providerCheckSummary');
-	if(!provEnhanced) return;
+	if(!provEnhanced || !summary) return;
+	const runBtn = document.getElementById('runProviderChecksBtn');
+	providerChecksRunning = true;
+	if(runBtn) runBtn.disabled = true;
 	summary.textContent = 'Running checks...';
 	const rows = Array.from(provEnhanced.querySelectorAll('.prov-row:not(.header)'));
 	let completed=0, passed=0;
-	for(const row of rows){
+	async function checkProvider(row){
 		const name = row.dataset.provider;
 		const funcBadge = row.querySelector('[data-role="functional"]');
 		const notesEl = row.querySelector('[data-role="notes"]');
@@ -555,12 +560,14 @@ async function runProviderFunctionalChecks(){
 		// Skip disabled providers
 		if(row.querySelector('.badge.ok, .badge.off') && row.children[1].textContent==='off'){
 			if(funcBadge){ funcBadge.textContent='skip'; funcBadge.className='badge off'; }
-			completed++; continue;
+			completed++;
+			summary.textContent = `Progress: ${completed}/${rows.length} (passed: ${passed})`;
+			return;
 		}
 		try {
 			const token = currentStreamTokenHash();
-		const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
-		const r = await fetch(U(`/api/streams/${name}/movie/${targetTmdb}${tokenQuery}`));
+			const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
+			const r = await fetch(U(`/api/streams/${name}/movie/${targetTmdb}${tokenQuery}`));
 			if(!r.ok) throw new Error('HTTP '+r.status);
 			const j = await r.json();
 			const isOk = j && Array.isArray(j.streams) && j.streams.length>0;
@@ -579,7 +586,20 @@ async function runProviderFunctionalChecks(){
 		completed++;
 		summary.textContent = `Progress: ${completed}/${rows.length} (passed: ${passed})`;
 	}
-	summary.textContent = `Checks complete: ${passed}/${rows.length} passed`;
+	let nextRow = 0;
+	async function worker(){
+		while(nextRow < rows.length){
+			const row = rows[nextRow++];
+			await checkProvider(row);
+		}
+	}
+	try {
+		await Promise.all(Array.from({ length: Math.min(4, rows.length) }, () => worker()));
+		summary.textContent = `Checks complete: ${passed}/${rows.length} passed`;
+	} finally {
+		providerChecksRunning = false;
+		if(runBtn) runBtn.disabled = false;
+	}
 }
 async function saveProviderCheckTmdbId(){
 	const input = document.getElementById('providerCheckTmdbId');

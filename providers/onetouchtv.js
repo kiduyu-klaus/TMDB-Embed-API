@@ -307,6 +307,7 @@ async function getOnetouchtvStreams(tmdbId, mediaType = 'movie', seasonNum = nul
                 name: `OneTouchTV${sourceName}`,
                 title: `${matchResult.title}\n${quality} · ${(src.type ?? 'HLS').toUpperCase()}`,
                 url: src.url,
+                format: src.type,
                 quality,
                 provider: 'OneTouchTV',
                 headers: {

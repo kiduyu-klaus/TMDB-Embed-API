@@ -1842,9 +1842,12 @@ async function get4KHDHubStreams(tmdbId, type, season = null, episode = null) {
         const seenUrls = new Set();
 
         for (const link of filteredLinks) {
-            if (!seenUrls.has(link.url)) {
-                seenUrls.add(link.url);
-                uniqueLinks.push(link);
+            // Encode literal spaces before validation and output. Leave existing
+            // escapes, plus signs, and signed query parameters untouched.
+            const url = link.url.replace(/ /g, '%20');
+            if (!seenUrls.has(url)) {
+                seenUrls.add(url);
+                uniqueLinks.push({ ...link, url });
             }
         }
 

@@ -43,7 +43,7 @@
 - **Config Propagation** – Overrides mirrored to `process.env` for legacy compatibility (no `.env` required after first save).
 - **Back-Navigation Safe** – Cache-control + visibility/session revalidation.
 - **Optional Stream Proxy Layer** – When enabled, rewrites returned stream URLs so HLS playlists, TS segments, and subtitles are served through internal endpoints (`/m3u8-proxy`, `/ts-proxy`, `/sub-proxy`) allowing uniform headers, origin shielding, and optional segment caching.
-  When active the API omits per-stream `headers` objects from responses (they're no longer needed by clients) to avoid leaking upstream header requirements.
+  Stream responses retain the provider's original `headers`, including when proxying is enabled.
 
   Proxy Tuning Parameters (query flags accepted by `/ts-proxy` – defaults shown):
   - `clampOpen` (on) – If a client sends an ambiguous `Range: bytes=0-`, constrain it to an initial window of `openChunkKB` (default 4096 KB) to avoid huge first reads.
@@ -397,18 +397,22 @@ The aggregate endpoint auto-resolves IMDb when needed, merges all enabled (or `d
   "quality": "1080p",
   "provider": "yourprovider",
   "headers": { "User-Agent": "Mozilla/5.0" },
-  "subtitles": [ { "url": "https://.../en.srt", "lang": "English" } ]
+  "format": "mp4",
+  "mimeType": "video/mp4",
+  "subtitles": [ { "id": "yourprovider-0-en", "url": "https://subs.example/en.vtt", "lang": "en", "label": "English", "language": "en", "mimeType": "text/vtt", "headers": { "User-Agent": "Mozilla/5.0" } } ]
 }
 ```
 - `name` / `title` – display strings (often include quality/source hints).
 - `url` – direct upstream URL (or proxied URL when `enableProxy` is on).
 - `quality` – e.g. `Auto`, `1080p`, `720p`, `480p`, `4K`. Missing/unknown qualities parse as `0`.
-- `headers` – optional upstream request headers (stripped when proxying).
-- `subtitles` – optional embedded subtitle tracks (CastleTV, NetMirror, OneTouchTV, Showbox).
+- `headers` – upstream request headers preserved as supplied, or `{}` when absent; retained when proxying.
+- `subtitles` – subtitle tracks supplied by the provider, or an empty array.
 
 Filtering passes through `applyFilters` to enforce min quality + codec exclusions (see below).
 
-> Note: When the `enableProxy` flag is turned on, provider-specific request headers are stripped from each stream object before responding. Clients should use the proxied URL directly without adding custom Referer/Origin headers.
+Every stream also includes `format`, `mimeType`, and a `subtitles` array (empty when unavailable). Format is inferred from provider metadata or the URL without additional network requests; opaque URLs without metadata use `unknown` and `application/octet-stream`. Subtitle entries include `id`, `url`, `lang`, `label`, `language`, `mimeType`, and `headers`. Existing subtitle headers are preserved; missing headers inherit the stream headers. Known SRT URLs use `application/x-subrip`; VTT uses `text/vtt`. This normalization does not convert subtitle contents.
+
+When `enableProxy` is on, stream URLs are rewritten but provider headers and media metadata remain in the response. Clients using the internal proxy do not need to resend the upstream headers themselves.
 
 ---
 

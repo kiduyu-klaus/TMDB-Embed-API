@@ -1,6 +1,7 @@
 const { config } = require('../utils/config');
 const fs = require('fs');
 const path = require('path');
+const { normalizeStreams } = require('../utils/streamResponse');
 
 // Lazy load cache for providers
 const providerCache = new Map();
@@ -106,8 +107,7 @@ function createFetchFunction(providerInfo) {
 
       if (!Array.isArray(result)) return [];
 
-      // Add provider name if not present
-      return result.map(s => ({ ...s, provider: s.provider || providerInfo.name }));
+      return normalizeStreams(result, providerInfo.name);
 
     } catch (e) {
       console.error(`[registry] ${providerInfo.name} fetch error:`, e.message);
