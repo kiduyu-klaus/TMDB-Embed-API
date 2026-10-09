@@ -383,3 +383,8 @@ input.invalid, textarea.invalid { border-color: var(--danger)!important; animati
 .modal .modal-opt { display:flex; align-items:center; gap:8px; margin: 0 0 12px; font-size:.8rem; color: var(--text-dim); }
 .modal .modal-opt input { accent-color: var(--primary); }
 .modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Site branding */
+.login-logo { display:block; width:96px; height:96px; object-fit:contain; margin:0 auto 1rem; }
+.brand { display:flex; align-items:center; gap:.6rem; }
+.brand-logo { width:40px; height:40px; object-fit:contain; flex-shrink:0; }

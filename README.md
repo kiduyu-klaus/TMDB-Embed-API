@@ -258,9 +258,10 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `zxcstreams` - ZXCStreams streams (multi-server backend, dynamic domain discovery)
 - `animekai` - AnimeKai anime streams (Anime category)
 - `allwish` - AllWish anime streams (Anime category; season/episode-aware)
+- `animesalt` - AnimeSalt anime streams (Anime category; season/episode-aware)
 - `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
 
-Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`) require at least one TMDB API key configured.
+Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
 1. **Create** `providers/yourprovider.js` with your stream fetching logic

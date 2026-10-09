@@ -589,6 +589,18 @@ async function loadServerStatus(){
 	}
 }
 let providerChecksRunning = false;
+async function readStreamCheckResponse(response){
+	const body = await response.text();
+	let data;
+	try { data = JSON.parse(body); } catch {}
+	if(!response.ok || (data && data.success === false)){
+		const detail = data && (data.message || data.error);
+		const fallback = body.trim().startsWith('<') ? response.statusText : body.trim();
+		throw new Error(`HTTP ${response.status}: ${detail || fallback || 'Stream request failed'}`);
+	}
+	if(!data) throw new Error('Invalid JSON response from stream endpoint');
+	return data;
+}
 async function runProviderFunctionalChecks(){
 	if(providerChecksRunning) return;
 	const checkTmdbEl = document.getElementById('providerCheckTmdbId');
@@ -619,8 +631,7 @@ async function runProviderFunctionalChecks(){
 			const token = currentStreamTokenHash();
 			const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
 			const r = await fetch(U(`/api/streams/${name}/movie/${targetTmdb}${tokenQuery}`));
-			if(!r.ok) throw new Error('HTTP '+r.status);
-			const j = await r.json();
+			const j = await readStreamCheckResponse(r);
 			const isOk = j && Array.isArray(j.streams) && j.streams.length>0;
 			if(isOk){
 				passed++;
@@ -631,6 +642,7 @@ async function runProviderFunctionalChecks(){
 				if(notesEl) notesEl.textContent = 'No streams array';
 			}
 		}catch(err){
+			console.error(`[provider-check] ${name}: ${err.message}`);
 			if(funcBadge){ funcBadge.textContent='fail'; funcBadge.className='badge fail'; }
 			if(notesEl) notesEl.textContent = err.message;
 		}

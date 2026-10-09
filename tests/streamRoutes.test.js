@@ -19,16 +19,20 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     const registryModule = { exports: {} };
     let animeMediaType;
     let allwishArgs;
+    let animeSaltArgs;
     let requestedLogSince;
     let imdbType;
+    let streamFailure;
+    const loggedErrors = [];
     vm.runInNewContext(fs.readFileSync(registryFile, 'utf8'), {
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
         if (name === '../utils/config') return { config };
-        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js'] };
+        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js', 'animesalt.js'] };
         if (name === path.join(root, 'providers/vidlink.js')) return { getVidlinkStreams: async () => [raw] };
         if (name === path.join(root, 'providers/animekai.js')) return { getAnimekaiStreams: async (_id, type) => { animeMediaType = type; return [raw]; } };
         if (name === path.join(root, 'providers/allwish.js')) return { getStreams: async (...args) => { allwishArgs = args; return [raw]; } };
+        if (name === path.join(root, 'providers/animesalt.js')) return { getStreams: async (...args) => { animeSaltArgs = args; return [raw]; } };
         return registryRequire(name);
       },
     });
@@ -38,7 +42,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     const apiRequire = createRequire(path.join(root, 'apiServer.js'));
     const pass = (_req, _res, next) => next();
     const context = vm.createContext({
-      console: quiet, setImmediate() {}, setTimeout, setInterval: () => ({ unref() {} }),
+      console: { ...quiet, error(...args) { loggedErrors.push(args.join(' ')); } }, setImmediate() {}, setTimeout, setInterval: () => ({ unref() {} }),
       process: { env: {}, cwd: () => root, exit() {}, on() {} },
       require(name) {
         if (name === 'dotenv') return { config() {} };
@@ -54,7 +58,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
         if (name === './utils/auth') return { requireAuth: pass };
         if (name === './utils/streamToken') return { requireStreamToken: pass };
         if (name === './providers/registry') return registryModule.exports;
-        if (name === './utils/tmdb') return { resolveImdbId: async (type) => { imdbType = type; return 'tt1234567'; } };
+        if (name === './utils/tmdb') return { resolveImdbId: async (type) => { if (streamFailure) throw streamFailure; imdbType = type; return 'tt1234567'; } };
         return apiRequire(name);
       },
     });
@@ -86,9 +90,10 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       params: { type: 'anime', tmdbId: '123' }, query: {}, protocol: 'http', get: () => 'localhost:8787'
     }, { json(value) { animeResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
     assert.equal(animeResponse.success, true);
-    assert.equal(animeResponse.count, 2);
+    assert.equal(animeResponse.count, 3);
     assert.equal(animeResponse.providerTimings.animekai >= 0, true);
     assert.equal(animeResponse.providerTimings.allwish >= 0, true);
+    assert.equal(animeResponse.providerTimings.animesalt >= 0, true);
     assert.equal(animeMediaType, 'movie');
     assert.equal(imdbType, 'movie');
 
@@ -122,6 +127,14 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(allwishResponse.provider, 'allwish');
     assert.deepEqual(allwishArgs, ['82684', 'anime', 1, 2]);
 
+    let animeSaltResponse;
+    await providerRoute.stack[providerRoute.stack.length - 1].handle({
+      params: { provider: 'animesalt', type: 'anime', tmdbId: '82684' }, query: { season: '1', episode: '2' }, protocol: 'http', get: () => 'localhost:8787'
+    }, { json(value) { animeSaltResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+    assert.equal(animeSaltResponse.success, true);
+    assert.equal(animeSaltResponse.provider, 'animesalt');
+    assert.deepEqual(animeSaltArgs, ['82684', 'anime', 1, 2]);
+
     for (const route of [aggregateRoute, providerRoute]) {
       for (const query of [{}, { season: '2' }, { episode: '16' }, { season: '2', episode: '16' }]) {
         const isMovie = Object.keys(query).length === 0;
@@ -131,8 +144,29 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
         }, { json() {}, status(code) { assert.fail('Unexpected HTTP ' + code); } });
         assert.equal(imdbType, isMovie ? 'movie' : 'tv');
         assert.equal(allwishArgs[1], isMovie ? 'movie' : 'anime');
+        if (route === aggregateRoute) assert.equal(animeSaltArgs[1], isMovie ? 'movie' : 'anime');
       }
     }
+
+    streamFailure = new Error('Stream lookup failed unexpectedly');
+    for (const route of [aggregateRoute, providerRoute]) {
+      let errorStatus;
+      let errorResponse;
+      const params = { type: 'anime', tmdbId: '82684' };
+      if (route === providerRoute) params.provider = 'allwish';
+      await route.stack[route.stack.length - 1].handle({
+        params, query: { season: '2', episode: '16', token: 'private-token' }
+      }, {
+        status(code) { errorStatus = code; return this; },
+        json(value) { errorResponse = value; }
+      });
+      assert.equal(errorStatus, 500);
+      assert.equal(errorResponse.success, false);
+      assert.equal(errorResponse.message, streamFailure.message);
+      assert.match(loggedErrors.at(-1), /HTTP 500.*tmdbId=82684.*Stream lookup failed unexpectedly/);
+      assert.ok(!loggedErrors.at(-1).includes('private-token'));
+    }
+    streamFailure = null;
 
     const logsRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/logs').route;
     assert.equal(logsRoute.stack[0].handle, pass, 'logs endpoint must require an admin session');

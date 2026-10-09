@@ -23,6 +23,7 @@ const providerFunctionMap = {
   'zxcstreams.js': 'getZxcstreamsStreams',
   'animekai.js': 'getAnimekaiStreams',
   'allwish.js': 'getStreams',
+  'animesalt.js': 'getStreams',
   'moviebox.js': 'getMovieboxStreams',
 };
 
@@ -44,6 +45,7 @@ const providerCategoryMap = {
   'zxcstreams.js': 'MoviesTv',
   'animekai.js': 'Anime',
   'allwish.js': 'Anime',
+  'animesalt.js': 'Anime',
   'moviebox.js': 'MoviesTv',
 };
 

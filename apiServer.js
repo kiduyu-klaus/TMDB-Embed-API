@@ -16,6 +16,12 @@ const { requireStreamToken, hashStreamToken, isValidStreamTokenFormat, normalize
 const app = express();
 app.set('trust proxy', 1);
 
+// Raw JSON documents have no HTML icon link. Browsers look at the origin root
+// for /favicon.ico, including when the API is mounted under a sub-path.
+app.get('/favicon.ico', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'favicon.ico'), { maxAge: '1h' });
+});
+
 // --- Sub-path mounting (e.g. hosted at https://host/kiduyuTv_providers) ---
 // MOUNT_PATH lets the whole app live under a prefix. Everything below is
 // registered on a router, which is then mounted at the prefix. Leave it empty
@@ -390,6 +396,14 @@ router.get('/api/providers/:name', (req,res) => {
   res.json({ success:true, provider:{ name: p.name, category: p.category, enabled: p.enabled } });
 });
 
+function sendStreamError(req, res, error) {
+  const message = error && error.message ? error.message : 'Failed to fetch streams';
+  const { provider = 'aggregate', type, tmdbId } = req.params;
+  metrics.lastError = message;
+  console.error(`[api] HTTP 500 fetching streams: provider=${provider} type=${type} tmdbId=${tmdbId} season=${req.query.season || '-'} episode=${req.query.episode || '-'}: ${message}`);
+  res.status(500).json({ success:false, error:'INTERNAL_ERROR', message });
+}
+
 // Aggregate streams across all enabled providers
 router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => {
   const { type, tmdbId } = req.params;
@@ -434,8 +448,7 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
     }
     res.json({ success:true, tmdbId, imdbId, count: streams.length, providerTimings, streams });
   } catch (e) {
-    metrics.lastError = e.message;
-    res.status(500).json({ success:false, error:'INTERNAL_ERROR', message:e.message });
+    sendStreamError(req, res, e);
   }
 });
 
@@ -466,8 +479,7 @@ router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (re
     }
     res.json({ success:true, provider: prov.name, tmdbId, imdbId, count: streams.length, providerTimings, streams });
   } catch (e) {
-    metrics.lastError = e.message;
-    res.status(500).json({ success:false, error:'INTERNAL_ERROR', message:e.message });
+    sendStreamError(req, res, e);
   }
 });
 
