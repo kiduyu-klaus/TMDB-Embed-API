@@ -20,6 +20,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     let animeMediaType;
     let allwishArgs;
     let requestedLogSince;
+    let imdbType;
     vm.runInNewContext(fs.readFileSync(registryFile, 'utf8'), {
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
@@ -53,7 +54,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
         if (name === './utils/auth') return { requireAuth: pass };
         if (name === './utils/streamToken') return { requireStreamToken: pass };
         if (name === './providers/registry') return registryModule.exports;
-        if (name === './utils/tmdb') return { resolveImdbId: async () => 'tt1234567' };
+        if (name === './utils/tmdb') return { resolveImdbId: async (type) => { imdbType = type; return 'tt1234567'; } };
         return apiRequire(name);
       },
     });
@@ -88,7 +89,8 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(animeResponse.count, 2);
     assert.equal(animeResponse.providerTimings.animekai >= 0, true);
     assert.equal(animeResponse.providerTimings.allwish >= 0, true);
-    assert.equal(animeMediaType, 'anime');
+    assert.equal(animeMediaType, 'movie');
+    assert.equal(imdbType, 'movie');
 
     const providerRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/streams/:provider/:type/:tmdbId').route;
     let providerStatus;
@@ -109,7 +111,8 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     }, { json(value) { animeProviderResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
     assert.equal(animeProviderResponse.success, true);
     assert.equal(animeProviderResponse.provider, 'animekai');
-    assert.equal(animeMediaType, 'anime');
+    assert.equal(animeMediaType, 'movie');
+    assert.equal(imdbType, 'movie');
 
     let allwishResponse;
     await providerRoute.stack[providerRoute.stack.length - 1].handle({
@@ -118,6 +121,18 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(allwishResponse.success, true);
     assert.equal(allwishResponse.provider, 'allwish');
     assert.deepEqual(allwishArgs, ['82684', 'anime', 1, 2]);
+
+    for (const route of [aggregateRoute, providerRoute]) {
+      for (const query of [{}, { season: '2' }, { episode: '16' }, { season: '2', episode: '16' }]) {
+        const isMovie = Object.keys(query).length === 0;
+        await route.stack[route.stack.length - 1].handle({
+          params: { provider: 'allwish', type: 'anime', tmdbId: '1363974' }, query,
+          protocol: 'http', get: () => 'localhost:8787'
+        }, { json() {}, status(code) { assert.fail('Unexpected HTTP ' + code); } });
+        assert.equal(imdbType, isMovie ? 'movie' : 'tv');
+        assert.equal(allwishArgs[1], isMovie ? 'movie' : 'anime');
+      }
+    }
 
     const logsRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/logs').route;
     assert.equal(logsRoute.stack[0].handle, pass, 'logs endpoint must require an admin session');

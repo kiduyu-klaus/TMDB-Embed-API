@@ -327,8 +327,8 @@ The system automatically:
 | `GET /api/providers/:name` | Single provider status |
 | `GET /api/streams/:type/:tmdbId` | Aggregate MoviesTv streams (`type` = movie\|series; supports `?season=&episode=`) |
 | `GET /api/streams/:provider/:type/:tmdbId` | Provider-specific MoviesTv streams (same query params) |
-| `GET /api/streams/anime/:tmdbId` | Aggregate streams from Anime-category providers |
-| `GET /api/streams/:provider/anime/:tmdbId` | Anime-category provider-specific streams |
+| `GET /api/streams/anime/:tmdbId` | Aggregate anime movies when season and episode are omitted; anime series when either is supplied |
+| `GET /api/streams/:provider/anime/:tmdbId` | Anime provider streams; omit season and episode for movies, or supply them for series |
 | `GET /api/config` | `{ merged, override, overridePath }` |
 | `POST /api/config` | Apply override patch (persisted to `utils/user-config.json`) |
 | `POST /api/restart` | Graceful restart (writes `restart.trigger` + exits) |

@@ -3,6 +3,7 @@
 const cheerio = require('cheerio');
 const tmdb = require('../utils/tmdb');
 const animeKai = require('./animekai');
+const { seasonNumbers, partNumber, selectSeasonPart } = require('../utils/animeSeasonParts');
 
 const BASE_URL = 'https://all-wish.me';
 const REQUEST_TIMEOUT_MS = 15_000;
@@ -15,12 +16,14 @@ const REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36'
 };
 
-function normalizeTitle(value) {
+function normalizeTitle(value, mediaType = 'tv') {
     return String(value || '')
         .toLowerCase()
-        .replace(/\b(?:season|s)\s*\d+\b/gi, ' ')
+        .replace(/\b(?:season|s)\s*\d+\b/gi, match => mediaType === 'movie' ? match : ' ')
+        .replace(/\b\d+(?:st|nd|rd|th)\s+season\b/gi, match => mediaType === 'movie' ? match : ' ')
+        .replace(/\bpart\s*\d+\b/gi, match => mediaType === 'movie' ? match : ' ')
         .replace(/\b(?:dub|dubbed|sub|subbed)\b/gi, ' ')
-        .replace(/\b(?:19|20)\d{2}\b/g, ' ')
+        .replace(/\b(?:19|20)\d{2}\b/g, match => mediaType === 'movie' ? match : ' ')
         .replace(/[^a-z0-9]+/g, ' ')
         .trim()
         .replace(/\s+/g, ' ');
@@ -30,9 +33,9 @@ function buildAnimeSearchTitle(title, season = 1) {
     return Number(season) > 1 ? `${title} season ${Number(season)}` : title;
 }
 
-function findAnimeSearchCandidate(html, title, season = 1) {
+function findAnimeSearchCandidates(html, title, season = 1, mediaType = 'tv') {
     const $ = cheerio.load(html || '');
-    const expected = normalizeTitle(title);
+    const expected = normalizeTitle(title, mediaType);
     const requestedSeason = Number(season) || 1;
     const candidates = [];
 
@@ -42,11 +45,12 @@ function findAnimeSearchCandidate(html, title, season = 1) {
         const resultTitle = (anchor.attr('title') || anchor.text() || '').trim();
         if (!href || !resultTitle) return;
 
-        const seasonMatch = resultTitle.match(/\bseason\s*(\d+)\b|\bs(\d+)\b/i);
-        const resultSeason = seasonMatch ? Number(seasonMatch[1] || seasonMatch[2]) : null;
-        if (resultSeason && resultSeason !== requestedSeason) return;
+        const resultSeason = seasonNumbers(resultTitle)[0] || null;
+        if (mediaType !== 'movie' && resultSeason && resultSeason !== requestedSeason) return;
+        if (mediaType !== 'movie' && requestedSeason > 1 && resultSeason !== requestedSeason) return;
 
-        const normalizedResult = normalizeTitle(resultTitle);
+        const normalizedResult = normalizeTitle(resultTitle, mediaType);
+        if (mediaType === 'movie' && normalizedResult !== expected) return;
         if (!expected || (!normalizedResult.includes(expected) && !expected.includes(normalizedResult))) return;
         const score = normalizedResult === expected ? 100 : normalizedResult.includes(expected) ? 80 : 60;
         try {
@@ -58,7 +62,11 @@ function findAnimeSearchCandidate(html, title, season = 1) {
         }
     });
 
-    return candidates.sort((a, b) => b.score - a.score)[0] || null;
+    return candidates.sort((a, b) => b.score - a.score);
+}
+
+function findAnimeSearchCandidate(html, title, season = 1) {
+    return findAnimeSearchCandidates(html, title, season)[0] || null;
 }
 
 function findEpisodeDataIds(html, episodeNumber, seasonNumber = 1) {
@@ -81,12 +89,6 @@ function findEpisodeDataIds(html, episodeNumber, seasonNumber = 1) {
         return undefined;
     });
 
-    if (!match && requestedEpisode === 1) {
-        const first = episodes.first();
-        const firstSeasonValue = first.attr('data-season') || first.closest('[data-season]').attr('data-season');
-        const firstSeason = firstSeasonValue ? Number.parseInt(firstSeasonValue, 10) : null;
-        if (!firstSeason || firstSeason === requestedSeason) match = first.attr('data-ids') || null;
-    }
     return match;
 }
 
@@ -169,7 +171,8 @@ async function resolveServer(server) {
     }
 }
 
-async function getStreams(tmdbId, _mediaType = 'anime', season = 1, episode = 1) {
+async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = null) {
+    const isMovie = mediaType === 'movie' || (mediaType === 'anime' && season == null && episode == null);
     const id = String(tmdbId || '').trim();
     const seasonNumber = Number(season) || 1;
     const episodeNumber = Number(episode) || 1;
@@ -179,23 +182,30 @@ async function getStreams(tmdbId, _mediaType = 'anime', season = 1, episode = 1)
     }
 
     try {
-        const details = await tmdb.getDetails('tv', id);
-        const title = details && (details.name || details.title);
+        const details = await tmdb.getDetails(isMovie ? 'movie' : 'tv', id);
+        const title = details && (isMovie ? details.title : details.name || details.title);
         if (!title) {
-            console.warn(`[AllWish] TMDB returned no TV title for ${id}`);
+            console.warn(`[AllWish] TMDB returned no ${isMovie ? 'movie' : 'TV'} title for ${id}`);
             return [];
         }
 
-        const query = buildAnimeSearchTitle(title, seasonNumber);
+        const query = isMovie ? title : buildAnimeSearchTitle(title, seasonNumber);
         const searchUrl = new URL('/filter', BASE_URL);
         searchUrl.searchParams.set('keyword', query);
         console.log(`[AllWish] Searching ${query} (S${seasonNumber}E${episodeNumber})`);
         const searchHtml = await fetchResponse(searchUrl.href);
-        const candidate = findAnimeSearchCandidate(searchHtml, title, seasonNumber);
+        const candidates = findAnimeSearchCandidates(searchHtml, title, seasonNumber, isMovie ? 'movie' : 'tv');
+        const seasonDetails = !isMovie && candidates.some(result => partNumber(result.title) !== null)
+            ? await tmdb.getSeasonDetails(id, seasonNumber) : null;
+        const selection = isMovie ? { results: candidates, episode: 1, part: null }
+            : selectSeasonPart(candidates, episodeNumber, seasonDetails?.episodes?.length);
+        const candidate = selection.results[0];
+        const sourceEpisode = selection.episode;
         if (!candidate) {
             console.warn(`[AllWish] No matching title found for ${query}`);
             return [];
         }
+        console.log(`[AllWish] S${seasonNumber}E${episodeNumber} -> ${candidate.title}; part=${selection.part || 'unsplit'} episode=${sourceEpisode}`);
 
         const animePage = await fetchResponse(candidate.href);
         const dataId = cheerio.load(animePage)('main > div.container').attr('data-id');
@@ -212,7 +222,7 @@ async function getStreams(tmdbId, _mediaType = 'anime', season = 1, episode = 1)
             return [];
         }
 
-        const episodeIds = findEpisodeDataIds(episodeList.result || '', episodeNumber, seasonNumber);
+        const episodeIds = findEpisodeDataIds(episodeList.result || '', sourceEpisode, seasonNumber);
         if (!episodeIds) {
             console.warn(`[AllWish] Requested S${seasonNumber}E${episodeNumber} is not listed`);
             return [];
@@ -277,6 +287,7 @@ module.exports = {
     getStreams,
     buildAnimeSearchTitle,
     findAnimeSearchCandidate,
+    findAnimeSearchCandidates,
     findEpisodeDataIds,
     parseServerEntries,
     generateEpisodeVrf

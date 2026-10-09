@@ -399,7 +399,7 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
   const episode = req.query.episode ? Number(req.query.episode) : null;
   try {
     metrics.streamRequests++;
-    const tmdbType = type === 'movie' ? 'movie' : 'tv';
+    const tmdbType = type === 'movie' || (type === 'anime' && season === null && episode === null) ? 'movie' : 'tv';
     const imdbId = await resolveImdbId(tmdbType, tmdbId); if (imdbId) metrics.tmdbToImdbLookups++;
     const availableProviders = listProviders().filter(p => p.category === category).map(p => p.name);
     const configuredProviders = config.defaultProviders.length ? config.defaultProviders : availableProviders;
@@ -453,7 +453,7 @@ router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (re
   try {
     metrics.streamRequests++;
     metrics.providerCalls[prov.name] = (metrics.providerCalls[prov.name]||0)+1;
-    const tmdbType = type === 'movie' ? 'movie' : 'tv';
+    const tmdbType = type === 'movie' || (type === 'anime' && season === null && episode === null) ? 'movie' : 'tv';
     const imdbId = await resolveImdbId(tmdbType, tmdbId); if (imdbId) metrics.tmdbToImdbLookups++;
     const t0 = Date.now();
     let streams = await prov.fetch({ tmdbId, type, season, episode, imdbId, filters:{} });

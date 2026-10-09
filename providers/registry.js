@@ -93,7 +93,8 @@ function createFetchFunction(providerInfo) {
     }
 
     try {
-      const mediaType = ctx.type === 'movie' ? 'movie' : (ctx.type === 'anime' ? 'anime' : 'tv');
+      const animeMovie = ctx.type === 'anime' && ctx.season == null && ctx.episode == null;
+      const mediaType = ctx.type === 'movie' || animeMovie ? 'movie' : (ctx.type === 'anime' ? 'anime' : 'tv');
       const t0 = Date.now();
 
       let result;

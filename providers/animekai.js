@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const crypto = require('crypto');
 const tmdb = require('../utils/tmdb');
+const { seasonNumbers: parseSeasonNumbers, selectSeasonPart } = require('../utils/animeSeasonParts');
 
 const ANIKAI_BASE = 'https://animekai.com.ro';
 const MEGAPLAY_AES_KEY = 'i?LMTAx0Q6,:}50U';
@@ -318,17 +319,20 @@ function buildAnimeSearchQuery(title, seasonNum) {
     return seasonNum > 1 ? `${title} season ${seasonNum}` : title;
 }
 
-function matchAnimeSearchResults(results, title, seasonNum = 1, seasonName = null) {
+function matchAnimeSearchResults(results, title, seasonNum = 1, seasonName = null, mediaType = 'tv') {
     const normalizedTitle = normalize(title);
     const normalizedSeasonName = seasonName ? normalize(seasonName) : '';
 
     return results.filter((result) => {
         const normalizedResult = normalize(result.title);
+        if (mediaType === 'movie') {
+            const movieTitle = normalizedResult.replace(/\b(?:dub|dubbed|sub|subbed)\b/g, '').replace(/\s+/g, ' ').trim();
+            return (!result.type || result.type === 'movie') && movieTitle === normalizedTitle;
+        }
         if (!normalizedResult.includes(normalizedTitle)) return false;
         if (result.type && result.type !== 'tv') return false;
 
-        const seasonNumbers = [...normalizedResult.matchAll(/\bseason\s*(\d+)\b|\bs(\d+)\b/gi)]
-            .map((match) => Number(match[1] || match[2]));
+        const seasonNumbers = parseSeasonNumbers(normalizedResult);
         if (seasonNumbers.some((number) => number !== Number(seasonNum || 1))) return false;
 
         if (Number(seasonNum || 1) > 1) {
@@ -349,7 +353,7 @@ function findEpisodeUrl(html, episodeNum, baseUrl) {
     if (linkedHref) return new URL(linkedHref, baseUrl).href;
 
     const escapedEpisode = targetEpisode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const fallback = html.match(new RegExp(`href=["']([^"']*episode-${escapedEpisode}[^"']*)["']`, 'i'));
+    const fallback = html.match(new RegExp(`href=["']([^"']*episode-${escapedEpisode}(?!\\d)[^"']*)["']`, 'i'));
     return fallback ? new URL(fallback[1], baseUrl).href : null;
 }
 
@@ -385,19 +389,19 @@ function extractAnimeKaiServerOptions(html) {
     return servers;
 }
 
-// Helper: Resolve season name from TMDB
-async function getSeasonNameFromTmdb(tmdbId, seasonNum) {
-    logInfo(`getSeasonNameFromTmdb() called | tmdbId=${tmdbId} seasonNum=${seasonNum}`);
+// Resolve the season name and episode count together from cached TMDB metadata.
+async function getSeasonMetadataFromTmdb(tmdbId, seasonNum) {
+    logInfo(`getSeasonMetadataFromTmdb() called | tmdbId=${tmdbId} seasonNum=${seasonNum}`);
     try {
         const data = await tmdb.getSeasonDetails(tmdbId, seasonNum);
         if (!data) {
-            logWarn(`getSeasonNameFromTmdb() returned no TMDB data for tmdbId=${tmdbId} season=${seasonNum}`);
+            logWarn(`getSeasonMetadataFromTmdb() returned no TMDB data for tmdbId=${tmdbId} season=${seasonNum}`);
             return null;
         }
-        logInfo(`getSeasonNameFromTmdb() <- name="${data.name}" episode_count=${data.episodes ? data.episodes.length : 'n/a'}`);
-        return data.name || null;
+        logInfo(`getSeasonMetadataFromTmdb() <- name="${data.name}" episode_count=${data.episodes ? data.episodes.length : 'n/a'}`);
+        return data;
     } catch (e) {
-        logError(`getSeasonNameFromTmdb() failed for tmdbId=${tmdbId} S${seasonNum}: ${e.message}`);
+        logError(`getSeasonMetadataFromTmdb() failed for tmdbId=${tmdbId} S${seasonNum}: ${e.message}`);
         return null;
     }
 }
@@ -407,19 +411,20 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
     const requestedEpisode = Number(episodeNum || 1);
     logInfo(`getAnimekaiStreams() START | tmdbId=${tmdbId} mediaType=${mediaType} season=${requestedSeason} episode=${requestedEpisode}`);
     try {
-        const tmdbMediaType = mediaType === 'anime' ? 'tv' : mediaType;
+        const tmdbMediaType = mediaType === 'anime'
+            ? (seasonNum == null && episodeNum == null ? 'movie' : 'tv') : mediaType;
         const title = await getTitleFromTmdb(tmdbId, tmdbMediaType);
         if (!title) {
             logWarn('getAnimekaiStreams() aborting: TMDB returned no title');
             return [];
         }
 
-        let seasonName = null;
-        if (tmdbMediaType === 'tv' && requestedSeason > 1) {
-            seasonName = await getSeasonNameFromTmdb(tmdbId, requestedSeason);
+        let seasonDetails = null;
+        if (tmdbMediaType === 'tv') {
+            seasonDetails = await getSeasonMetadataFromTmdb(tmdbId, requestedSeason);
         }
 
-        const searchTitle = buildAnimeSearchQuery(title, requestedSeason);
+        const searchTitle = tmdbMediaType === 'movie' ? title : buildAnimeSearchQuery(title, requestedSeason);
         const searchUrl = `${ANIKAI_BASE}/?s=${encodeURIComponent(searchTitle)}`;
         logInfo(`getAnimekaiStreams() searching title="${searchTitle}"`);
         const searchStart = Date.now();
@@ -427,7 +432,12 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         logInfo(`getAnimekaiStreams() search response status=${searchStatus} bytes=${searchHtml.length} took=${Date.now() - searchStart}ms`);
 
         const results = parseAnimeKaiSearchResults(searchHtml);
-        const matchingResults = matchAnimeSearchResults(results, title, requestedSeason, seasonName);
+        const candidates = matchAnimeSearchResults(results, title, requestedSeason, seasonDetails?.name, tmdbMediaType);
+        const selection = tmdbMediaType === 'movie' ? { results: candidates, episode: 1, part: null }
+            : selectSeasonPart(candidates, requestedEpisode, seasonDetails?.episodes?.length);
+        const matchingResults = selection.results;
+        const sourceEpisode = selection.episode;
+        logInfo(`S${requestedSeason}E${requestedEpisode} -> part=${selection.part || 'unsplit'} episode=${sourceEpisode}`);
         logInfo(`getAnimekaiStreams() found ${results.length} search cards; ${matchingResults.length} match the requested title/season`);
         matchingResults.forEach((item, index) => logInfo(`  [match ${index + 1}] "${item.title}" (${item.type || 'type unknown'})`));
         if (matchingResults.length === 0) {
@@ -444,9 +454,9 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
 
                 let episodeUrl = item.href;
                 if (tmdbMediaType === 'tv') {
-                    episodeUrl = findEpisodeUrl(seriesHtml, requestedEpisode, item.href);
+                    episodeUrl = findEpisodeUrl(seriesHtml, sourceEpisode, item.href);
                     if (!episodeUrl) {
-                        logWarn(`No episode ${requestedEpisode} link found for "${item.title}"`);
+                        logWarn(`No episode ${sourceEpisode} link found for "${item.title}"`);
                         return [];
                     }
                 }
