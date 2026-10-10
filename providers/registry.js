@@ -20,6 +20,12 @@ const providerCache = new Map();
 
 // Function name mappings for existing providers
 const providerFunctionMap = {
+  'superstream.js': 'getSuperstreamStreams',
+  'hdmovie2.js': 'getHdmovie2Streams',
+  'vidbox.js': 'getVidboxStreams',
+  'vidrock.js': 'getVidrockStreams',
+  'vidcore.js': 'getVidcoreStreams',
+  'moviesdrive1.js': 'getMoviesDriveStreams',
   'Showbox.js': 'getStreamsFromTmdbId',
   '4khdhub.js': 'get4KHDHubStreams',
   'vixsrc.js': 'getVixsrcStreams',
@@ -49,6 +55,12 @@ const providerFunctionMap = {
 // Every registered provider belongs to exactly one media category.
 // New providers default to MoviesTv until explicitly classified otherwise.
 const providerCategoryMap = {
+  'superstream.js': 'MoviesTv',
+  'hdmovie2.js': 'MoviesTv',
+  'vidbox.js': 'MoviesTv',
+  'vidrock.js': 'MoviesTv',
+  'vidcore.js': 'MoviesTv',
+  'moviesdrive1.js': 'MoviesTv',
   'Showbox.js': 'MoviesTv',
   '4khdhub.js': 'MoviesTv',
   'vixsrc.js': 'MoviesTv',

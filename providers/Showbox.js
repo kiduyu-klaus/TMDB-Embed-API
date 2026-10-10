@@ -2051,22 +2051,15 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
     // Sort streams by quality before returning
     const sortedStreams = sortStreamsByQuality(allStreams);
 
-    // Filter out 360p and 480p streams
-    const streamsToShowBoxFiltered = sortedStreams.filter(stream => {
-        const quality = stream.quality ? String(stream.quality).toLowerCase() : '';
-        if (quality === '360p' || quality === '480p') {
-            console.log(`  Filtering out potential ShowBox low-quality stream: ${stream.title} (${stream.quality})`);
-            return false;
-        }
-        return true;
-    });
+    // The API applies the configured minimum quality and codec filters.
+    // Keep all extracted qualities here so the "all" setting is respected.
 
     // Apply size limit if not using a personal cookie
-    let finalFilteredStreams = streamsToShowBoxFiltered;
+    let finalFilteredStreams = sortedStreams;
     if (!userCookie && !global.currentRequestUserCookie) {
         console.log('[SizeLimit] No personal cookie detected. Applying 9GB size limit to ShowBox streams.');
         const NINE_GB_IN_BYTES = 9 * 1024 * 1024 * 1024;
-        finalFilteredStreams = streamsToShowBoxFiltered.filter(stream => {
+        finalFilteredStreams = sortedStreams.filter(stream => {
             const sizeInBytes = parseSizeToBytes(stream.size);
             if (sizeInBytes >= NINE_GB_IN_BYTES) {
                 console.log(`[SizeLimit] Filtering out ShowBox stream due to size (${stream.size || 'Unknown size'}): ${stream.title}`);
@@ -2077,7 +2070,7 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
     }
 
     if (finalFilteredStreams.length > 0) {
-        console.log(`Found ${finalFilteredStreams.length} streams (sorted, ShowBox-low-quality-filtered, and size-limited if applicable):`);
+        console.log(`Found ${finalFilteredStreams.length} streams (sorted and size-limited if applicable):`);
         finalFilteredStreams.slice(0, 5).forEach((stream, i) => {
             console.log(`  ${i + 1}. ${stream.quality} (${stream.size || 'Unknown size'}) [${(stream.codecs || []).join(', ') || 'No codec info'}]: ${stream.title}`);
         });
@@ -2884,6 +2877,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         title: streamTitle,
                         url: url,
                         quality: parseQualityFromLabel(quality),
+                        subtitles: [],
                         provider: 'PStream',
                         headers: {}
                     });
@@ -2910,6 +2904,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                     title: streamTitle,
                     url: source.url,
                     quality: parseQualityFromLabel(source.quality),
+                    subtitles: [],
                     provider: 'PStream',
                     headers: {}
                 });
@@ -2931,6 +2926,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         title: streamTitle,
                         url: item.url || item.file,
                         quality: parseQualityFromLabel(item.quality || item.label),
+                        subtitles: [],
                         provider: 'PStream',
                         headers: {}
                     });

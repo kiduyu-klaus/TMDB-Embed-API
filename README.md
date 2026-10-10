@@ -265,6 +265,8 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `goojara`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
+The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidrock`, `vidcore`, and `moviesdrive1`. HDMovie2 currently handles movies only; TV requests return no streams. MoviesDrive uses the configured TMDB API key. Superstream includes the Vidnest decoding helper.
+
 1. **Create** `providers/yourprovider.js` with your stream fetching logic
 2. **Export** a function like `getYourproviderStreams(tmdbId, mediaType, season, episode)`
 3. **Register** it in `providers/registry.js` → `providerFunctionMap`:
