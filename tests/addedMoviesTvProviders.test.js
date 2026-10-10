@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const exportsByProvider = {
+  framextv: 'getStreams',
   superstream: 'getSuperstreamStreams',
   hdmovie2: 'getHdmovie2Streams',
   vidbox: 'getVidboxStreams',

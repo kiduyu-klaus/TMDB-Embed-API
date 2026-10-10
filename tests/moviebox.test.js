@@ -7,9 +7,36 @@ test('registers MovieBox as an enabled MoviesTv provider', () => {
   const provider = getProvider('moviebox');
   assert.ok(provider);
   assert.equal(provider.category, 'MoviesTv');
+  assert.deepEqual(provider.categories, ['MoviesTv', 'Anime']);
   assert.equal(provider.enabled, true);
   assert.equal(typeof provider.fetch, 'function');
   assert.equal(typeof moviebox.getMovieboxStreams, 'function');
+});
+
+test('anime episodes use TMDB TV metadata and anime movies use movie metadata', async () => {
+  const fs = require('fs');
+  const path = require('path');
+  const vm = require('vm');
+  const { createRequire } = require('module');
+  const file = path.join(__dirname, '../providers/moviebox.js');
+  const localRequire = createRequire(file);
+  const requested = [];
+  const module = { exports: {} };
+  vm.runInNewContext(fs.readFileSync(file, 'utf8'), {
+    module, process: { env: {} }, setTimeout, clearTimeout, AbortController,
+    console: { log() {}, warn() {}, error() {} },
+    fetch: async url => {
+      requested.push(new URL(url).pathname);
+      // Empty metadata stops extraction before any external provider calls.
+      return { ok: true, json: async () => ({}) };
+    },
+    require(name) {
+      return name === '../utils/tmdbKey' ? { getTmdbApiKey: () => 'fixture-key' } : localRequire(name);
+    }
+  });
+  await module.exports.getMovieboxStreams('82684', 'anime', 1, 1);
+  await module.exports.getMovieboxStreams('1363974', 'anime');
+  assert.deepEqual(requested, ['/3/tv/82684', '/3/movie/1363974']);
 });
 
 test('normalizes titles and chooses an exact movie/year match of the requested type', () => {

@@ -508,7 +508,8 @@ async function getStreamLinks(subjectId, season, episode, mediaTitle) {
 }
 
 async function getMovieboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = null) {
-    const type = mediaType === 'tv' || mediaType === 'series' ? 'tv' : 'movie';
+    const animeSeries = mediaType === 'anime' && (seasonNum != null || episodeNum != null);
+    const type = mediaType === 'tv' || mediaType === 'series' || animeSeries ? 'tv' : 'movie';
     console.log('[MovieBox] Fetching ' + type + ' streams for TMDB ID ' + tmdbId);
     try {
         if (type === 'tv' && (!Number.isInteger(Number(seasonNum)) || !Number.isInteger(Number(episodeNum)))) {

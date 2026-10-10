@@ -20,6 +20,7 @@ const providerCache = new Map();
 
 // Function name mappings for existing providers
 const providerFunctionMap = {
+  'framextv.js': 'getStreams',
   'superstream.js': 'getSuperstreamStreams',
   'hdmovie2.js': 'getHdmovie2Streams',
   'vidbox.js': 'getVidboxStreams',
@@ -47,14 +48,18 @@ const providerFunctionMap = {
   'onetouchtv.js': 'getOnetouchtvStreams',
   'zxcstreams.js': 'getZxcstreamsStreams',
   'animekai.js': 'getAnimekaiStreams',
+  'reanime.js': 'getStreams',
   'allwish.js': 'getStreams',
   'animesalt.js': 'getStreams',
   'moviebox.js': 'getMovieboxStreams',
+  'desiflix.js': 'getStreams',
 };
 
-// Every registered provider belongs to exactly one media category.
-// New providers default to MoviesTv until explicitly classified otherwise.
+// Providers may belong to more than one media category.
+// For backward compatibility, category remains the first (primary) category;
+// categories contains the full set for consumers that need multi-category mapping.
 const providerCategoryMap = {
+  'framextv.js': 'MoviesTv',
   'superstream.js': 'MoviesTv',
   'hdmovie2.js': 'MoviesTv',
   'vidbox.js': 'MoviesTv',
@@ -82,9 +87,11 @@ const providerCategoryMap = {
   'onetouchtv.js': 'MoviesTv',
   'zxcstreams.js': 'MoviesTv',
   'animekai.js': 'Anime',
+  'reanime.js': 'Anime',
   'allwish.js': 'Anime',
   'animesalt.js': 'Anime',
-  'moviebox.js': 'MoviesTv',
+  'moviebox.js': ['MoviesTv', 'Anime'],
+  'desiflix.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
@@ -99,12 +106,17 @@ function getProviderFiles() {
   const providersDir = path.join(__dirname);
   return fs.readdirSync(providersDir)
     .filter(file => file.endsWith('.js') && file !== 'registry.js')
-    .map(file => ({
-      name: path.parse(file).name.toLowerCase(),
-      file: file,
-      functionName: providerFunctionMap[file],
-      category: providerCategoryMap[file] || 'MoviesTv'
-    }));
+    .map(file => {
+      const mappedCategories = providerCategoryMap[file] || 'MoviesTv';
+      const categories = Array.isArray(mappedCategories) ? mappedCategories : [mappedCategories];
+      return {
+        name: path.parse(file).name.toLowerCase(),
+        file: file,
+        functionName: providerFunctionMap[file],
+        category: categories[0],
+        categories
+      };
+    });
 }
 
 // Load a provider module
@@ -174,7 +186,7 @@ function createFetchFunction(providerInfo) {
       if (!Array.isArray(result)) return [];
 
       const streams = normalizeStreams(result, providerInfo.name);
-      if (providerInfo.category !== 'MoviesTv') return streams;
+      if (!providerInfo.categories.includes('MoviesTv')) return streams;
       return await addFallbackSubtitles(streams, {
         tmdbId: ctx.tmdbId,
         imdbId: ctx.imdbId,
@@ -198,6 +210,7 @@ for (const providerInfo of providerFiles) {
   providers.push({
     name: providerInfo.name,
     category: providerInfo.category,
+    categories: providerInfo.categories,
     fetch: createFetchFunction(providerInfo)
   });
   console.log(`[registry] ${providerInfo.name} provider loaded`);
@@ -208,7 +221,7 @@ function isProviderEnabled(name) {
   return config[flag] !== false;
 }
 
-function listProviders() { return providers.map(p => ({ name: p.name, category: p.category, enabled: isProviderEnabled(p.name) })); }
+function listProviders() { return providers.map(p => ({ name: p.name, category: p.category, categories: p.categories, enabled: isProviderEnabled(p.name) })); }
 function getProvider(name) {
   const p = providers.find(p => p.name === name.toLowerCase());
   if (!p) return null;

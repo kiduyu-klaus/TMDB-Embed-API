@@ -14,3 +14,7 @@ tests/goojara.test.js
 tests/goojara.test.js
 restart.trigger
 restart.trigger
+test-results/framextv/anime-82684-s2e16.json
+test-results/framextv/movie-278.json
+test-results/framextv/tv-1399-s1e1.json
+tests/addedMoviesTvProviders.test.js

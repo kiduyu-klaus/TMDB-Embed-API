@@ -349,7 +349,7 @@ router.get('/api/status', (req,res) => {
   const providers = listProviders().map(p => {
     const cookieRequired = cookieRequiredProviders.has(p.name);
     const cookieOk = !cookieRequired || (config.febboxCookies && config.febboxCookies.length > 0);
-    return { name: p.name, category: p.category, enabled: p.enabled, cookieRequired, cookieOk };
+    return { name: p.name, category: p.category, categories: p.categories, enabled: p.enabled, cookieRequired, cookieOk };
   });
   res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, metrics: {
     uptimeSeconds: Math.round((Date.now()-metrics.startTime)/1000),
@@ -393,8 +393,12 @@ router.get('/api/debug/env', (req,res) => {
 router.get('/api/providers/:name', (req,res) => {
   const p = getProvider(req.params.name);
   if (!p) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
-  res.json({ success:true, provider:{ name: p.name, category: p.category, enabled: p.enabled } });
+  res.json({ success:true, provider:{ name: p.name, category: p.category, categories: p.categories, enabled: p.enabled } });
 });
+
+function providerSupportsCategory(provider, category) {
+  return (Array.isArray(provider.categories) ? provider.categories : [provider.category]).includes(category);
+}
 
 function sendStreamError(req, res, error) {
   const message = error && error.message ? error.message : 'Failed to fetch streams';
@@ -415,7 +419,7 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
     metrics.streamRequests++;
     const tmdbType = type === 'movie' || (type === 'anime' && season === null && episode === null) ? 'movie' : 'tv';
     const imdbId = await resolveImdbId(tmdbType, tmdbId); if (imdbId) metrics.tmdbToImdbLookups++;
-    const availableProviders = listProviders().filter(p => p.category === category).map(p => p.name);
+    const availableProviders = listProviders().filter(p => providerSupportsCategory(p, category)).map(p => p.name);
     const configuredProviders = config.defaultProviders.length ? config.defaultProviders : availableProviders;
     const categoryConfiguredProviders = configuredProviders.filter(name => availableProviders.includes(name));
     const selectedProviders = category === 'Anime' && categoryConfiguredProviders.length === 0
@@ -424,7 +428,7 @@ router.get('/api/streams/:type/:tmdbId', requireStreamToken, async (req,res) => 
     const providerTimings = {};
     const results = await Promise.all(selectedProviders.map(async name => {
       const prov = getProvider(name);
-      if (!prov || !prov.enabled || prov.category !== category) return [];
+      if (!prov || !prov.enabled || !providerSupportsCategory(prov, category)) return [];
       metrics.providerCalls[name] = (metrics.providerCalls[name]||0)+1;
       try {
         console.log(`[api] invoking provider ${name} for tmdbId=${tmdbId}`);
@@ -461,7 +465,7 @@ router.get('/api/streams/:provider/:type/:tmdbId', requireStreamToken, async (re
   const episode = req.query.episode ? Number(req.query.episode) : null;
   const prov = getProvider(provider);
   if (!prov) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
-  if (prov.category !== category) return res.status(404).json({ success:false, error:'PROVIDER_NOT_IN_CATEGORY' });
+  if (!providerSupportsCategory(prov, category)) return res.status(404).json({ success:false, error:'PROVIDER_NOT_IN_CATEGORY' });
   if (!prov.enabled) return res.status(503).json({ success:false, error:'PROVIDER_DISABLED' });
   try {
     metrics.streamRequests++;

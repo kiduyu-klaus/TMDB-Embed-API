@@ -21,6 +21,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     let allwishArgs;
     let animeSaltArgs;
     let goojaraArgs;
+    let movieboxArgs;
     let requestedLogSince;
     let imdbType;
     let streamFailure;
@@ -29,7 +30,8 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       module: registryModule, __dirname: path.dirname(registryFile), console: quiet,
       require(name) {
         if (name === '../utils/config') return { config };
-        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js', 'animesalt.js', 'goojara.js'] };
+        if (name === 'fs') return { readdirSync: () => ['vidlink.js', 'animekai.js', 'allwish.js', 'animesalt.js', 'goojara.js', 'moviebox.js'] };
+        if (name === path.join(root, 'providers/moviebox.js')) return { getMovieboxStreams: async (...args) => { movieboxArgs = args; return [raw]; } };
         if (name === path.join(root, 'providers/vidlink.js')) return { getVidlinkStreams: async () => [raw] };
         if (name === path.join(root, 'providers/animekai.js')) return { getAnimekaiStreams: async (_id, type) => { animeMediaType = type; return [raw]; } };
         if (name === path.join(root, 'providers/allwish.js')) return { getStreams: async (...args) => { allwishArgs = args; return [raw]; } };
@@ -75,7 +77,7 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       assert.equal(response.success, true);
       assert.equal(response.tmdbId, '550');
       assert.equal(response.imdbId, 'tt1234567');
-      assert.equal(response.count, 1);
+      assert.equal(response.count, routePath === '/api/streams/:type/:tmdbId' ? 2 : 1);
       assert.equal(typeof response.providerTimings.vidlink, 'number');
       const stream = response.streams[0];
       assert.deepEqual(stream.headers, raw.headers);
@@ -92,7 +94,8 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
       params: { type: 'anime', tmdbId: '123' }, query: {}, protocol: 'http', get: () => 'localhost:8787'
     }, { json(value) { animeResponse = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
     assert.equal(animeResponse.success, true);
-    assert.equal(animeResponse.count, 3);
+    assert.equal(animeResponse.count, 4);
+    assert.equal(animeResponse.providerTimings.moviebox >= 0, true);
     assert.equal(animeResponse.providerTimings.animekai >= 0, true);
     assert.equal(animeResponse.providerTimings.allwish >= 0, true);
     assert.equal(animeResponse.providerTimings.animesalt >= 0, true);
@@ -100,6 +103,26 @@ test('both API endpoints retain the normalized contract with proxy enabled and d
     assert.equal(imdbType, 'movie');
 
     const providerRoute = router.stack.find(layer => layer.route && layer.route.path === '/api/streams/:provider/:type/:tmdbId').route;
+    config.defaultProviders = ['moviebox'];
+    for (const route of [aggregateRoute, providerRoute]) {
+      for (const [type, query, expectedType] of [
+        ['anime', { season: '1', episode: '1' }, 'anime'],
+        ['anime', {}, 'movie'],
+        ['movie', {}, 'movie'],
+        ['series', { season: '1', episode: '1' }, 'tv']
+      ]) {
+        let result;
+        await route.stack[route.stack.length - 1].handle({
+          params: { provider: 'moviebox', type, tmdbId: '82684' }, query,
+          protocol: 'http', get: () => 'localhost:8787'
+        }, { json(value) { result = value; }, status(code) { assert.fail(`Unexpected HTTP ${code}`); } });
+        assert.equal(result.success, true);
+        assert.equal(result.count, 1);
+        assert.ok(result.providerTimings.moviebox >= 0);
+        assert.deepEqual(movieboxArgs, ['82684', expectedType, query.season ? 1 : null, query.episode ? 1 : null]);
+      }
+    }
+    config.defaultProviders = [];
     let providerStatus;
     let providerError;
     const animeProviderRes = {
