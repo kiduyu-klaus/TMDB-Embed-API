@@ -19,7 +19,7 @@
   "excludeCodecsRaw": "{\"excludeDV\":false,\"excludeHDR\":false}",
   "minQualitiesRaw": "all",
   "enableUhdmoviesProvider": false,
-  "enableVidlinkProvider": false,
+  "enableVidlinkProvider": true,
   "enableVideasyProvider": false,
   "enableLordflixProvider": false,
   "enableNotorrentProvider": false,

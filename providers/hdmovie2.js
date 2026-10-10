@@ -3,7 +3,7 @@ const { adaptProvider } = require('../utils/providerAdapter');
 
 const fetch = globalThis.fetch || require('node-fetch');
 
-const BASE_URL = (process.env.HDMOVIE2_BASE_URL || 'https://hdmovie2a.sbs').replace(/\/$/, '');
+const BASE_URL = (process.env.HDMOVIE2_BASE_URL || 'https://newhdmovie2.dev/').replace(/\/$/, '');
 const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
   '(KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36';

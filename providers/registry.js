@@ -35,6 +35,7 @@ const providerFunctionMap = {
   'vidup.js': 'getVidupStreams',
   'vidlove.js': 'getVidloveStreams',
   'vidfast.js': 'getVidfastStreams',
+  'vidfast1.js': 'getVidfast1Streams',
   'cinesrc.js': 'getCinesrcStreams',
   'playimdb.js': 'getPlayimdbStreams',
   'meowtv.js': 'getMeowtvStreams',
@@ -57,6 +58,11 @@ const providerFunctionMap = {
   'animesalt.js': 'getStreams',
   'moviebox.js': 'getMovieboxStreams',
   'desiflix.js': 'getStreams',
+  'anime-dekho.js': 'getStreams',
+  'animekhor.js': 'getStreams',
+  'animepahe.js': 'getStreams',
+  'kickassanime.js': 'getStreams',
+  'flixcloud.js': 'getFlixcloudStreams',
 };
 
 // Providers may belong to more than one media category.
@@ -78,6 +84,7 @@ const providerCategoryMap = {
   'vidup.js': 'MoviesTv',
   'vidlove.js': 'MoviesTv',
   'vidfast.js': 'MoviesTv',
+  'vidfast1.js': 'MoviesTv',
   'cinesrc.js': 'MoviesTv',
   'playimdb.js': 'MoviesTv',
   'meowtv.js': 'MoviesTv',
@@ -100,6 +107,11 @@ const providerCategoryMap = {
   'animesalt.js': 'Anime',
   'moviebox.js': ['MoviesTv', 'Anime'],
   'desiflix.js': 'MoviesTv',
+  'anime-dekho.js': 'Anime',
+  'animekhor.js': 'Anime',
+  'animepahe.js': 'Anime',
+  'kickassanime.js': 'Anime',
+  'flixcloud.js': 'Anime',
 };
 
 // Stats for debug endpoint
