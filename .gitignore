@@ -18,3 +18,8 @@ test-results/framextv/anime-82684-s2e16.json
 test-results/framextv/movie-278.json
 test-results/framextv/tv-1399-s1e1.json
 tests/addedMoviesTvProviders.test.js
+
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+        
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz"

@@ -2,6 +2,7 @@
 
 const cheerio = require('cheerio');
 const tmdb = require('../utils/tmdb');
+const { applyAnimeStreamHeaders } = require('../utils/animeStreamHeaders');
 const animeKai = require('./animekai');
 const { seasonNumbers, partNumber, selectSeasonPart } = require('../utils/animeSeasonParts');
 
@@ -138,7 +139,7 @@ function createStream(source, server, playerUrl) {
     if (Array.isArray(source.subtitles) && source.subtitles.length) stream.subtitles = source.subtitles;
     if (source.intro != null) stream.intro = source.intro;
     if (source.outro != null) stream.outro = source.outro;
-    return stream;
+    return applyAnimeStreamHeaders(stream);
 }
 
 async function resolveServer(server) {

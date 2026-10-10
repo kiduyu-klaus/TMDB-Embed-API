@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const crypto = require('crypto');
 const tmdb = require('../utils/tmdb');
+const { applyAnimeStreamHeaders } = require('../utils/animeStreamHeaders');
 const { seasonNumbers: parseSeasonNumbers, selectSeasonPart } = require('../utils/animeSeasonParts');
 
 const ANIKAI_BASE = 'https://animekai.com.ro';
@@ -484,7 +485,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
                     if (resolved.subtitles && resolved.subtitles.length) stream.subtitles = resolved.subtitles;
                     if (resolved.intro != null) stream.intro = resolved.intro;
                     if (resolved.outro != null) stream.outro = resolved.outro;
-                    return stream;
+                    return applyAnimeStreamHeaders(stream);
                 }));
 
                 return serverSettlements.flatMap((settlement) => {
