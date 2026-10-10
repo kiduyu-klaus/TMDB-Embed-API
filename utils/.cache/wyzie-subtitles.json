@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "entries": {
+    "movie:550": {
+      "tmdbId": "550",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt0137523",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1791674301552,
+      "subtitles": []
+    },
+    "tv:1399:1:1": {
+      "tmdbId": "1399",
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "imdbId": "tt0944947",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1791674371894,
+      "subtitles": []
+    }
+  }
+}

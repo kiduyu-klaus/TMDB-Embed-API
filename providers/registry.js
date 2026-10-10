@@ -2,6 +2,18 @@ const { config } = require('../utils/config');
 const fs = require('fs');
 const path = require('path');
 const { normalizeStreams } = require('../utils/streamResponse');
+const { addFallbackSubtitles: addWyzieSubtitles } = require('../utils/wyzieSubtitles');
+const { addOpenSubtitlesFallback } = require('../utils/opensubtitles');
+
+// Wyzie first, OpenSubtitles only when Wyzie came back empty. Both helpers
+// attach to streams that arrived without subtitles and leave existing ones alone.
+async function addFallbackSubtitles(streams, context) {
+  const withWyzie = await addWyzieSubtitles(streams, context);
+  const stillMissing = withWyzie.some(
+    stream => stream && (!Array.isArray(stream.subtitles) || stream.subtitles.length === 0)
+  );
+  return stillMissing ? addOpenSubtitlesFallback(withWyzie, context) : withWyzie;
+}
 
 // Lazy load cache for providers
 const providerCache = new Map();
@@ -149,7 +161,15 @@ function createFetchFunction(providerInfo) {
 
       if (!Array.isArray(result)) return [];
 
-      return normalizeStreams(result, providerInfo.name);
+      const streams = normalizeStreams(result, providerInfo.name);
+      if (providerInfo.category !== 'MoviesTv') return streams;
+      return await addFallbackSubtitles(streams, {
+        tmdbId: ctx.tmdbId,
+        imdbId: ctx.imdbId,
+        type: ctx.type,
+        season: ctx.season,
+        episode: ctx.episode
+      });
 
     } catch (e) {
       console.error(`[registry] ${providerInfo.name} fetch error:`, e.message);

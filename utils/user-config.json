@@ -31,5 +31,6 @@
   "enableCastletvProvider": true,
   "enableOnetouchtvProvider": true,
   "enableHdghartvProvider": true,
-  "enableStreamflixProvider": true
+  "enableStreamflixProvider": true,
+  "enableAnimekaiProvider": true
 }

@@ -1,6 +1,8 @@
 const cheerio = require('cheerio');
 const tmdb = require('../utils/tmdb');
 const { scoreCandidate } = require('../utils/titleMatch');
+const path = require('path');
+const { Worker } = require('worker_threads');
 
 const BASE_URL = 'https://ww1.goojara.to';
 const BASE_HOST = new URL(BASE_URL).host;
@@ -8,6 +10,14 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20
 const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_REDIRECTS_IN_PARALLEL = 6;
 const SEARCH_FIELDS = { z: 'Mwxxa3Vnaw', x: 'b3716e05ff' };
+const LULUVDO_HOSTS = new Set(['luluvdo.com', 'www.luluvdo.com', 'luluvido.com', 'www.luluvido.com']);
+const DOOD_HOSTS = new Set(['dood.watch', 'www.dood.watch']);
+const VIDSRC_HOSTS = new Set(['vidsrc.sh', 'www.vidsrc.sh']);
+const VIDSRC_PLAYER_HOSTS = new Set(['stellarconductornexus.com']);
+const VIDSRC_DATA_HOSTS = new Set(['data.vidsrc.sh']);
+const MAX_VIDSRC_WASM_BYTES = 1_000_000;
+const MAX_VIDSRC_STREAM_DATA_BYTES = 256_000;
+const VIDSRC_DECRYPT_TIMEOUT_MS = 2_000;
 
 function isSiteUrl(value, base = BASE_URL) {
   try {
@@ -209,6 +219,46 @@ function extractPackedMediaUrls(scripts) {
   return [...found];
 }
 
+function parseInlineObject(source, name) {
+  const match = String(source || '').match(new RegExp(`(?:window\\.)?${name}\\s*=\\s*(\\{[\\s\\S]*?\\})\\s*;`));
+  if (!match) return null;
+  try { return JSON.parse(match[1]); } catch { return null; }
+}
+
+function hasNoSuchFileNotice(html) {
+  const $ = cheerio.load(html || '');
+  return $('div.alert.alert-danger').toArray().some(element =>
+    /\bno\s+such\s+file\b/i.test($(element).text())
+  );
+}
+
+function isExcludedStreamUrl(value) {
+  try {
+    const host = new URL(value).hostname;
+    return ['dood.watch', 'vidsrc.me'].some(domain => host === domain || host.endsWith(`.${domain}`));
+  } catch { return true; }
+}
+
+function extractDirectMediaUrls(html, pageUrl) {
+  const $ = cheerio.load(html || '');
+  const candidates = $('video[src], video source[src], source[src]')
+    .toArray().map(element => $(element).attr('src')).filter(Boolean);
+  const scripts = $('script:not([src])').toArray().map(element => $(element).html() || '');
+  const scriptText = scripts.join('\n').replace(/\\\//g, '/').replace(/&amp;/g, '&');
+  candidates.push(...(scriptText.match(/(?:https?:\/\/|\/\/)[^\s"'<>\\]+/g) || []));
+  candidates.push(...extractPackedMediaUrls(scripts));
+  const unique = new Set();
+  return candidates.flatMap(candidate => {
+    try {
+      const url = new URL(candidate, pageUrl);
+      if (url.protocol !== 'https:' || !/\.(?:m3u8|mp4|mpd|webm)(?:$)/i.test(url.pathname)) return [];
+      if (unique.has(url.href)) return [];
+      unique.add(url.href);
+      return [url.href];
+    } catch { return []; }
+  });
+}
+
 function toHttpsUrl(value, base) {
   try {
     const url = new URL(value, base);
@@ -291,16 +341,20 @@ async function resolveWootlySources(playerUrl, cookieJar) {
 
 async function resolveLuluvdoSources(downloadUrl, cookieJar) {
   const pageUrl = toHttpsUrl(downloadUrl);
-  const luluHosts = new Set(['luluvdo.com', 'www.luluvdo.com', 'luluvido.com', 'www.luluvido.com']);
-  if (!pageUrl || !luluHosts.has(pageUrl.hostname)) return [];
-  const pathMatch = pageUrl.pathname.match(/^\/(?:d|e)\/([a-z0-9_-]+)\/?$/i);
+  if (!pageUrl || !LULUVDO_HOSTS.has(pageUrl.hostname)) return [];
+  const pathMatch = pageUrl.pathname.match(/^\/(?:(d|e)\/)?([a-z0-9_-]+)\/?$/i);
   if (!pathMatch) return [];
-  const fileId = pathMatch[1];
+  const route = (pathMatch[1] || '').toLowerCase();
+  const fileId = pathMatch[2];
   let downloadText = '';
   let embedUrl;
-  if (pageUrl.pathname.split('/')[1] === 'd') {
+  if (route !== 'e') {
     const downloadPage = await requestText(pageUrl.href, cookieJar, { redirect: 'manual' });
-    downloadText = cheerio.load(downloadPage.text).text();
+    downloadText = cheerio.load(downloadPage.text)('title').text();
+    if (hasNoSuchFileNotice(downloadPage.text)) {
+      console.warn('[Goojara] Luluvdo link skipped: No such file');
+      return [];
+    }
     const $download = cheerio.load(downloadPage.text);
     const iframeHref = $download('iframe[src]').toArray().map(element => $download(element).attr('src')).find((href) => {
       const candidate = href && toHttpsUrl(href, pageUrl.href);
@@ -317,26 +371,246 @@ async function resolveLuluvdoSources(downloadUrl, cookieJar) {
     redirect: 'manual',
     headers: { Referer: pageUrl.href },
   });
+  if (hasNoSuchFileNotice(playerPage.text)) {
+    console.warn('[Goojara] Luluvdo player skipped: No such file');
+    return [];
+  }
   const $player = cheerio.load(playerPage.text);
-  const scripts = $player('script:not([src])').toArray().map(element => $player(element).html() || '');
-  const mediaUrls = extractPackedMediaUrls(scripts);
+  const mediaUrls = extractDirectMediaUrls(playerPage.text, embedUrl.href);
   const metadata = `${downloadText} ${$player('title').text()}`;
   return mediaUrls.map(url => ({
     url,
-    quality: extractQuality(`${metadata} ${url}`),
+    quality: extractQuality(metadata),
     headers: { Referer: embedUrl.href, 'User-Agent': USER_AGENT },
   }));
+}
+
+async function resolveDoodSources(downloadUrl, cookieJar) {
+  const pageUrl = toHttpsUrl(downloadUrl);
+  if (!pageUrl || !DOOD_HOSTS.has(pageUrl.hostname) || !/^\/(?:d|e)\/[a-z0-9_-]+\/?$/i.test(pageUrl.pathname)) return [];
+  const downloadPage = await requestText(pageUrl.href, cookieJar, {
+    headers: { Referer: `${BASE_URL}/` },
+  });
+  const $download = cheerio.load(downloadPage.text);
+  const pageText = $download('body').text().replace(/\s+/g, ' ');
+  if (hasNoSuchFileNotice(downloadPage.text) || /(?:video|file).{0,80}(?:not found|no longer available)/i.test(pageText)) return [];
+
+  let mediaUrls = extractDirectMediaUrls(downloadPage.text, downloadPage.response.url || pageUrl.href);
+  if (!mediaUrls.length) {
+    const iframeHref = $download('iframe[src]').first().attr('src');
+    const iframeUrl = iframeHref && toHttpsUrl(iframeHref, pageUrl.href);
+    if (iframeUrl && DOOD_HOSTS.has(iframeUrl.hostname)) {
+      const playerPage = await requestText(iframeUrl.href, cookieJar, { headers: { Referer: pageUrl.href } });
+      const $player = cheerio.load(playerPage.text);
+      const playerText = $player('body').text().replace(/\s+/g, ' ');
+      if (hasNoSuchFileNotice(playerPage.text) || /(?:video|file).{0,80}(?:not found|no longer available)/i.test(playerText)) return [];
+      mediaUrls = extractDirectMediaUrls(playerPage.text, playerPage.response.url || iframeUrl.href);
+    }
+  }
+  return mediaUrls.map(url => ({
+    url,
+    quality: extractQuality(url),
+    headers: { Referer: pageUrl.href, 'User-Agent': USER_AGENT },
+  }));
+}
+
+async function fetchVidSrcWasm(descriptor, playerUrl, cookieJar) {
+  if (descriptor && typeof descriptor.wasm_url === 'string') {
+    const wasmUrl = toHttpsUrl(descriptor.wasm_url, playerUrl.href);
+    if (!wasmUrl || !VIDSRC_DATA_HOSTS.has(wasmUrl.hostname) || wasmUrl.pathname !== '/wasm.php') return null;
+    const response = await request(wasmUrl.href, cookieJar, {
+      headers: { Referer: playerUrl.href, Accept: 'application/wasm' },
+    });
+    if (!response.ok) return null;
+    const bytes = Buffer.from(await response.arrayBuffer());
+    return bytes.length > 0 && bytes.length <= MAX_VIDSRC_WASM_BYTES ? bytes : null;
+  }
+  if (descriptor && typeof descriptor.wasm === 'string' && descriptor.wasm.length <= MAX_VIDSRC_WASM_BYTES * 2) {
+    const encoded = descriptor.wasm.replace(/-/g, '+').replace(/_/g, '/');
+    const bytes = Buffer.from(encoded, 'base64');
+    return bytes.length > 0 && bytes.length <= MAX_VIDSRC_WASM_BYTES ? bytes : null;
+  }
+  return null;
+}
+
+async function decryptVidSrcStreamUrls(encryptedValue, wasmBytes) {
+  if (typeof encryptedValue !== 'string' || encryptedValue.length > MAX_VIDSRC_STREAM_DATA_BYTES) return [];
+  const module = await WebAssembly.compile(wasmBytes);
+  if (WebAssembly.Module.imports(module).length) return [];
+  const exportNames = new Set(WebAssembly.Module.exports(module).map(item => item.name));
+  if (!['memory', 'alloc', 'decrypt'].every(name => exportNames.has(name))) return [];
+
+  const worker = new Worker(path.join(__dirname, 'vidsrcDecoderWorker.js'), {
+    workerData: { encryptedValue, wasmBytes },
+    resourceLimits: { maxOldGenerationSizeMb: 32, maxYoungGenerationSizeMb: 8, stackSizeMb: 2 },
+  });
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      worker.terminate();
+      callback(value);
+    };
+    const timer = setTimeout(() => finish(reject, new Error('VidSrc decoder timed out')), VIDSRC_DECRYPT_TIMEOUT_MS);
+    worker.once('message', result => {
+      if (result && result.ok && typeof result.value === 'string') {
+        finish(resolve, result.value.split('\n').filter(Boolean));
+      } else {
+        finish(reject, new Error('VidSrc decoder returned an invalid result'));
+      }
+    });
+    worker.once('error', () => finish(reject, new Error('VidSrc decoder worker failed')));
+    worker.once('exit', code => {
+      if (!settled && code !== 0) finish(reject, new Error('VidSrc decoder worker exited unexpectedly'));
+    });
+  });
+}
+
+function isPublicStreamHostname(hostname) {
+  const host = String(hostname || '').toLowerCase().replace(/^\[|\]$/g, '');
+  if (!host.includes('.') || host === 'localhost' || /(?:^|\.)(?:localhost|local|internal)$/.test(host) || host.includes(':')) return false;
+  const ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (!ipv4) return true;
+  const [first, second] = ipv4.slice(1).map(Number);
+  return first < 224 && first !== 0 && first !== 10 && first !== 127
+    && !(first === 100 && second >= 64 && second <= 127)
+    && !(first === 169 && second === 254)
+    && !(first === 172 && second >= 16 && second <= 31)
+    && !(first === 192 && second === 168);
+}
+
+function parseVidSrcToken(text) {
+  const value = String(text || '').trim();
+  if (!value || value.length > 4096) return '';
+  if (value[0] !== '{' && value[0] !== '[') return value;
+  try {
+    const parsed = JSON.parse(value);
+    if (typeof parsed === 'string') return parsed;
+    if (parsed && typeof parsed === 'object') {
+      const token = parsed.token || parsed.data || parsed.string || parsed.result;
+      return typeof token === 'string' ? token : '';
+    }
+  } catch {
+    return value;
+  }
+  return '';
+}
+
+async function fetchVidSrcToken(streamUrl, playerUrl, cookieJar) {
+  if (!isPublicStreamHostname(streamUrl.hostname) || streamUrl.port) return '';
+  const tokenUrl = new URL('/generate.php', streamUrl.origin);
+  try {
+    const response = await requestText(tokenUrl.href, cookieJar, { headers: { Referer: playerUrl.href } });
+    return parseVidSrcToken(response.text);
+  } catch {
+    return '';
+  }
+}
+
+function applyVidSrcToken(url, token) {
+  if (!token) return url;
+  if (url.includes('__TOKEN__')) return url.split('__TOKEN__').join(token);
+  const tokenizedUrl = new URL(url);
+  tokenizedUrl.searchParams.set('token', token);
+  return tokenizedUrl.href;
+}
+
+async function resolveVidSrcSources(embedUrlValue, cookieJar) {
+  const embedUrl = toHttpsUrl(embedUrlValue);
+  if (!embedUrl || !VIDSRC_HOSTS.has(embedUrl.hostname) || !/^\/embed\/(?:tv|movie)\/?$/i.test(embedUrl.pathname)) return [];
+
+  const embedPage = await requestText(embedUrl.href, cookieJar, { headers: { Referer: `${BASE_URL}/` } });
+  const $embed = cheerio.load(embedPage.text);
+  const apiHref = $embed('#player_iframe').attr('data-api');
+  const apiUrl = apiHref && toHttpsUrl(apiHref, embedUrl.href);
+  if (!apiUrl || !VIDSRC_HOSTS.has(apiUrl.hostname) || apiUrl.pathname !== '/vs_src.php') return [];
+
+  const apiResponse = await requestText(apiUrl.href, cookieJar, {
+    headers: { Referer: embedUrl.href, Accept: 'application/json' },
+  });
+  let sourcePageData;
+  try { sourcePageData = JSON.parse(apiResponse.text); } catch { return []; }
+  const shellUrl = toHttpsUrl(sourcePageData && sourcePageData.src);
+  if (!shellUrl || !VIDSRC_PLAYER_HOSTS.has(shellUrl.hostname)) return [];
+
+  const shellPage = await requestText(shellUrl.href, cookieJar, { headers: { Referer: embedUrl.href } });
+  const shellConfig = parseInlineObject(shellPage.text, 'CFG');
+  const playerUrl = shellConfig && toHttpsUrl(shellConfig.playerUrl, shellUrl.href);
+  if (!playerUrl || !VIDSRC_PLAYER_HOSTS.has(playerUrl.hostname) || !playerUrl.pathname.startsWith('/embed/player/')) return [];
+
+  const playerPage = await requestText(playerUrl.href, cookieJar, { headers: { Referer: shellUrl.href } });
+  const playerConfig = parseInlineObject(playerPage.text, 'CONFIG');
+  if (!playerConfig) return [];
+  const sourcesUrl = toHttpsUrl(playerConfig.api || playerConfig.streamBase, playerUrl.href);
+  if (!sourcesUrl || !VIDSRC_DATA_HOSTS.has(sourcesUrl.hostname) || sourcesUrl.pathname !== '/api.php') return [];
+  if (playerConfig.mediaType === 'tv') {
+    const season = Number(playerConfig.season);
+    const episode = Number(playerConfig.episode);
+    if (Number.isInteger(season) && season > 0 && Number.isInteger(episode) && episode > 0) {
+      sourcesUrl.searchParams.set('season', String(season));
+      sourcesUrl.searchParams.set('episode', String(episode));
+    }
+  }
+  if (!sourcesUrl.searchParams.has('stream_urls')) {
+    sourcesUrl.search = `${sourcesUrl.search}${sourcesUrl.search ? '&' : '?'}stream_urls`;
+  }
+  if (typeof playerConfig.apiToken === 'string' && playerConfig.apiToken) {
+    sourcesUrl.searchParams.set('api_token', playerConfig.apiToken);
+  }
+  const sourcesResponse = await requestText(sourcesUrl.href, cookieJar, {
+    headers: { Referer: playerUrl.href, Accept: 'application/json' },
+  });
+  let payload;
+  try { payload = JSON.parse(sourcesResponse.text); } catch { return []; }
+  const rawStreamUrls = payload && payload.data && payload.data.stream_urls;
+  let streamUrls = Array.isArray(rawStreamUrls) ? rawStreamUrls : [];
+  if (typeof rawStreamUrls === 'string' && payload.vs) {
+    const wasmBytes = await fetchVidSrcWasm(payload.vs, playerUrl, cookieJar);
+    if (wasmBytes) streamUrls = await decryptVidSrcStreamUrls(rawStreamUrls, wasmBytes);
+  }
+  const sourceUrls = [...new Set(streamUrls.flatMap(value => {
+    const url = toHttpsUrl(value);
+    return url ? [url.href] : [];
+  }))];
+  const tokenPromises = new Map();
+  return Promise.all(sourceUrls.map(async url => {
+    let resolvedUrl = url;
+    if (payload.vs) {
+      const sourceUrl = new URL(url);
+      if (!tokenPromises.has(sourceUrl.origin)) {
+        tokenPromises.set(sourceUrl.origin, fetchVidSrcToken(sourceUrl, playerUrl, cookieJar));
+      }
+      const token = await tokenPromises.get(sourceUrl.origin);
+      if (token) resolvedUrl = applyVidSrcToken(url, token);
+    }
+    return {
+      url: resolvedUrl,
+      quality: extractQuality(resolvedUrl),
+      headers: { Referer: playerUrl.href, 'User-Agent': USER_AGENT },
+    };
+  }));
+}
+
+function isResolvedPlayerHost(value) {
+  try {
+    const host = new URL(value).hostname;
+    return LULUVDO_HOSTS.has(host) || DOOD_HOSTS.has(host) || VIDSRC_HOSTS.has(host);
+  } catch { return false; }
 }
 
 async function resolvePlayerSources(playerUrl, cookieJar) {
   try {
     const url = new URL(playerUrl);
     if (['www.wootly.ch', 'wootly.ch'].includes(url.hostname)) return await resolveWootlySources(url.href, cookieJar);
-    if (['luluvdo.com', 'www.luluvdo.com', 'luluvido.com', 'www.luluvido.com'].includes(url.hostname)) {
+    if (LULUVDO_HOSTS.has(url.hostname)) {
       return await resolveLuluvdoSources(url.href, cookieJar);
     }
+    if (DOOD_HOSTS.has(url.hostname)) return await resolveDoodSources(url.href, cookieJar);
+    if (VIDSRC_HOSTS.has(url.hostname)) return await resolveVidSrcSources(url.href, cookieJar);
   } catch (error) {
-    console.warn(`[Goojara] direct source extraction failed: ${error.name || 'Error'}`);
+    console.warn(`[Goojara] direct source extraction failed: ${error.message || error.name || 'Error'}`);
   }
   return [];
 }
@@ -462,6 +736,7 @@ async function resolveServer(server, index, cookieJar, title) {
     } catch (error) {
       console.warn(`[Goojara] ${server.label} direct source lookup failed: ${error.name || 'Error'}`);
     }
+    if (!sources.length && (isResolvedPlayerHost(streamUrl) || isExcludedStreamUrl(streamUrl))) return [];
     if (!sources.length) {
       sources = [{
         url: streamUrl,
@@ -469,7 +744,7 @@ async function resolveServer(server, index, cookieJar, title) {
         headers: { Referer: `${BASE_URL}/`, 'User-Agent': USER_AGENT },
       }];
     }
-    return sources.map(source => ({
+    return sources.filter(source => !isExcludedStreamUrl(source.url)).map(source => ({
       name: 'Goojara',
       title: `${title} - ${server.label}`,
       url: source.url,
@@ -588,4 +863,5 @@ module.exports = {
   parseEpisodeUrl,
   parseServerLinks,
   extractQuality,
+  resolveServer,
 };
