@@ -190,6 +190,18 @@ function getPlayableSourceUrl(value, baseUrl) {
     }
 }
 
+function extractSourceHeaders(source, fallback) {
+    const candidates = [source && source.headers, source && source.requestHeaders, source && source.httpHeaders];
+    const headers = { ...fallback };
+    for (const candidate of candidates) {
+        if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) continue;
+        for (const [name, value] of Object.entries(candidate)) {
+            if (typeof value === 'string' && value.trim()) headers[name] = value;
+        }
+    }
+    return headers;
+}
+
 function extractPlayableSources(html, baseUrl) {
     const $ = cheerio.load(html || '');
     const candidates = [];
@@ -216,11 +228,12 @@ function buildRavokStream(sourceUrl, playerUrl, pageUrl, label, sourceData) {
     const streamUrl = getPlayableSourceUrl(sourceUrl, playerUrl);
     if (!streamUrl) return null;
     const cdnOrigin = new URL(streamUrl).origin;
+    const fallbackHeaders = { Referer: `${cdnOrigin}/`, Origin: cdnOrigin, 'User-Agent': USER_AGENT };
     const stream = {
         url: streamUrl,
         quality: '720p',
         server: label,
-        headers: { Referer: `${cdnOrigin}/`, Origin: cdnOrigin, 'User-Agent': USER_AGENT },
+        headers: extractSourceHeaders(sourceData, fallbackHeaders),
         subtitles: []
     };
 
@@ -232,7 +245,7 @@ function buildRavokStream(sourceUrl, playerUrl, pageUrl, label, sourceData) {
             label: track.label || track.language || 'English',
             language: track.language || track.label || 'en',
             mimeType: /\.srt(?:$|\?)/i.test(track.file || track.url) ? 'application/x-subrip' : 'text/vtt',
-            headers: { Referer: pageUrl, 'User-Agent': USER_AGENT }
+            headers: extractSourceHeaders(track, { Referer: pageUrl, 'User-Agent': USER_AGENT })
         }));
     }
     return stream;
@@ -254,12 +267,17 @@ async function resolveRavokPlayer(playerUrl, pageUrl, label) {
         }
     });
     const values = [data && data.videoSource, data && data.securedLink];
-    if (Array.isArray(data && data.videoSources)) {
-        values.push(...data.videoSources.map(source => typeof source === 'string' ? source : source && (source.file || source.src)));
-    }
+    if (Array.isArray(data && data.videoSources)) values.push(...data.videoSources);
     const streams = [];
     for (const value of values) {
-        const stream = buildRavokStream(value, playerUrl, pageUrl, label, data);
+        const source = typeof value === 'string' ? { url: value } : value;
+        const stream = buildRavokStream(
+            source && (source.url || source.file || source.src),
+            playerUrl,
+            pageUrl,
+            label,
+            { ...data, ...source }
+        );
         if (stream && !streams.some(existing => existing.url === stream.url)) streams.push(stream);
     }
     if (!streams.length) console.warn(`[AnimeSalt] ${label} returned no playable source`);

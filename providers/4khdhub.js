@@ -57,6 +57,93 @@ function rot13(str) {
     });
 }
 
+// --- Player wrapper unwrapping ---
+// HubCloud "Download File" targets are often not files but Cloudflare Pages
+// player pages (hbplay.pages.dev/?u=<b64>&m=<b64>&t=<b64>). The page is static,
+// so it answers 200 no matter whether the media is alive or deleted, which hides
+// dead sources from URL validation and hands Stremio an HTML page instead of a
+// stream. The player does nothing but `video.src = atob(params.u)`, so decode
+// the payload ourselves and return the real file URL.
+function decodePlayerParam(value) {
+    if (!value) return null;
+    let input = String(value).replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+    while (input.length % 4 !== 0) input += '=';
+    try {
+        return base64Decode(input);
+    } catch (e) {
+        return null;
+    }
+}
+
+function unwrapPlayerUrl(url) {
+    try {
+        const parsed = new URL(url);
+        const encoded = parsed.searchParams.get('u');
+        if (!encoded) return { url, title: null, wrapped: false };
+        const inner = decodePlayerParam(encoded);
+        if (!inner || !/^https?:\/\//i.test(inner.trim())) {
+            return { url, title: null, wrapped: false };
+        }
+        return {
+            url: inner.trim(),
+            title: decodePlayerParam(parsed.searchParams.get('t')),
+            wrapped: true
+        };
+    } catch (e) {
+        return { url, title: null, wrapped: false };
+    }
+}
+
+// --- Parallel link processing ---
+// Resolving links one at a time made a single episode take as long as the sum of
+// every redirect round-trip. Run them concurrently instead, but keep a ceiling on
+// in-flight requests: firing 40+ sockets at 4KHDHub at once reliably trips
+// rate limiting, which would trade a slow run for a lossy one.
+const MAX_CONCURRENT_REQUESTS = 8;
+
+// Map with bounded concurrency. Results keep input order so stream ordering stays
+// deterministic across runs, and a worker that throws yields null instead of
+// rejecting the whole batch.
+function mapWithConcurrency(items, limit, worker) {
+    // Array.from accepts arrays, iterables and array-likes alike, so a cheerio
+    // selection or NodeList handed in here degrades to [] instead of throwing.
+    const list = items ? Array.from(items) : [];
+    const results = new Array(list.length);
+    let cursor = 0;
+    const width = Math.max(1, Math.min(limit, list.length));
+    const runners = Array.from({ length: width }, async () => {
+        while (cursor < list.length) {
+            const index = cursor++;
+            try {
+                results[index] = await worker(list[index], index);
+            } catch (error) {
+                results[index] = null;
+            }
+        }
+    });
+    return Promise.all(runners).then(() => results);
+}
+
+// --- Stream URL hygiene ---
+// Stremio hands the stream URL straight to the player, so a stray whitespace
+// character becomes a malformed request. 4KHDHub filenames arrive with embedded
+// tabs/newlines from the card header, and an encode-only-space rule leaves those
+// in place while also double-encoding any "%20" that was already correct.
+function sanitizeStreamUrl(url) {
+    if (typeof url !== 'string' || url.length === 0) return url;
+    // Split on existing percent-escapes so they survive untouched - re-encoding
+    // "%20" would yield "%2520" and break the path.
+    const segments = url.split(/(%[0-9A-Fa-f]{2})/);
+    for (let i = 0; i < segments.length; i += 2) {
+        // Every whitespace flavour (space, tab, CR, LF, VT, FF, NBSP, ...) becomes
+        // %20, as do the zero-width spaces that render invisibly but still break URLs.
+        segments[i] = segments[i].replace(/[\s\u200b\u200c\u200d\ufeff]+/g, '%20');
+        // Remaining control characters cannot legitimately appear in a URL.
+        segments[i] = segments[i].replace(/[\u0000-\u001f\u007f-\u009f]/g, '');
+    }
+    return segments.join('');
+}
+
 function validateUrl(url) {
     return new Promise((resolve) => {
         try {
@@ -340,8 +427,8 @@ function getBaseUrl(url) {
 }
 
 function cleanTitle(title) {
-    // Decode URL-encoded title first
-    const decodedTitle = decodeFilename(title);
+    // Decode URL-encoded title first; the card header also carries newlines/tabs
+    const decodedTitle = decodeFilename(title).replace(/\s+/g, ' ').trim();
     const parts = decodedTitle.split(/[.\-_]/);
 
     const qualityTags = ['WEBRip', 'WEB-DL', 'WEB', 'BluRay', 'HDRip', 'DVDRip', 'HDTV', 'CAM', 'TS', 'R5', 'DVDScr', 'BRRip', 'BDRip', 'DVD', 'PDTV', 'HD'];
@@ -779,13 +866,25 @@ function extractHubCloudLinks(url, referer) {
                 }
             }
 
-            const promises = downloadButtons.get().map((button, index) => {
+            // This cheerio build exposes .map() on a selection but not .toArray();
+            // Array.from guarantees a real array for the concurrency limiter.
+            const buttonElements = Array.from(downloadButtons.get().map(button => button));
+            const promises = mapWithConcurrency(buttonElements, MAX_CONCURRENT_REQUESTS, (button, index) => {
                 return new Promise((resolve) => {
                     const $button = $(button);
-                    const link = $button.attr('href');
+                    const rawLink = $button.attr('href');
                     const text = $button.text();
+                    // Some buttons point at a player page rather than the file itself
+                    const unwrapped = rawLink ? unwrapPlayerUrl(rawLink) : { url: rawLink, title: null, wrapped: false };
+                    const link = unwrapped.url;
+                    // Prefer the real filename carried by the wrapper over the
+                    // truncated card header text
+                    const fallbackName = unwrapped.title || headerDetails;
 
                     console.log(`[4KHDHub] Processing button ${index + 1}: "${text}" -> ${link}`);
+                    if (unwrapped.wrapped) {
+                        console.log(`[4KHDHub] Unwrapped player page ${rawLink} -> direct source ${link}`);
+                    }
 
                     if (!link) {
                         console.log(`[4KHDHub] Button ${index + 1} has no link`);
@@ -800,7 +899,7 @@ function extractHubCloudLinks(url, referer) {
                         // Get actual filename from HEAD request
                         getFilenameFromUrl(link)
                             .then(actualFilename => {
-                                const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                const displayFilename = actualFilename || fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -826,7 +925,7 @@ function extractHubCloudLinks(url, referer) {
                                 });
                             })
                             .catch(() => {
-                                const displayFilename = headerDetails || 'Unknown';
+                                const displayFilename = fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -856,7 +955,7 @@ function extractHubCloudLinks(url, referer) {
                         // Get actual filename from HEAD request
                         getFilenameFromUrl(link)
                             .then(actualFilename => {
-                                const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                const displayFilename = actualFilename || fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -872,7 +971,7 @@ function extractHubCloudLinks(url, referer) {
                                 });
                             })
                             .catch(() => {
-                                const displayFilename = headerDetails || 'Unknown';
+                                const displayFilename = fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -903,7 +1002,7 @@ function extractHubCloudLinks(url, referer) {
                                     // Get actual filename from HEAD request
                                     getFilenameFromUrl(finalUrl)
                                         .then(actualFilename => {
-                                            const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                            const displayFilename = actualFilename || fallbackName || 'Unknown';
                                             const titleParts = [];
                                             if (displayFilename) titleParts.push(displayFilename);
                                             if (size) titleParts.push(size);
@@ -919,7 +1018,7 @@ function extractHubCloudLinks(url, referer) {
                                             });
                                         })
                                         .catch(() => {
-                                            const displayFilename = headerDetails || 'Unknown';
+                                            const displayFilename = fallbackName || 'Unknown';
                                             const titleParts = [];
                                             if (displayFilename) titleParts.push(displayFilename);
                                             if (size) titleParts.push(size);
@@ -958,7 +1057,7 @@ function extractHubCloudLinks(url, referer) {
                         // Get actual filename from HEAD request
                         getFilenameFromUrl(convertedLink)
                             .then(actualFilename => {
-                                const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                const displayFilename = actualFilename || fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -974,7 +1073,7 @@ function extractHubCloudLinks(url, referer) {
                                 });
                             })
                             .catch(() => {
-                                const displayFilename = headerDetails || 'Unknown';
+                                const displayFilename = fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -994,7 +1093,7 @@ function extractHubCloudLinks(url, referer) {
                         // Get actual filename from HEAD request
                         getFilenameFromUrl(link)
                             .then(actualFilename => {
-                                const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                const displayFilename = actualFilename || fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -1010,7 +1109,7 @@ function extractHubCloudLinks(url, referer) {
                                 });
                             })
                             .catch(() => {
-                                const displayFilename = headerDetails || 'Unknown';
+                                const displayFilename = fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -1063,7 +1162,7 @@ function extractHubCloudLinks(url, referer) {
                                 // Get actual filename from HEAD request
                                 return getFilenameFromUrl(decodedUrl)
                                     .then(actualFilename => {
-                                        const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                        const displayFilename = actualFilename || fallbackName || 'Unknown';
                                         const titleParts = [];
                                         if (displayFilename) titleParts.push(displayFilename);
                                         if (size) titleParts.push(size);
@@ -1079,7 +1178,7 @@ function extractHubCloudLinks(url, referer) {
                                         };
                                     })
                                     .catch(() => {
-                                        const displayFilename = headerDetails || 'Unknown';
+                                        const displayFilename = fallbackName || 'Unknown';
                                         const titleParts = [];
                                         if (displayFilename) titleParts.push(displayFilename);
                                         if (size) titleParts.push(size);
@@ -1108,7 +1207,7 @@ function extractHubCloudLinks(url, referer) {
                         // Generic link - Get actual filename from HEAD request
                         getFilenameFromUrl(link)
                             .then(actualFilename => {
-                                const displayFilename = actualFilename || headerDetails || 'Unknown';
+                                const displayFilename = actualFilename || fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -1124,7 +1223,7 @@ function extractHubCloudLinks(url, referer) {
                                 });
                             })
                             .catch(() => {
-                                const displayFilename = headerDetails || 'Unknown';
+                                const displayFilename = fallbackName || 'Unknown';
                                 const titleParts = [];
                                 if (displayFilename) titleParts.push(displayFilename);
                                 if (size) titleParts.push(size);
@@ -1143,7 +1242,7 @@ function extractHubCloudLinks(url, referer) {
                 });
             });
 
-            return Promise.all(promises)
+            return promises
                 .then(results => {
                     const validResults = results.filter(result => result !== null);
                     console.log(`[4KHDHub] HubCloud extraction completed, found ${validResults.length} valid links`);
@@ -1351,7 +1450,7 @@ function loadContent(url) {
 function extractStreamingLinks(downloadLinks) {
     console.log(`[4KHDHub] Processing ${downloadLinks.length} download links...`);
 
-    const promises = downloadLinks.map((link, index) => {
+    const promises = mapWithConcurrency(downloadLinks, MAX_CONCURRENT_REQUESTS, (link, index) => {
         return new Promise((resolve) => {
             console.log(`[4KHDHub] Processing link ${index + 1}: ${link}`);
 
@@ -1378,7 +1477,8 @@ function extractStreamingLinks(downloadLinks) {
         });
     });
 
-    return Promise.all(promises)
+    // mapWithConcurrency already returns a promise for the ordered result array
+    return promises
         .then(results => {
             const validResults = results.filter(r => r !== null).flat();
             const filtered = validResults.filter(link => {
@@ -1533,6 +1633,12 @@ function processHubDriveLink(href, referer, filename = 'Unknown', size = '', qua
 }
 
 function processExtractorLink(link, resolve, linkNumber) {
+    // Player wrappers never match an extractor; resolve them to the media URL first
+    const unwrapped = unwrapPlayerUrl(link);
+    if (unwrapped.wrapped) {
+        console.log(`[4KHDHub] Link ${linkNumber} is a player page; using direct source: ${unwrapped.url}`);
+        link = unwrapped.url;
+    }
     const linkLower = link.toLowerCase();
 
     console.log(`[4KHDHub] Checking extractors for link ${linkNumber}: ${link}`);
@@ -1780,29 +1886,33 @@ async function get4KHDHubStreams(tmdbId, type, season = null, episode = null) {
             console.log(`[4KHDHub] Resolving ${downloadLinks.length} redirect URLs to file hosting URLs...`);
             const resolvedUrls = [];
 
-            for (let i = 0; i < downloadLinks.length; i++) {
-                const link = downloadLinks[i];
-                console.log(`[4KHDHub] Resolving link ${i + 1}/${downloadLinks.length}: ${link}`);
+            const resolvedBatch = await mapWithConcurrency(
+                downloadLinks,
+                MAX_CONCURRENT_REQUESTS,
+                async (link, i) => {
+                    console.log(`[4KHDHub] Resolving link ${i + 1}/${downloadLinks.length}: ${link}`);
 
-                try {
-                    if (link.toLowerCase().includes('id=')) {
-                        // This is a redirect URL, resolve it
-                        const resolvedUrl = await getRedirectLinks(link);
-                        if (resolvedUrl && resolvedUrl.trim()) {
-                            console.log(`[4KHDHub] Link ${i + 1} resolved to: ${resolvedUrl}`);
-                            resolvedUrls.push(resolvedUrl);
-                        } else {
+                    try {
+                        if (link.toLowerCase().includes('id=')) {
+                            // This is a redirect URL, resolve it
+                            const resolvedUrl = await getRedirectLinks(link);
+                            if (resolvedUrl && resolvedUrl.trim()) {
+                                console.log(`[4KHDHub] Link ${i + 1} resolved to: ${resolvedUrl}`);
+                                return sanitizeStreamUrl(resolvedUrl);
+                            }
                             console.log(`[4KHDHub] Link ${i + 1} resolution failed or returned empty`);
+                            return null;
                         }
-                    } else {
                         // Direct URL, use as-is
                         console.log(`[4KHDHub] Link ${i + 1} is direct URL: ${link}`);
-                        resolvedUrls.push(link);
+                        return link;
+                    } catch (error) {
+                        console.error(`[4KHDHub] Error resolving link ${i + 1} (${link}):`, error.message);
+                        return null;
                     }
-                } catch (error) {
-                    console.error(`[4KHDHub] Error resolving link ${i + 1} (${link}):`, error.message);
                 }
-            }
+            );
+            resolvedUrls.push(...resolvedBatch.filter(Boolean));
 
             if (resolvedUrls.length === 0) {
                 console.log(`[4KHDHub] No URLs resolved successfully`);
@@ -1842,9 +1952,10 @@ async function get4KHDHubStreams(tmdbId, type, season = null, episode = null) {
         const seenUrls = new Set();
 
         for (const link of filteredLinks) {
-            // Encode literal spaces before validation and output. Leave existing
-            // escapes, plus signs, and signed query parameters untouched.
-            const url = link.url.replace(/ /g, '%20');
+            // Normalize whitespace before validation and output so the probe and the
+            // delivered URL are byte-identical. Existing percent-escapes, plus signs
+            // and signed query parameters are preserved as-is.
+            const url = sanitizeStreamUrl(link.url);
             if (!seenUrls.has(url)) {
                 seenUrls.add(url);
                 uniqueLinks.push({ ...link, url });
@@ -1859,12 +1970,12 @@ async function get4KHDHubStreams(tmdbId, type, season = null, episode = null) {
 
         if (!disableValidation) {
             console.log(`[4KHDHub] URL validation enabled, validating ${uniqueLinks.length} links...`);
-            const validationPromises = uniqueLinks.map(async (link) => {
+            const validationPromises = mapWithConcurrency(uniqueLinks, MAX_CONCURRENT_REQUESTS, async (link) => {
                 const isValid = await validateUrl(link.url);
                 return isValid ? link : null;
             });
 
-            const validationResults = await Promise.all(validationPromises);
+            const validationResults = await validationPromises;
             validatedLinks = validationResults.filter(link => link !== null);
 
             console.log(`[4KHDHub] URL validation complete: ${validatedLinks.length}/${uniqueLinks.length} links are valid`);
@@ -1907,6 +2018,15 @@ async function get4KHDHubStreams(tmdbId, type, season = null, episode = null) {
         } catch {
             // Ignore URL parsing errors
         }
+
+        // Final guarantee: nothing leaves this function carrying raw whitespace.
+        const beforeSanitize = streams.length;
+        streams = streams.map(s => ({ ...s, url: sanitizeStreamUrl(s.url) }));
+        const stillDirty = streams.filter(s => /[\s\u200b\u200c\u200d\ufeff]/.test(s.url));
+        if (stillDirty.length > 0) {
+            console.error(`[4KHDHub] WARNING: ${stillDirty.length} stream URLs still contain whitespace after sanitizing`);
+        }
+        console.log(`[4KHDHub] Sanitized ${beforeSanitize} stream URLs, ${stillDirty.length} still contain whitespace`);
 
         console.log(`[4KHDHub] Returning ${streams.length} streams`);
         return streams;

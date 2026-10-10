@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Vidup CineX",
+    "title": "Vidup - CineX - Auto",
+    "url": "https://moon.zenoak.top/vd/U2pISEFyMXRrWHVFNGRoc0ZDV3kyUTpDa2txS0NlVTE2MEMwUVo4M1Q4TU1VMFhUV0FBMWVKYi03ZHN0VWpqbDhJ/index-s2160p-v1-a1.m3u8",
+    "quality": "Auto",
+    "provider": "Vidup",
+    "type": "hls",
+    "mimeType": "application/vnd.apple.mpegurl",
+    "subtitles": [],
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "Origin": "https://vidup.to",
+      "Referer": "https://vidup.to/"
+    }
+  },
+  {
+    "name": "Vidup Eclipse",
+    "title": "Vidup - Eclipse - Auto",
+    "url": "https://i-arch-400.qixno442run.com/stream2/i-arch-400/ef4584487eee552ed3df3ce27f700618/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29ERrhXW6FkMPdUVy0EVslWWqlFNNpWQy0ERjVTWtl0MOJTR61ERRJjT6VUP:1791642657:223.176.60.244:5d15bb9f71e8b753fa5a24a932ca341d0a409505f9a16bb66e9acaa54dfd0a8b:=0kaJpHTqV0MOlGNy00Q0knTEFVP/index.m3u8",
+    "quality": "Auto",
+    "provider": "Vidup",
+    "type": "hls",
+    "mimeType": "application/vnd.apple.mpegurl",
+    "subtitles": [],
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "Origin": "https://vidup.to",
+      "Referer": "https://vidup.to/"
+    }
+  }
+]

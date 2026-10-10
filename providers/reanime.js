@@ -24,6 +24,22 @@ const FLIX_HEADERS = {
   Referer: FLIXCLOUD_BASE + "/",
 };
 
+function embeddedHeaders(value, depth = 0) {
+  if (!value || typeof value !== 'object' || depth > 4) return {};
+  const result = {};
+  for (const key of ['headers', 'requestHeaders', 'httpHeaders']) {
+    const candidate = value[key];
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) continue;
+    for (const [name, headerValue] of Object.entries(candidate)) {
+      if (typeof headerValue === 'string' && headerValue.trim()) result[name] = headerValue;
+    }
+  }
+  for (const child of Object.values(value)) {
+    if (child && typeof child === 'object') Object.assign(result, embeddedHeaders(child, depth + 1));
+  }
+  return result;
+}
+
 const { AsyncLocalStorage } = require('node:async_hooks');
 const requestContext = new AsyncLocalStorage();
 let requestSequence = 0;
@@ -273,6 +289,8 @@ async function extractFlix(embedUrl) {
     log(`FLIX missing fields id=${aid} fileId=${!!fileId} token=${!!token}`);
     return null;
   }
+  let responseHeaders = {};
+  try { responseHeaders = embeddedHeaders(JSON.parse(t)); } catch { /* serialized app payload */ }
   log('FLIX signed download ready id=' + aid);
   const base =
     (t.match(/https:\/\/[a-z0-9-]+\.flixcloud\.cc/i) || [])[0] ||
@@ -283,7 +301,7 @@ async function extractFlix(embedUrl) {
     url: base + "/download/" + fileId + "?token=" + token,
     quality: q,
     size,
-    headers: FLIX_HEADERS,
+    headers: { ...FLIX_HEADERS, ...responseHeaders },
   };
 }
 

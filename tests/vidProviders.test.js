@@ -8,6 +8,9 @@ for (const [id, host, exportName] of [
     ['vidfast', 'https://vidfast.vc', 'getVidfastStreams']
 ]) {
     test(`${id} completes both handshake stages and keeps streams/subtitles when a server fails`, async t => {
+        if (id === 'vidup') t.mock.method(require('../utils/curlCffiClient'), 'createCurlClient', () => ({
+            get: (...args) => axios.get(...args), post: (...args) => axios.post(...args), close() {}
+        }));
         const provider = require(`../providers/${id}`);
         const bridge = `https://enc-dec.app/api/enc-${id}`;
         const decrypt = `https://enc-dec.app/api/dec-${id}`;

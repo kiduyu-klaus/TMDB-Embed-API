@@ -307,7 +307,7 @@ function extractMdrive(url) {
         }
       }
 
-      var $ = import_cheerio_without_node_native.default.load(html);
+      var $ = import_cheerio_without_node_native.load(html);
       var allHrefs = $("a[href]").map((i, el) => $(el).attr("href")).get();
       var filtered = allHrefs.filter((href) => regex.test(href));
       __mdLog("extractMdrive", "info", "cheerio scan", {
@@ -356,7 +356,7 @@ function hubCloudExtractor(url, referer) {
       if (!currentUrl.includes("hubcloud.php")) {
         __mdLog("hubCloudExtractor", "debug", "not hubcloud.php, looking for next href");
         var nextHref = "";
-        var $first = import_cheerio_without_node_native.default.load(pageData);
+        var $first = import_cheerio_without_node_native.load(pageData);
         var phpLink = $first('a[href*="hubcloud.php"]').attr("href");
         if (phpLink) {
           nextHref = phpLink;
@@ -400,7 +400,7 @@ function hubCloudExtractor(url, referer) {
         __mdLog("hubCloudExtractor", "debug", "already on hubcloud.php, skipping redirect");
       }
 
-      var $ = import_cheerio_without_node_native.default.load(pageData);
+      var $ = import_cheerio_without_node_native.load(pageData);
       var size = $("i#size").text().trim();
       var header = $("div.card-header").text().trim();
       var quality = getIndexQuality(header);
@@ -768,7 +768,7 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
         });
         if (searchRes3.ok) {
           var searchHtml = yield searchRes3.text();
-          var $search = import_cheerio_without_node_native2.default.load(searchHtml);
+          var $search = import_cheerio_without_node_native2.load(searchHtml);
           var htmlHits = $search("a[href]").map((_, a) => {
             var href = $search(a).attr("href");
             var postTitle = $search(a).text().replace(/\\s+/g, " ").trim();
@@ -814,7 +814,7 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
       });
       var pageHtml = yield pageRes.text();
       __mdLog("getMoviesDriveStreams", "debug", "fetch.post.bytes", pageHtml.length);
-      var $ = import_cheerio_without_node_native2.default.load(pageHtml);
+      var $ = import_cheerio_without_node_native2.load(pageHtml);
       var allStreams = [];
 
       if (mediaType === "movie") {
@@ -869,7 +869,7 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
             status: epPageRes.status, ok: epPageRes.ok
           });
           var epPageHtml = yield epPageRes.text();
-          var $ep = import_cheerio_without_node_native2.default.load(epPageHtml);
+          var $ep = import_cheerio_without_node_native2.load(epPageHtml);
           var epEntries = $ep("h5").filter((i, el) => sepRegex.test($ep(el).text()));
           __mdLog("getMoviesDriveStreams", "debug", "tv.episodeHeaderMatches", {
             count: epEntries.length, for: nextHref

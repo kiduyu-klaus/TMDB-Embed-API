@@ -102,6 +102,23 @@ function extractQuality(label) {
   return match ? `${match[1]}p` : 'Auto';
 }
 
+function extractPlaybackHeaders(source, fallback = {}) {
+  const candidates = [
+    source && source.headers,
+    source && source.requestHeaders,
+    source && source.httpHeaders,
+    source && source.behaviorHints && source.behaviorHints.proxyHeaders && source.behaviorHints.proxyHeaders.request,
+  ];
+  const headers = { ...fallback };
+  for (const candidate of candidates) {
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) continue;
+    for (const [name, value] of Object.entries(candidate)) {
+      if (typeof value === 'string' && value.trim() && !/[\r\n]/.test(name + value)) headers[name] = value;
+    }
+  }
+  return headers;
+}
+
 function skipWhitespace(source, position) {
   while (/\s/.test(source[position] || '')) position += 1;
   return position;
@@ -237,6 +254,16 @@ function isExcludedStreamUrl(value) {
     const host = new URL(value).hostname;
     return ['dood.watch', 'dood.re', 'vidsrc.me'].some(domain => host === domain || host.endsWith(`.${domain}`));
   } catch { return true; }
+}
+
+function isEmbedLikeStreamUrl(value) {
+  try {
+    const url = new URL(value);
+    if (VIDSRC_HOSTS.has(url.hostname) || VIDSRC_PLAYER_HOSTS.has(url.hostname)) return true;
+    return /(?:^|\/)embed(?:\/|$)/i.test(url.pathname) || /(?:^|\/)player(?:\/|$)/i.test(url.pathname);
+  } catch {
+    return true;
+  }
 }
 
 function extractDirectMediaUrls(html, pageUrl) {
@@ -440,7 +467,7 @@ async function decryptVidSrcStreamUrls(encryptedValue, wasmBytes) {
   const exportNames = new Set(WebAssembly.Module.exports(module).map(item => item.name));
   if (!['memory', 'alloc', 'decrypt'].every(name => exportNames.has(name))) return [];
 
-  const worker = new Worker(path.join(__dirname, 'vidsrcDecoderWorker.js'), {
+  const worker = new Worker(path.join(__dirname, '../utils/vidsrcDecoderWorker.js'), {
     workerData: { encryptedValue, wasmBytes },
     resourceLimits: { maxOldGenerationSizeMb: 32, maxYoungGenerationSizeMb: 8, stackSizeMb: 2 },
   });
@@ -570,25 +597,30 @@ async function resolveVidSrcSources(embedUrlValue, cookieJar) {
     const wasmBytes = await fetchVidSrcWasm(payload.vs, playerUrl, cookieJar);
     if (wasmBytes) streamUrls = await decryptVidSrcStreamUrls(rawStreamUrls, wasmBytes);
   }
-  const sourceUrls = [...new Set(streamUrls.flatMap(value => {
-    const url = toHttpsUrl(value);
-    return url ? [url.href] : [];
-  }))];
+  const sourceEntries = [];
+  const seenSourceUrls = new Set();
+  for (const value of streamUrls) {
+    const rawUrl = typeof value === 'string' ? value : value && (value.url || value.file || value.src || value.stream_url);
+    const url = toHttpsUrl(rawUrl);
+    if (!url || seenSourceUrls.has(url.href)) continue;
+    seenSourceUrls.add(url.href);
+    sourceEntries.push({ url, source: value });
+  }
   const tokenPromises = new Map();
-  return Promise.all(sourceUrls.map(async url => {
-    let resolvedUrl = url;
+  return Promise.all(sourceEntries.map(async ({ url, source }) => {
+    let resolvedUrl = url.href;
     if (payload.vs) {
-      const sourceUrl = new URL(url);
+      const sourceUrl = new URL(url.href);
       if (!tokenPromises.has(sourceUrl.origin)) {
         tokenPromises.set(sourceUrl.origin, fetchVidSrcToken(sourceUrl, playerUrl, cookieJar));
       }
       const token = await tokenPromises.get(sourceUrl.origin);
-      if (token) resolvedUrl = applyVidSrcToken(url, token);
+      if (token) resolvedUrl = applyVidSrcToken(url.href, token);
     }
     return {
       url: resolvedUrl,
       quality: extractQuality(resolvedUrl),
-      headers: { Referer: playerUrl.href, 'User-Agent': USER_AGENT },
+      headers: extractPlaybackHeaders(source, { Referer: playerUrl.href, 'User-Agent': USER_AGENT }),
     };
   }));
 }
@@ -744,12 +776,12 @@ async function resolveServer(server, index, cookieJar, title) {
         headers: { Referer: `${BASE_URL}/`, 'User-Agent': USER_AGENT },
       }];
     }
-    return sources.filter(source => !isExcludedStreamUrl(source.url)).map(source => ({
+    return sources.filter(source => !isExcludedStreamUrl(source.url) && !isEmbedLikeStreamUrl(source.url)).map(source => ({
       name: 'Goojara',
       title: `${title} - ${server.label}`,
       url: source.url,
       quality: source.quality || extractQuality(`${server.label} ${source.url}`),
-      headers: source.headers || { Referer: `${BASE_URL}/`, 'User-Agent': USER_AGENT },
+      headers: extractPlaybackHeaders(source, { Referer: `${BASE_URL}/`, 'User-Agent': USER_AGENT }),
       subtitles: [],
       server: server.label,
       sourceIndex: index,
@@ -863,5 +895,7 @@ module.exports = {
   parseEpisodeUrl,
   parseServerLinks,
   extractQuality,
+  extractPlaybackHeaders,
+  isEmbedLikeStreamUrl,
   resolveServer,
 };

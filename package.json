@@ -18,6 +18,7 @@
     "cheerio-without-node-native": "^0.20.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
+    "curl-cffi": "^0.1.50",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "form-data": "^4.0.3",
@@ -37,5 +38,8 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "nodemon": "^1.14.10"
+  },
+  "allowScripts": {
+    "curl-cffi@0.1.50": true
   }
 }

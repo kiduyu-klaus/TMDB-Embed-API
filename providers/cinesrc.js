@@ -136,6 +136,23 @@ function parseHlsVariants(manifest, baseUrl) {
     return variants;
 }
 
+function extractPlaybackHeaders(source, fallback = {}) {
+    const candidates = [
+        source && source.headers,
+        source && source.requestHeaders,
+        source && source.httpHeaders,
+        source && source.behaviorHints && source.behaviorHints.proxyHeaders && source.behaviorHints.proxyHeaders.request,
+    ];
+    const headers = { ...fallback };
+    for (const candidate of candidates) {
+        if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) continue;
+        for (const [name, value] of Object.entries(candidate)) {
+            if (typeof value === 'string' && value.trim() && !/[\r\n]/.test(name + value)) headers[name] = value;
+        }
+    }
+    return headers;
+}
+
 function extractStreamData(obj, results = [], baseUrl = '') {
     if (!obj) return results;
     if (Array.isArray(obj)) { for (const item of obj) extractStreamData(item, results, baseUrl); }
@@ -153,7 +170,7 @@ function extractStreamData(obj, results = [], baseUrl = '') {
             usableUrls.push(url);
             results.push({
                 url, quality: obj.quality || obj.label || obj.resolution || 'Auto', type: declaredType,
-                headers: obj.headers || obj.requestHeaders || obj.behaviorHints?.proxyHeaders?.request || {}
+                headers: extractPlaybackHeaders(obj)
             });
         }
         const childBase = usableUrls[0] || baseUrl;
@@ -211,7 +228,12 @@ async function scrapeFlax(info, id, s, e) {
             for (const source of candidates) {
                 const url = typeof source === 'string' ? source : source?.url || source?.file || source?.src;
                 if (typeof url === 'string' && /\.(m3u8|mpd)(?:[?#]|$)/i.test(url)) {
-                    direct.push({ url, quality: source.quality || source.label || 'FlaxMovies HLS', type: /\.mpd/i.test(url) ? 'dash' : 'hls' });
+                    direct.push({
+                        url,
+                        quality: source.quality || source.label || 'FlaxMovies HLS',
+                        type: /\.mpd/i.test(url) ? 'dash' : 'hls',
+                        headers: extractPlaybackHeaders(source, SOURCE_HEADERS)
+                    });
                 }
             }
         } catch (err) {
@@ -261,7 +283,8 @@ function makeServerExtractor(server) {
         return [...found].map(url => ({
             url,
             quality: `${server} HLS`,
-            type: /\.mpd(?:[?#]|$)/i.test(url) ? 'dash' : 'hls'
+            type: /\.mpd(?:[?#]|$)/i.test(url) ? 'dash' : 'hls',
+            headers: { ...SOURCE_HEADERS }
         }));
     };
 }
@@ -834,4 +857,4 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
     return allStreams;
 }
 
-module.exports = { getCinesrcStreams, EMBED_SERVERS, resolveSourceUrl, parseHlsVariants, extractStreamData };
+module.exports = { getCinesrcStreams, EMBED_SERVERS, resolveSourceUrl, parseHlsVariants, extractPlaybackHeaders, extractStreamData };

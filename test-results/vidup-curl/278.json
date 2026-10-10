@@ -1,0 +1,94 @@
+[
+  {
+    "name": "Vidup Euro",
+    "title": "Vidup - Euro - Auto",
+    "url": "https://moon.zenoak.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/master.m3u8",
+    "quality": "Auto",
+    "provider": "Vidup",
+    "type": "hls",
+    "mimeType": "application/vnd.apple.mpegurl",
+    "subtitles": [
+      {
+        "url": "https://moon.zenoak.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/subs/eng.vtt",
+        "mimeType": "text/vtt",
+        "language": "en",
+        "label": "English",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+          "Referer": "https://vidup.to/",
+          "Origin": "https://vidup.to"
+        }
+      }
+    ],
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "Origin": "https://vidup.to",
+      "Referer": "https://vidup.to/"
+    }
+  },
+  {
+    "name": "Vidup CineX",
+    "title": "Vidup - CineX - Auto",
+    "url": "https://moon.zenoak.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/index-s2160p-v1-a1.m3u8",
+    "quality": "Auto",
+    "provider": "Vidup",
+    "type": "hls",
+    "mimeType": "application/vnd.apple.mpegurl",
+    "subtitles": [
+      {
+        "url": "https://moon.peakstorm.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/subs/eng.vtt",
+        "mimeType": "text/vtt",
+        "language": "en",
+        "label": "eng",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+          "Referer": "https://vidup.to/",
+          "Origin": "https://vidup.to"
+        }
+      }
+    ],
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "Origin": "https://vidup.to",
+      "Referer": "https://vidup.to/"
+    }
+  },
+  {
+    "name": "Vidup Eclipse",
+    "title": "Vidup - Eclipse - Auto",
+    "url": "https://i-cdn-0.qixno442run.com/stream2/i-cdn-0/29eba2c90747e4c95cc822141021edc3/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2lFVBhXWtV0MPdUT59ERJBTTEt2MNJjVt1EVjVjTEVleZpWS390ValWW6lVP:1791643542:196.189.8.127:1bdf0ff60effe38137f30bd467b90c20157bce6ac561c4a6e2bf2d6e11216670:=0EVrJDTqVENPNFN0wkaFlnT31TP/index.m3u8",
+    "quality": "Auto",
+    "provider": "Vidup",
+    "type": "hls",
+    "mimeType": "application/vnd.apple.mpegurl",
+    "subtitles": [
+      {
+        "url": "https://moon.zenoak.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/subs/eng.vtt",
+        "mimeType": "text/vtt",
+        "language": "en",
+        "label": "English",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+          "Referer": "https://vidup.to/",
+          "Origin": "https://vidup.to"
+        }
+      },
+      {
+        "url": "https://moon.peakstorm.top/vd/cVU2ZTRQUHpXT0t4MlBJWnpEcDh5ZzpWZ0NzbmU0Q0dBRkNueDBWVVJwRHpR/subs/eng.vtt",
+        "mimeType": "text/vtt",
+        "language": "en",
+        "label": "eng",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+          "Referer": "https://vidup.to/",
+          "Origin": "https://vidup.to"
+        }
+      }
+    ],
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "Origin": "https://vidup.to",
+      "Referer": "https://vidup.to/"
+    }
+  }
+]

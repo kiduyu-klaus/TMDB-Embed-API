@@ -537,3 +537,7 @@ Inspired by community scraping/stream aggregation efforts. Credits also to the o
 > *Happy streaming & hacking!* ✨
 
 ---
+
+### Vidup browser impersonation
+
+Vidup uses `curl-cffi` with the `chrome136` profile for page requests, both handshake stages, decryption calls, and playback probes. Each extraction uses a separate cookie session and closes its native handles afterward. Run `npm install` to install the native library; if lifecycle scripts were skipped, run `npm rebuild curl-cffi --foreground-scripts`. The adapter handles the Windows `lib`/`bin` DLL layout difference in curl-cffi 0.1.50.
