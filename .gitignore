@@ -23,3 +23,41 @@ tests/addedMoviesTvProviders.test.js
         
         "Referer": "https://megaplay.buzz/",
         "Origin": "https://megaplay.buzz"
+test-results/anime-provider-comparison/anikoto-movie-129.json
+test-results/anime-provider-comparison/anikoto-movie-372058.json
+test-results/anime-provider-comparison/anikoto-tv-1429.json
+test-results/anime-provider-comparison/anikoto-tv-85937.json
+test-results/anime-provider-comparison/animeonsen-movie-129.json
+test-results/anime-provider-comparison/animeonsen-movie-372058.json
+test-results/anime-provider-comparison/animeonsen-tv-1429.json
+test-results/anime-provider-comparison/animeonsen-tv-85937.json
+test-results/anime-provider-comparison/results.json
+test-results/reanime1/installed-1429.json
+test-results/reanime1/installed-37854.json
+test-results/reanime1/installed-api-37854.json
+test-results/reanime1/movie-129.json
+test-results/reanime1/movie-372058.json
+test-results/reanime1/mpv-1429.log
+test-results/reanime1/mpv-85937.log
+test-results/reanime1/mpv-check.lua
+test-results/reanime1/mpv-results.json
+test-results/reanime1/results.json
+test-results/reanime1/tv-1429.json
+test-results/reanime1/tv-37854-s1e1.json
+test-results/reanime1/tv-85937.json
+test-results/reanime1/backups/reanime-provider-1791616016446.js
+test-results/reanime1/backups/reanime1-1791616016446.js
+test-results/vid-providers/vidcore-movie-api.json
+test-results/vid-providers/vidcore-movie.json
+test-results/vid-providers/vidcore-series-api.json
+test-results/vid-providers/vidcore-tv.json
+test-results/vid-providers/vidfast-movie-api.json
+test-results/vid-providers/vidfast-movie.json
+test-results/vid-providers/vidfast-series-api.json
+test-results/vid-providers/vidfast-tv.json
+test-results/vid-providers/vidup-movie-api.json
+test-results/vid-providers/vidup-movie-registry.json
+test-results/vid-providers/vidup-movie.json
+test-results/vid-providers/vidup-series-api.json
+test-results/vid-providers/vidup-series-registry.json
+test-results/vid-providers/vidup-tv.json

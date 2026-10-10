@@ -1,683 +1,688 @@
-/**
- * reanime - Built from src/reanime/
- * Generated: 2026-09-21T13:43:14.525Z
- */
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
-
-// src/reanime/reanime.js
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
-// src/reanime/constants.js
-var REANIME_DOMAINS = [
+/* Reanime provider: mapper-first (MAL->AniList via idMal) with reanime native fallback.
+   Does NOT populate the mapper — read-only lookups via pending=1. */
+const MAPPING_URL =
+  "https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping";
+const REANIME_DOMAINS = [
   "https://reanime.to",
   "https://reanime.cz",
-  "https://reanime.wtf"
+  "https://reanime.wtf",
 ];
-var REANIME_BASE = "https://reanime.to";
-var FLIXCLOUD_BASE = "https://flixcloud.cc";
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
-var ANILIST_URL = "https://graphql.anilist.co";
-var ARM_BASE = "https://arm.haglund.dev/api/v2";
-var CINEMETA_URL = "https://v3-cinemeta.strem.io/meta";
-var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
-var HEADERS = {
-  "User-Agent": USER_AGENT,
-  "Accept": "application/json, text/plain, */*",
-  "Accept-Language": "en-US,en;q=0.9"
+const FLIXCLOUD_BASE = "https://flixcloud.cc";
+const { getTmdbApiKey } = require('../utils/tmdbKey');
+const ANILIST_URL = "https://graphql.anilist.co";
+const UA =
+  "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36";
+const HEADERS = {
+  "User-Agent": UA,
+  Accept: "application/json, text/plain, */*",
+  "Accept-Language": "en-US,en;q=0.9",
 };
-var FLIX_HEADERS = {
-  "User-Agent": USER_AGENT,
-  "Accept": "*/*",
-  "Origin": FLIXCLOUD_BASE,
-  "Referer": `${FLIXCLOUD_BASE}/`
+const FLIX_HEADERS = {
+  "User-Agent": UA,
+  Accept: "*/*",
+  Origin: FLIXCLOUD_BASE,
+  Referer: FLIXCLOUD_BASE + "/",
 };
 
-// src/reanime/reanime.js
-var activeBaseUrl = REANIME_BASE;
-function absolutize(path, base = activeBaseUrl) {
-  if (!path)
-    return "";
-  if (path.startsWith("http"))
-    return path;
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${base}${cleanPath}`;
-}
-function fetchText(_0) {
-  return __async(this, arguments, function* (url, options = {}) {
-    const isAbsolute = url.startsWith("http");
-    const urlsToTry = isAbsolute ? [url] : REANIME_DOMAINS.map((domain) => absolutize(url, domain));
-    let lastError = null;
-    for (const tryUrl of urlsToTry) {
-      try {
-        const response = yield fetch(tryUrl, __spreadProps(__spreadValues({}, options), {
-          headers: __spreadValues(__spreadValues({}, HEADERS), options.headers || {})
-        }));
-        if (response.ok) {
-          if (!isAbsolute) {
-            const match = tryUrl.match(/^(https?:\/\/[^\/]+)/);
-            if (match)
-              activeBaseUrl = match[1];
-          }
-          return yield response.text();
-        }
-        lastError = new Error(`Reanime HTTP ${response.status}: ${tryUrl}`);
-      } catch (e) {
-        lastError = e;
-      }
-    }
-    throw lastError || new Error(`Failed to fetch: ${url}`);
-  });
-}
-function fetchJson(_0) {
-  return __async(this, arguments, function* (url, options = {}) {
-    const text = yield fetchText(url, __spreadProps(__spreadValues({}, options), {
-      headers: __spreadValues({
-        "Accept": "application/json, text/plain, */*"
-      }, options.headers || {})
-    }));
-    return JSON.parse(text);
-  });
-}
-function getTmdbInfo(tmdbId, mediaType) {
-  return __async(this, null, function* () {
-    const endpoint = mediaType === "tv" ? "tv" : "movie";
-    const url = `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+const { AsyncLocalStorage } = require('node:async_hooks');
+const requestContext = new AsyncLocalStorage();
+let requestSequence = 0;
+function safeMessage(value) {
+  return String(value).replace(/https?:\/\/[^\s"<>]+/g, raw => {
     try {
-      const data = yield fetchJson(url);
-      return {
-        title: data.name || data.title || data.original_name || data.original_title || "",
-        year: ((data.first_air_date || data.release_date || "").match(/\d{4}/) || [null])[0],
-        imdbId: data.external_ids && data.external_ids.imdb_id
-      };
-    } catch (_) {
-      return { title: "", year: null, imdbId: null };
-    }
+      const url = new URL(raw);
+      return url.origin + url.pathname + (url.search ? '?[redacted]' : '');
+    } catch { return '[invalid URL]'; }
   });
 }
-function getAnilistInfo(alId) {
-  return __async(this, null, function* () {
-    var _a, _b, _c, _d, _e;
-    const query = "query($id:Int){Media(id:$id){id title{english romaji native} startDate{year}}}";
-    try {
-      const json = yield fetchJson(ANILIST_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables: { id: parseInt(alId, 10) } })
-      });
-      const media = (_a = json.data) == null ? void 0 : _a.Media;
-      if (!media)
-        return { title: "", year: null };
-      return {
-        title: ((_b = media.title) == null ? void 0 : _b.english) || ((_c = media.title) == null ? void 0 : _c.romaji) || ((_d = media.title) == null ? void 0 : _d.native) || "",
-        year: ((_e = media.startDate) == null ? void 0 : _e.year) || null
-      };
-    } catch (_) {
-      return { title: "", year: null };
-    }
-  });
+function log(message) {
+  console.log(`[Reanime][${new Date().toISOString()}][${requestContext.getStore() || 'background'}] ${safeMessage(message)}`);
 }
-function getSyncInfo(id, mediaType, season, episode) {
-  return __async(this, null, function* () {
-    const isImdb = typeof id === "string" && id.indexOf("tt") === 0;
-    const getCinemetaInfo = (imdbId2) => __async(this, null, function* () {
-      const type = mediaType === "movie" ? "movie" : "series";
-      const url = `${CINEMETA_URL}/${type}/${imdbId2}.json`;
-      try {
-        const data = yield fetchJson(url);
-        const meta = data.meta;
-        if (!meta)
-          throw new Error("No Cinemeta metadata");
-        if (mediaType === "movie")
-          return { date: meta.released ? meta.released.split("T")[0] : null, title: meta.name, dayIndex: 1 };
-        const videos = meta.videos || [];
-        const target = videos.find((v) => v.season == season && v.episode == episode);
-        if (!target || !target.released)
-          return { date: null, title: null, dayIndex: 1 };
-        const targetDate = target.released.split("T")[0];
-        const dayIndex = videos.filter((v) => v.season == season && v.released && v.released.split("T")[0] === targetDate && parseInt(v.episode) < parseInt(episode)).length + 1;
-        return { date: targetDate, title: target.name || null, dayIndex };
-      } catch (_) {
-        return { date: null, title: null, dayIndex: 1 };
-      }
-    });
-    if (isImdb) {
-      const info = yield getCinemetaInfo(id);
-      if (info.date)
-        return { imdbId: id, releaseDate: info.date, episodeTitle: info.title, dayIndex: info.dayIndex, episode };
-      throw new Error("Could not find release date on Cinemeta");
-    }
-    const tmdbUrl = `https://api.themoviedb.org/3/${mediaType === "movie" ? "movie" : "tv"}/${id}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-    const details = yield fetchJson(tmdbUrl);
-    let imdbId = details.external_ids && details.external_ids.imdb_id || details.imdb_id || null;
-    const title = details.name || details.title || null;
-    if (!imdbId) {
-      try {
-        const armData = yield fetchJson(`${ARM_BASE}/themoviedb?id=${id}`);
-        imdbId = Array.isArray(armData) && armData.length > 0 ? armData[0].imdb : null;
-      } catch (_) {
-      }
-    }
-    if (!imdbId)
-      throw new Error(`No IMDb ID found for TMDB ${id}`);
-    const cMeta = yield getCinemetaInfo(imdbId);
-    let finalDate = cMeta.date;
-    if (mediaType === "movie" && details.release_date)
-      finalDate = details.release_date;
-    if (!finalDate)
-      throw new Error(`Could not find release date for ID ${imdbId}`);
-    return {
-      imdbId,
-      tmdbId: id,
-      releaseDate: finalDate,
-      title,
-      episodeTitle: cMeta.title,
-      dayIndex: cMeta.dayIndex,
-      episode
-    };
-  });
-}
-function resolveByDate(releaseDateStr, showTitle, originalEpisode, episodeTitle, dayIndex) {
-  return __async(this, null, function* () {
-    var _a, _b;
-    if (!releaseDateStr || !/^\d{4}-\d{2}-\d{2}/.test(releaseDateStr))
-      return null;
-    const query = "query($search:String){Page(perPage:20){media(search:$search,type:ANIME){id type format title{romaji english native}startDate{year month day}endDate{year month day}episodes streamingEpisodes{title}}}}";
-    try {
-      const json = yield fetchJson(ANILIST_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables: { search: showTitle } })
-      });
-      const candidates = ((_b = (_a = json.data) == null ? void 0 : _a.Page) == null ? void 0 : _b.media) || [];
-      if (candidates.length === 0)
-        return null;
-      const targetDate = new Date(releaseDateStr);
-      for (const anime of candidates) {
-        const s = anime.startDate;
-        const startStr = s.year && s.month && s.day ? `${s.year}-${String(s.month).padStart(2, "0")}-${String(s.day).padStart(2, "0")}` : null;
-        if (!startStr)
-          continue;
-        const startDate = new Date(startStr);
-        const diffDays = Math.ceil(Math.abs(targetDate.getTime() - startDate.getTime()) / (1e3 * 60 * 60 * 24));
-        let isMatch = false;
-        if (anime.format === "MOVIE" || anime.format === "SPECIAL" || anime.episodes === 1) {
-          if (diffDays <= 2)
-            isMatch = true;
-        } else {
-          const startLimit = new Date(startDate);
-          startLimit.setDate(startLimit.getDate() - 2);
-          if (targetDate >= startLimit) {
-            if (anime.endDate && anime.endDate.year) {
-              const endDate = new Date(anime.endDate.year, (anime.endDate.month || 12) - 1, anime.endDate.day || 31);
-              endDate.setDate(endDate.getDate() + 2);
-              if (targetDate <= endDate)
-                isMatch = true;
-            } else {
-              isMatch = true;
-            }
-          }
-        }
-        if (isMatch) {
-          const isTV = anime.format !== "MOVIE" && anime.format !== "SPECIAL" && anime.episodes !== 1;
-          let episodeNum = isTV && originalEpisode ? originalEpisode : dayIndex || 1;
-          const episodes = anime.streamingEpisodes || [];
-          if (episodes.length > 1 && episodeTitle) {
-            const cleanTarget = episodeTitle.toLowerCase().replace(/[^a-z0-9]/g, "");
-            for (let j = 0; j < episodes.length; j++) {
-              const cleanAl = (episodes[j].title || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-              if (cleanAl && (cleanAl.indexOf(cleanTarget) !== -1 || cleanTarget.indexOf(cleanAl) !== -1)) {
-                episodeNum = j + 1;
-                break;
-              }
-            }
-          }
-          return { alId: anime.id, episode: episodeNum, title: anime.title.english || anime.title.romaji || anime.title.native };
-        }
-      }
-    } catch (_) {
-    }
-    return null;
-  });
-}
-function normalizeTitle(value) {
-  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-}
-function scoreCandidate(title, query, year, targetAnilistId, candidateAnilistId) {
-  if (targetAnilistId && candidateAnilistId && String(targetAnilistId) === String(candidateAnilistId)) {
-    return 1e3;
+
+class NuvioTTLCache {
+  constructor() {
+    this.m = new Map();
   }
-  const a = normalizeTitle(title);
-  const b = normalizeTitle(query);
-  if (!a || !b)
-    return 0;
-  let score = 0;
-  if (a === b)
-    score += 100;
-  if (a.includes(b) || b.includes(a))
-    score += 50;
-  const words = b.split(/\s+/).filter(Boolean);
-  for (const word of words)
-    if (a.includes(word))
-      score += 4;
-  if (year && String(title).includes(String(year)))
-    score += 10;
-  return score;
+  get(k) {
+    const x = this.m.get(k);
+    if (!x) return;
+    if (x.e <= Date.now()) {
+      this.m.delete(k);
+      return;
+    }
+    return x.v;
+  }
+  set(k, v, ttl) {
+    this.m.set(k, { v, e: Date.now() + ttl });
+    return v;
+  }
+  delete(k) {
+    this.m.delete(k);
+  }
 }
-function extractAnilistId(item) {
-  var _a, _b, _c;
-  const direct = item && (item.anilist_id || item.anilistId);
-  if (direct)
-    return String(direct);
-  const imageUrls = [
-    (_a = item == null ? void 0 : item.cover_image) == null ? void 0 : _a.extra_large,
-    (_b = item == null ? void 0 : item.cover_image) == null ? void 0 : _b.large,
-    (_c = item == null ? void 0 : item.cover_image) == null ? void 0 : _c.medium,
-    item == null ? void 0 : item.banner_image
-  ].filter(Boolean);
-  for (const url of imageUrls) {
-    const match = String(url).match(/\/b?x?(\d+)-|\/(\d+)[-.]/);
-    if (match)
-      return match[1] || match[2];
+const CACHE =
+  globalThis.__NUVIO_PROVIDER_CACHE__ ||
+  (globalThis.__NUVIO_PROVIDER_CACHE__ = new NuvioTTLCache());
+
+async function memo(key, ttl, fn) {
+  const hit = CACHE.get(key);
+  if (hit !== undefined) { log('CACHE hit key=' + key); return hit; }
+  log('CACHE miss key=' + key);
+  const p = Promise.resolve().then(fn);
+  CACHE.set(key, p, ttl);
+  try {
+    const v = await p;
+    CACHE.set(key, v, ttl);
+    return v;
+  } catch (e) {
+    CACHE.delete(key);
+    throw e;
+  }
+}
+
+async function timeout(p, ms) {
+  let t;
+  try {
+    return await Promise.race([
+      p,
+      new Promise(
+        (_, r) => (t = setTimeout(() => r(new Error("timeout")), ms)),
+      ),
+    ]);
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function req(url, opt, ms) {
+  opt = opt || {};
+  const started = Date.now(), method = opt.method || 'GET';
+  log(`HTTP start method=${method} url=${url} timeoutMs=${ms || 10000}`);
+  const c = new AbortController(),
+    t = setTimeout(() => c.abort(), ms || 10000);
+  try {
+    const response = await fetch(url, Object.assign({}, opt, { signal: c.signal }));
+    log(`HTTP end method=${method} url=${url} status=${response.status} elapsedMs=${Date.now() - started}`);
+    return response;
+  } catch (error) {
+    log(`HTTP failed method=${method} url=${url} elapsedMs=${Date.now() - started} error=${error.message}`);
+    throw error;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function json(url, opt, ms) {
+  try {
+    const r = await req(url, opt, ms);
+    if (!r || !r.ok) {
+      log("HTTP " + (r && r.status) + " " + url.split("?")[0]);
+      return null;
+    }
+    return await r.json();
+  } catch (e) {
+    log("JSON fail " + url.split("?")[0] + ": " + e.message);
+    return null;
+  }
+}
+
+async function text(url, opt, ms) {
+  try {
+    const r = await req(url, opt, ms);
+    if (!r || !r.ok) {
+      log("HTTP " + (r && r.status) + " " + url.split("?")[0]);
+      return null;
+    }
+    return await r.text();
+  } catch (e) {
+    log("TEXT fail " + url.split("?")[0] + ": " + e.message);
+    return null;
+  }
+}
+
+let activeBase = REANIME_DOMAINS[0];
+async function reanimeReq(path, opt, ms) {
+  const ordered = activeBase
+    ? [activeBase, ...REANIME_DOMAINS.filter((x) => x !== activeBase)]
+    : REANIME_DOMAINS.slice();
+  for (const base of ordered) {
+    try {
+      const headers = Object.assign({}, (opt && opt.headers) || {});
+      if (!headers["Referer"] && !headers.referer)
+        headers["Referer"] = base + "/";
+      const r = await req(base + path, Object.assign({}, opt, { headers }), ms);
+      if (r && r.ok) {
+        activeBase = base;
+        log('DOMAIN selected=' + base);
+        return r;
+      }
+      log('DOMAIN rejected=' + base + ' status=' + (r && r.status));
+    } catch (e) { log('DOMAIN failed=' + base + ' error=' + e.message); }
   }
   return null;
 }
-function searchReanimeAnime(query, year, targetAnilistId = null) {
-  return __async(this, null, function* () {
-    const endpoints = [
-      `/api/v1/search?q=${encodeURIComponent(query)}&limit=36`,
-      `/api/search?q=${encodeURIComponent(query)}`
-    ];
-    const candidates = [];
-    for (const endpoint of endpoints) {
-      try {
-        const text = yield fetchText(endpoint);
-        if (text.trim().startsWith("{") || text.trim().startsWith("[")) {
-          const json = JSON.parse(text);
-          const list = json.results || json.data || json.anime || (Array.isArray(json) ? json : null);
-          if (Array.isArray(list)) {
-            list.forEach((item) => {
-              const rawSlug = item.anime_id || item.slug || item.id || item.url;
-              if (rawSlug) {
-                const cleanSlug = String(rawSlug).replace(/-[a-z0-9]{6}$/, "");
-                const titles = [];
-                if (typeof item.title === "object" && item.title) {
-                  if (item.title.english)
-                    titles.push(item.title.english);
-                  if (item.title.romaji)
-                    titles.push(item.title.romaji);
-                  if (item.title.native)
-                    titles.push(item.title.native);
-                } else if (item.title) {
-                  titles.push(item.title);
-                }
-                if (item.name)
-                  titles.push(item.name);
-                if (titles.length === 0)
-                  titles.push(cleanSlug);
-                const alId = extractAnilistId(item);
-                let bestScore = 0;
-                for (const t of titles) {
-                  const sc = scoreCandidate(t, query, year, targetAnilistId, alId);
-                  if (sc > bestScore)
-                    bestScore = sc;
-                }
-                candidates.push({
-                  slug: String(rawSlug),
-                  cleanSlug,
-                  title: titles[0],
-                  anilistId: alId,
-                  score: bestScore
-                });
-              }
-            });
-          }
-        }
-      } catch (_) {
-      }
-      if (candidates.some((c) => c.score >= 1e3))
-        break;
-      if (candidates.length > 0 && !targetAnilistId)
-        break;
-    }
-    const unique = [];
-    const seen = /* @__PURE__ */ new Set();
-    for (const candidate of candidates) {
-      if (!candidate.slug || seen.has(candidate.slug))
-        continue;
-      seen.add(candidate.slug);
-      unique.push(candidate);
-    }
-    unique.sort((a, b) => b.score - a.score);
-    return unique.length > 0 ? unique[0] : null;
-  });
+
+// ---------- Primary: mapper (read-only, no population trigger) ----------
+async function mapperLookup(tmdbId, season, episode) {
+  const u =
+    MAPPING_URL +
+    "?tmdb_id=" +
+    encodeURIComponent(tmdbId) +
+    "&tmdbId=" +
+    encodeURIComponent(tmdbId) +
+    "&season=" +
+    season +
+    "&episode=" +
+    episode +
+    "&pending=1";
+  const d = await json(
+    u,
+    { headers: { Accept: "application/json", "User-Agent": UA } },
+    5000,
+  );
+  log(`MAPPER response tmdb=${tmdbId} season=${season} episode=${episode} ok=${!!d?.ok} eligibility=${d?.eligibility || 'unknown'} mapping=${!!d?.mapping}`);
+  if (!d) return { state: "temporary", eligibility: "unknown" };
+  if (d.eligibility === "non_anime")
+    return { state: "non_anime", eligibility: "non_anime" };
+  if (!d.ok || !d.mapping)
+    return { state: "miss", eligibility: d.eligibility || "unknown" };
+  const m = d.mapping,
+    malId = String(m.mal_id || m.malId || "").trim(),
+    malEpisode = Number(m.mal_episode || m.target_episode || 0);
+  if (!malId || !Number.isInteger(malEpisode) || malEpisode < 1)
+    return { state: "miss", eligibility: d.eligibility || "anime" };
+  return {
+    state: "hit",
+    eligibility: "anime",
+    malId,
+    malEpisode,
+    title: String(m.anime_title || m.title || "").trim(),
+    titles: Array.isArray(m.titles) ? m.titles.filter(Boolean).map(String) : [],
+  };
 }
-function getFlixEmbeds(slug, episodeNumber, language, anilistId) {
-  return __async(this, null, function* () {
-    const watchPath = `/watch/${slug || "anime"}?ep=${episodeNumber}`;
-    if (anilistId) {
-      try {
-        const flixUrl = `/api/flix/${anilistId}/${episodeNumber}`;
-        const json = yield fetchJson(flixUrl, {
-          headers: { "Referer": absolutize(watchPath) }
-        });
-        if (json.success && Array.isArray(json.servers) && json.servers.length > 0) {
-          const filtered = language ? json.servers.filter((s) => s.dataType && s.dataType.toLowerCase() === language.toLowerCase()) : json.servers;
-          return {
-            watchUrl: absolutize(watchPath),
-            servers: filtered,
-            embeds: filtered.map((s) => s.dataLink).filter(Boolean)
-          };
-        }
-      } catch (_) {
-      }
-    }
-    if (slug) {
-      try {
-        const animeApiUrl = `/api/v1/anime/${slug}`;
-        const animeData = yield fetchJson(animeApiUrl);
-        const alId = animeData == null ? void 0 : animeData.anilist_id;
-        if (alId) {
-          const flixUrl = `/api/flix/${alId}/${episodeNumber}`;
-          const json = yield fetchJson(flixUrl, {
-            headers: { "Referer": absolutize(watchPath) }
-          });
-          if (json.success && Array.isArray(json.servers) && json.servers.length > 0) {
-            const filtered = language ? json.servers.filter((s) => s.dataType && s.dataType.toLowerCase() === language.toLowerCase()) : json.servers;
-            return {
-              watchUrl: absolutize(watchPath),
-              servers: filtered,
-              embeds: filtered.map((s) => s.dataLink).filter(Boolean)
-            };
-          }
-        }
-      } catch (_) {
-      }
-      try {
-        const html = yield fetchText(`/anime/${slug}?_ep=${episodeNumber}`);
-        const anilistMatch = html.match(/anilist_id:\s*(\d+)/);
-        if (anilistMatch) {
-          const alId = anilistMatch[1];
-          const flixUrl = `/api/flix/${alId}/${episodeNumber}`;
-          const json = yield fetchJson(flixUrl, {
-            headers: { "Referer": absolutize(watchPath) }
-          });
-          if (json.success && Array.isArray(json.servers) && json.servers.length > 0) {
-            const filtered = language ? json.servers.filter((s) => s.dataType && s.dataType.toLowerCase() === language.toLowerCase()) : json.servers;
-            return {
-              watchUrl: absolutize(watchPath),
-              servers: filtered,
-              embeds: filtered.map((s) => s.dataLink).filter(Boolean)
-            };
-          }
-        }
-      } catch (_) {
-      }
-    }
-    return { watchUrl: absolutize(watchPath), servers: [], embeds: [] };
+
+async function malToAnilist(malId) {
+  return memo("reanime:mal2al:" + malId, 604800000, async () => {
+    const q =
+      "query($idMal:Int){Media(idMal:$idMal,type:ANIME){id title{english romaji native}}}";
+    const d = await json(
+      ANILIST_URL,
+      {
+        method: "POST",
+        headers: Object.assign({}, HEADERS, {
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify({
+          query: q,
+          variables: { idMal: parseInt(malId, 10) },
+        }),
+      },
+      3500,
+    );
+    if (!d || !d.data || !d.data.Media || !d.data.Media.id) return null;
+    const t = d.data.Media.title || {};
+    return {
+      id: d.data.Media.id,
+      title: t.english || t.romaji || t.native || "",
+    };
   });
 }
 
-// src/reanime/flixcloud.js
-function extractFlixCloudDownload(embedUrl) {
-  return __async(this, null, function* () {
-    try {
-      const match = embedUrl.match(/\/e\/([a-z0-9]+)/i);
-      const aid = match ? match[1] : null;
-      if (!aid)
-        return null;
-      const dlHeaders = {
-        "Accept": "*/*",
-        "Referer": `${FLIXCLOUD_BASE}/`,
-        "User-Agent": USER_AGENT
-      };
-      const res = yield fetch(`${FLIXCLOUD_BASE}/d/${aid}/__data.json`, {
-        headers: dlHeaders
-      });
-      if (!res.ok)
-        return null;
-      const dataBody = yield res.text();
-      const fileIdMatch = dataBody.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
-      const tokenMatch = dataBody.match(/eyJ[\w-]+\.[\w-]+\.[\w-]+/);
-      const baseMatch = dataBody.match(/https:\/\/[a-z0-9-]+\.flixcloud\.cc/i);
-      const resolutionMatch = dataBody.match(/(\d{3,4}p)/);
-      const sizeMatch = dataBody.match(/"(\d+(?:\.\d+)?\s*[KMG]B)"/i);
-      const fileId = fileIdMatch ? fileIdMatch[0] : null;
-      const token = tokenMatch ? tokenMatch[0] : null;
-      const base = baseMatch ? baseMatch[0] : FLIXCLOUD_BASE;
-      const resolution = resolutionMatch ? resolutionMatch[1] : null;
-      const size = sizeMatch ? sizeMatch[1] : "Unknown";
-      if (!fileId || !token)
-        return null;
-      let ready = false;
+// ---------- Reanime API ----------
+async function flixServers(anilistId, episode) {
+  return memo(
+    "reanime:flix:" + anilistId + ":" + episode,
+    1800000,
+    async () => {
+      const path =
+        "/api/flix/" +
+        encodeURIComponent(anilistId) +
+        "/" +
+        encodeURIComponent(episode);
+      const r = await reanimeReq(path, { headers: HEADERS }, 3500);
+      if (!r) return null;
+      let d;
       try {
-        const progRes = yield fetch(`${base}/download/${fileId}/progress?token=${token}`, {
-          headers: dlHeaders
-        });
-        if (progRes.ok) {
-          const text = yield progRes.text();
-          if (text.includes('"status":"ready"') || text.includes('"ready"')) {
-            ready = true;
-          }
-        }
-      } catch (_) {
+        d = await r.json();
+      } catch (e) {
+        return null;
       }
-      const fileUrl = `${base}/download/${fileId}?token=${token}`;
+      if (!d || !d.success || !Array.isArray(d.servers)) return null;
+      log(`SERVERS anilist=${anilistId} episode=${episode} count=${d.servers.length}`);
+      return d.servers;
+    },
+  );
+}
+
+async function extractFlix(embedUrl) {
+  const m = String(embedUrl || "").match(/\/e\/([a-z0-9]+)/i);
+  if (!m) return null;
+  const aid = m[1];
+  log('FLIX extract id=' + aid);
+  const t = await text(
+    FLIXCLOUD_BASE + "/d/" + aid + "/__data.json",
+    { headers: FLIX_HEADERS },
+    5000,
+  );
+  if (!t) return null;
+  const fileId = (t.match(
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+  ) || [])[0];
+  const token = (t.match(/eyJ[\w-]+\.[\w-]+\.[\w-]+/) || [])[0];
+  if (!fileId || !token) {
+    log(`FLIX missing fields id=${aid} fileId=${!!fileId} token=${!!token}`);
+    return null;
+  }
+  log('FLIX signed download ready id=' + aid);
+  const base =
+    (t.match(/https:\/\/[a-z0-9-]+\.flixcloud\.cc/i) || [])[0] ||
+    FLIXCLOUD_BASE;
+  const q = (t.match(/(\d{3,4}p)/) || [])[0] || "1080p";
+  const size = (t.match(/"(\d+(?:\.\d+)?\s*[KMG]B)"/i) || [])[1] || "Unknown";
+  return {
+    url: base + "/download/" + fileId + "?token=" + token,
+    quality: q,
+    size,
+    headers: FLIX_HEADERS,
+  };
+}
+
+// ---------- Fallback: reanime native search ----------
+async function tmdbInfo(tmdbId, mediaType) {
+  return memo(
+    "reanime:tmdb:" + mediaType + ":" + tmdbId,
+    86400000,
+    async () => {
+      const type = mediaType === "movie" ? "movie" : "tv";
+      const url =
+        "https://api.themoviedb.org/3/" +
+        type +
+        "/" +
+        encodeURIComponent(tmdbId) +
+        "?api_key=" +
+        getTmdbApiKey() +
+        "&language=en-US";
+      const d = await json(
+        url,
+        { headers: { Accept: "application/json", "User-Agent": UA } },
+        3500,
+      );
+      if (!d) return null;
       return {
-        url: fileUrl,
-        quality: resolution || "1080p",
-        size,
-        type: "mkv",
-        headers: dlHeaders,
-        ready
+        title: d.name || d.title || d.original_name || d.original_title || "",
+        originalTitle: d.original_name || d.original_title || "",
       };
-    } catch (_) {
-      return null;
+    },
+  );
+}
+
+function extractAnilistId(item) {
+  const direct = item && (item.anilist_id || item.anilistId);
+  if (direct) return String(direct);
+  const urls = [
+    item && item.cover_image && item.cover_image.extra_large,
+    item && item.cover_image && item.cover_image.large,
+    item && item.cover_image && item.cover_image.medium,
+    item && item.banner_image,
+  ].filter(Boolean);
+  for (const u of urls) {
+    const m = String(u).match(/\/b?x?(\d+)-|\/(\d+)[-.]/);
+    if (m) return m[1] || m[2];
+  }
+  return null;
+}
+
+async function searchReanime(query) {
+  return memo("reanime:search:" + query.toLowerCase(), 86400000, async () => {
+    const paths = [
+      "/api/v1/search?q=" + encodeURIComponent(query) + "&limit=36",
+      "/api/search?q=" + encodeURIComponent(query),
+    ];
+    for (const path of paths) {
+      const r = await reanimeReq(path, { headers: HEADERS }, 3500);
+      if (!r) continue;
+      const t = await r.text().catch(() => "");
+      if (!t) continue;
+      const trim = t.trim();
+      if (trim[0] !== "{" && trim[0] !== "[") continue;
+      let d;
+      try {
+        d = JSON.parse(t);
+      } catch (e) {
+        continue;
+      }
+      const list =
+        d.results || d.data || d.anime || (Array.isArray(d) ? d : null);
+      if (!Array.isArray(list)) continue;
+      const out = [];
+      for (const item of list) {
+        if (!item) continue;
+        const rawSlug = item.anime_id || item.slug || item.id || item.url;
+        if (!rawSlug) continue;
+        const alId = extractAnilistId(item);
+        if (!alId) continue;
+        const titles = [];
+        if (item.title && typeof item.title === "object") {
+          if (item.title.english) titles.push(item.title.english);
+          if (item.title.romaji) titles.push(item.title.romaji);
+          if (item.title.native) titles.push(item.title.native);
+        } else if (typeof item.title === "string") titles.push(item.title);
+        if (item.name) titles.push(item.name);
+        out.push({
+          slug: String(rawSlug),
+          titles,
+          title: titles[0] || String(rawSlug),
+          anilistId: String(alId),
+        });
+      }
+      if (out.length) return out;
     }
+    return [];
   });
 }
 
-// src/reanime/index.js
-function getStreams(tmdbId, mediaType = "tv", season = null, episode = null) {
-  return __async(this, null, function* () {
-    try {
-      if (mediaType !== "tv" && mediaType !== "movie")
-        return [];
-      let alId = null;
-      let episodeNumber = mediaType === "tv" ? Number(episode || 1) : 1;
-      let searchTitle = "";
-      let searchYear = null;
-      if (typeof tmdbId === "string" && tmdbId.indexOf("anilist:") === 0) {
-        alId = tmdbId.split(":")[1];
-      } else {
+function normTitle(s) {
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function scoreTitle(candidate, info) {
+  const targets = [info.title, info.originalTitle, ...(info.aliases || [])]
+    .filter(Boolean)
+    .map(normTitle)
+    .filter(Boolean);
+  const names = (candidate.titles || []).map(normTitle).filter(Boolean);
+  return names.some((n) => targets.includes(n)) ? 100 : 0;
+}
+
+async function anilistDetails(alId) {
+  const q =
+    "query($id:Int){Media(id:$id,type:ANIME){id episodes title{english romaji native}}}";
+  const d = await json(
+    ANILIST_URL,
+    {
+      method: "POST",
+      headers: Object.assign({}, HEADERS, {
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify({ query: q, variables: { id: parseInt(alId, 10) } }),
+    },
+    3500,
+  );
+  const m = d && d.data && d.data.Media;
+  return m && m.id
+    ? {
+        id: m.id,
+        episodes: Number(m.episodes) || 0,
+        title:
+          (m.title && (m.title.english || m.title.romaji || m.title.native)) ||
+          "",
+      }
+    : null;
+}
+
+async function resolveNative(
+  tmdbId,
+  mediaType,
+  season,
+  episode,
+  prefetchedInfo,
+  eligibility,
+) {
+  // Native fallback is permitted only for confirmed anime. A mapping miss or a
+  // timeout is not itself evidence of anime eligibility.
+  if (eligibility !== "anime") return null;
+  if (mediaType !== "movie" && Number(season) !== 1) return null;
+  const info = prefetchedInfo || (await tmdbInfo(tmdbId, mediaType));
+  if (!info || !info.title) return null;
+  const queries = [info.title];
+  if (info.originalTitle && info.originalTitle !== info.title)
+    queries.push(info.originalTitle);
+  const all = [];
+  const results = await Promise.all(
+    queries.map((q) => searchReanime(q).catch(() => [])),
+  );
+  for (const r of results)
+    for (const x of r)
+      if (!all.some((y) => y.anilistId === x.anilistId)) all.push(x);
+  const scored = all
+    .map((x) => ({ x, score: scoreTitle(x, info) }))
+    .filter((x) => x.score === 100);
+  log(`NATIVE candidates=${all.length} exactMatches=${scored.length}`);
+  if (!scored.length) return null;
+  const ids = [...new Set(scored.map((x) => x.x.anilistId))];
+  if (ids.length !== 1) return null;
+  const candidate = scored.find((x) => x.x.anilistId === ids[0]).x;
+  const details = await anilistDetails(candidate.anilistId);
+  if (!details) return null;
+  const targetEpisode = mediaType === "movie" ? 1 : Number(episode);
+  if (!Number.isInteger(targetEpisode) || targetEpisode < 1) return null;
+  if (
+    mediaType !== "movie" &&
+    (!details.episodes || targetEpisode > details.episodes)
+  )
+    return null;
+  return {
+    alId: candidate.anilistId,
+    title: candidate.title || details.title || info.title,
+    episode: targetEpisode,
+    malId: null,
+  };
+}
+
+async function buildStreams(resolved, mediaType) {
+  const servers = await flixServers(resolved.alId, resolved.episode).catch(
+    () => null,
+  );
+  if (!Array.isArray(servers) || !servers.length) return [];
+  const subList = servers.filter(
+    (s) => s && s.dataType && String(s.dataType).toLowerCase() === "sub",
+  );
+  const dubList = servers.filter(
+    (s) => s && s.dataType && String(s.dataType).toLowerCase() === "dub",
+  );
+  const tasks = [];
+  const displayTitle = resolved.title || "Anime";
+  const queue = (list, lang) => {
+    if (!Array.isArray(list)) return;
+    const langUpper = lang.toUpperCase();
+    for (let i = 0; i < list.length; i++) {
+      const sv = list[i];
+      if (!sv || !sv.dataLink) continue;
+      const serverName = sv.serverName || "HD-" + (i + 1);
+      const title =
+        mediaType === "movie"
+          ? displayTitle + " (" + langUpper + ")"
+          : displayTitle +
+            " - Episode " +
+            resolved.episode +
+            " (" +
+            langUpper +
+            ")";
+      tasks.push(
+        (async () => {
+          const dl = await extractFlix(sv.dataLink).catch(() => null);
+          if (!dl || !dl.url) return null;
+          return {
+            name:
+              "Reanime [" +
+              langUpper +
+              "] " +
+              serverName +
+              " (" +
+              (dl.quality || "1080p") +
+              ")",
+            title,
+            url: dl.url,
+            quality: dl.quality || "1080p",
+            size: dl.size || "Unknown",
+            headers: dl.headers,
+            provider: "reanime",
+            type: "mkv",
+          };
+        })(),
+      );
+    }
+  };
+  queue(subList, "sub");
+  queue(dubList, "dub");
+  log(`STREAM tasks=${tasks.length} subServers=${subList.length} dubServers=${dubList.length}`);
+  if (!tasks.length) return [];
+  const results = await Promise.all(tasks);
+  const seen = new Set(),
+    streams = [];
+  for (const r of results)
+    if (r && r.url && !seen.has(r.url)) {
+      seen.add(r.url);
+      streams.push(r);
+    }
+  log(`STREAM resolved=${results.filter(Boolean).length} unique=${streams.length}`);
+  const qr = {
+    "2160p": 2160,
+    "4k": 2160,
+    "1080p": 1080,
+    "720p": 720,
+    "480p": 480,
+    "360p": 360,
+  };
+  streams.sort(
+    (a, b) =>
+      (qr[(b.quality || "").toLowerCase()] || 0) -
+      (qr[(a.quality || "").toLowerCase()] || 0),
+  );
+  return streams;
+}
+
+async function getStreams(
+  tmdbId,
+  mediaType = "tv",
+  season = 1,
+  episode = 1,
+  settings = {},
+) {
+  try {
+    const type = String(mediaType || "tv").toLowerCase(),
+      id = String(tmdbId || "").trim();
+    if (!id) return [];
+    const s = Number(season) || 1,
+      e = Number(episode) || 1;
+    const mapSeason = type === "movie" ? 1 : s,
+      mapEpisode = type === "movie" ? 1 : e;
+    const key = "reanime:streams:" + id + ":" + type + ":" + s + ":" + e;
+    const hit = CACHE.get(key);
+    if (hit !== undefined) { log('CACHE streams hit key=' + key); return hit; }
+    const p = (async () => {
+      // Prefetch TMDB info in parallel with mapper — only used if mapper misses.
+      const tmdbPromise = tmdbInfo(id, type).catch(() => null);
+      let resolved = null,
+        source = "mapper",
+        eligibility = "unknown";
+      try {
+        const m = await timeout(mapperLookup(id, mapSeason, mapEpisode), 5000);
+        if (m) {
+          eligibility = m.eligibility || "unknown";
+          if (m.state === "non_anime") {
+            log("Confirmed non-anime; native fallback blocked TMDB=" + id);
+            return [];
+          }
+          if (m.state === "hit") {
+            const al = await timeout(malToAnilist(m.malId), 3500);
+            if (al) {
+              resolved = {
+                alId: al.id,
+                title: m.title || al.title,
+                episode: m.malEpisode,
+                malId: m.malId,
+              };
+              eligibility = "anime";
+              log(
+                "Mapper hit MAL=" +
+                  m.malId +
+                  " AL=" +
+                  al.id +
+                  " E" +
+                  m.malEpisode,
+              );
+            } else log("Mapper hit but MAL->AL failed MAL=" + m.malId);
+          } else
+            log(
+              "Mapper miss TMDB=" +
+                id +
+                " S" +
+                s +
+                "E" +
+                e +
+                " eligibility=" +
+                eligibility,
+            );
+        }
+      } catch (err) {
+        log("Mapper error: " + err.message);
+      }
+      let streams = [];
+      if (resolved) {
         try {
-          const syncInfo = yield getSyncInfo(tmdbId, mediaType, season, episodeNumber);
-          searchTitle = syncInfo.title;
-          if (syncInfo.releaseDate) {
-            searchYear = syncInfo.releaseDate.substring(0, 4);
-          }
-          const syncResult = yield resolveByDate(syncInfo.releaseDate, syncInfo.title, episodeNumber, syncInfo.episodeTitle, syncInfo.dayIndex);
-          if (syncResult && syncResult.alId) {
-            alId = String(syncResult.alId);
-            episodeNumber = syncResult.episode;
-            searchTitle = syncResult.title;
-          }
-        } catch (_) {
-        }
-        if (!searchTitle || !searchYear) {
-          try {
-            const tmdb = yield getTmdbInfo(tmdbId, mediaType);
-            if (!searchTitle)
-              searchTitle = tmdb.title;
-            if (!searchYear)
-              searchYear = tmdb.year;
-          } catch (_) {
-          }
+          streams = await timeout(buildStreams(resolved, type), 10000);
+        } catch (err) {
+          log("Mapper streams error: " + err.message);
         }
       }
-      const serversByLang = {};
-      let watchUrl = "";
-      if (alId) {
-        for (const lang of ["sub", "dub"]) {
-          try {
-            const res = yield getFlixEmbeds(null, episodeNumber, lang, alId);
-            if (res.servers && res.servers.length > 0) {
-              serversByLang[lang] = res.servers;
-              if (res.watchUrl)
-                watchUrl = res.watchUrl;
-            }
-          } catch (_) {
+      if (!streams.length && eligibility === "anime") {
+        log("Trying strict native fallback for confirmed anime");
+        source = "native";
+        try {
+          const info = await timeout(tmdbPromise, 3500);
+          const native = await timeout(
+            resolveNative(id, type, s, e, info, eligibility),
+            7000,
+          );
+          if (native) {
+            resolved = native;
+            streams = await timeout(buildStreams(native, type), 10000);
           }
+        } catch (err) {
+          log("Native error: " + err.message);
         }
       }
-      if (Object.keys(serversByLang).length === 0) {
-        if (!searchTitle && alId) {
-          const alInfo = yield getAnilistInfo(alId);
-          searchTitle = alInfo.title;
-          searchYear = alInfo.year;
-        }
-        if (searchTitle) {
-          const anime = yield searchReanimeAnime(searchTitle, searchYear, alId);
-          if (anime) {
-            const slug = anime.slug;
-            const finalAlId = alId || anime.anilistId;
-            for (const lang of ["sub", "dub"]) {
-              try {
-                const res = yield getFlixEmbeds(slug, episodeNumber, lang, finalAlId);
-                if (res.servers && res.servers.length > 0) {
-                  serversByLang[lang] = res.servers;
-                  if (res.watchUrl)
-                    watchUrl = res.watchUrl;
-                }
-              } catch (_) {
-              }
-            }
-          }
-        }
-      }
-      if (Object.keys(serversByLang).length === 0)
-        return [];
-      const streams = [];
-      const seen = /* @__PURE__ */ new Set();
-      const tasks = [];
-      for (const language of ["sub", "dub"]) {
-        const serverList = serversByLang[language] || [];
-        for (let i = 0; i < serverList.length; i++) {
-          const server = serverList[i];
-          const dataLink = server.dataLink;
-          if (!dataLink)
-            continue;
-          const serverName = server.serverName || `HD-${i + 1}`;
-          const langUpper = language.toUpperCase();
-          const displayTitle = searchTitle || "Anime";
-          const streamTitle = mediaType === "movie" ? `${displayTitle} (${langUpper})` : `${displayTitle} - Episode ${episodeNumber} (${langUpper})`;
-          tasks.push((() => __async(this, null, function* () {
-            try {
-              const directDl = yield extractFlixCloudDownload(dataLink);
-              if (directDl && directDl.url) {
-                return {
-                  name: `Reanime [${langUpper}] ${serverName} (${directDl.quality || "1080p"})`,
-                  title: streamTitle,
-                  url: directDl.url,
-                  quality: directDl.quality || "1080p",
-                  size: directDl.size || "Unknown",
-                  headers: directDl.headers,
-                  provider: "reanime",
-                  type: "mkv"
-                };
-              }
-            } catch (_) {
-            }
-            return null;
-          }))());
-        }
-      }
-      const results = yield Promise.all(tasks);
-      for (const res of results) {
-        if (res && res.url && !seen.has(res.name)) {
-          seen.add(res.name);
-          streams.push(res);
-        }
-      }
-      const qualityRank = {
-        "auto": 4e3,
-        "adaptive": 4e3,
-        "2160p": 2160,
-        "4k": 2160,
-        "1080p": 1080,
-        "720p": 720,
-        "480p": 480,
-        "360p": 360,
-        "unknown": 0
-      };
-      streams.sort((a, b) => {
-        var _a, _b;
-        const qa = qualityRank[(_a = a.quality) == null ? void 0 : _a.toLowerCase()] || 0;
-        const qb = qualityRank[(_b = b.quality) == null ? void 0 : _b.toLowerCase()] || 0;
-        return qb - qa;
-      });
+      if (!streams.length && eligibility !== 'anime') log('FALLBACK skipped: mapper eligibility=' + eligibility);
+      log("Done streams=" + streams.length + " src=" + source);
       return streams;
-    } catch (error) {
-      console.error(`[Reanime] Error: ${error.message}`);
+    })();
+    CACHE.set(key, p, 1800000);
+    try {
+      const out = await p;
+      if (out && out.length) CACHE.set(key, out, 1800000);
+      else CACHE.delete(key);
+      return out;
+    } catch (err) {
+      CACHE.delete(key);
       return [];
     }
+  } catch (err) {
+    log("Fatal: " + ((err && err.message) || err));
+    return [];
+  }
+}
+
+async function getLoggedStreams(tmdbId, mediaType = 'tv', season, episode, settings = {}) {
+  const type = mediaType === 'anime' ? (season == null && episode == null ? 'movie' : 'tv') : mediaType === 'series' ? 'tv' : mediaType;
+  const requestId = `${tmdbId}:${type}:${season || 1}:${episode || 1}#${++requestSequence}`;
+  return requestContext.run(requestId, async () => {
+    const started = Date.now();
+    log(`REQUEST start tmdb=${tmdbId} inputType=${mediaType} resolvedType=${type} season=${season || 1} episode=${episode || 1}`);
+    try {
+      const streams = await getStreams(tmdbId, type, season, episode, settings);
+      log(`REQUEST end streams=${streams.length} elapsedMs=${Date.now() - started}`);
+      return streams;
+    } catch (error) {
+      log(`REQUEST failed elapsedMs=${Date.now() - started} error=${error.message}`);
+      throw error;
+    }
   });
 }
-module.exports = { getStreams };
+module.exports = { getStreams: getLoggedStreams };

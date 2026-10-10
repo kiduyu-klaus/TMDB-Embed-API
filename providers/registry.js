@@ -38,6 +38,10 @@ const providerFunctionMap = {
   'cinesrc.js': 'getCinesrcStreams',
   'playimdb.js': 'getPlayimdbStreams',
   'meowtv.js': 'getMeowtvStreams',
+  'animeonsen.js': 'getStreams',
+  'anikoto.js': 'getStreams',
+  'anizone.js': 'getStreams',
+  'hianime.js': 'getStreams',
   'dahmermovies.js': 'getDahmermoviesStreams',
   'goojara.js': 'getStreams',
   'streamflix.js': 'getStreamflixStreams',
@@ -77,6 +81,10 @@ const providerCategoryMap = {
   'cinesrc.js': 'MoviesTv',
   'playimdb.js': 'MoviesTv',
   'meowtv.js': 'MoviesTv',
+  'animeonsen.js': 'Anime',
+  'anikoto.js': 'Anime',
+  'anizone.js': 'Anime',
+  'hianime.js': 'Anime',
   'dahmermovies.js': 'MoviesTv',
   'goojara.js': 'MoviesTv',
   'streamflix.js': 'MoviesTv',
@@ -146,7 +154,9 @@ function createFetchFunction(providerInfo) {
 
     try {
       const animeMovie = ctx.type === 'anime' && ctx.season == null && ctx.episode == null;
-      const mediaType = ctx.type === 'movie' || animeMovie ? 'movie' : (ctx.type === 'anime' ? 'anime' : 'tv');
+      // Anime series is TV on TMDB, so providers get 'tv' rather than 'anime'
+      // and don't each have to special-case it. Anime movies still map to 'movie'.
+      const mediaType = ctx.type === 'movie' || animeMovie ? 'movie' : 'tv';
       const t0 = Date.now();
 
       let result;

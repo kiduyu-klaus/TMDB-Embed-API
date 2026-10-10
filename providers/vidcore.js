@@ -1,4 +1,6 @@
 const axios = require('axios');
+const { extractSubtitles, fillMissingSubtitles } = require('../utils/vidProviderSubtitles');
+const { getVidServerParts } = require('../utils/vidHandshake');
 
 const BASE_URL = 'https://vidcore.io';
 const ENCRYPT_URL = 'https://enc-dec.app/api/enc-vidcore';
@@ -97,6 +99,7 @@ function normalizeServerStreams(payload, server) {
             quality,
             provider: 'Vidcore',
             ...getFormat(candidate.url, candidate.type),
+            subtitles: extractSubtitles(payload, candidate.url, { ...PAGE_HEADERS, Referer: `${BASE_URL}/`, Origin: BASE_URL }),
             headers: {
                 ...(candidate.headers || {}),
                 'User-Agent': PAGE_HEADERS['User-Agent'],
@@ -172,15 +175,9 @@ async function getVidcoreStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         const pageText = extractPageText(typeof pageResponse.data === 'string' ? pageResponse.data : '');
         if (!pageText) throw new Error('Could not extract page token');
 
-        const encryptedParts = await axios.get(ENCRYPT_URL, {
-            params: { text: pageText },
-            timeout: REQUEST_TIMEOUT_MS
-        });
-        const { servers: serversUrl, stream: streamBase, token = '' } = validateBridge(
-            encryptedParts.data,
-            'Vidcore encryption'
+        const { servers: serversUrl, stream: streamBase, token } = await getVidServerParts(
+            ENCRYPT_URL, pageText, API_HEADERS, REQUEST_TIMEOUT_MS
         );
-        if (!serversUrl || !streamBase) throw new Error('Encryption response is missing server URLs');
 
         const headers = { ...API_HEADERS, 'X-CSRF-Token': token || '' };
         const encryptedServersResponse = await axios.post(serversUrl, null, {
@@ -198,8 +195,8 @@ async function getVidcoreStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         if (!Array.isArray(servers) || servers.length === 0) return [];
 
         console.log(`[Vidcore] Fetching ${servers.length} server(s)`);
-        const results = await Promise.all(servers.map(server => fetchServer(server, streamBase, headers)));
-        const unique = [...new Map(results.flat().map(stream => [stream.url, stream])).values()];
+        const results = await Promise.all(servers.filter(server => server && server.data).map(server => fetchServer(server, streamBase, headers)));
+        const unique = [...new Map(fillMissingSubtitles(results.flat()).map(stream => [stream.url, stream])).values()];
         const checks = await Promise.all(unique.map(isPlayableStream));
         const playable = unique.filter((stream, index) => checks[index]);
         console.log(`[Vidcore] Emitted ${playable.length}/${unique.length} playable unique stream(s)`);

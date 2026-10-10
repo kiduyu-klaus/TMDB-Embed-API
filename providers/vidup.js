@@ -1,4 +1,6 @@
 const axios = require('axios');
+const { extractSubtitles, fillMissingSubtitles } = require('../utils/vidProviderSubtitles');
+const { getVidServerParts } = require('../utils/vidHandshake');
 
 const BASE_URL = 'https://vidup.to';
 const ENCRYPT_URL = 'https://enc-dec.app/api/enc-vidup';
@@ -99,7 +101,7 @@ function normalizeServerStreams(payload, server) {
             quality,
             provider: 'Vidup',
             ...getFormat(candidate.url, candidate.type),
-            subtitles: [],
+            subtitles: extractSubtitles(payload, candidate.url, { ...PAGE_HEADERS, Referer: `${BASE_URL}/`, Origin: BASE_URL }),
             headers: {
                 ...(candidate.headers || {}),
                 'User-Agent': PAGE_HEADERS['User-Agent'],
@@ -176,28 +178,10 @@ async function getVidupStreams(tmdbId, mediaType = 'movie', seasonNum = null, ep
         const pageText = extractPageText(typeof pageResponse.data === 'string' ? pageResponse.data : '');
         if (!pageText) throw new Error('Could not extract page token');
 
-        operation = 'stage 1 encryption';
-        const encryptedParts = await axios.get(ENCRYPT_URL, {
-            params: { text: pageText, stage: 1 },
-            timeout: REQUEST_TIMEOUT_MS
-        });
-        const stage1 = validateBridge(encryptedParts.data, 'Vidup stage 1 encryption');
-        if (!stage1.stage1) throw new Error('Stage 1 response is missing URL');
-        operation = 'stage 1 handshake';
-        const handshake = await axios.post(stage1.stage1, null, {
-            headers: { ...API_HEADERS, 'X-CSRF-Token': stage1.token || '' },
-            timeout: REQUEST_TIMEOUT_MS
-        });
-        operation = 'stage 2 encryption';
-        const stage2 = await axios.get(ENCRYPT_URL, {
-            params: { text: typeof handshake.data === 'string' ? handshake.data : JSON.stringify(handshake.data), stage: 2 },
-            timeout: REQUEST_TIMEOUT_MS
-        });
-        const { servers: serversUrl, stream: streamBase, token = '' } = validateBridge(
-            stage2.data,
-            'Vidup stage 2 encryption'
+        operation = 'two-stage handshake';
+        const { servers: serversUrl, stream: streamBase, token } = await getVidServerParts(
+            ENCRYPT_URL, pageText, API_HEADERS, REQUEST_TIMEOUT_MS
         );
-        if (!serversUrl || !streamBase) throw new Error('Encryption response is missing server URLs');
 
         const headers = { ...API_HEADERS, 'X-CSRF-Token': token || '' };
         operation = 'server list fetch';
@@ -218,7 +202,7 @@ async function getVidupStreams(tmdbId, mediaType = 'movie', seasonNum = null, ep
 
         console.log(`[Vidup] Fetching ${servers.length} server(s)`);
         const results = await Promise.all(servers.filter(server => server && server.data).map(server => fetchServer(server, streamBase, headers)));
-        const unique = [...new Map(results.flat().map(stream => [stream.url, stream])).values()];
+        const unique = [...new Map(fillMissingSubtitles(results.flat()).map(stream => [stream.url, stream])).values()];
         const checks = await Promise.all(unique.map(isPlayableStream));
         const playable = unique.filter((stream, index) => checks[index]);
         console.log(`[Vidup] Emitted ${playable.length}/${unique.length} playable unique stream(s)`);
@@ -228,7 +212,7 @@ async function getVidupStreams(tmdbId, mediaType = 'movie', seasonNum = null, ep
         try { host = new URL(error.config?.url).hostname; } catch { /* no request URL */ }
         const status = error.response?.status || error.code || 'unknown';
         const challenge = error.response?.headers?.['cf-mitigated'] === 'challenge';
-        console.error(`[Vidup] ${operation} failed: host=${host} status=${status}${challenge ? ' Cloudflare challenge' : ''}`);
+        console.error(`[Vidup] ${operation} failed: host=${host} status=${status}${challenge ? ' Cloudflare challenge' : ''}: ${error.message}`);
         return [];
     }
 }
