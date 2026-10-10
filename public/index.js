@@ -500,6 +500,7 @@ async function clearAll(){
 
 function setTheme(t){
 	document.documentElement.dataset.theme = t;
+	document.documentElement.dataset.bsTheme = t;
 	localStorage.setItem('ns_theme', t);
 }
 function initTheme(){
@@ -573,6 +574,7 @@ async function loadServerStatus(){
 				const row = document.createElement('div');
 				row.className = 'prov-row';
 				row.dataset.provider = p.name;
+				row.dataset.category = p.category || 'MoviesTv';
 				row.innerHTML = `<strong>${p.name}</strong>`+
 					`<span class="badge ${p.enabled? 'ok':'off'}">${p.enabled? 'on':'off'}</span>`+
 					`<span class="badge ${p.cookieRequired? 'warn':'off'}">${p.cookieRequired? 'yes':'no'}</span>`+
@@ -605,6 +607,8 @@ async function runProviderFunctionalChecks(){
 	if(providerChecksRunning) return;
 	const checkTmdbEl = document.getElementById('providerCheckTmdbId');
 	const targetTmdb = (checkTmdbEl && checkTmdbEl.value.trim()) || '278'; // TMDB ID (editable on status page)
+	const animeCheckTmdbEl = document.getElementById('animeProviderCheckTmdbId');
+	const animeTargetTmdb = (animeCheckTmdbEl && animeCheckTmdbEl.value.trim()) || '1363974';
 	const provEnhanced = document.getElementById('statusProvidersEnhanced');
 	const summary = document.getElementById('providerCheckSummary');
 	if(!provEnhanced || !summary) return;
@@ -630,7 +634,10 @@ async function runProviderFunctionalChecks(){
 		try {
 			const token = currentStreamTokenHash();
 			const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
-			const r = await fetch(U(`/api/streams/${name}/movie/${targetTmdb}${tokenQuery}`));
+			const isAnime = row.dataset.category === 'Anime';
+			const checkType = isAnime ? 'anime' : 'movie';
+			const checkId = isAnime ? animeTargetTmdb : targetTmdb;
+			const r = await fetch(U(`/api/streams/${name}/${checkType}/${checkId}${tokenQuery}`));
 			const j = await readStreamCheckResponse(r);
 			const isOk = j && Array.isArray(j.streams) && j.streams.length>0;
 			if(isOk){
@@ -809,11 +816,11 @@ async function renderProviderMatrix(merged){
 	container.innerHTML = providers.map(([name,flag])=>{
 		const enabled = merged[flag] !== false;
 		const isDefault = defaults.includes(name);
-		return `<div class=\"pm-item\" data-prov=\"${name}\" data-flag=\"${flag}\" data-enabled=\"${enabled}\" data-default=\"${isDefault}\">`
-			+`<button type=\"button\" class=\"pm-enable\" title=\"Enable/Disable\" data-action=\"toggle-enable\">${enabled? '⏻':'✖'}</button>`
+		return `<div class="col"><div class=\"pm-item\" data-prov=\"${name}\" data-flag=\"${flag}\" data-enabled=\"${enabled}\" data-default=\"${isDefault}\">`
+			+`<button type="button" class="pm-enable btn ${enabled ? 'btn-outline-success' : 'btn-outline-danger'}" title="${enabled ? 'Disable' : 'Enable'} ${name}" aria-label="${enabled ? 'Disable' : 'Enable'} ${name}" aria-pressed="${enabled}" data-action="toggle-enable"><i class="bi ${enabled ? 'bi-check' : 'bi-x'}" aria-hidden="true"></i></button>`
 			+`<span class=\"pm-name\">${name}</span>`
 			+`<button type=\"button\" class=\"pm-default\" title=\"Toggle Default\" data-action=\"toggle-default\">${isDefault? '★':'☆'}</button>`
-			+`</div>`;
+			+`</div></div>`;
 	}).join('');
 	const hidden = document.querySelector('input[name="defaultProviders"]'); if(hidden) hidden.value = defaults.join(',');
 	if(!container._bound){

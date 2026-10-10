@@ -32,5 +32,6 @@
   "enableOnetouchtvProvider": true,
   "enableHdghartvProvider": true,
   "enableStreamflixProvider": true,
-  "enableAnimekaiProvider": true
+  "enableAnimekaiProvider": true,
+  "enableVidupProvider": false
 }

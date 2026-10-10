@@ -235,7 +235,7 @@ function hasNoSuchFileNotice(html) {
 function isExcludedStreamUrl(value) {
   try {
     const host = new URL(value).hostname;
-    return ['dood.watch', 'vidsrc.me'].some(domain => host === domain || host.endsWith(`.${domain}`));
+    return ['dood.watch', 'dood.re', 'vidsrc.me'].some(domain => host === domain || host.endsWith(`.${domain}`));
   } catch { return true; }
 }
 

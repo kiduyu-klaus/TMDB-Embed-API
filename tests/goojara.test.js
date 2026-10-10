@@ -320,7 +320,7 @@ test('Goojara filters excluded output hosts and reads Luluvdo inline media witho
   t.mock.method(globalThis, 'fetch', async input => {
     const url = new URL(input);
     if (url.hostname === 'luluvdo.com') return mockResponse('<title>Fixture 720p</title><p>Upgrade to 4K</p><iframe src="https://luluvido.com/e/fixture"></iframe>');
-    return mockResponse('<video><source src="https://cdn.example/movie.m3u8"><source src="https://dood.watch/file.mp4"><source src="https://sub.vidsrc.me/file.m3u8"></video>');
+    return mockResponse('<video><source src="https://cdn.example/movie.m3u8"><source src="https://dood.watch/file.mp4"><source src="https://sub.vidsrc.me/file.m3u8"><source src="https://dood.re/file.mp4"><source src="https://www.dood.re/file.mp4"></video>');
   });
   const streams = await goojara.resolveServer({url:'https://luluvdo.com/d/fixture',label:'Lulu'},0,new Map(),'Fixture');
   assert.equal(streams.length, 1);

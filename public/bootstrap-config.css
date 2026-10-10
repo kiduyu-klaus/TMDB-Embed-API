@@ -1,0 +1,40 @@
+/* Bootstrap layout and controls integrated with the existing theme. */
+.config-page {
+  --bs-body-color: var(--text);
+  --bs-body-bg: var(--bg);
+  --bs-border-color: var(--border);
+}
+.config-page .btn { font-size:.875rem; font-weight:600; border-radius:24px; }
+.config-page .nav-item { text-align:left; justify-content:flex-start; }
+.config-page .form-control, .config-page .form-select {
+  background-color:var(--bg-alt); color:var(--text); border-color:var(--border-strong);
+}
+.config-page .form-control::placeholder { color:var(--text-dim); opacity:.8; }
+.config-page .form-control:focus, .config-page .form-select:focus { box-shadow:0 0 0 .2rem color-mix(in srgb,var(--primary) 18%,transparent); }
+.config-page .provider-matrix { gap:0; margin-top:0; }
+.config-page .provider-matrix > .col { min-width:0; }
+.config-page .pm-item {
+  width:100%; height:100%; padding:14px; gap:12px; border-radius:16px;
+  text-transform:none; letter-spacing:0; box-shadow:none; background:var(--bg-alt);
+}
+.config-page .pm-item[data-enabled='false'] { opacity:1; filter:none; background:var(--bg-accent); }
+.config-page .pm-name { flex:1; min-width:0; overflow-wrap:anywhere; font-size:.9rem; font-weight:600; }
+.config-page .pm-item .pm-enable, .config-page .pm-item .pm-default {
+  width:44px; height:44px; min-height:44px; padding:0; flex:0 0 44px; border-radius:12px;
+}
+.config-page .pm-enable .bi { font-size:1.65rem; line-height:1; }
+.config-page .pm-item[data-enabled='true'] .pm-enable { color:#146c43; background:#d1e7dd; border-color:#a3cfbb; }
+.config-page .pm-item[data-enabled='false'] .pm-enable { color:#b02a37; background:#f8d7da; border-color:#f1aeb5; }
+.config-page .pm-item .pm-default { font-size:1.1rem; }
+.config-page .modal-backdrop { z-index:0; }
+.config-page .modal-window { z-index:1; }
+.config-page .status-grid, .config-page .status-block { min-width:0; }
+.config-page .status-pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+.config-page .actions-bar { z-index:10; }
+@media(max-width:575.98px) {
+  .config-page .panels { padding-right:16px; padding-left:16px; }
+  .config-page .actions-bar { padding:12px 16px; }
+  .config-page .actions-bar .status, .config-page .validation-summary { flex-basis:100%; }
+  .config-page .panel h1 .btn { margin-left:0 !important; }
+  .config-page .pm-item { padding:12px; }
+}

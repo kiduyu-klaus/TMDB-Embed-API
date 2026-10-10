@@ -349,7 +349,7 @@ router.get('/api/status', (req,res) => {
   const providers = listProviders().map(p => {
     const cookieRequired = cookieRequiredProviders.has(p.name);
     const cookieOk = !cookieRequired || (config.febboxCookies && config.febboxCookies.length > 0);
-    return { name: p.name, enabled: p.enabled, cookieRequired, cookieOk };
+    return { name: p.name, category: p.category, enabled: p.enabled, cookieRequired, cookieOk };
   });
   res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, metrics: {
     uptimeSeconds: Math.round((Date.now()-metrics.startTime)/1000),

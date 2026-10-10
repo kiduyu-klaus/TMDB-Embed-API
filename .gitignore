@@ -9,3 +9,7 @@ restart.trigger
 .work/research/megaplay-newclient.min.js
 .work/research/megaplay-videojs-newclient.min.js
 
+restart.trigger
+tests/goojara.test.js
+tests/goojara.test.js
+restart.trigger
