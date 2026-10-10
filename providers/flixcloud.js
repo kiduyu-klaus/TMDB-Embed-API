@@ -137,20 +137,49 @@ async function findReanimeCandidate(tmdbId, title, year, type, seasonNum) {
 }
 
 async function findFlixcloudEmbedUrls(tmdbId, title, year, type, seasonNum, episodeNum) {
-    const candidate = await findReanimeCandidate(tmdbId, title, year, type, seasonNum);
+    let candidate = await findReanimeCandidate(tmdbId, title, year, type, seasonNum);
     if (!candidate) return [];
 
-    const episode = type === 'movie' ? 1 : Number(episodeNum);
-    const anilistId = Number(candidate.anilist_id || 0);
+    let episode = type === 'movie' ? 1 : Number(episodeNum);
+    let anilistId = Number(candidate.anilist_id || 0);
     if (!Number.isInteger(episode) || episode < 1 || anilistId < 1) return [];
 
-    const response = await axios.get(`${REANIME_BASE}/api/flix/${anilistId}/${episode}`, {
+    const fetchServers = async (id, episodeNumber) => axios.get(`${REANIME_BASE}/api/flix/${id}/${episodeNumber}`, {
         headers: REANIME_HEADERS,
         timeout: 15000
     });
-    const servers = response.data?.success && Array.isArray(response.data.servers)
+    let response = await fetchServers(anilistId, episode);
+    let servers = response.data?.success && Array.isArray(response.data.servers)
         ? response.data.servers
         : [];
+
+    // TMDB numbers a split cour continuously (e.g. episodes 13-24), while
+    // ReAnime exposes each cour as a separate 12-episode anime entry.
+    const seasonEpisodeCount = Number(candidate.episodes_total);
+    if (servers.length === 0 && type === 'tv' && seasonEpisodeCount > 0 && episode > seasonEpisodeCount) {
+        const partTwo = await findReanimeCandidate(
+            tmdbId,
+            `${title} season ${seasonNum || 1} part 2`,
+            year,
+            type,
+            seasonNum
+        );
+        const localEpisode = episode - seasonEpisodeCount;
+        if (partTwo && Number(partTwo.anilist_id) !== anilistId && localEpisode > 0 &&
+            (!partTwo.episodes_total || localEpisode <= Number(partTwo.episodes_total))) {
+            response = await fetchServers(Number(partTwo.anilist_id), localEpisode);
+            servers = response.data?.success && Array.isArray(response.data.servers)
+                ? response.data.servers
+                : [];
+            if (servers.length > 0) {
+                candidate = partTwo;
+                episode = localEpisode;
+                anilistId = Number(partTwo.anilist_id);
+            }
+        }
+    }
+    if (servers.length === 0) return [];
+
     const unique = new Map();
     for (const server of servers) {
         const value = server?.dataLink;

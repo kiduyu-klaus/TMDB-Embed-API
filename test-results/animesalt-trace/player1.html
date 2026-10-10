@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with Audio Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #9333ea;
+      --secondary-color: #7e22ce;
+      --accent-color: #6b21a8;
+      --dark-bg: #0a0a0f;
+      --header-bg: #141420;
+      --modal-bg: #1a1a25;
+      --text-color: #ffffff;
+      --shadow-color: rgba(147, 51, 234, 0.25);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--dark-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+      /*backdrop-filter: blur(10px);*/
+    }
+
+    .audio-btn {
+      background: var(--primary-color);
+      color: var(--text-color);
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+      transition: var(--transition);
+      letter-spacing: 0.5px;
+    }
+
+    .audio-btn:hover {
+      background: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(147, 51, 234, 0.8);
+    }
+
+    .audio-btn:active {
+      transform: translateY(0);
+    }
+
+    .audio-btn svg {
+      margin-right: 6px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .video-container {
+      position: relative;
+      flex: 1 1 auto;
+      width: 100%;
+      overflow: hidden;
+      background: black;
+    }
+
+    #videoFrame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 1;
+      opacity: 0.3;
+      transition: opacity 1s ease;
+    }
+    
+    #videoFrame.loaded {
+      opacity: 1;
+    }
+    
+    #videoFrame.switching {
+      opacity: 0.2;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(10, 10, 15, 0.7);
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--modal-bg);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 24px;
+      border-radius: 10px;
+      width: 280px;
+      max-width: 90%;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      animation: slideIn 0.3s ease;
+      border: 1px solid rgba(168, 85, 247, 0.1);
+      position: relative;
+    }
+
+    @keyframes slideIn {
+      from { transform: translate(-50%, -48%); opacity: 0; }
+      to { transform: translate(-50%, -50%); opacity: 1; }
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 10px 10px 0 0;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+    }
+
+    .audio-options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-option {
+      padding: 10px 12px;
+      background: rgba(147, 51, 234, 0.05);
+      border: 1px solid rgba(147, 51, 234, 0.1);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-option:hover {
+      background: rgba(147, 51, 234, 0.1);
+      border-color: rgba(147, 51, 234, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .modal-option:active {
+      transform: translateY(0);
+    }
+
+    .modal-option.active {
+      background: rgba(147, 51, 234, 0.15);
+      border-color: rgba(147, 51, 234, 0.3);
+    }
+
+    .modal-option svg {
+      margin-right: 6px;
+      width: 16px;
+      height: 16px;
+      fill: var(--primary-color);
+    }
+
+    .modal-option.active svg {
+      fill: var(--accent-color);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      transform: rotate(90deg);
+      background: rgba(236, 72, 153, 0.1);
+    }
+
+    /* Video loading animation */
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    .video-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      animation: pulse 1.5s infinite ease-in-out;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      display: none; /* Hide the loading animation by default */
+    }
+    
+    iframe.loading + .video-loading {
+      display: block;
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 8px 12px;
+      }
+      
+      .logo {
+        font-size: 16px;
+      }
+      
+      .audio-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+      
+      .modal-content {
+        width: 260px;
+        padding: 18px;
+      }
+      
+      .modal-option {
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+      
+      .modal-content h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+      
+      .close-btn {
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+      }
+    }
+  </style>
+      <script data-cfasync="false">
+    (function() {
+        try {
+            var s = document.createElement('script');
+            s.setAttribute('data-cfasync', 'false');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//zy.sodlessteargas.com/r5EIPlZN7PJGKQ/137193';
+            var firstScript = document.getElementsByTagName('script')[0];
+            firstScript.parentNode.insertBefore(s, firstScript);
+        } catch (e) {}
+    })();
+    </script>
+</head>
+<body>
+  <div class="header">
+    <button class="audio-btn" id="audioBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+      </svg>
+      Hindi    </button>
+  </div>
+
+  <div class="video-container">
+    <iframe id="videoFrame" src="https://player.abyssplayer.com/ni4MusXZU" allowfullscreen></iframe>
+    <div class="language-switch" id="loadingIndicator">
+      <div class="loading-text">Loading video</div>
+      <div class="language-text">Audio: <span id="switchingLanguage">Hindi</span></div>
+    </div>
+  </div>
+
+  <div id="audioModal" class="modal">
+    <div class="modal-content">
+      <h3>Audio Selection</h3>
+      <button class="close-btn" id="closeModal">&times;</button>
+      <div class="audio-options">
+                  <div class="modal-option active" 
+               data-link="https://player.abyssplayer.com/ni4MusXZU" 
+               data-language="Hindi">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+              Hindi          </div>
+                  <div class="modal-option " 
+               data-link="https://player.abyssplayer.com/fXdRsouLu" 
+               data-language="Tamil">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+              Tamil          </div>
+                  <div class="modal-option " 
+               data-link="https://player.abyssplayer.com/B2M4kPSdJ" 
+               data-language="Telugu">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+              Telugu          </div>
+                  <div class="modal-option " 
+               data-link="https://player.abyssplayer.com/MOK6tepuq8" 
+               data-language="English">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+              English          </div>
+                  <div class="modal-option " 
+               data-link="https://player.abyssplayer.com/CrU98KJqO" 
+               data-language="Japanese">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+              </svg>
+              Japanese          </div>
+              </div>
+    </div>
+  </div>
+
+  <script>
+    const videoFrame = document.getElementById('videoFrame');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    
+    videoFrame.addEventListener('load', function() {
+      this.classList.add('loaded');
+      this.classList.remove('switching');
+      loadingIndicator.style.opacity = '0';
+      setTimeout(() => { loadingIndicator.style.display = 'none'; }, 300);
+    });
+    
+    document.getElementById('audioBtn').addEventListener('click', function() {
+      document.getElementById('audioModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('closeModal').addEventListener('click', function() {
+      document.getElementById('audioModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    window.addEventListener('click', function(event) {
+      var modal = document.getElementById('audioModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    var options = document.querySelectorAll('.modal-option');
+    options.forEach(function(option) {
+      option.addEventListener('click', function() {
+        document.querySelectorAll('.modal-option').forEach(function(el) {
+          el.classList.remove('active');
+        });
+        
+        this.classList.add('active');
+        
+        var newLink = this.getAttribute('data-link');
+        var newLanguage = this.getAttribute('data-language');
+        
+        document.getElementById('switchingLanguage').textContent = newLanguage;
+        
+        loadingIndicator.style.display = 'block';
+        setTimeout(() => { loadingIndicator.style.opacity = '1'; }, 10);
+        
+        videoFrame.classList.remove('loaded');
+        videoFrame.classList.add('switching');
+        
+        videoFrame.src = newLink;
+        
+        document.getElementById('audioBtn').innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+          </svg>
+          ${newLanguage}
+        `;
+        
+        document.getElementById('audioModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      });
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        document.getElementById('audioModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a487e006fb9ede22',t:'MTc5MTY1ODkwMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

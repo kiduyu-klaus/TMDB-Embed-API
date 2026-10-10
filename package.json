@@ -25,6 +25,7 @@
     "got-scraping": "^4.2.2",
     "hls-parser": "^0.13.5",
     "jsdom": "^26.1.0",
+    "json5": "^2.2.3",
     "node-fetch": "^2.7.0",
     "p-limit": "^6.2.0",
     "string-similarity": "^4.0.4",

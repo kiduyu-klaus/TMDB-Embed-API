@@ -1,3 +1,5 @@
+const diagnostics = require("../utils/providerTrace").createProviderTrace("AnimeDekho");
+const fetch = diagnostics.fetch;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -59,8 +61,7 @@ var require_extractors = __commonJS({
           const m = html.match(/file:\s*["'](.*?m3u8.*?)["']/);
           if (m)
             return { url: m[1], quality: "Unknown", source: "Vidmoly" };
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -75,8 +76,7 @@ var require_extractors = __commonJS({
             if (m)
               return { url: m[1], quality: "Unknown", source: "Filemoon" };
           }
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -91,8 +91,7 @@ var require_extractors = __commonJS({
             if (m)
               return { url: m[1], quality: "Unknown", source: "Streamhide" };
           }
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -104,8 +103,7 @@ var require_extractors = __commonJS({
           const m = html.match(/hls':\s*'(.*?)'/);
           if (m)
             return { url: m[1], quality: "Unknown", source: "Voe" };
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -144,8 +142,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
       const tmdbUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}`;
       const mediaInfo = yield (yield fetch(tmdbUrl, { skipSizeCheck: true })).json();
       const title = mediaInfo.title || mediaInfo.name;
+      diagnostics.log("tmdb.resolved", { title, found: !!title });
       if (!title)
-        return [];
+        { diagnostics.log("stage.empty", { location: "anime-dekho:147" }); return []; }
       const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(title)}`;
       const searchHtml = yield (yield fetch(searchUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $ = cheerio.load(searchHtml);
@@ -166,15 +165,17 @@ function getStreams(tmdbId, mediaType, season, episode) {
           }
         });
       }
+      diagnostics.log("search.selected", { url: itemUrl, found: !!itemUrl });
       if (!itemUrl)
-        return [];
+        { diagnostics.log("stage.empty", { location: "anime-dekho:170" }); return []; }
       const animePage = yield (yield fetch(itemUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $2 = cheerio.load(animePage);
       const bodyClass = $2("body").attr("class") || "";
       const termMatch = bodyClass.match(/(?:term|postid)-(\d+)/);
       const term = termMatch?.[1];
+      diagnostics.log("page.parsed", { hasTerm: !!term });
       if (!term)
-        return [];
+        { diagnostics.log("stage.empty", { location: "anime-dekho:177" }); return []; }
       const seasonItems = $2("ul.seasons-lst li");
       let targetUrl = itemUrl;
       let mediaType2 = 1;
@@ -188,6 +189,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
           }
         });
       }
+      diagnostics.log("season.selected", { url: targetUrl, season, availableSeasons: seasonItems.length });
       const targetPage = yield (yield fetch(targetUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $3 = cheerio.load(targetPage);
       const targetBodyClass = $3("body").attr("class") || "";
@@ -201,6 +203,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
           const iframePageHtml = yield (yield fetch(iframePageUrl, { headers: HEADERS, skipSizeCheck: true })).text();
           const $4 = cheerio.load(iframePageHtml);
           const iframeSrc = $4("iframe").attr("src");
+          diagnostics.log("server.discovered", { index: i, found: !!iframeSrc, url: iframeSrc });
           if (iframeSrc && iframeSrc.startsWith("http")) {
             streams.push({
               url: iframeSrc,
@@ -209,13 +212,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
               subtitles: []
             });
           }
-        } catch (_) {
-        }
+        } catch (_) { diagnostics.log("stage.failed", { errorType: _.name, stage: "server/extractor" }); }
       }
       return streams;
     } catch (e) {
-      console.error("[AnimeDekho]", e);
-      return [];
+      diagnostics.log("provider.failed", { errorType: e.name });
+      { diagnostics.log("stage.empty", { location: "anime-dekho:217" }); return []; }
     }
   });
 }
@@ -223,11 +225,14 @@ var { extract } = require_extractors();
 function wrappedGetStreams(...args) {
   return __async(this, null, function* () {
     const streams = yield getStreams(...args);
+    diagnostics.log("candidates.found", { count: streams.length });
     const finalStreams = [];
     for (const s of streams) {
       if (!s.url)
         continue;
+      diagnostics.log("server.start", { url: s.url });
       const ext = yield extract(s.url);
+      diagnostics.log("server.resolved", { url: s.url, extracted: !!ext, source: ext?.source });
       if (ext) {
         s.url = ext.url;
         if (ext.quality !== "Unknown")
@@ -240,4 +245,4 @@ function wrappedGetStreams(...args) {
     return finalStreams;
   });
 }
-module.exports = { getStreams: wrappedGetStreams };
+module.exports = { getStreams: (...args) => diagnostics.run(() => wrappedGetStreams(...args), args) };

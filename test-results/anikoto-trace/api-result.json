@@ -1,0 +1,240 @@
+{
+  "success": true,
+  "provider": "anikoto",
+  "tmdbId": "82684",
+  "imdbId": "tt9054364",
+  "count": 6,
+  "providerTimings": {
+    "anikoto": 3769
+  },
+  "streams": [
+    {
+      "name": "Anikoto [SUB] Vidstream-2",
+      "title": "Anikoto SUB - Vidstream-2",
+      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.Ukvf8aQqzV-wHLKoIcEgHJF62FPisivSrjHOt4MLnp0",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    },
+    {
+      "name": "Anikoto [SUB] Vidstream-1",
+      "title": "Anikoto SUB - Vidstream-1",
+      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.Ukvf8aQqzV-wHLKoIcEgHJF62FPisivSrjHOt4MLnp0",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    },
+    {
+      "name": "Anikoto [SUB] HD-1",
+      "title": "Anikoto SUB - HD-1",
+      "url": "https://megap.shiora.top/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.Ukvf8aQqzV-wHLKoIcEgHJF62FPisivSrjHOt4MLnp0",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    },
+    {
+      "name": "Anikoto [DUB] Vidstream-1",
+      "title": "Anikoto DUB - Vidstream-1",
+      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.AfHLW1oL8NY6gHU1G82TUgy6O93UlEQ11PyVj01b4a8",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    },
+    {
+      "name": "Anikoto [DUB] HD-1",
+      "title": "Anikoto DUB - HD-1",
+      "url": "https://megap.shiora.top/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.AfHLW1oL8NY6gHU1G82TUgy6O93UlEQ11PyVj01b4a8",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    },
+    {
+      "name": "Anikoto [DUB] Vidstream-2",
+      "title": "Anikoto DUB - Vidstream-2",
+      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTczNHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.AfHLW1oL8NY6gHU1G82TUgy6O93UlEQ11PyVj01b4a8",
+      "quality": "multi-quality",
+      "headers": {
+        "Referer": "https://megaplay.buzz/",
+        "Origin": "https://megaplay.buzz",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+        "Accept": "*/*"
+      },
+      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+      "subtitleFormat": "vtt",
+      "subtitles": [
+        {
+          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
+          "name": "English",
+          "language": "en",
+          "format": "vtt",
+          "default": true,
+          "headers": {
+            "Referer": "https://megaplay.buzz/",
+            "Origin": "https://megaplay.buzz",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
+            "Accept": "*/*"
+          },
+          "id": "anikoto-0-en",
+          "lang": "en",
+          "label": "en",
+          "mimeType": "text/vtt"
+        }
+      ],
+      "backup": false,
+      "provider": "anikoto",
+      "type": "m3u8",
+      "format": "hls",
+      "mimeType": "application/vnd.apple.mpegurl"
+    }
+  ]
+}

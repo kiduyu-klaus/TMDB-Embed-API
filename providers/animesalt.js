@@ -196,7 +196,9 @@ function extractSourceHeaders(source, fallback) {
     for (const candidate of candidates) {
         if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) continue;
         for (const [name, value] of Object.entries(candidate)) {
-            if (typeof value === 'string' && value.trim()) headers[name] = value;
+            if (typeof value !== 'string' || !value.trim()) continue;
+            const existing = Object.keys(headers).find(key => key.toLowerCase() === name.toLowerCase());
+            headers[existing || name] = value;
         }
     }
     return headers;
@@ -286,28 +288,44 @@ async function resolveRavokPlayer(playerUrl, pageUrl, label) {
 
 async function resolveAbyssPlayer(playerUrl, pageUrl, label) {
     const html = await request(playerUrl, { headers: { Referer: pageUrl } });
-    let sources = extractPlayableSources(html, playerUrl);
-    let sourcePageUrl = playerUrl;
-    if (!sources.length) {
-        const $ = cheerio.load(html || '');
-        const iframeSrc = $('iframe[src], iframe[data-src]').first().attr('data-src') || $('iframe[src], iframe[data-src]').first().attr('src');
-        if (iframeSrc) {
-            const nestedUrl = new URL(iframeSrc, playerUrl);
-            if (nestedUrl.protocol === 'https:' && nestedUrl.hostname.toLowerCase() === 'player.abyssplayer.com') {
-                sourcePageUrl = nestedUrl.href;
-                const nestedHtml = await request(sourcePageUrl, { headers: { Referer: playerUrl } });
-                sources = extractPlayableSources(nestedHtml, sourcePageUrl);
-            }
-        }
-    }
-    return sources.map(url => {
+    const toStreams = (sources, sourcePageUrl, language) => sources.map(url => {
         const qualityMatch = url.match(/\b(\d{3,4})p\b/i);
         return {
-            url, quality: qualityMatch ? `${qualityMatch[1]}p` : 'Auto', server: label,
+            url, quality: qualityMatch ? `${qualityMatch[1]}p` : 'Auto',
+            server: language ? `${label} ${language}` : label,
+            ...(language ? { language } : {}),
             headers: { Referer: sourcePageUrl, Origin: new URL(sourcePageUrl).origin, 'User-Agent': USER_AGENT },
             subtitles: []
         };
     });
+    const direct = extractPlayableSources(html, playerUrl);
+    if (direct.length) return toStreams(direct, playerUrl);
+    const $ = cheerio.load(html || '');
+    const players = new Map();
+    $('[data-link], iframe[src], iframe[data-src]').each((_, element) => {
+        const el = $(element);
+        const value = el.attr('data-link') || el.attr('data-src') || el.attr('src');
+        try {
+            const url = new URL(value, playerUrl);
+            if (url.protocol !== 'https:' || url.hostname !== 'player.abyssplayer.com') return;
+            const language = el.attr('data-language') || el.text().trim();
+            const previous = players.get(url.href);
+            players.set(url.href, { language: language || previous?.language || '' });
+        } catch { /* Ignore malformed or advertising frames. */ }
+    });
+    // Resolve each advertised language, not only the initially selected iframe.
+    const results = await Promise.all([...players].map(async ([url, { language }]) => {
+        try {
+            const nestedHtml = await request(url, { headers: { Referer: playerUrl } });
+            const sources = extractPlayableSources(nestedHtml, url);
+            if (!sources.length) console.warn(`[AnimeSalt] ${label} ${language || 'default'}: no direct media URL exposed by embedded player`);
+            return toStreams(sources, url, language);
+        } catch (error) {
+            console.warn(`[AnimeSalt] ${label} ${language || 'default'} resolution failed: ${error.message}`);
+            return [];
+        }
+    }));
+    return results.flat();
 }
 
 async function resolveServer(player, pageUrl) {
@@ -343,6 +361,7 @@ async function getStreamsFromPage(pageUrl) {
     const results = await Promise.all(servers.map(async server => {
         try {
             const streams = await resolveServer(server, pageUrl);
+            console.log(`[AnimeSalt] ${server.label}: ${streams.length} source(s); playback headers: ${streams.map(stream => Object.keys(stream.headers || {}).join(',')).join('; ') || 'none'}`);
             if (!streams.length) console.warn(`[AnimeSalt] ${server.label} did not yield a playable source`);
             return streams;
         } catch (error) {

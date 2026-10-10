@@ -71,7 +71,7 @@ async function settle(tasks,limit=4){
   async function worker(){
     while(queue.length){
       const task=queue.shift();
-      try{out.push(await task())}catch(e){}
+      try{out.push(await task())}catch(e){log("Task failed: "+String(e&&e.message||e))}
     }
   }
   const n=Math.min(Math.max(1,limit),queue.length);
@@ -237,7 +237,7 @@ async function findMovie(mapping,tmdbInfo){
 /* ---------- Anikoto search / matching ---------- */
 function normalizeTitle(s){
   let x=String(s||"").toLowerCase().replace(/&/g,"and");
-  try{x=x.normalize("NFKD").replace(/[\u0300-\u036f]/g,"")}catch(e){}
+  try{x=x.normalize("NFKD").replace(/[\u0300-\u036f]/g,"")}catch(e){/* Older runtimes may not support Unicode normalization. */}
   return x.replace(/[^a-z0-9]+/g,"").trim()
 }
 function searchTitleBase(s){
@@ -245,12 +245,15 @@ function searchTitleBase(s){
 }
 function titleSeason(s){
   const x=String(s||"");
+  const ordinal=x.match(/\b(\d+)(?:st|nd|rd|th)\s+season\b/i);
+  if(ordinal)return Number(ordinal[1]);
   let m=x.match(/\bseason\s*([0-9]+)\b/i);
   if(m)return Number(m[1]);
   m=x.match(/\bs([0-9]{1,2})(?:\b|[-\s])/i);
   return m?Number(m[1]):null
 }
 function cardScore(card,targets,base,season){
+  if(card.jpName)return Math.max(cardScore({...card,jpName:""},targets,base,season),cardScore({name:card.jpName},targets,base,season));
   const ct=normalizeTitle(card.name),cb=normalizeTitle(base);
   let best=0;
   for(const t of targets){
@@ -264,6 +267,10 @@ function cardScore(card,targets,base,season){
     }
   }
   if(cb&&ct===cb)best=Math.max(best,900);
+  if(!best)return 0; // A season number alone is not a title match.
+  const requestedPart=targets.map(t=>String(t).match(/\bpart\s*(\d+)\b/i)).find(Boolean);
+  const candidatePart=String(card.name).match(/\bpart\s*(\d+)\b/i);
+  if(requestedPart&&Number(candidatePart?.[1]||1)!==Number(requestedPart[1]))return 0;
   const explicit=titleSeason(card.name);
   if(explicit!==null){
     if(explicit===season)best+=150;
@@ -290,7 +297,7 @@ function parseSearchCards(html){
     if(!name)continue;
     const img=first(card,"img");
     seen.add(href);
-    out.push({name,href,img:attr(img,"src")||""})
+    out.push({name,jpName:attr(titleNode,"data-jp"),href,img:attr(img,"src")||""})
   }
   if(!out.length){
     for(const a of all(container,"a")){
@@ -301,7 +308,7 @@ function parseSearchCards(html){
       if(!name)continue;
       const img=first(a,"img");
       seen.add(href);
-      out.push({name,href,img:attr(img,"src")||""})
+      out.push({name,jpName:attr(titleNode,"data-jp"),href,img:attr(img,"src")||""})
     }
   }
   return out
@@ -777,7 +784,7 @@ async function extractMegaplay(u,server){
     title:(server||"Megaplay")+" [multi-quality]",
     url:signed,
     quality:"multi-quality",
-    headers:streamHeaders("https://megaplay.buzz/","https://megaplay.buzz/"),
+    headers:streamHeaders("https://megaplay.buzz/","https://megaplay.buzz"),
     subtitle:sub||"",
     subtitleFormat:fmt,
     subtitles:sub?[{
@@ -786,7 +793,7 @@ async function extractMegaplay(u,server){
       language:"en",
       format:fmt||"vtt",
       default:true,
-      headers:streamHeaders("https://megaplay.buzz/","https://megaplay.buzz/")
+      headers:streamHeaders("https://megaplay.buzz/","https://megaplay.buzz")
     }]:[],
     backup:false
   }
@@ -827,7 +834,7 @@ function getSetting(settings,names,fallback){
 }
 function modes(settings){
   const sub=getSetting(settings,["sub","Sub","subtitle"],true)!==false;
-  const dub=getSetting(settings,["dub","Dub"],false)===true;
+  const dub=getSetting(settings,["dub","Dub"],true)!==false;
   const out=[];
   if(sub)out.push(false);
   if(dub)out.push(true);
@@ -848,10 +855,10 @@ async function resolveServers(servers,quality){
     if(!streamUrl)return null;
     log("SERVER RESOLVE "+String(server.srv_name||"Anikoto")+" "+(Date.now()-serverStarted)+"ms");
     let host="";
-    try{host=new URL(streamUrl).hostname.toLowerCase().split(".")[0]}catch(e){}
+    try{host=new URL(streamUrl).hostname.toLowerCase().split(".")[0]}catch(e){log("Invalid server URL")}
     log("HOST="+(host||"unknown"));
     const extractStarted=Date.now();
-    const stream=await extractHost(streamUrl,quality,String(server.srv_name||"Anikoto"));
+    const stream=await extractHost(streamUrl,String(server.srv_name||"Anikoto"));
     log("EXTRACT "+(host||"unknown")+" "+(Date.now()-extractStarted)+"ms");
     if(!stream)return null;
     stream.title="Anikoto "+(server.dataType==="dub"?"DUB":"SUB")+" - "+(server.srv_name||"Anikoto");
@@ -874,8 +881,8 @@ async function resolveMode(episodeId,isDub,quality){
   const streams=await resolveServers(servers,quality);
   const out=[],seen=new Set();
   for(const s of streams){
-    if(!s||!validMediaUrl(s.url)||seen.has(s.url))continue;
-    seen.add(s.url);
+    if(!s||!validMediaUrl(s.url)||seen.has(s.name+"|"+s.url))continue;
+    seen.add(s.name+"|"+s.url);
     out.push(s)
   }
   return out
@@ -888,7 +895,7 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
     if(type!=="tv"&&type!=="movie")return[];
     const id=String(tmdbId||"").trim(),s=Number(season)||1,e=Number(episode)||1;
     if(!/^\d{1,10}$/.test(id)||Number(id)<=0)return[];
-    const key=type==="movie"?"anikoto:streams:movie:"+id+":"+JSON.stringify(settings||{}):"anikoto:streams:tv:"+id+":"+s+":"+e+":"+JSON.stringify(settings||{});
+    const key=type==="movie"?"anikoto:streams:v2:movie:"+id+":"+JSON.stringify(settings||{}):"anikoto:streams:v2:tv:"+id+":"+s+":"+e+":"+JSON.stringify(settings||{});
     const hit=CACHE.get(key);
     if(hit!==undefined)return await Promise.resolve(hit);
     const p=(async()=>{
@@ -907,10 +914,9 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
         if(!item&&items.length===1)item=items[0];
         if(!item)return[];
         const modesList=modes(settings);
-        if(modesList.includes(true)&&!item.hasDub&&modesList.length===1)return[];
         const out=(await Promise.all(modesList.map(isDub=>resolveMode(item.episodeId,isDub,qualitySetting(settings))))).flat();
         const seen=new Set();
-        return out.filter(x=>x&&x.url&&!seen.has(x.url)&&seen.add(x.url));
+        return out.filter(x=>x&&x.url&&!seen.has(x.name+"|"+x.url)&&seen.add(x.name+"|"+x.url));
       }
       const mapperStarted=Date.now();
       const mapping=await mapperLookup(id,s,e);
@@ -938,10 +944,6 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
         log("EPISODE MATCH FAILED MAL E"+mapping.malEpisode);
         return[]
       }
-      if(modesList.indexOf(true)>=0&&!episodeMatch.hasDub){
-        log("DUB REQUESTED BUT EPISODE HAS NO DUB");
-        if(modesList.length===1)return[]
-      }
       log("EPISODE MATCH E"+episodeMatch.episodeNumber+" ID="+episodeMatch.episodeId);
       const modeResults=await Promise.all(
         modesList.map(isDub=>resolveMode(episodeMatch.episodeId,isDub,qualitySetting(settings)))
@@ -949,8 +951,8 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
       const allStreams=modeResults.flat();
       const seen=new Set(),out=[];
       for(const stream of allStreams){
-        if(!stream||!stream.url||seen.has(stream.url))continue;
-        seen.add(stream.url);
+        if(!stream||!stream.url||seen.has(stream.name+"|"+stream.url))continue;
+        seen.add(stream.name+"|"+stream.url);
         out.push(stream)
       }
       log("DONE streams="+out.length+" time="+(Date.now()-started)+"ms");

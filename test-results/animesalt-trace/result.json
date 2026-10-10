@@ -1,0 +1,20 @@
+{
+  "tmdbId": 82684,
+  "season": 2,
+  "episode": 16,
+  "streams": [
+    {
+      "name": "AnimeSalt",
+      "title": "That Time I Got Reincarnated as a Slime - AnimeSalt S2E16 - SERVER 1 MyStream",
+      "url": "https://ravok.buzz/cdn/hls/56521df1d14302e29f328b6fa0629d1a/master.m3u8?md5=jCgm1KEAdxqj9AIn-1Eb0g&expires=1791666345",
+      "quality": "720p",
+      "server": "SERVER 1 MyStream",
+      "headers": {
+        "Referer": "https://ravok.buzz/",
+        "Origin": "https://ravok.buzz",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+      },
+      "subtitles": []
+    }
+  ]
+}

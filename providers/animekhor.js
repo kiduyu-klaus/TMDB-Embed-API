@@ -1,3 +1,5 @@
+const diagnostics = require("../utils/providerTrace").createProviderTrace("Animekhor");
+const fetch = diagnostics.fetch;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -59,8 +61,7 @@ var require_extractors = __commonJS({
           const m = html.match(/file:\s*["'](.*?m3u8.*?)["']/);
           if (m)
             return { url: m[1], quality: "Unknown", source: "Vidmoly" };
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -75,8 +76,7 @@ var require_extractors = __commonJS({
             if (m)
               return { url: m[1], quality: "Unknown", source: "Filemoon" };
           }
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -91,8 +91,7 @@ var require_extractors = __commonJS({
             if (m)
               return { url: m[1], quality: "Unknown", source: "Streamhide" };
           }
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -104,8 +103,7 @@ var require_extractors = __commonJS({
           const m = html.match(/hls':\s*'(.*?)'/);
           if (m)
             return { url: m[1], quality: "Unknown", source: "Voe" };
-        } catch (e) {
-        }
+        } catch (e) { diagnostics.log("stage.failed", { errorType: e.name, stage: "server/extractor" }); }
         return null;
       });
     }
@@ -144,8 +142,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
       const tmdbUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}`;
       const mediaInfo = yield (yield fetch(tmdbUrl, { skipSizeCheck: true })).json();
       const title = mediaInfo.title || mediaInfo.name;
+      diagnostics.log("tmdb.resolved", { title, found: !!title });
       if (!title)
-        return [];
+        { diagnostics.log("stage.empty", { location: "animekhor:147" }); return []; }
       const searchUrl = `${BASE_URL}/page/1/?s=${encodeURIComponent(title)}`;
       const searchHtml = yield (yield fetch(searchUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $ = cheerio.load(searchHtml);
@@ -157,8 +156,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
             itemUrl = href.startsWith("http") ? href : BASE_URL + href;
         }
       });
+      diagnostics.log("search.selected", { url: itemUrl, found: !!itemUrl });
       if (!itemUrl)
-        return [];
+        { diagnostics.log("stage.empty", { location: "animekhor:161" }); return []; }
       const animePage = yield (yield fetch(itemUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $2 = cheerio.load(animePage);
       const typeText = $2(".spe").text() || "";
@@ -169,7 +169,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
       } else {
         const epPageUrl = $2(".eplister li > a").attr("href") || "";
         if (!epPageUrl)
-          return [];
+          { diagnostics.log("stage.empty", { location: "animekhor:172" }); return []; }
         const epPageHtml = yield (yield fetch(epPageUrl.startsWith("http") ? epPageUrl : BASE_URL + epPageUrl, { headers: HEADERS, skipSizeCheck: true })).text();
         const $3 = cheerio.load(epPageHtml);
         const targetEp = episode || 1;
@@ -191,9 +191,11 @@ function getStreams(tmdbId, mediaType, season, episode) {
         }
       }
       if (!episodeUrl)
-        return [];
+        { diagnostics.log("stage.empty", { location: "animekhor:194" }); return []; }
+      diagnostics.log("episode.selected", { url: episodeUrl, season, episode });
       const epHtml = yield (yield fetch(episodeUrl, { headers: HEADERS, skipSizeCheck: true })).text();
       const $4 = cheerio.load(epHtml);
+      diagnostics.log("servers.parsed", { options: $4(".mobius option").length });
       const streams = [];
       $4(".mobius option").each((_, option) => {
         const base64Val = $4(option).attr("value") || "";
@@ -215,13 +217,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
               });
             }
           }
-        } catch (_2) {
-        }
+        } catch (_2) { diagnostics.log("stage.failed", { errorType: _2.name, stage: "server/extractor" }); }
       });
       return streams;
     } catch (e) {
-      console.error("[Animekhor]", e);
-      return [];
+      diagnostics.log("provider.failed", { errorType: e.name });
+      { diagnostics.log("stage.empty", { location: "animekhor:223" }); return []; }
     }
   });
 }
@@ -229,11 +230,14 @@ var { extract } = require_extractors();
 function wrappedGetStreams(...args) {
   return __async(this, null, function* () {
     const streams = yield getStreams(...args);
+    diagnostics.log("candidates.found", { count: streams.length });
     const finalStreams = [];
     for (const s of streams) {
       if (!s.url)
         continue;
+      diagnostics.log("server.start", { url: s.url });
       const ext = yield extract(s.url);
+      diagnostics.log("server.resolved", { url: s.url, extracted: !!ext, source: ext?.source });
       if (ext) {
         s.url = ext.url;
         if (ext.quality !== "Unknown")
@@ -246,4 +250,4 @@ function wrappedGetStreams(...args) {
     return finalStreams;
   });
 }
-module.exports = { getStreams: wrappedGetStreams };
+module.exports = { getStreams: (...args) => diagnostics.run(() => wrappedGetStreams(...args), args) };
