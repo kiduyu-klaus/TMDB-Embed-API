@@ -19,12 +19,13 @@ The separate package installs only Wrangler, avoiding native provider installati
 on the build machine. Do not configure a static assets directory: the backend must
 authenticate access to config.html.
 
-Add a Worker **runtime** secret named `BACKEND_URL` in Settings → Variables and Secrets,
-or run `npx wrangler secret put BACKEND_URL --config ../wrangler.toml` from this folder.
-Example value: `https://backend.example.com/kiduyuTv_providers`.
+`BACKEND_URL` is configured in `wrangler.toml` as
+`https://secondbanklabs.com/kiduyuTv_providers`. Redeploy to apply it.
+If an existing Worker secret is also named `BACKEND_URL`, remove that secret before
+deploying so it does not conflict with the configured variable.
 Use the backend's real publicly reachable HTTPS hostname, not localhost or the
 Worker's own hostname. The backend and Worker must use the same mount path.
-Until this secret is configured, the Worker returns a clear 503 configuration error.
+An absent or invalid backend setting returns a clear 503 configuration error.
 
 Open `https://<worker-host>/kiduyuTv_providers/`. Existing login and stream tokens
 remain managed by the backend. Validate `/kiduyuTv_providers/api/health`, sign-in,
