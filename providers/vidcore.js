@@ -1,11 +1,16 @@
+/* global navigator, window, document */
 const axios = require('axios');
+const RequestManager = require('../tests/requestManager');
+const { launchBrowser } = require('../tests/browser');
 
 const BASE_URL = 'https://vidcore.io';
 const ENCRYPT_URL = 'https://enc-dec.app/api/enc-vidcore';
 const DECRYPT_URL = 'https://enc-dec.app/api/dec-vidcore';
 const REQUEST_TIMEOUT_MS = 12000;
 
-const PAGE_HEADERS = { 'User-Agent': 'Mozilla/5.0' };
+const PAGE_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+};
 const API_HEADERS = {
     ...PAGE_HEADERS,
     'Referer': `${BASE_URL}/`,
@@ -16,6 +21,76 @@ function extractPageText(html) {
     if (typeof html !== 'string') return null;
     const match = html.match(/\\"(?:en|token)\\":\\"(.*?)\\"/);
     return match ? match[1] : null;
+}
+
+async function scrapePageWithBrowser(url) {
+    let browser;
+    let context;
+    try {
+        browser = await launchBrowser({ headless: true });
+        context = await browser.newContext({
+            userAgent: PAGE_HEADERS['User-Agent'],
+            extraHTTPHeaders: {
+                Referer: `${BASE_URL}/`,
+                Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            }
+        });
+        await context.addInitScript(() => {
+            Object.defineProperty(navigator, 'webdriver', { get: () => false });
+            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+            window.chrome = { runtime: {}, loadTimes: function() {}, csi: function() {}, app: {} };
+        });
+        const page = await context.newPage();
+        const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: REQUEST_TIMEOUT_MS });
+        await page.waitForTimeout(2500);
+        const title = (await page.title()).toLowerCase();
+        if (title.includes('just a moment') || title.includes('ddos protection') || title.includes('checking your browser')) {
+            try {
+                await page.waitForFunction(() => {
+                    const currentTitle = document.title.toLowerCase();
+                    return !currentTitle.includes('just a moment') &&
+                        !currentTitle.includes('ddos protection') &&
+                        !currentTitle.includes('checking your browser');
+                }, { timeout: 15000 });
+            } catch (error) {
+                console.warn(`[Vidcore] Browser challenge wait timed out: ${error.message}`);
+            }
+        }
+        const html = await page.content();
+        if (!extractPageText(html)) {
+            const status = response ? response.status() : 'unknown';
+            throw new Error(`Playwright did not retrieve a VidCore page token (HTTP ${status})`);
+        }
+        const cookies = await context.cookies(BASE_URL);
+        return {
+            html,
+            cookieHeader: cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ')
+        };
+    } finally {
+        if (context) await context.close().catch(() => {});
+        if (browser) await browser.close().catch(() => {});
+    }
+}
+
+async function fetchVidcorePage(url) {
+    try {
+        const html = await RequestManager.scrapeWithGotScraping(url, {
+            referer: `${BASE_URL}/`,
+            timeout: REQUEST_TIMEOUT_MS,
+            headers: PAGE_HEADERS
+        });
+        if (extractPageText(html)) {
+            console.log('[Vidcore] Page retrieved via got-scraping');
+            return { html, cookieHeader: '' };
+        }
+        throw new Error('got-scraping response did not contain the VidCore page token');
+    } catch (error) {
+        console.warn(`[Vidcore] got-scraping failed; retrying with stealth Playwright: ${error.message}`);
+        const pageSession = await scrapePageWithBrowser(url);
+        console.log('[Vidcore] Page retrieved via stealth Playwright');
+        return pageSession;
+    }
 }
 
 function normalizeHttpUrl(value) {
@@ -168,21 +243,43 @@ async function getVidcoreStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         const pageUrl = isSeries
             ? `${BASE_URL}/tv/${tmdbId}/${seasonNum}/${episodeNum}`
             : `${BASE_URL}/movie/${tmdbId}`;
-        const pageResponse = await axios.get(pageUrl, { headers: PAGE_HEADERS, timeout: REQUEST_TIMEOUT_MS });
-        const pageText = extractPageText(typeof pageResponse.data === 'string' ? pageResponse.data : '');
+        const pageSession = await fetchVidcorePage(pageUrl);
+        const pageText = extractPageText(pageSession.html);
         if (!pageText) throw new Error('Could not extract page token');
 
-        const encryptedParts = await axios.get(ENCRYPT_URL, {
-            params: { text: pageText },
+        const pageHeaders = {
+            ...API_HEADERS,
+            ...(pageSession.cookieHeader ? { Cookie: pageSession.cookieHeader } : {})
+        };
+        const stage1Response = await axios.get(ENCRYPT_URL, {
+            params: { text: pageText, stage: 1 },
+            timeout: REQUEST_TIMEOUT_MS
+        });
+        const stage1Parts = validateBridge(stage1Response.data, 'Vidcore stage 1 encryption');
+        if (!stage1Parts.stage1) throw new Error('Stage 1 encryption response is missing the encrypted request URL');
+
+        pageHeaders['X-CSRF-Token'] = stage1Parts.token || '';
+        const stage1EncryptedResponse = await axios.post(stage1Parts.stage1, null, {
+            headers: pageHeaders,
+            timeout: REQUEST_TIMEOUT_MS
+        });
+        const stage1EncryptedText = typeof stage1EncryptedResponse.data === 'string'
+            ? stage1EncryptedResponse.data
+            : JSON.stringify(stage1EncryptedResponse.data);
+        const stage2Response = await axios.get(ENCRYPT_URL, {
+            params: { text: stage1EncryptedText, stage: 2 },
             timeout: REQUEST_TIMEOUT_MS
         });
         const { servers: serversUrl, stream: streamBase, token = '' } = validateBridge(
-            encryptedParts.data,
-            'Vidcore encryption'
+            stage2Response.data,
+            'Vidcore stage 2 encryption'
         );
         if (!serversUrl || !streamBase) throw new Error('Encryption response is missing server URLs');
 
-        const headers = { ...API_HEADERS, 'X-CSRF-Token': token || '' };
+        const headers = {
+            ...pageHeaders,
+            'X-CSRF-Token': token || '',
+        };
         const encryptedServersResponse = await axios.post(serversUrl, null, {
             headers,
             timeout: REQUEST_TIMEOUT_MS
@@ -210,4 +307,4 @@ async function getVidcoreStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
     }
 }
 
-module.exports = { getVidcoreStreams, extractPageText, normalizeServerStreams, isPlayableStream };
+module.exports = { getVidcoreStreams, extractPageText, normalizeServerStreams, isPlayableStream, fetchVidcorePage };

@@ -1,5 +1,6 @@
 const DEFAULT_QUERY = 'That Time I Got Reincarnated as a Slime season 4';
 const DEFAULT_BASE_URL = 'https://animepahe.ch';
+const DEFAULT_EPISODE_URL = 'https://animepahe.ch/that-time-i-got-reincarnated-as-a-slime-season-4-episode-7-english-subbed/';
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36';
 
 function trace(event, fields = {}) {
@@ -57,6 +58,15 @@ function safeSameSiteUrl(rawUrl, baseUrl) {
   }
 }
 
+function safeHttpUrl(rawUrl, baseUrl) {
+  try {
+    const parsed = new URL(rawUrl, baseUrl);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.href : null;
+  } catch {
+    return null;
+  }
+}
+
 function parseSearchResults(html, cheerio, baseUrl) {
   const $ = cheerio.load(html);
   const results = [];
@@ -109,6 +119,56 @@ function parseEpisodes(html, cheerio, baseUrl) {
   });
 
   return { pageTitle: $('title').text().trim(), episodes };
+}
+
+function parseEpisodeSources(html, cheerio, pageUrl) {
+  const $ = cheerio.load(html);
+  const sources = [];
+  const seen = new Set();
+  const addSource = (kind, rawUrl, label, element) => {
+    const url = safeHttpUrl(rawUrl, pageUrl);
+    if (!url || seen.has(`${kind}:${url}`)) return;
+    seen.add(`${kind}:${url}`);
+    sources.push({ kind, label: label || null, url, host: new URL(url).hostname, element: element || null });
+  };
+
+  $('iframe, video, source').each((_, element) => {
+    const node = $(element);
+    const tag = String(element.tagName || '').toLowerCase();
+    const rawUrl = node.attr('src') || node.attr('data-src') || node.attr('data-lazy-src') ||
+      node.attr('data-url') || node.attr('data-embed');
+    if (rawUrl) addSource(tag === 'iframe' ? 'embed' : 'media', rawUrl,
+      node.attr('title') || node.attr('aria-label') || node.text().trim(), tag);
+  });
+
+  $('a[href]').each((_, element) => {
+    const node = $(element);
+    const rawUrl = node.attr('href');
+    const label = node.text().replace(/\s+/g, ' ').trim() || node.attr('title') || '';
+    const url = safeHttpUrl(rawUrl, pageUrl);
+    if (!url) return;
+    const host = new URL(url).hostname;
+    const isDownload = /download/i.test(label) || /kwik|gofile/i.test(host);
+    const isExternalSource = host !== new URL(pageUrl).hostname &&
+      /source|server|stream|player|embed|video/i.test(`${label} ${url}`);
+    if (isDownload || isExternalSource) addSource(isDownload ? 'download' : 'link', url, label, 'a');
+  });
+
+  const player = $('#megaplay-player');
+  const playerMetadata = player.length ? {
+    id: player.attr('data-id') || null,
+    realId: player.attr('data-realid') || null,
+    mediaId: player.attr('data-mediaid') || null,
+    fileVersion: player.attr('data-fileversion') || null,
+  } : null;
+  const directMediaUrls = [...new Set(
+    [...String(html).matchAll(/https?:\\?\/\\?\/[^\s"'<>\\]+\.(?:m3u8|mp4|m4v|mpd)(?:\?[^\s"'<>\\]*)?/gi)]
+      .map(match => match[0].replace(/\\\//g, '/'))
+      .map(rawUrl => safeHttpUrl(rawUrl, pageUrl))
+      .filter(Boolean),
+  )];
+
+  return { pageTitle: $('title').text().trim(), sources, playerMetadata, directMediaUrls };
 }
 
 async function runSearchTrace({ query = DEFAULT_QUERY, maxResults = 10, baseUrl = DEFAULT_BASE_URL } = {}) {
@@ -169,10 +229,70 @@ async function runSearchTrace({ query = DEFAULT_QUERY, maxResults = 10, baseUrl 
   };
 }
 
+async function runEpisodeTrace({ episodeUrl = DEFAULT_EPISODE_URL, baseUrl = DEFAULT_BASE_URL } = {}) {
+  const { gotScraping, cheerio } = await getScraper();
+  const safeEpisodeUrl = safeSameSiteUrl(episodeUrl, baseUrl);
+  if (!safeEpisodeUrl) throw new Error('Episode URL must be on the configured AnimePahe host');
+
+  trace('episode.start', { url: safeEpisodeUrl });
+  const response = await fetchHtml(gotScraping, safeEpisodeUrl);
+  if (response.statusCode < 200 || response.statusCode >= 300) {
+    trace('episode.failed', { status: response.statusCode });
+    return { success: false, status: response.statusCode, url: safeEpisodeUrl, sources: [] };
+  }
+
+  const episode = parseEpisodeSources(response.body, cheerio, safeEpisodeUrl);
+  trace('episode.sources', {
+    pageTitle: episode.pageTitle,
+    sourceCount: episode.sources.length,
+    directMediaCount: episode.directMediaUrls.length,
+    sources: episode.sources,
+    directMediaUrls: episode.directMediaUrls,
+  });
+
+  for (const source of episode.sources.filter(item => item.kind === 'embed')) {
+    try {
+      const playerResponse = await fetchHtml(gotScraping, source.url, safeEpisodeUrl);
+      source.probeStatus = playerResponse.statusCode;
+      if (playerResponse.statusCode >= 200 && playerResponse.statusCode < 300) {
+        const playerPage = parseEpisodeSources(playerResponse.body, cheerio, source.url);
+        source.playerPageTitle = playerPage.pageTitle;
+        source.playerMetadata = playerPage.playerMetadata;
+        source.nestedSources = playerPage.sources;
+        source.directMediaUrls = playerPage.directMediaUrls;
+        trace('player.sources', {
+          embedUrl: source.url,
+          status: source.probeStatus,
+          pageTitle: source.playerPageTitle,
+          playerMetadata: source.playerMetadata,
+          nestedSourceCount: source.nestedSources.length,
+          directMediaCount: source.directMediaUrls.length,
+        });
+      } else {
+        trace('player.failed', { embedUrl: source.url, status: source.probeStatus });
+      }
+    } catch (error) {
+      source.probeError = error.code || error.name || 'REQUEST_FAILED';
+      trace('player.error', { embedUrl: source.url, errorType: error.name, code: error.code || null });
+    }
+  }
+
+  return {
+    success: true,
+    url: safeEpisodeUrl,
+    pageTitle: episode.pageTitle,
+    sourceCount: episode.sources.length,
+    sources: episode.sources,
+    directMediaUrls: episode.directMediaUrls,
+  };
+}
+
 if (require.main === module) {
-  const [, , query = DEFAULT_QUERY, maxResultsArg = '10'] = process.argv;
-  const maxResults = Number.parseInt(maxResultsArg, 10);
-  runSearchTrace({ query, maxResults: Number.isFinite(maxResults) ? maxResults : 10 })
+  const [, , modeOrQuery, secondArg] = process.argv;
+  const traceRun = modeOrQuery === '--episode'
+    ? runEpisodeTrace({ episodeUrl: secondArg || DEFAULT_EPISODE_URL })
+    : runSearchTrace({ query: modeOrQuery || DEFAULT_QUERY, maxResults: Number.parseInt(secondArg || '10', 10) || 10 });
+  traceRun
     .then(result => {
       console.log('TRACE_RESULT', JSON.stringify(result, null, 2));
       if (!result.success) process.exitCode = 1;
@@ -183,4 +303,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { runSearchTrace, parseSearchResults, parseEpisodes };
+module.exports = { runSearchTrace, runEpisodeTrace, parseSearchResults, parseEpisodes, parseEpisodeSources };

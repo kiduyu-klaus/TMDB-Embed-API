@@ -19,10 +19,38 @@
 
 const os = require('os');
 const { existsSync } = require('fs');
+const path = require('path');
 
 let chromiumBinary = null;
 let chromium = null;
 let useServerlessChromium = false;
+let useSystemChromium = false;
+
+function findSystemChromium() {
+  const candidates = [
+    process.env.CHROME_PATH,
+    process.env.CHROMIUM_PATH,
+    process.platform === 'win32' && process.env.PROGRAMFILES
+      ? path.join(process.env.PROGRAMFILES, 'Google', 'Chrome', 'Application', 'chrome.exe')
+      : null,
+    process.platform === 'win32' && process.env['PROGRAMFILES(X86)']
+      ? path.join(process.env['PROGRAMFILES(X86)'], 'Google', 'Chrome', 'Application', 'chrome.exe')
+      : null,
+    process.platform === 'win32' && process.env['PROGRAMFILES(X86)']
+      ? path.join(process.env['PROGRAMFILES(X86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe')
+      : null,
+    process.platform === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : null,
+    process.platform === 'win32' ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' : null,
+    process.platform === 'win32' ? 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' : null,
+    process.platform === 'win32' && process.env.LOCALAPPDATA
+      ? path.join(process.env.LOCALAPPDATA, 'Google', 'Chrome', 'Application', 'chrome.exe')
+      : null,
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+  ].filter(Boolean);
+  return candidates.find(candidate => existsSync(candidate)) || null;
+}
 
 // ══════════════════════════════════════════════════════════════
 // CHROMIUM LOADING
@@ -66,7 +94,7 @@ let useServerlessChromium = false;
  *   const page = await browser.newPage();
  *   await page.goto('https://animepahe.ch');
  */
-async function launchBrowser() {
+async function launchBrowser(options = {}) {
   // ---- Lazy-load Chromium if not already loaded ----
   if (!chromium) {
     try {
@@ -77,7 +105,12 @@ async function launchBrowser() {
       try {
         chromium = require('playwright').chromium;
       } catch (e2) {
-        throw new Error('[Browser] Playwright not available on this platform. Install playwright or use got-scraping only.');
+        try {
+          chromium = require('playwright-core').chromium;
+          useSystemChromium = true;
+        } catch (e3) {
+          throw new Error('[Browser] Playwright not available on this platform. Install playwright-core or use got-scraping only.');
+        }
       }
     }
   }
@@ -118,13 +151,21 @@ async function launchBrowser() {
     '--max_old_space_size=4096',
   ];
 
-  const headless = isServerless ? true : (process.env.CHROME_HEADLESS === 'true');
+  const headless = options.headless ?? (isServerless ? true : process.env.CHROME_HEADLESS === 'true');
 
   const launchOptions = {
     headless,
     args: isServerless ? [...baseArgs, ...serverlessArgs] : baseArgs,
     timeout: isServerless ? 30000 : 60000,
   };
+
+  if (useSystemChromium && !useServerlessChromium) {
+    const executablePath = findSystemChromium();
+    if (!executablePath) {
+      throw new Error('[Browser] Playwright Core needs an installed Chrome/Chromium binary; set CHROME_PATH to its executable.');
+    }
+    launchOptions.executablePath = executablePath;
+  }
 
   // NOTE: Add user agent to launch args for extra realism
   launchOptions.args.push(
@@ -154,10 +195,13 @@ async function launchBrowser() {
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     };
+    if (useSystemChromium) fallbackOptions.executablePath = findSystemChromium();
     if (useServerlessChromium && chromiumBinary) {
       try {
         fallbackOptions.executablePath = await chromiumBinary.executablePath();
-      } catch (e) {}
+      } catch (error) {
+        console.warn('[Browser] Could not resolve fallback Chromium path:', error.message);
+      }
     }
     return await chromium.launch(fallbackOptions);
   }
