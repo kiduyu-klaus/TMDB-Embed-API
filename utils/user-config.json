@@ -20,7 +20,7 @@
   "minQualitiesRaw": "all",
   "enableUhdmoviesProvider": false,
   "enableVidlinkProvider": true,
-  "enableVideasyProvider": false,
+  "enableVideasyProvider": true,
   "enableLordflixProvider": false,
   "enableNotorrentProvider": false,
   "enableDahmermoviesProvider": true,
