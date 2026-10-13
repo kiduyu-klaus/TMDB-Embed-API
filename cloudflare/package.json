@@ -1,0 +1,12 @@
+{
+  "name": "kiduyutv-providers-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy --config ../wrangler.toml",
+    "preview": "wrangler versions upload --config ../wrangler.toml",
+    "check": "wrangler deploy --config ../wrangler.toml --dry-run",
+    "test": "node --test worker.test.mjs"
+  },
+  "devDependencies": { "wrangler": "4.150.0" }
+}
