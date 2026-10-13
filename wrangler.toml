@@ -1,0 +1,19 @@
+name = "kiduyutv-providers"
+main = "apiServer.js"
+compatibility_date = "2026-10-14"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# Configuration scaffold for the existing Node.js application.
+# Before deploying, adapt apiServer.js to export a Workers request handler,
+# replace unsupported native dependencies, and migrate filesystem-backed state.
+# This file alone does not make the application Workers-compatible.
+# Do not expose public/ as unprotected static assets: config.html uses server auth.
+
+[vars]
+API_PORT = "8787"
+MOUNT_PATH = "/kiduyuTv_providers"
+NODE_ENV = "production"
+
+# Store credentials using `npx wrangler secret put SECRET_NAME` or the dashboard.
+# Never put API keys, passwords, cookies, or stream tokens in this file.
