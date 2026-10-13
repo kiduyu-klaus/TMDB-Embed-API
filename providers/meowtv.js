@@ -13,11 +13,13 @@ const MEOWTV_HEADERS = {
 };
 
 const SERVERS = [
-    { id: 'ipcloud', label: 'IPcloud' },
+    { id: 'acme', label: 'Acme' },
     { id: 'dcloud', label: 'Dcloud' },
     { id: 'tik', label: 'TCloud' },
+    { id: 'ipcloud', label: 'IPcloud' },
     { id: 'turkce', label: 'Türkçe', movieOnly: true },
-    { id: 'hindiv3', label: 'Hindi v3' }
+    { id: 'hindi', label: 'Hindi' },
+    { id: 'english', label: 'English' }
 ];
 
 function isHttpUrl(value) {

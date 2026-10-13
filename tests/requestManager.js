@@ -22,9 +22,9 @@
  * ======= • ======= • ======= • ======= • =======• =======
  */
 
-const axios = require('axios');
-const config = require('./config');
-const { launchBrowser } = require('./browser');
+const axios = require("axios");
+const config = require("./config");
+const { launchBrowser } = require("./browser");
 
 // ══════════════════════════════════════════════════════════════
 // DDoS PROTECTION DETECTION
@@ -50,20 +50,20 @@ function isDdosChallenge(responseText, statusCode) {
   if (!responseText) return false;
 
   const indicators = [
-    'DDoS-GUARD',
-    'ddos-guard',
-    'checking your browser',
-    'DDoS protection',
-    'Just a moment',
-    'Please wait',
-    'Verifying you are human',
-    'challenge-platform',
-    'cdn-cgi/challenge',
-    'cf-challenge',
+    "DDoS-GUARD",
+    "ddos-guard",
+    "checking your browser",
+    "DDoS protection",
+    "Just a moment",
+    "Please wait",
+    "Verifying you are human",
+    "challenge-platform",
+    "cdn-cgi/challenge",
+    "cf-challenge",
   ];
 
-  return indicators.some(indicator =>
-    responseText.toLowerCase().includes(indicator.toLowerCase())
+  return indicators.some((indicator) =>
+    responseText.toLowerCase().includes(indicator.toLowerCase()),
   );
 }
 
@@ -83,7 +83,6 @@ function isDdosChallenge(responseText, statusCode) {
  * @class RequestManager
  */
 class RequestManager {
-
   // ---- FEATURE: Standard axios request with cookies ----
   /**
    * Fetches an API endpoint with cookies and browser headers.
@@ -104,41 +103,49 @@ class RequestManager {
    */
   static async fetchApiData(url, params = {}, cookieHeader) {
     if (!cookieHeader) {
-      throw new Error('Cookies required for API requests (DDoS-Guard)');
+      throw new Error("Cookies required for API requests (DDoS-Guard)");
     }
 
     try {
       const response = await axios.get(url, {
         params,
         headers: {
-          'Accept': 'application/json, text/javascript, */*; q=0.01',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Referer': config.baseUrl,
-          'User-Agent': config.userAgent,
-          'DNT': '1',
-          'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"Windows"',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'x-requested-with': 'XMLHttpRequest',
-          'Cookie': cookieHeader,
+          Accept: "application/json, text/javascript, */*; q=0.01",
+          "Accept-Language": "en-US,en;q=0.9",
+          Referer: config.baseUrl,
+          "User-Agent": config.userAgent,
+          DNT: "1",
+          "sec-ch-ua":
+            '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "x-requested-with": "XMLHttpRequest",
+          Cookie: cookieHeader,
         },
         timeout: config.requestTimeout,
       });
 
-      const responseText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+      const responseText =
+        typeof response.data === "string"
+          ? response.data
+          : JSON.stringify(response.data);
 
       // NOTE: Detect DDoS-Guard challenge in response
       if (isDdosChallenge(responseText, response.status)) {
-        throw new Error('DDoS-Guard authentication required — refresh cookies');
+        throw new Error("DDoS-Guard authentication required — refresh cookies");
       }
 
       return response.data;
     } catch (error) {
-      if (error.response?.status === 403 || error.response?.status === 502 || error.response?.status === 503) {
-        throw new Error('DDoS-Guard authentication required — refresh cookies');
+      if (
+        error.response?.status === 403 ||
+        error.response?.status === 502 ||
+        error.response?.status === 503
+      ) {
+        throw new Error("DDoS-Guard authentication required — refresh cookies");
       }
       throw error;
     }
@@ -156,26 +163,27 @@ class RequestManager {
     try {
       const { data, status } = await axios.get(url, {
         headers: {
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Referer': config.baseUrl,
-          'User-Agent': config.userAgent,
-          'DNT': '1',
-          'Upgrade-Insecure-Requests': '1',
-          'Sec-Fetch-Dest': 'document',
-          'Sec-Fetch-Mode': 'navigate',
-          'Sec-Fetch-Site': 'same-origin',
-          'Cookie': cookieHeader,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Accept-Encoding": "gzip, deflate, br",
+          Referer: config.baseUrl,
+          "User-Agent": config.userAgent,
+          DNT: "1",
+          "Upgrade-Insecure-Requests": "1",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Sec-Fetch-Site": "same-origin",
+          Cookie: cookieHeader,
         },
         timeout: config.requestTimeout,
       });
 
-      const html = typeof data === 'string' ? data : JSON.stringify(data);
+      const html = typeof data === "string" ? data : JSON.stringify(data);
 
       // NOTE: Detect DDoS-Guard challenge in response
       if (isDdosChallenge(html, status)) {
-        throw new Error('DDoS-Guard authentication required — refresh cookies');
+        throw new Error("DDoS-Guard authentication required — refresh cookies");
       }
 
       return html;
@@ -201,13 +209,14 @@ class RequestManager {
     try {
       const response = await axios.post(url, data, {
         headers: {
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Origin': `https://${config.iframeBaseUrl}`,
-          'Referer': options.referer || config.baseUrl,
-          'User-Agent': config.userAgent,
-          'Cookie': options.cookies || '',
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Content-Type": "application/x-www-form-urlencoded",
+          Origin: `https://${config.iframeBaseUrl}`,
+          Referer: options.referer || config.baseUrl,
+          "User-Agent": config.userAgent,
+          Cookie: options.cookies || "",
           ...options.headers,
         },
         maxRedirects: 0,
@@ -218,7 +227,10 @@ class RequestManager {
       return {
         statusCode: response.status,
         headers: response.headers,
-        body: typeof response.data === 'string' ? response.data : JSON.stringify(response.data),
+        body:
+          typeof response.data === "string"
+            ? response.data
+            : JSON.stringify(response.data),
         location: response.headers?.location,
       };
     } catch (error) {
@@ -227,7 +239,7 @@ class RequestManager {
         return {
           statusCode: error.response.status,
           headers: error.response.headers || {},
-          body: error.response.data || '',
+          body: error.response.data || "",
           location: error.response.headers?.location,
         };
       }
@@ -253,22 +265,23 @@ class RequestManager {
    */
   static async scrapeWithGotScraping(url, options = {}) {
     try {
-      const { gotScraping } = await import('got-scraping');
+      const { gotScraping } = await import("got-scraping");
 
       const response = await gotScraping({
         url,
         headers: {
-          'Referer': options.referer || config.baseUrl,
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Connection': 'keep-alive',
+          Referer: options.referer || config.baseUrl,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          Connection: "keep-alive",
           ...options.headers,
         },
         headerGeneratorOptions: {
-          browsers: [{ name: 'chrome', minVersion: 110 }],
-          devices: ['desktop'],
-          locales: ['en-US', 'en'],
-          operatingSystems: ['windows'],
+          browsers: [{ name: "chrome", minVersion: 110 }],
+          devices: ["desktop"],
+          locales: ["en-US", "en"],
+          operatingSystems: ["windows"],
         },
         throwHttpErrors: false,
         timeout: { request: options.timeout || 30000 },
@@ -278,7 +291,9 @@ class RequestManager {
 
       // NOTE: Check if got-scraping returned a challenge page
       if (isDdosChallenge(body, response.statusCode)) {
-        throw new Error('DDoS-Guard challenge detected — falling back to Playwright');
+        throw new Error(
+          "DDoS-Guard challenge detected — falling back to Playwright",
+        );
       }
 
       return body;
@@ -310,44 +325,62 @@ class RequestManager {
       const context = await browser.newContext({
         userAgent: config.userAgent,
         extraHTTPHeaders: {
-          'Referer': options.referer || config.baseUrl,
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Upgrade-Insecure-Requests': '1',
+          Referer: options.referer || config.baseUrl,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Upgrade-Insecure-Requests": "1",
         },
       });
 
       // ---- Stealth: Override navigator properties ----
       await context.addInitScript(() => {
-        Object.defineProperty(navigator, 'webdriver', { get: () => false });
-        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
-        Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-        window.chrome = { runtime: {}, loadTimes: function() {}, csi: function() {}, app: {} };
+        Object.defineProperty(navigator, "webdriver", { get: () => false });
+        Object.defineProperty(navigator, "plugins", { get: () => [1, 2, 3] });
+        Object.defineProperty(navigator, "languages", {
+          get: () => ["en-US", "en"],
+        });
+        window.chrome = {
+          runtime: {},
+          loadTimes: function () {},
+          csi: function () {},
+          app: {},
+        };
       });
 
       const page = await context.newPage();
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: options.timeout || 60000 });
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: options.timeout || 60000,
+      });
 
       // ---- FEATURE: Wait for DDoS-Guard challenge to resolve ----
       await page.waitForTimeout(3000);
 
       // Check for challenge indicators
       const title = await page.title();
-      if (title.toLowerCase().includes('just a moment') ||
-          title.toLowerCase().includes('ddos protection') ||
-          title.toLowerCase().includes('checking your browser')) {
-        console.log('[Playwright] DDoS-Guard challenge detected, waiting...');
+      if (
+        title.toLowerCase().includes("just a moment") ||
+        title.toLowerCase().includes("ddos protection") ||
+        title.toLowerCase().includes("checking your browser")
+      ) {
+        console.log("[Playwright] DDoS-Guard challenge detected, waiting...");
 
         try {
-          await page.waitForFunction(() => {
-            const t = document.title.toLowerCase();
-            return !t.includes('just a moment') &&
-                   !t.includes('ddos protection') &&
-                   !t.includes('checking your browser');
-          }, { timeout: 30000 });
+          await page.waitForFunction(
+            () => {
+              const t = document.title.toLowerCase();
+              return (
+                !t.includes("just a moment") &&
+                !t.includes("ddos protection") &&
+                !t.includes("checking your browser")
+              );
+            },
+            { timeout: 30000 },
+          );
           await page.waitForTimeout(2000);
         } catch (e) {
-          console.warn('[Playwright] Challenge timeout — proceeding');
+          console.warn("[Playwright] Challenge timeout — proceeding");
         }
       }
 
@@ -378,31 +411,43 @@ class RequestManager {
 
       // Stealth overrides
       await context.addInitScript(() => {
-        Object.defineProperty(navigator, 'webdriver', { get: () => false });
-        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
-        Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-        window.chrome = { runtime: {}, loadTimes: function() {}, csi: function() {}, app: {} };
+        Object.defineProperty(navigator, "webdriver", { get: () => false });
+        Object.defineProperty(navigator, "plugins", {
+          get: () => [1, 2, 3, 4, 5],
+        });
+        Object.defineProperty(navigator, "languages", {
+          get: () => ["en-US", "en"],
+        });
+        window.chrome = {
+          runtime: {},
+          loadTimes: function () {},
+          csi: function () {},
+          app: {},
+        };
         const originalQuery = window.navigator.permissions.query;
         window.navigator.permissions.query = (parameters) =>
-          parameters.name === 'notifications'
+          parameters.name === "notifications"
             ? Promise.resolve({ state: Notification.permission })
             : originalQuery(parameters);
       });
 
-      console.log('[Browser] Navigating to', url);
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+      console.log("[Browser] Navigating to", url);
+      await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
 
       // Wait for any challenges
       await page.waitForTimeout(3000);
 
       // Check for DDoS-Guard challenge
-      const isChallengeActive = await page.$('#ddg-cookie');
+      const isChallengeActive = await page.$("#ddg-cookie");
       if (isChallengeActive) {
-        console.log('[Browser] DDoS-Guard challenge detected, waiting...');
+        console.log("[Browser] DDoS-Guard challenge detected, waiting...");
         try {
-          await page.waitForSelector('#ddg-cookie', { state: 'hidden', timeout: 30000 });
+          await page.waitForSelector("#ddg-cookie", {
+            state: "hidden",
+            timeout: 30000,
+          });
         } catch (e) {
-          console.warn('[Browser] Challenge timeout');
+          console.warn("[Browser] Challenge timeout");
         }
       }
 
