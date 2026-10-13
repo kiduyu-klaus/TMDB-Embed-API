@@ -1,101 +1,133 @@
 const axios = require('axios');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 
+const VIDEASY_API = 'https://api.wecollege.net';
+const ENC_DEC_API = 'https://enc-dec.app/api';
+const REQUEST_TIMEOUT_MS = 8000;
+
 const VIDEASY_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*',
-    'Origin': 'https://player.videasy.net',
-    'Referer': 'https://player.videasy.net/'
+    'Accept': '*/*',
+    'Origin': 'https://player.videasy.to',
+    'Referer': 'https://player.videasy.to/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36'
 };
 
-const VIDEASY_API = 'https://api.speedracelight.com';
+// Server behavior and optional filtering are based on the sample's server list.
+const SERVERS = [
+    { id: 'miami', label: 'Miami' },
+    { id: 'boise', label: 'Boise' },
+    { id: 'vegas', label: 'Vegas' },
+    { id: 'reno', label: 'Reno' },
+    { id: 'oakland', label: 'Oakland' },
+    { id: 'seattle', label: 'Seattle' },
+    { id: 'phoenix', label: 'Phoenix' },
+    { id: 'atlanta', label: 'Atlanta' },
+    { id: 'portland', label: 'Portland' },
+    { id: 'austin', label: 'Austin', quality: 'English' },
+    { id: 'dallas', label: 'Dallas' },
+    { id: 'tampa', label: 'Tampa' },
+    { id: 'orlando', label: 'Orlando' },
+    { id: 'munich', label: 'Munich', language: 'german' },
+    { id: 'berlin', label: 'Berlin' },
+    { id: 'paris', label: 'Paris' },
+    { id: 'delhi', label: 'Delhi', quality: 'Hindi' },
+    { id: 'cancun', label: 'Cancun' }
+];
 
-// Each server maps a name to its API route. moviesOnly:true skips TV requests.
-const SERVERS = {
-    'CDN':   { url: `${VIDEASY_API}/cdn/sources-with-title` },
-    'LaMovie': { url: `${VIDEASY_API}/lamovie/sources-with-title` },
-    'Meine': { url: `${VIDEASY_API}/meine/sources-with-title`, moviesOnly: true }
-};
+function encodeRfc3986(value) {
+    return encodeURIComponent(value).replace(/[!'()*]/g, character =>
+        `%${character.charCodeAt(0).toString(16).toUpperCase()}`
+    );
+}
 
-// --- Seed-based response decryption (mirrors player.videasy.net) ---
-const MAGIC = [109, 118, 109, 49]; // "mvm1"
-const HASH_TABLE = [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580];
+function doubleEncode(value) {
+    return encodeRfc3986(encodeRfc3986(value));
+}
 
-function u32x(x) { return x >>> 0; }
-function mul32(a, b) { return Math.imul(a, b) >>> 0; }
-function rotl32(x, n) {
-    x >>>= 0;
-    n &= 31;
-    return n === 0 ? x : ((x << n) | (x >>> (32 - n))) >>> 0;
-}
-function hash32(x) {
-    x = u32x(x);
-    x ^= x >>> 16;
-    x = mul32(x, 2246822507);
-    x ^= x >>> 13;
-    x = mul32(x, 3266489909);
-    x ^= x >>> 16;
-    return u32x(x);
-}
-function fnv1a(str) {
-    let h = 2166136261;
-    for (let i = 0; i < str.length; i++) h = mul32(h ^ str.charCodeAt(i), 16777619);
-    return hash32(h);
-}
-function initStream(seed, secondKey) {
-    const S = new Array(61);
-    let a = u32x(hash32(fnv1a(seed) ^ hash32(u32x((secondKey >>> 0) ^ 2654435769))));
-    for (let i = 0; i < 8; i++) {
-        if ((i * (i + 1) & 1) === 0) {
-            const idx = a % 61;
-            a = rotl32(a + u32x(2654435769), 7 + (7 & i));
-            S[idx] = u32x(a ^ hash32(a));
-            a = hash32(u32x(a + idx));
-        } else {
-            S[i] = HASH_TABLE[15 & i];
+function getSources(payload) {
+    let parsed = payload;
+    if (typeof parsed === 'string') {
+        try {
+            parsed = JSON.parse(parsed);
+        } catch {
+            return [];
         }
     }
-    return { S, acc: u32x(hash32(2779096485 ^ a)) };
+    if (Array.isArray(parsed)) return parsed;
+    return parsed && Array.isArray(parsed.sources) ? parsed.sources : [];
 }
-function nextByte(st, ctr) {
-    const r = st.S;
-    const o = st.acc;
-    const n = o % 61;
-    const inSet = 0 - Number(n in r);
-    const d = r[n] >>> 0;
-    const x = u32x(d ^ mul32(2654435769, ctr + 1));
-    const y = u32x((o ^ x) | (o & x & inSet));
-    const no = hash32(u32x(rotl32(u32x(y + o), 31 & n) ^ rotl32(o, 31 & Math.imul(n, 7))) + 2654435769);
-    r[n] = no >>> 0;
-    st.acc = no;
-    return no >>> 0;
-}
-function keystream(seed, secondKey, len) {
-    const st = initStream(seed, secondKey);
-    const out = new Uint8Array(len);
-    let ctr = 0;
-    for (let i = 0; i < len;) {
-        const b = nextByte(st, ctr++);
-        out[i++] = 255 & b;
-        if (i < len) out[i++] = (b >>> 8) & 255;
-        if (i < len) out[i++] = (b >>> 16) & 255;
-        if (i < len) out[i++] = (b >>> 24) & 255;
+
+function validateDecryptResponse(data) {
+    if (!data || data.status !== 200 || data.result === undefined || data.result === null) {
+        const status = data && data.status !== undefined ? data.status : 'unknown';
+        const error = data && data.error ? String(data.error) : 'unknown';
+        throw new Error(`Videasy decryption failed (status=${status}, error=${error})`);
     }
-    return out;
+    return data.result;
 }
-function decryptPayload(payload, seed, secondKey) {
-    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/').padEnd(4 * Math.ceil(payload.length / 4), '=');
-    const data = Buffer.from(b64, 'base64');
-    const ks = keystream(seed, secondKey, data.length);
-    for (let i = 0; i < data.length; i++) data[i] ^= ks[i];
-    for (let i = 0; i < MAGIC.length; i++) {
-        if (data[i] !== MAGIC[i]) throw new Error('Invalid encrypted payload');
+
+function buildSourceUrl(server, details, tmdbId, seasonNum, episodeNum, seed) {
+    const mediaType = details.type;
+    const params = [
+        `title=${doubleEncode(details.title)}`,
+        `mediaType=${mediaType}`,
+        `year=${encodeURIComponent(details.year)}`
+    ];
+    if (mediaType === 'tv') {
+        params.push(`episodeId=${encodeURIComponent(episodeNum)}`);
+        params.push(`seasonId=${encodeURIComponent(seasonNum)}`);
     }
-    return data.subarray(MAGIC.length).toString('utf8');
+    params.push(
+        `tmdbId=${encodeURIComponent(tmdbId)}`,
+        `imdbId=${encodeURIComponent(details.imdbId || '')}`,
+        'enc=2',
+        `seed=${encodeURIComponent(seed)}`
+    );
+    if (server.language) params.push(`language=${encodeURIComponent(server.language)}`);
+    return `${VIDEASY_API}/${server.id}/sources?${params.join('&')}`;
+}
+
+async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum, seed) {
+    const url = buildSourceUrl(server, details, tmdbId, seasonNum, episodeNum, seed);
+    const response = await axios.get(url, {
+        headers: VIDEASY_HEADERS,
+        timeout: REQUEST_TIMEOUT_MS,
+        responseType: 'text'
+    });
+    const encryptedText = typeof response.data === 'string'
+        ? response.data
+        : JSON.stringify(response.data);
+    if (!encryptedText || encryptedText.length < 20 || encryptedText.startsWith('<')) return [];
+
+    const decryptResponse = await axios.post(
+        `${ENC_DEC_API}/dec-videasy`,
+        { text: encryptedText, id: String(tmdbId), seed },
+        { headers: { 'Content-Type': 'application/json' }, timeout: REQUEST_TIMEOUT_MS }
+    );
+    const payload = validateDecryptResponse(decryptResponse.data);
+    const sources = getSources(payload);
+    return sources
+        .filter(source => source && source.url && (!server.quality || source.quality === server.quality))
+        .map(source => ({
+            name: `Videasy ${server.label}`,
+            title: `Videasy ${server.label} - ${source.quality || 'Auto'}`,
+            url: source.url,
+            quality: source.quality || 'Auto',
+            provider: 'Videasy',
+            headers: {
+                Referer: VIDEASY_HEADERS.Referer,
+                Origin: VIDEASY_HEADERS.Origin
+            }
+        }));
 }
 
 async function getVideasyStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = null) {
-    console.log(`[Videasy] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
+    const isSeries = mediaType === 'tv' || mediaType === 'series';
+    if (isSeries && (!Number.isInteger(Number(seasonNum)) || Number(seasonNum) < 1 ||
+        !Number.isInteger(Number(episodeNum)) || Number(episodeNum) < 1)) {
+        console.warn('[Videasy] Series request is missing season or episode');
+        return [];
+    }
 
     const tmdbKey = getTmdbApiKey();
     if (!tmdbKey) {
@@ -103,43 +135,37 @@ async function getVideasyStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         return [];
     }
 
-    // Step 1: Resolve title/year/imdbId from TMDB
     let details;
     try {
-        const type = mediaType === 'tv' ? 'tv' : 'movie';
+        const type = isSeries ? 'tv' : 'movie';
         const { data } = await axios.get(
-            `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${tmdbKey}&append_to_response=external_ids`,
-            { timeout: 8000 }
+            `https://api.themoviedb.org/3/${type}/${encodeURIComponent(tmdbId)}?api_key=${encodeURIComponent(tmdbKey)}&append_to_response=external_ids`,
+            { timeout: REQUEST_TIMEOUT_MS }
         );
         details = {
             title: data.title || data.name || '',
             year: (data.release_date || data.first_air_date || '').split('-')[0],
-            imdbId: (data.external_ids && data.external_ids.imdb_id) || '',
+            imdbId: data.external_ids && data.external_ids.imdb_id || '',
             type
         };
-    } catch (err) {
-        console.error(`[Videasy] TMDB lookup failed: ${err.message}`);
+    } catch (error) {
+        console.error(`[Videasy] TMDB lookup failed: ${error.message}`);
         return [];
     }
-
     if (!details.title) {
         console.error('[Videasy] No title returned from TMDB.');
         return [];
     }
 
-    const allStreams = [];
-    const seen = new Set();
-
-    // Step 2: Fetch a decryption seed (cached server-side per mediaId, short TTL)
     let seed;
     try {
-        const seedRes = await axios.get(`${VIDEASY_API}/seed?mediaId=${tmdbId}`, {
-            headers: VIDEASY_HEADERS,
-            timeout: 8000
-        });
-        seed = seedRes.data && seedRes.data.seed;
-    } catch (err) {
-        console.error(`[Videasy] Seed fetch failed: ${err.message}`);
+        const { data } = await axios.get(
+            `${VIDEASY_API}/seed?mediaId=${encodeURIComponent(tmdbId)}`,
+            { headers: VIDEASY_HEADERS, timeout: REQUEST_TIMEOUT_MS }
+        );
+        seed = data && data.seed;
+    } catch (error) {
+        console.error(`[Videasy] Seed fetch failed: ${error.message}`);
         return [];
     }
     if (!seed) {
@@ -147,70 +173,25 @@ async function getVideasyStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         return [];
     }
 
-    const queryServers = async (activeSeed) => {
-        await Promise.all(Object.entries(SERVERS).map(async ([name, server]) => {
-            if (server.moviesOnly && mediaType === 'tv') return;
-
-            let apiUrl = `${server.url}?title=${encodeURIComponent(details.title)}`
-                + `&mediaType=${details.type === 'tv' ? 'TV Series' : 'Movie'}&year=${details.year}`
-                + `&tmdbId=${tmdbId}&imdbId=${details.imdbId || ''}`;
-            if (mediaType === 'tv') apiUrl += `&seasonId=${seasonNum}&episodeId=${episodeNum}`;
-            apiUrl += `&enc=2&seed=${activeSeed}`;
-
-            try {
-                const encRes = await axios.get(apiUrl, {
-                    headers: VIDEASY_HEADERS,
-                    timeout: 8000,
-                    responseType: 'text'
-                });
-
-                const encryptedText = typeof encRes.data === 'string' ? encRes.data : JSON.stringify(encRes.data);
-                if (!encryptedText || encryptedText.length < 20 || encryptedText.startsWith('<')) return;
-
-                // Step 3: Decrypt payload locally with the seed cipher
-                const plain = decryptPayload(encryptedText, activeSeed, String(tmdbId));
-                const resData = JSON.parse(plain);
-                if (!resData || !Array.isArray(resData.sources)) return;
-
-                for (const s of resData.sources) {
-                    if (!s.url || seen.has(s.url)) continue;
-                    seen.add(s.url);
-                    allStreams.push({
-                        name: `Videasy ${name}`,
-                        title: `Videasy ${name} - ${s.quality || 'Auto'}`,
-                        url: s.url,
-                        quality: s.quality || 'Auto',
-                        provider: 'Videasy',
-                        headers: {
-                            'Referer': 'https://player.videasy.net/',
-                            'Origin': 'https://player.videasy.net'
-                        }
-                    });
-                }
-                console.log(`[Videasy] Server ${name}: ${resData.sources.length} source(s)`);
-            } catch {
-                // server unreachable or returned no data — skip silently
-            }
-        }));
-    };
-
-    // Step 4: Query each server in parallel; retry once with a fresh seed if nothing matched
-    await queryServers(seed);
-    if (allStreams.length === 0) {
-        try {
-            const seedRes = await axios.get(`${VIDEASY_API}/seed?mediaId=${tmdbId}`, {
-                headers: VIDEASY_HEADERS,
-                timeout: 8000
-            });
-            const freshSeed = seedRes.data && seedRes.data.seed;
-            if (freshSeed && freshSeed !== seed) await queryServers(freshSeed);
-        } catch {
-            // ignore retry failure
+    const servers = await Promise.allSettled(SERVERS.map(server =>
+        fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum, seed)
+    ));
+    const streams = [];
+    const seen = new Set();
+    servers.forEach((result, index) => {
+        if (result.status === 'rejected') {
+            console.warn(`[Videasy] Server ${SERVERS[index].id} failed: ${result.reason.message || result.reason}`);
+            return;
         }
-    }
+        result.value.forEach(stream => {
+            if (seen.has(stream.url)) return;
+            seen.add(stream.url);
+            streams.push(stream);
+        });
+    });
 
-    console.log(`[Videasy] Total streams: ${allStreams.length}`);
-    return allStreams;
+    console.log(`[Videasy] Total streams: ${streams.length}`);
+    return streams;
 }
 
-module.exports = { getVideasyStreams };
+module.exports = { getVideasyStreams, buildSourceUrl };
