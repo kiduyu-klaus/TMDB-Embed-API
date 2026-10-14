@@ -39,8 +39,10 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
   let requestId = 0;
 
   async function init() {
+    logger.log('[Vidcore] browser.acquire.start');
     const browser = await acquireBrowser();
     acquired = true;
+    logger.log('[Vidcore] browser.acquire.complete ' + JSON.stringify({ version: browser.version() }));
     // Headless builds advertise "HeadlessChrome"; present a normal Chrome UA of the same major version.
     const major = String(browser.version()).split(".")[0];
     context = await browser.newContext({
@@ -62,6 +64,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
       BLOCKED_TYPES.has(route.request().resourceType()) ? route.abort() : route.continue(),
     );
     page = await context.newPage();
+    logger.log('[Vidcore] browser.context.ready');
   }
 
   async function directFetch(url, options) {
@@ -79,12 +82,14 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
   }
 
   async function navigate(url) {
+    logger.log('[Vidcore] page.navigation.start');
     const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
     if (!res) throw new Error("navigation returned no response");
     let text;
     try {
       text = await res.text(); // raw document body, as the server sent it
     } catch {
+      logger.log('[Vidcore] page.html.rendered_fallback');
       text = await page.content();
     }
     // Scripts can add the content token to the rendered DOM after navigation.
@@ -97,6 +102,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
       }
       const rendered = await page.content();
       if (rendered) text = rendered;
+      logger.log('[Vidcore] page.html.rendered ' + JSON.stringify({ characters: text.length }));
     }
     return makeResponse(res.status(), res.statusText(), text, await res.allHeaders());
   }
@@ -164,6 +170,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
     } catch (err) {
       // CORS / network failure inside the page -> use the context's request API instead.
       if (/Failed to fetch|NetworkError|Load failed/i.test(String(err && err.message))) {
+        logger.log('[Vidcore] request.context_fallback ' + JSON.stringify({ stage }));
         return contextFetch(url, options);
       }
       throw err;
@@ -174,6 +181,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
     const id = ++requestId;
     const started = Date.now();
     const origin = new URL(url).origin;
+    logger.log('[Vidcore] request.start ' + JSON.stringify({ stage, requestId: id, origin, method: options.method || 'GET' }));
     try {
       const response = await dispatch(url, options, stage);
       const headers = response.headers || {};
@@ -212,6 +220,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
       // Ignore browser teardown issues during shutdown.
     }
     if (acquired) releaseBrowser();
+    logger.log('[Vidcore] session.closed ' + JSON.stringify({ requests: requestId, browserAcquired: acquired }));
   }
 
   // Safety net: never leave a context/Chromium running if a lookup hangs.
