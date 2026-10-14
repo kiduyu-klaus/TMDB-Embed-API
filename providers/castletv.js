@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { createDecipheriv } = require('crypto');
 const { getDetails } = require('../utils/tmdb');
 
@@ -57,7 +58,7 @@ async function castleRequest(url, options = {}) {
     const res = await fetch(url, {
         ...options,
         headers: { ...API_HEADERS, ...(options.headers || {}) },
-        signal: AbortSignal.timeout(12000)
+        signal: AbortSignal.timeout(30000)
     });
     if (!res.ok) {
         throw new Error(`[CastleTV] HTTP ${res.status}: ${res.statusText}`);

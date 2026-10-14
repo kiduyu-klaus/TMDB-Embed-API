@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 
 const BASE_URL = 'https://vixsrc.to';
 const VIXSRC_HEADERS = {
@@ -12,7 +12,7 @@ const VIXSRC_HEADERS = {
 // Step 1: GET /api/movie/{id} or /api/tv/{id}/{s}/{e} → { src: "/embed/..." }
 async function fetchApi(url) {
     try {
-        const response = await axios.get(url, { headers: VIXSRC_HEADERS, timeout: 10000 });
+        const response = await axios.get(url, { headers: VIXSRC_HEADERS, timeout: 30000 });
         if (response.status !== 200 || !response.data) return null;
         return response.data;
     } catch {
@@ -25,7 +25,7 @@ async function fetchEmbedPage(suburl) {
     try {
         const response = await axios.get(BASE_URL + suburl, {
             headers: { ...VIXSRC_HEADERS, Accept: 'text/html,application/xhtml+xml,*/*' },
-            timeout: 10000,
+            timeout: 30000,
             responseType: 'text'
         });
         if (response.status !== 200) return null;
@@ -64,7 +64,7 @@ async function fetchPlaylist(masterUrl, pageApiUrl) {
     try {
         const response = await axios.get(masterUrl, {
             headers: { ...VIXSRC_HEADERS, Referer: pageApiUrl },
-            timeout: 10000,
+            timeout: 30000,
             responseType: 'text'
         });
         if (response.status !== 200) return null;

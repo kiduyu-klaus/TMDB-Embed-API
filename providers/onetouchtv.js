@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { createDecipheriv } = require('crypto');
 const { getDetails, resolveImdbId } = require('../utils/tmdb');
 const { getEpisodesPerSeason } = require('../utils/cinemetaEpisodes');
@@ -11,7 +12,7 @@ const FETCH_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Referer': 'https://onetouchtv.xyz/'
 };
-const FETCH_TIMEOUT_MS = 15000;
+const FETCH_TIMEOUT_MS = 30000;
 const FETCH_RETRIES = 2;
 const FETCH_RETRY_DELAY_MS = 400;
 const CACHE_TTL_MS = 5 * 60 * 1000;

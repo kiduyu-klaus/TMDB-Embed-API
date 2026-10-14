@@ -1,10 +1,10 @@
-const axios = require("axios");
+const axios = require('axios').create({ timeout: 30000 });
 const { inferSubtitleMimeType } = require("../utils/subtitles");
 
 const MEOWTV_API = "https://api.meowtv.ru";
 const ENC_DEC_API = "https://enc-dec.app/api";
 // Keep a single provider attempt below the aggregate endpoint's 15-second budget.
-const REQUEST_TIMEOUT_MS = 10000;
+const REQUEST_TIMEOUT_MS = 30000;
 
 const MEOWTV_HEADERS = {
   "User-Agent":

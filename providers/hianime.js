@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 "use strict";
 
 const crypto = require("crypto");

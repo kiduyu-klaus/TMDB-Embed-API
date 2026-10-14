@@ -26,7 +26,7 @@ function createProviderTrace(name) {
         const started = Date.now();
         log('request.start', { requestId, url: String(url), method: options.method || 'GET' });
         try {
-            const response = await globalThis.fetch(url, options);
+            const response = await require('./providerFetch').fetch(url, options);
             log('request.response', { requestId, url: response.url || String(url), status: response.status, ok: response.ok,
                 elapsedMs: Date.now() - started, contentType: response.headers?.get('content-type') });
             return new Proxy(response, {

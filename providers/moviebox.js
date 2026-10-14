@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
-const fetch = globalThis.fetch || require('node-fetch');
+const { fetch } = require('../utils/providerFetch');
 
 const API_BASE = (process.env.MOVIEBOX_API_URL || 'https://api3.aoneroom.com').replace(/\/+$/, '');
 const KEY_B64_DEFAULT = 'NzZpUmwwN3MweFNOOWpxbUVXQXQ3OUVCSlp1bElRSXNWNjRGWnIyTw==';
@@ -709,7 +709,7 @@ async function getMovieboxStreams(tmdbId, mediaType = 'movie', seasonNum = null,
         console.log('[MovieBox] Fetching details from TMDB...');
         const tmdbUrl = `https://api.themoviedb.org/3/${type}/${encodeURIComponent(tmdbId)}?api_key=${encodeURIComponent(tmdbApiKey)}`;
         
-        const tmdbResponse = await fetchWithTimeout(tmdbUrl, {}, 10_000);
+        const tmdbResponse = await fetchWithTimeout(tmdbUrl, {}, 30_000);
 
         if (!tmdbResponse.ok) {
             throw new Error(`TMDB returned HTTP ${tmdbResponse.status}`);

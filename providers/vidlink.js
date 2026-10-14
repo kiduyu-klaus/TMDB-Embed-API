@@ -1,4 +1,5 @@
-const axios = require('axios');
+const { fetch } = require('../utils/providerFetch');
+const axios = require('axios').create({ timeout: 30000 });
 
 const TMDB_API_KEY = '68e094699525b18a70bab2f86b1fa706';
 const ENC_DEC_API = 'https://enc-dec.app/api';
@@ -86,7 +87,7 @@ async function makeRequest(url, options = {}) {
         return response;
     }
 
-    const { params, timeout = 15000, responseType = 'json', body } = options;
+    const { params, timeout = 30000, responseType = 'json', body } = options;
     const response = await axios({
         method: options.method || 'GET',
         url,
@@ -310,18 +311,29 @@ class VidlinkScraper {
             const response = await makeRequest(vidlinkUrl, { headers: VIDLINK_HEADERS });
             const data = await response.json();
 
-            const rewrittenPlaylist = rewriteVidlinkPlaylist(data);
-            if (rewrittenPlaylist) {
-                console.log('[Vidlink] Returning WebKit DASH through Vidlink media relay');
+            const playlist = data?.stream?.playlist;
+            if (isHttpUrl(playlist) && (data.stream.requiresProxy === true || /\.mpd(?:[?#]|$)/i.test(playlist))) {
+                // The relay rewrites the MPD in a way mpv cannot reliably read.
+                // Native players can use the original CDN with its signed cookies.
+                const playbackHeaders = { ...VIDLINK_HEADERS };
+                for (const [name, value] of Object.entries(normalizeHeaders(data.stream.playlistHeaders))) {
+                    const previous = Object.keys(playbackHeaders).find(key => key.toLowerCase() === name.toLowerCase());
+                    if (previous) delete playbackHeaders[previous];
+                    playbackHeaders[name] = value;
+                }
+                console.log('[Vidlink] Returning direct DASH with playlist headers');
                 return [{
                     name: 'Vidlink - Auto',
                     title: streamTitle,
-                    url: rewrittenPlaylist,
+                    url: playlist,
                     quality: 'Auto',
                     size: 'Stream',
                     type: 'dash',
+                    format: 'dash',
+                    mimeType: 'application/dash+xml',
                     provider: 'vidlink',
-                    headers: VIDLINK_HEADERS
+                    headers: playbackHeaders,
+                    subtitles: normalizeCaptions(data.stream.captions || data.captions)
                 }];
             }
 

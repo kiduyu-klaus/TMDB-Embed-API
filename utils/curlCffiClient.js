@@ -44,13 +44,13 @@ function createCurlClient({ log = createDiagnosticLogger('CurlCffi') } = {}) {
             return super.send(curl, options);
         }
     }
-    const session = new LimitedSession({ impersonate: 'chrome136', verify: true, timeout: 12000 });
+    const session = new LimitedSession({ impersonate: 'chrome136', verify: true, timeout: 30000 });
     log('session.open', { profile: 'chrome136', verifyTLS: true });
     let requestSequence = 0;
     async function request(method, url, data, options = {}) {
         const requestId = ++requestSequence;
         const started = Date.now();
-        log('request.start', { requestId, method, url, timeoutMs: options.timeout || 12000, responseType: options.responseType || 'auto', hasBody: data != null });
+        log('request.start', { requestId, method, url, timeoutMs: options.timeout || 30000, responseType: options.responseType || 'auto', hasBody: data != null });
         try {
         const target = new URL(url);
         for (const [key, value] of Object.entries(options.params || {})) {
@@ -58,7 +58,7 @@ function createCurlClient({ log = createDiagnosticLogger('CurlCffi') } = {}) {
         }
         const response = await session.request({
             method, url: target.href, data, headers: options.headers,
-            timeout: options.timeout || 12000, allowRedirects: true,
+            timeout: options.timeout || 30000, allowRedirects: true,
             maxRedirects: options.maxRedirects ?? 5,
             maxContentLength: options.maxContentLength
         });

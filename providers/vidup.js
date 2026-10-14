@@ -1,9 +1,9 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 
 const BASE_URL = 'https://vidup.to';
 const ENCRYPT_URL = 'https://enc-dec.app/api/enc-vidup';
 const DECRYPT_URL = 'https://enc-dec.app/api/dec-vidup';
-const REQUEST_TIMEOUT_MS = 12000;
+const REQUEST_TIMEOUT_MS = 30000;
 
 
 const PAGE_HEADERS = {
@@ -119,7 +119,7 @@ async function isPlayableStream(stream) {
     try {
         const response = await axios.get(stream.url, {
             headers: { ...stream.headers, Range: 'bytes=0-1023' },
-            timeout: 4500,
+            timeout: 30000,
             maxRedirects: 5,
             responseType: 'arraybuffer',
             maxContentLength: 2 * 1024 * 1024,

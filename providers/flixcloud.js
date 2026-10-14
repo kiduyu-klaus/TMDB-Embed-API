@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const json5 = require('json5');
 const stringSimilarity = require('string-similarity');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
@@ -81,7 +81,7 @@ async function fetchTmdbMetadata(tmdbId, type) {
     if (!apiKey) throw new Error('TMDB API key is not configured');
     const response = await axios.get(`https://api.themoviedb.org/3/${type}/${encodeURIComponent(tmdbId)}`, {
         params: { api_key: apiKey },
-        timeout: 10000
+        timeout: 30000
     });
     return {
         title: type === 'tv' ? response.data?.name : response.data?.title,
@@ -93,7 +93,7 @@ async function findReanimeCandidate(tmdbId, title, year, type, seasonNum) {
     const searchResponse = await axios.get(`${REANIME_BASE}/api/v1/search`, {
         headers: REANIME_HEADERS,
         params: { q: title, limit: 30, offset: 0 },
-        timeout: 15000
+        timeout: 30000
     });
     const searchResults = Array.isArray(searchResponse.data?.results) ? searchResponse.data.results : [];
     const likelyResults = searchResults
@@ -105,7 +105,7 @@ async function findReanimeCandidate(tmdbId, title, year, type, seasonNum) {
         try {
             const response = await axios.get(`${REANIME_BASE}/api/v1/anime/${encodeURIComponent(item.anime_id)}`, {
                 headers: REANIME_HEADERS,
-                timeout: 12000
+                timeout: 30000
             });
             return response.data;
         } catch (error) {
@@ -146,7 +146,7 @@ async function findFlixcloudEmbedUrls(tmdbId, title, year, type, seasonNum, epis
 
     const fetchServers = async (id, episodeNumber) => axios.get(`${REANIME_BASE}/api/flix/${id}/${episodeNumber}`, {
         headers: REANIME_HEADERS,
-        timeout: 15000
+        timeout: 30000
     });
     let response = await fetchServers(anilistId, episode);
     let servers = response.data?.success && Array.isArray(response.data.servers)
@@ -202,7 +202,7 @@ async function findFlixcloudEmbedUrls(tmdbId, title, year, type, seasonNum, epis
 async function resolveFlixcloudUrl(embedUrl) {
     const pageResponse = await axios.get(embedUrl, {
         headers: FLIXCLOUD_HEADERS,
-        timeout: 20000
+        timeout: 30000
     });
     const html = typeof pageResponse.data === 'string' ? pageResponse.data : '';
     const match = html.match(/type:\s*["']data["']\s*,\s*data:\s*(\{.*?\})\s*,\s*uses:/s);
@@ -219,13 +219,13 @@ async function resolveFlixcloudUrl(embedUrl) {
     delete embeddedData.subtitles;
 
     const tokenPath = `${ENC_DEC_API}/dec-flixcloud?type=token`;
-    const tokenResponse = await axios.post(tokenPath, { data: embeddedData }, { timeout: 15000 });
+    const tokenResponse = await axios.post(tokenPath, { data: embeddedData }, { timeout: 30000 });
     const tokenData = validateEncDec(tokenResponse.data, tokenPath);
     if (!tokenData?.token || !tokenData.context) return null;
 
     const encryptedResponse = await axios.get(`${FLIXCLOUD_BASE}/api/m3u8/${encodeURIComponent(tokenData.token)}`, {
         headers: FLIXCLOUD_HEADERS,
-        timeout: 20000
+        timeout: 30000
     });
     const streamPath = `${ENC_DEC_API}/dec-flixcloud?type=stream`;
     const streamResponse = await axios.post(streamPath, {
@@ -233,7 +233,7 @@ async function resolveFlixcloudUrl(embedUrl) {
             context: tokenData.context,
             stream_response: encryptedResponse.data
         }
-    }, { timeout: 15000 });
+    }, { timeout: 30000 });
     const streamData = validateEncDec(streamResponse.data, streamPath);
     if (!streamData?.stream || !streamData.context?.w_payload) return null;
 
@@ -248,7 +248,7 @@ async function isPlayableManifest(manifestUrl, headers) {
     try {
         const masterResponse = await axios.get(manifestUrl, {
             headers,
-            timeout: 20000,
+            timeout: 30000,
             responseType: 'text'
         });
         const masterText = String(masterResponse.data || '');
@@ -259,7 +259,7 @@ async function isPlayableManifest(manifestUrl, headers) {
         const childUrl = new URL(childLine.trim(), manifestUrl).href;
         const mediaResponse = await axios.get(childUrl, {
             headers,
-            timeout: 20000,
+            timeout: 30000,
             responseType: 'text'
         });
         const mediaText = String(mediaResponse.data || '');
@@ -270,7 +270,7 @@ async function isPlayableManifest(manifestUrl, headers) {
         const segmentUrl = new URL(segmentLine.trim(), childUrl).href;
         const segmentResponse = await axios.get(segmentUrl, {
             headers: { ...headers, Range: 'bytes=0-1023' },
-            timeout: 20000,
+            timeout: 30000,
             responseType: 'arraybuffer',
             maxContentLength: 128 * 1024,
             validateStatus: status => status === 200 || status === 206

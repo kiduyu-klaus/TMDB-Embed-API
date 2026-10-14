@@ -14,7 +14,7 @@ async function tmdbFetchJson(url) {
   if (!apiKey) throw new Error('TMDB_API_KEY missing');
   const sep = url.includes('?') ? '&' : '?';
   const full = `${url}${sep}api_key=${apiKey}`;
-  const res = await fetch(full, { timeout: 15000 });
+  const res = await fetch(full, { timeout: 30000 });
   if (!res.ok) throw new Error(`TMDB request failed ${res.status}`);
   return res.json();
 }

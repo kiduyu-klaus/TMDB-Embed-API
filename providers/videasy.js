@@ -1,9 +1,9 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 
 const VIDEASY_API = 'https://api.wecollege.net';
 const ENC_DEC_API = 'https://enc-dec.app/api';
-const REQUEST_TIMEOUT_MS = 8000;
+const REQUEST_TIMEOUT_MS = 30000;
 
 const VIDEASY_HEADERS = {
     'Accept': '*/*',

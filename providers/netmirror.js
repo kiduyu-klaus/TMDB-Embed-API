@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { getDetails } = require('../utils/tmdb');
 
 const STREAM_CACHE_TTL = 25 * 60 * 1000;
@@ -84,7 +85,7 @@ async function resolveNewTvApi() {
         try {
             const response = await fetch(`${domain}/checknewtv.php`, {
                 headers: { ...newTvHeaders('nf') },
-                signal: AbortSignal.timeout(10000)
+                signal: AbortSignal.timeout(30000)
             });
             const data = await response.json();
             if (data.token_hash) {
@@ -111,7 +112,7 @@ async function fetchNetflix(tmdbId, type, title, season, episode) {
                 'User-Agent': nextUA(),
                 'Accept-Language': nextLang()
             },
-            signal: AbortSignal.timeout(20000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!response.ok) return [];
         const data = await response.json();
@@ -180,7 +181,7 @@ async function getEpisodes(api, showId, postData, config) {
         try {
             const response = await fetch(
                 `${api}/newtv/episodes.php?id=${encodeURIComponent(selectedSeasonId)}&page=2`,
-                { headers: newTvHeaders(config.ott), signal: AbortSignal.timeout(15000) }
+                { headers: newTvHeaders(config.ott), signal: AbortSignal.timeout(30000) }
             );
             const data = await response.json();
             for (const episode of data.episodes || []) {
@@ -200,7 +201,7 @@ async function fetchPlatform(platform, title, type, season, episode) {
         const api = await resolveNewTvApi();
         const searchResponse = await fetch(
             `${api}/newtv/search.php?s=${encodeURIComponent(title)}`,
-            { headers: newTvHeaders(config.ott), signal: AbortSignal.timeout(15000) }
+            { headers: newTvHeaders(config.ott), signal: AbortSignal.timeout(30000) }
         );
         const searchData = await searchResponse.json();
         const first = (searchData.searchResult || [])[0];
@@ -208,7 +209,7 @@ async function fetchPlatform(platform, title, type, season, episode) {
 
         const postResponse = await fetch(
             `${api}/newtv/post.php?id=${encodeURIComponent(first.id)}`,
-            { headers: newTvHeaders(config.ott, { Lastep: '', Usertoken: '' }), signal: AbortSignal.timeout(15000) }
+            { headers: newTvHeaders(config.ott, { Lastep: '', Usertoken: '' }), signal: AbortSignal.timeout(30000) }
         );
         const postData = await postResponse.json();
 
@@ -226,7 +227,7 @@ async function fetchPlatform(platform, title, type, season, episode) {
 
         const playerResponse = await fetch(
             `${api}/newtv/player.php?id=${encodeURIComponent(targetId)}`,
-            { headers: newTvHeaders(config.ott, { Usertoken: '' }), signal: AbortSignal.timeout(15000) }
+            { headers: newTvHeaders(config.ott, { Usertoken: '' }), signal: AbortSignal.timeout(30000) }
         );
         const player = await playerResponse.json();
         if (player.status && player.status !== 'ok') {

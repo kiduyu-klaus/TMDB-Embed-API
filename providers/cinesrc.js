@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { decryptVidzeePayload } = require('../utils/vidzee-decrypt');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36';
@@ -40,7 +41,7 @@ async function fetchJson(url, opts = {}) {
     const res = await fetch(url, {
         ...opts,
         headers: { 'Accept': 'application/json', ...(opts.headers || {}) },
-        signal: opts.signal || AbortSignal.timeout(15000)
+        signal: opts.signal || AbortSignal.timeout(30000)
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
@@ -52,7 +53,7 @@ async function getTmdbInfo(tmdbId, mediaType, season) {
     const k = TMDB_API_KEY;
     if (!k) return { isAnime: false, titles: [], year: null, imdbId: null, mediaType: null };
     try {
-        const requestMain = type => fetch(`https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${k}&append_to_response=external_ids`, { signal: AbortSignal.timeout(5000) });
+        const requestMain = type => fetch(`https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${k}&append_to_response=external_ids`, { signal: AbortSignal.timeout(30000) });
         let resolvedType = mediaType;
         let mainRes = await requestMain(mediaType);
         if (!mainRes.ok) {
@@ -71,7 +72,7 @@ async function getTmdbInfo(tmdbId, mediaType, season) {
         let seasonData = null;
         if (mainRes?.ok) mainData = await mainRes.json();
         if (season && resolvedType === 'tv') {
-            const seasonRes = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${k}`, { signal: AbortSignal.timeout(5000) });
+            const seasonRes = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${k}`, { signal: AbortSignal.timeout(30000) });
             if (seasonRes.ok) seasonData = await seasonRes.json(); else seasonRes.body?.cancel();
         }
 
@@ -220,7 +221,7 @@ async function scrapeFlax(info, id, s, e) {
         try {
             const res = await fetch(`https://api.speedracelight.com${route}?${params}`, {
                 headers: { ...SOURCE_HEADERS, Accept: 'application/json' },
-                signal: AbortSignal.timeout(8000)
+                signal: AbortSignal.timeout(30000)
             });
             if (!res.ok) continue;
             const payload = await res.json();
@@ -270,7 +271,7 @@ function makeServerExtractor(server) {
         if (!pageUrl) return [];
         const res = await fetch(pageUrl, {
             headers: SOURCE_HEADERS,
-            signal: AbortSignal.timeout(10000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!res.ok) return [];
         const html = (await res.text())
@@ -323,7 +324,7 @@ async function scrapeCld(info, id, s, e) {
     }
     const liveResolverUrl = `https://freakyniki.elaxo.lol/?${resolverParams}`;
     try {
-        const res = await fetch(liveResolverUrl, { headers: CLD_HEADERS, signal: AbortSignal.timeout(10000) });
+        const res = await fetch(liveResolverUrl, { headers: CLD_HEADERS, signal: AbortSignal.timeout(30000) });
         if (res.ok) {
             const payload = preferCldProxyForBlockedRawHost(await res.json(), liveResolverUrl);
             const streams = extractStreamData(payload, [], liveResolverUrl);
@@ -345,7 +346,7 @@ async function scrapeCld(info, id, s, e) {
     const output = [];
     await Promise.all(urls.map(async url => {
         try {
-            const res = await fetch(url, { headers: CLD_HEADERS, signal: AbortSignal.timeout(10000) });
+            const res = await fetch(url, { headers: CLD_HEADERS, signal: AbortSignal.timeout(30000) });
             if (!res.ok) return;
             const payload = preferCldProxyForBlockedRawHost(await res.json(), url);
             output.push(...extractStreamData(payload, [], url));
@@ -375,7 +376,7 @@ async function scrapePrime(info, id, s, e) {
         const gateRes = await fetch(pageUrl, {
             headers,
             redirect: 'follow',
-            signal: AbortSignal.timeout(15000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!gateRes.ok) return [];
         const gateHtml = await gateRes.text();
@@ -395,7 +396,7 @@ async function scrapePrime(info, id, s, e) {
                 ...(gateCookies ? { Cookie: gateCookies } : {})
             },
             body: new URLSearchParams(fields),
-            signal: AbortSignal.timeout(15000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!postRes.ok) return [];
         const watchingHtml = await postRes.text();
@@ -418,7 +419,7 @@ async function scrapePrime(info, id, s, e) {
                         'X-Requested-With': 'XMLHttpRequest',
                         ...(cookies ? { Cookie: cookies } : {})
                     },
-                    signal: AbortSignal.timeout(20000)
+                    signal: AbortSignal.timeout(30000)
                 });
                 if (sourceRes.ok) {
                     sourceText = await sourceRes.text();
@@ -460,7 +461,7 @@ async function decryptVidSrcStreamUrls(payload) {
         const key = String(payload.vs.w || wasmUrl);
         modulePromise = vidsrcWasmModules.get(key);
         if (!modulePromise) {
-            modulePromise = fetch(wasmUrl, { signal: AbortSignal.timeout(10000) })
+            modulePromise = fetch(wasmUrl, { signal: AbortSignal.timeout(30000) })
                 .then(res => { if (!res.ok) throw new Error(`WASM HTTP ${res.status}`); return res.arrayBuffer(); })
                 .then(bytes => WebAssembly.compile(bytes));
             vidsrcWasmModules.set(key, modulePromise);
@@ -490,12 +491,12 @@ async function scrapeMega(info, id, s, e) {
     try {
         const route = await fetchJson(`https://vidsrc.sh/vs_src.php?${query}`, {
             headers: { ...SOURCE_HEADERS, Referer: 'https://vidsrc.sh/' },
-            signal: AbortSignal.timeout(10000)
+            signal: AbortSignal.timeout(30000)
         });
         if (typeof route?.src !== 'string') return [];
         const outer = await fetch(route.src, {
             headers: { ...SOURCE_HEADERS, Referer: 'https://vidsrc.sh/' },
-            signal: AbortSignal.timeout(10000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!outer.ok) return [];
         let html = (await outer.text()).replace(/\\u0026/g, '&').replace(/\\\//g, '/');
@@ -509,7 +510,7 @@ async function scrapeMega(info, id, s, e) {
                     mediaHeaders = { ...SOURCE_HEADERS, Referer: `${playerOrigin}/`, Origin: playerOrigin };
                     const playerRes = await fetch(playerUrl, {
                         headers: { ...SOURCE_HEADERS, Referer: outer.url },
-                        signal: AbortSignal.timeout(10000)
+                        signal: AbortSignal.timeout(30000)
                     });
                     if (playerRes.ok) {
                         const playerHtml = (await playerRes.text()).replace(/\\u0026/g, '&').replace(/\\\//g, '/');
@@ -533,7 +534,7 @@ async function scrapeMega(info, id, s, e) {
                             if (streamApi) {
                                 const streamPayload = await fetchJson(streamApi, {
                                     headers: { Accept: 'application/json' },
-                                    signal: AbortSignal.timeout(15000)
+                                    signal: AbortSignal.timeout(30000)
                                 });
                                 for (const url of await decryptVidSrcStreamUrls(streamPayload)) {
                                     if (/^https?:/i.test(url) && /\.(?:m3u8|mpd)(?:[?#]|$)/i.test(url)) found.add(url);
@@ -557,7 +558,7 @@ async function scrapeMega(info, id, s, e) {
         if (!tokens.has(url.origin)) {
             tokens.set(url.origin, (async () => {
                 const response = await fetch(`${url.origin}/generate.php`, {
-                    headers: mediaHeaders, signal: AbortSignal.timeout(8000)
+                    headers: mediaHeaders, signal: AbortSignal.timeout(30000)
                 });
                 if (!response.ok) return '';
                 const text = (await response.text()).trim();
@@ -592,7 +593,7 @@ async function scrapeSpe(info, id, s, e) {
         try {
             const payload = await fetchJson(`https://api.vidlove.cc/${endpoint}?${params}`, {
                 headers: VIDLOVE_HEADERS,
-                signal: AbortSignal.timeout(10000)
+                signal: AbortSignal.timeout(30000)
             });
             const source = payload?.source;
             if (!source) return;
@@ -631,7 +632,7 @@ async function scrapeVipplay(info, id, s, e) {
     try {
         const res = await fetch(pageUrl, {
             headers: { ...SOURCE_HEADERS, Referer: 'https://flaxmovies.lol/' },
-            signal: AbortSignal.timeout(15000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!res.ok) return [];
         let body = await res.text();
@@ -705,7 +706,7 @@ async function scrapeViz(info, id, s, e) {
         try {
             const res = await fetch(endpoint, {
                 headers: { ...SOURCE_HEADERS, Referer: 'https://player.vidzee.wtf/', Origin: 'https://player.vidzee.wtf' },
-                signal: AbortSignal.timeout(12000)
+                signal: AbortSignal.timeout(30000)
             });
             if (!res.ok) return;
             const payload = await decryptVidzeePayload(await res.json());
@@ -725,7 +726,7 @@ async function scrapeViz(info, id, s, e) {
 
 async function scrapeVidrock(info, id, s, e) {
     const path = s != null && e != null ? `/api/tv/${id}/${s}/${e}` : `/api/movie/${id}`;
-    const data = await fetchJson(`https://vidrock.net${path}`, { headers: VIDROCK_HEADERS, signal: AbortSignal.timeout(10000) });
+    const data = await fetchJson(`https://vidrock.net${path}`, { headers: VIDROCK_HEADERS, signal: AbortSignal.timeout(30000) });
     const crypto = require('crypto');
     const key = Buffer.from('7f3e9c2a8b5d1f4e6a9c3b7d2e5f8a1c4b6d9e2f5a8c1b4d7e9f2a5c8b1d4e7f', 'hex');
     const decrypt = (value) => {

@@ -1,4 +1,6 @@
 'use strict';
+const { fetch } = require('../utils/providerFetch');
+
 
 const BASE_URL = 'https://streamvaultsrc.click';
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
@@ -127,7 +129,7 @@ async function getVidfastStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
             : `${BASE_URL}/api/embed-streams/movie/${encodeURIComponent(tmdbId)}`;
         const response = await fetch(endpoint, {
             headers: REQUEST_HEADERS,
-            signal: AbortSignal.timeout(10000)
+            signal: AbortSignal.timeout(30000)
         });
         if (!response.ok) {
             console.warn(`[Vidfast] StreamVault request failed: HTTP ${response.status}`);

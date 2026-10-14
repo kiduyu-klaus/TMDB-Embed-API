@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 
 const API_BASE = 'https://api.streamflix.app';
 const FIREBASE_BASE = 'https://chilflix-410be-default-rtdb.asia-southeast1.firebasedatabase.app';
@@ -20,7 +20,7 @@ const REQUEST_HEADERS = {
 async function getData() {
     if (dataCache && Date.now() - dataCache.ts < DATA_TTL) return dataCache.items;
     console.log('[StreamFlix] fetching data.json');
-    const res = await axios.get(`${API_BASE}/data.json`, { headers: REQUEST_HEADERS, timeout: 20000 });
+    const res = await axios.get(`${API_BASE}/data.json`, { headers: REQUEST_HEADERS, timeout: 30000 });
     const items = (res.data && res.data.data) || [];
     dataCache = { items, ts: Date.now() };
     console.log(`[StreamFlix] data.json cached (${items.length} items)`);
@@ -29,7 +29,7 @@ async function getData() {
 
 async function getConfig() {
     if (configCache && Date.now() - configCache.ts < CONFIG_TTL) return configCache.config;
-    const res = await axios.get(`${API_BASE}/config/config-streamflixapp.json`, { headers: REQUEST_HEADERS, timeout: 8000 });
+    const res = await axios.get(`${API_BASE}/config/config-streamflixapp.json`, { headers: REQUEST_HEADERS, timeout: 30000 });
     configCache = { config: res.data, ts: Date.now() };
     return res.data;
 }
@@ -40,7 +40,7 @@ async function getEpisodes(movieKey, season) {
     if (cached && Date.now() - cached.ts < EPISODES_TTL) return cached.episodes;
 
     const url = `${FIREBASE_BASE}/Data/${movieKey}/seasons/${season}/episodes.json`;
-    const res = await axios.get(url, { headers: REQUEST_HEADERS, timeout: 10000 });
+    const res = await axios.get(url, { headers: REQUEST_HEADERS, timeout: 30000 });
 
     const raw = res.data || {};
     const episodes = {};

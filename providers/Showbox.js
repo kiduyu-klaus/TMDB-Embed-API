@@ -1,6 +1,6 @@
 require('dotenv').config();
 console.log(`Current DISABLE_CACHE value: '${process.env.DISABLE_CACHE}' (Type: ${typeof process.env.DISABLE_CACHE})`);
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 const path = require('path');
@@ -132,7 +132,7 @@ const fetchStreamSize = async (url) => {
         if (url.toLowerCase().includes('.m3u8')) {
             return 'Playlist (size N/A)'; // Indicate HLS playlist
         }
-        const response = await axios.head(url, { timeout: 5000 }); // 5-second timeout for HEAD request
+        const response = await axios.head(url, { timeout: 30000 }); // 5-second timeout for HEAD request
         if (response.headers['content-length']) {
             const sizeInBytes = parseInt(response.headers['content-length'], 10);
             if (!isNaN(sizeInBytes)) {
@@ -993,7 +993,7 @@ const getShowboxUrlFromTmdbInfo = async (tmdbType, tmdbId, regionPreference = nu
         const tmdbApiUrl = `${TMDB_BASE_URL}/${tmdbType}/${tmdbId}?api_key=${TMDB_API_KEY}`;
         console.log(`  Fetching TMDB data from: ${tmdbApiUrl}`);
         try {
-            const response = await axios.get(tmdbApiUrl, { timeout: 10000 });
+            const response = await axios.get(tmdbApiUrl, { timeout: 30000 });
             tmdbData = response.data;
             if (tmdbData) {
                 if (process.env.DISABLE_CACHE !== 'true') {
@@ -1026,7 +1026,7 @@ const getShowboxUrlFromTmdbInfo = async (tmdbType, tmdbId, regionPreference = nu
         const altTitlesApiUrl = `${TMDB_BASE_URL}/${tmdbType}/${tmdbId}/alternative_titles?api_key=${TMDB_API_KEY}`;
         console.log(`  Fetching TMDB alternative titles from: ${altTitlesApiUrl}`);
         try {
-            const response = await axios.get(altTitlesApiUrl, { timeout: 10000 });
+            const response = await axios.get(altTitlesApiUrl, { timeout: 30000 });
             tmdbAlternativeTitlesData = response.data;
             if (tmdbAlternativeTitlesData) {
                 if (process.env.DISABLE_CACHE !== 'true') {
@@ -1052,7 +1052,7 @@ const getShowboxUrlFromTmdbInfo = async (tmdbType, tmdbId, regionPreference = nu
         const imagesApiUrl = `${TMDB_BASE_URL}/${tmdbType}/${tmdbId}/images?api_key=${TMDB_API_KEY}`;
         console.log(`  Fetching TMDB images from: ${imagesApiUrl}`);
         try {
-            const response = await axios.get(imagesApiUrl, { timeout: 10000 });
+            const response = await axios.get(imagesApiUrl, { timeout: 30000 });
             tmdbImagesData = response.data;
             if (tmdbImagesData) {
                 if (process.env.DISABLE_CACHE !== 'true') {
@@ -1222,7 +1222,7 @@ const fetchSourcesForSingleFid = async (fidToProcess, shareKey, regionPreference
 
     const finalPostUrl = FEBBOX_PLAYER_URL;
     const postDataForAxios = targetPostData.toString();
-    const axiosConfig = { headers: baseHeaders, timeout: 20000 };
+    const axiosConfig = { headers: baseHeaders, timeout: 30000 };
 
     console.log(`  Fetching fresh player data for video FID: ${fidToProcess} (Share: ${shareKey}) directly to ${FEBBOX_PLAYER_URL}`);
 
@@ -1680,7 +1680,7 @@ const extractFidsFromFebboxPage = async (febboxUrl, regionPreference = null, use
     // const scraperApiKey = process.env.SCRAPER_API_KEY_VALUE;
 
     const finalGetUrl = febboxUrl;
-    const axiosConfig = { headers: baseHeaders, timeout: 20000 };
+    const axiosConfig = { headers: baseHeaders, timeout: 30000 };
 
     // if (useScraperApi && scraperApiKey) {
     //     finalGetUrl = SCRAPER_API_BASE_URL; // Use defined base URL
@@ -1807,7 +1807,7 @@ const convertImdbToTmdb = async (imdbId, regionPreference = null, expectedType =
     console.time(`convertImdbToTmdb_apiCall_${imdbId}`);
 
     try {
-        const response = await axios.get(findApiUrl, { timeout: 10000 });
+        const response = await axios.get(findApiUrl, { timeout: 30000 });
         console.timeEnd(`convertImdbToTmdb_apiCall_${imdbId}`);
         const findResults = response.data;
 
@@ -2111,7 +2111,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
         const finalFebboxUrl = febboxUrl;
         const axiosConfigMainPage = {
             headers: { 'Cookie': `ui=${cookieForRequest}` },
-            timeout: 20000
+            timeout: 30000
         };
 
         console.log(`Fetching main FebBox page ${febboxUrl} directly${retryAttempt > 0 ? ' (forced refresh for missing season)' : ''}`);
@@ -2370,7 +2370,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                         'Referer': febboxUrl,
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    timeout: 20000
+                    timeout: 30000
                 };
 
                 console.log(`Fetching FebBox folder ${targetFolderListUrl} directly`);
@@ -2967,7 +2967,7 @@ const getTmdbDataForPStream = async (tmdbType, tmdbId) => {
         console.log(`  [PStream] Fetching TMDB data from: ${tmdbApiUrl}`);
 
         try {
-            const response = await axios.get(tmdbApiUrl, { timeout: 10000 });
+            const response = await axios.get(tmdbApiUrl, { timeout: 30000 });
             tmdbData = response.data;
             if (tmdbData) {
                 if (process.env.DISABLE_CACHE !== 'true') {
@@ -2996,7 +2996,7 @@ const getTmdbDataForPStream = async (tmdbType, tmdbId) => {
         console.log(`  [PStream] Fetching TMDB external IDs from: ${externalIdsApiUrl}`);
 
         try {
-            const response = await axios.get(externalIdsApiUrl, { timeout: 10000 });
+            const response = await axios.get(externalIdsApiUrl, { timeout: 30000 });
             externalIdsData = response.data;
             if (externalIdsData) {
                 if (process.env.DISABLE_CACHE !== 'true') {
@@ -3053,7 +3053,7 @@ const getUiTokenForPStream = async (userCookie = null) => {
             const flowResults = await Promise.all(candidates.map(async (c) => {
                 try {
                     const headers = { 'Cookie': c.startsWith('ui=') ? c : `ui=${c}`, 'Accept': 'application/json, text/javascript, */*; q=0.01' };
-                    const resp = await axios.get('https://www.febbox.com/console/user_cards', { headers, timeout: 10000, validateStatus: () => true });
+                    const resp = await axios.get('https://www.febbox.com/console/user_cards', { headers, timeout: 30000, validateStatus: () => true });
                     if (resp.status === 200 && resp.data && resp.data.data && resp.data.data.flow) {
                         const flow = resp.data.data.flow;
                         const remaining = (Number(flow.traffic_limit_mb) || 0) - (Number(flow.traffic_usage_mb) || 0);

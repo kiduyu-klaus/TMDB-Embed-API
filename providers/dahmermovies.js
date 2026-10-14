@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 
 const DAHMER_MOVIES_API = 'https://a.111477.xyz';
@@ -42,7 +42,7 @@ async function fetchDirectory(title, year, season) {
         try {
             const res = await axios.get(DAHMER_MOVIES_API + variant, {
                 headers: REQUEST_HEADERS,
-                timeout: 10000,
+                timeout: 30000,
                 responseType: 'text'
             });
             if (res.data) return { html: res.data, dirUrl: DAHMER_MOVIES_API + variant };
@@ -67,7 +67,7 @@ async function getDahmermoviesStreams(tmdbId, mediaType = 'movie', seasonNum = n
         const type = mediaType === 'tv' ? 'tv' : 'movie';
         const { data } = await axios.get(
             `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${tmdbKey}`,
-            { timeout: 8000 }
+            { timeout: 30000 }
         );
         title = data.title || data.name || '';
         year = (data.release_date || data.first_air_date || '').substring(0, 4);

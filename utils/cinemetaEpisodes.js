@@ -3,7 +3,7 @@
 
 const CINEMETA_BASE = 'https://v3-cinemeta.strem.io';
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const FETCH_TIMEOUT_MS = 12000;
+const FETCH_TIMEOUT_MS = 30000;
 
 const episodeCountCache = new Map();
 

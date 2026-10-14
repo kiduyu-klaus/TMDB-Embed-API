@@ -17,7 +17,7 @@ const { fetchVidnestPayload, REQUEST_HEADERS } = require('../utils/vidnest');
 const PROVIDER_ID = 'superstream';
 const PROVIDER_LABEL = 'Superstream';
 const BACKEND = 'superstream';
-const REQUEST_TIMEOUT_MS = 8000;
+const REQUEST_TIMEOUT_MS = 30000;
 const STREAM_HEADERS = {
   'Referer': 'https://vidnest.fun/',
   'Origin': 'https://vidnest.fun',

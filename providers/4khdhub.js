@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const cheerio = require('cheerio');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 
@@ -13,7 +13,7 @@ const HEADERS = {
     'Accept-Language': 'en-US,en;q=0.9'
 };
 const client = axios.create({
-    timeout: 20000,
+    timeout: 30000,
     maxRedirects: 8,
     headers: HEADERS,
     validateStatus: status => status >= 200 && status < 400
@@ -43,7 +43,7 @@ function fixUrl(value, baseUrl) {
 async function getMainUrl() {
     if (domainCache && Date.now() - domainCacheTime < 10 * 60 * 1000) return domainCache;
     try {
-        const response = await client.get(DOMAINS_URL, { timeout: 10000 });
+        const response = await client.get(DOMAINS_URL, { timeout: 30000 });
         domainCache = response.data?.['4khdhub'] || response.data?.n4khdhub || DEFAULT_MAIN_URL;
     } catch (error) {
         console.warn(`[4KHDHub] Domain feed unavailable: ${error.message}`);

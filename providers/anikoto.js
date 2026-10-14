@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 /*
  * Anikoto Nuvio provider.
  * Source-derived Anikoto -> MegaPlay/VidTube extraction.
@@ -27,7 +28,7 @@ const CACHE=globalThis.__NUVIO_PROVIDER_CACHE__||(globalThis.__NUVIO_PROVIDER_CA
 
 async function req(url,opt,ms){
   opt=opt||{};
-  const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||5000);
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),Math.max(ms||0,30000));
   try{return await fetch(url,Object.assign({},opt,{signal:c.signal}))}
   finally{clearTimeout(t)}
 }

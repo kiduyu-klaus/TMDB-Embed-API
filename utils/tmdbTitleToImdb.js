@@ -31,7 +31,7 @@ async function tmdbTitleToImdbId(title, year, type) {
       `${TMDB_BASE}/search/${tmdbType}` +
       `?api_key=${apiKey}&query=${encodeURIComponent(title)}${yearParam}&page=1`;
 
-    const searchRes = await fetch(searchUrl, { signal: AbortSignal.timeout(8000) });
+    const searchRes = await fetch(searchUrl, { signal: AbortSignal.timeout(30000) });
     if (!searchRes.ok) return set(null);
 
     const searchData = await searchRes.json();
@@ -58,7 +58,7 @@ async function tmdbTitleToImdbId(title, year, type) {
     const topId = best.raw.id;
 
     const extUrl = `${TMDB_BASE}/${tmdbType}/${topId}/external_ids?api_key=${apiKey}`;
-    const extRes = await fetch(extUrl, { signal: AbortSignal.timeout(8000) });
+    const extRes = await fetch(extUrl, { signal: AbortSignal.timeout(30000) });
     if (!extRes.ok) return set(null);
 
     const extData = await extRes.json();

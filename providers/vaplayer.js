@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { resolveImdbId } = require('../utils/tmdb');
 
 const STREAM_API = 'https://streamdata.vaplayer.ru/api.php';

@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const cheerio = require('cheerio');
 const crypto = require('crypto');
 const tmdb = require('../utils/tmdb');
@@ -181,7 +181,7 @@ async function resolveDirectM3u8(playerUrl, depth = 0) {
                 'User-Agent': ANIKAI_HEADERS['User-Agent'],
                 'Referer': parsedUrl.origin + '/'
             },
-            timeout: 8000
+            timeout: 30000
         });
         logInfo(`resolveDirectM3u8() <- GET ${sanitizeMediaUrl(playerUrl)} | status=${status1} bytes=${html.length} took=${Date.now() - t0}ms`);
 
@@ -241,7 +241,7 @@ async function resolveDirectM3u8(playerUrl, depth = 0) {
                 'Referer': playerUrl,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            timeout: 8000
+            timeout: 30000
         });
         logInfo(`resolveDirectM3u8() <- GET getSources | status=${status2} took=${Date.now() - t1}ms`);
         logInfo(`resolveDirectM3u8() sourcesJson keys=${sourcesJson ? Object.keys(sourcesJson).join(',') : 'null'}`);
@@ -429,7 +429,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         const searchUrl = `${ANIKAI_BASE}/?s=${encodeURIComponent(searchTitle)}`;
         logInfo(`getAnimekaiStreams() searching title="${searchTitle}"`);
         const searchStart = Date.now();
-        const { data: searchHtml, status: searchStatus } = await axios.get(searchUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
+        const { data: searchHtml, status: searchStatus } = await axios.get(searchUrl, { headers: ANIKAI_HEADERS, timeout: 30000 });
         logInfo(`getAnimekaiStreams() search response status=${searchStatus} bytes=${searchHtml.length} took=${Date.now() - searchStart}ms`);
 
         const results = parseAnimeKaiSearchResults(searchHtml);
@@ -450,7 +450,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
         const candidateSettlements = await Promise.allSettled(matchingResults.map(async (item) => {
             try {
                 const seriesStart = Date.now();
-                const { data: seriesHtml, status: seriesStatus } = await axios.get(item.href, { headers: ANIKAI_HEADERS, timeout: 8000 });
+                const { data: seriesHtml, status: seriesStatus } = await axios.get(item.href, { headers: ANIKAI_HEADERS, timeout: 30000 });
                 logInfo(`AnimeKai result "${item.title}" page status=${seriesStatus} bytes=${seriesHtml.length} took=${Date.now() - seriesStart}ms`);
 
                 let episodeUrl = item.href;
@@ -463,7 +463,7 @@ async function getAnimekaiStreams(tmdbId, mediaType = 'tv', seasonNum = null, ep
                 }
 
                 const episodeStart = Date.now();
-                const { data: episodeHtml, status: episodeStatus } = await axios.get(episodeUrl, { headers: ANIKAI_HEADERS, timeout: 8000 });
+                const { data: episodeHtml, status: episodeStatus } = await axios.get(episodeUrl, { headers: ANIKAI_HEADERS, timeout: 30000 });
                 logInfo(`AnimeKai episode page for "${item.title}" status=${episodeStatus} bytes=${episodeHtml.length} took=${Date.now() - episodeStart}ms`);
 
                 const servers = extractAnimeKaiServerOptions(episodeHtml);

@@ -4,7 +4,7 @@ const browserPool = require("./browser");
 
 const DIRECT_HOSTS = new Set(["enc-dec.app"]);
 const NAV_TIMEOUT_MS = Number(process.env.VIDCORE_NAV_TIMEOUT_MS || 30000);
-const REQ_TIMEOUT_MS = 15000;
+const REQ_TIMEOUT_MS = 30000;
 const SESSION_MAX_MS = Number(process.env.VIDCORE_SESSION_MAX_MS || 90000);
 const BLOCKED_TYPES = new Set(["image", "media", "font", "stylesheet"]);
 // Headers a page-context fetch() is not allowed to set (browser controls them).
@@ -103,7 +103,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
     if (res.ok() && !/"(?:en|token)"|\\"(?:en|token)\\"/.test(text)) {
       try {
         await page.waitForFunction(() => /"(?:en|token)"|\\"(?:en|token)\\"/.test(globalThis.document.documentElement.innerHTML),
-          null, { timeout: 5000 });
+          null, { timeout: 30000 });
       } catch {
         // A normal page without a token is reported by the provider parser.
       }

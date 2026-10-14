@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { getDetails, resolveImdbId } = require('../utils/tmdb');
 const { findBestMatchWithRetry } = require('../utils/titleMatch');
 const { tmdbTitleToImdbId } = require('../utils/tmdbTitleToImdb');
@@ -10,7 +11,7 @@ const HEADERS = {
     'Referer': 'https://hdghartv.cc/'
 };
 
-async function fetchJson(url, timeoutMs = 10000) {
+async function fetchJson(url, timeoutMs = 30000) {
     try {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);

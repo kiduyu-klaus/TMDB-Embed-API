@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 const cheerio = require('cheerio');
 const { getDetails } = require('../utils/tmdb');
 
@@ -58,7 +58,7 @@ async function getGuestToken() {
     try {
         const resp = await axios.get(`${API_BASE}/home?host=moviebox.ph`, {
             headers: DEFAULT_HEADERS,
-            timeout: 10000
+            timeout: 30000
         });
 
         let token = null;
@@ -107,7 +107,7 @@ async function searchMovieBoxPage(keyword, authHeaders) {
         const response = await axios.get('https://moviebox.ph/web/searchResult', {
             params: { keyword },
             headers: DEFAULT_HEADERS,
-            timeout: 15000
+            timeout: 30000
         });
         const $ = cheerio.load(response.data);
         const paths = [...new Set($('a[href^="/moviedetail/"]').map((_, element) =>
@@ -119,7 +119,7 @@ async function searchMovieBoxPage(keyword, authHeaders) {
                 const response = await axios.get(`${API_BASE}/detail`, {
                     params: { detailPath },
                     headers: authHeaders,
-                    timeout: 10000
+                    timeout: 30000
                 });
                 const subject = response.data?.data?.subject;
                 if (!subject?.subjectId) return null;
@@ -185,7 +185,7 @@ async function getVidboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
                     keyword: searchTitle,
                     page: 1,
                     perPage: 20
-                }, { headers: authHeaders, timeout: 10000 });
+                }, { headers: authHeaders, timeout: 30000 });
 
                 items = searchResp.data?.data?.items || [];
                 if (items.length > 0) {
@@ -234,7 +234,7 @@ async function getVidboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
         // Get media player domain (netfilm.world or movibox.net)
         let playerDomain = "https://netfilm.world";
         try {
-            const domResp = await axios.get(`${API_BASE}/media-player/get-domain`, { headers: authHeaders, timeout: 8000 });
+            const domResp = await axios.get(`${API_BASE}/media-player/get-domain`, { headers: authHeaders, timeout: 30000 });
             if (domResp.data?.data) {
                 playerDomain = domResp.data.data.replace(/\/$/, "");
                 console.log(`[Vidbox] Player domain: ${playerDomain}`);
@@ -259,7 +259,7 @@ async function getVidboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
                 }
 
                 // Fetch the detail of the item to get seasons/episodes structure
-                const detailResp = await axios.get(`${API_BASE}/detail?detailPath=${detailPath}`, { headers: authHeaders, timeout: 10000 });
+                const detailResp = await axios.get(`${API_BASE}/detail?detailPath=${detailPath}`, { headers: authHeaders, timeout: 30000 });
                 const detailData = detailResp.data?.data || {};
                 const seasons = detailData.resource?.seasons || [];
 
@@ -314,7 +314,7 @@ async function getVidboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
                                 "Referer": playerReferer,
                                 "Authorization": `Bearer ${token}`
                             },
-                            timeout: 12000
+                            timeout: 30000
                         });
                         if (playResp.data?.data?.hasResource) break;
                     } catch (error) {
@@ -351,7 +351,7 @@ async function getVidboxStreams(tmdbId, mediaType = 'movie', seasonNum = null, e
                 if (firstStreamId) {
                     try {
                         const capUrl = `${API_BASE}/subject/caption?format=${streamFormat}&id=${firstStreamId}&subjectId=${subjectId}&detailPath=${detailPath}`;
-                        const capResp = await axios.get(capUrl, { headers: authHeaders, timeout: 8000 });
+                        const capResp = await axios.get(capUrl, { headers: authHeaders, timeout: 30000 });
                         const captions = capResp.data?.data?.captions || capResp.data?.data || [];
 
                         if (Array.isArray(captions)) {

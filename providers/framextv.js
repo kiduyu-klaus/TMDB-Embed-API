@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 // src/nuvio/framextv.cjs
 // FrameX TV — movies, TV series, anime (sub+dub) with HLS streams up to 4K
 //
@@ -28,7 +29,7 @@ async function getGs() {
   return _gs;
 }
 
-async function fetchJson(url, timeout = 15000) {
+async function fetchJson(url, timeout = 30000) {
   const gs = await getGs();
   if (gs) {
     const res = await gs.get(url, {
@@ -57,7 +58,7 @@ async function getAniListId(title) {
     const res = await gs.post('https://graphql.anilist.co', {
       headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
       body: JSON.stringify({ query, variables: { search: title } }),
-      timeout: { request: 10000 },
+      timeout: { request: 30000 },
       throwHttpErrors: false,
       http2: false,
     });
@@ -77,7 +78,7 @@ async function checkProviders(id, type, season, episode) {
     try {
       const params = new URLSearchParams({ id: String(id), type, provider: p });
       if (season) { params.set('season', String(season)); params.set('episode', String(episode || 1)); }
-      const data = await fetchJson(`${API_BASE}/api/stream/check?${params}`, 8000);
+      const data = await fetchJson(`${API_BASE}/api/stream/check?${params}`, 30000);
       if (data && data.available) {
         available.push(p);
       }
@@ -106,7 +107,7 @@ async function getStreams(tmdbId, type, season, episode) {
   const apiUrl = `${API_BASE}/api/stream?${params}`;
   console.log(`[FrameX] Fetching: ${apiUrl}`);
 
-  const data = await fetchJson(apiUrl, 20000);
+  const data = await fetchJson(apiUrl, 30000);
   if (!data || !data.success || !Array.isArray(data.sources) || data.sources.length === 0) {
     console.log('[FrameX] No streams from default provider');
     return [];

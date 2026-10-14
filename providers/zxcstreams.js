@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { createHash } = require('crypto');
 const { getDetails, resolveImdbId } = require('../utils/tmdb');
 
@@ -45,7 +46,7 @@ async function verifyBase(base) {
             Referer: `${base}/player/movie/550`
         },
         body: JSON.stringify({ [F.id]: '550', [F.fToken]: xt, [F.ts]: rt }),
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(30000)
     });
     if (r.ok) {
         const d = await r.json();
@@ -58,7 +59,7 @@ async function tryPortal(portal) {
     const r = await fetch(portal, {
         headers: { 'User-Agent': COMMON_HEADERS['User-Agent'] },
         redirect: 'follow',
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(30000)
     });
     const redirectedBase = new URL(r.url).origin;
     if (redirectedBase === new URL(portal).origin) {

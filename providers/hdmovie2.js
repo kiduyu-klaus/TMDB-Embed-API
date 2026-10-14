@@ -1,7 +1,7 @@
 const { getDetails } = require('../utils/tmdb');
 const { adaptProvider } = require('../utils/providerAdapter');
 
-const fetch = globalThis.fetch || require('node-fetch');
+const { fetch } = require('../utils/providerFetch');
 
 const BASE_URL = (process.env.HDMOVIE2_BASE_URL || 'https://newhdmovie2.dev/').replace(/\/$/, '');
 const USER_AGENT =
@@ -40,7 +40,7 @@ function titleBeforeYear(value) {
   return String(value || '').split(/\(\d{4}\)/, 1)[0];
 }
 
-async function fetchText(url, options = {}, timeoutMs = 12_000) {
+async function fetchText(url, options = {}, timeoutMs = 30000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -257,7 +257,7 @@ const getHdmovie2Streams = adaptProvider({
   id: 'hdmovie2',
   label: 'HDMovie2',
   extractor: extractHdmovie2Streams,
-  timeoutMs: 25_000,
+  timeoutMs: 30000,
   headers: {
     userAgent: USER_AGENT,
     origin: BASE_URL,

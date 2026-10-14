@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 const { getDetails } = require('../utils/tmdb');
 const { adaptProvider } = require('../utils/providerAdapter');
 

@@ -218,7 +218,7 @@ async function getAniListId(title) {
     const res = await gs.post("https://graphql.anilist.co", {
       headers: { "Content-Type": "application/json", "User-Agent": UA },
       body: JSON.stringify({ query, variables: { search: title } }),
-      timeout: { request: 10000 },
+      timeout: { request: 30000 },
       throwHttpErrors: false,
       http2: false,
     });

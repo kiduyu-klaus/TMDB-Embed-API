@@ -7,7 +7,7 @@ const animeKai = require('./animekai');
 const { seasonNumbers, partNumber, selectSeasonPart } = require('../utils/animeSeasonParts');
 
 const BASE_URL = 'https://all-wish.me';
-const REQUEST_TIMEOUT_MS = 15_000;
+const REQUEST_TIMEOUT_MS = 30000;
 const SUPPORTED_PLAYER_DOMAINS = [
     'megaplay.buzz', 'megaplay.su', 'rapid-cloud.co', 'rapid-cloud.io', 'rapid-cloud.ru',
     'gogoanime.me.uk', 'gogoanime.me'

@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const axios = require('axios');
+const axios = require('axios').create({ timeout: 30000 });
 
 const API_BASE = 'https://vidrock.ru/api';
 const LEGACY_API_BASE = 'https://vidrock.net/api';
@@ -9,8 +9,8 @@ const URL_KEY = Buffer.from(
     '7f3e9c2a8b5d1f4e6a9c3b7d2e5f8a1c4b6d9e2f5a8c1b4d7e9f2a5c8b1d4e7f',
     'hex'
 );
-const REQUEST_TIMEOUT_MS = 12000;
-const PLAYBACK_PROBE_TIMEOUT_MS = 4500;
+const REQUEST_TIMEOUT_MS = 30000;
+const PLAYBACK_PROBE_TIMEOUT_MS = 30000;
 const KNOWN_RESOLUTIONS = new Set([240, 360, 480, 540, 720, 1080, 1440, 2160, 4320]);
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36';

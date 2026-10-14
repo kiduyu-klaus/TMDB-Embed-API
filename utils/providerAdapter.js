@@ -63,7 +63,7 @@ function normalizeQuality(value) {
 }
 
 
-function adaptProvider({ id, label, extractor, headers = {}, timeoutMs = 14_000 }) {
+function adaptProvider({ id, label, extractor, headers = {}, timeoutMs = 30000 }) {
   if (typeof extractor !== 'function') throw new TypeError(`${id} extractor is not a function`);
   const defaults = {
     userAgent: headers.userAgent || DEFAULT_USER_AGENT,

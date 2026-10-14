@@ -1,3 +1,4 @@
+const { fetch } = require('../utils/providerFetch');
 /**
  * reanime - Built from src/reanime/
  * Generated: 2026-10-08T18:30:42.209Z

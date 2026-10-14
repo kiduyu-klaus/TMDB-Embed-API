@@ -39,9 +39,12 @@ function createCineStreamTrace({ logger = console, transport = (...args) => glob
     const requestId = context ? ++context.root.requests : null;
     const origin = new URL(url).origin;
     const started = Date.now();
-    log('request.start', { requestId, origin, method: options.method || 'GET' });
+    const timeoutMs = 30000;
+    const deadline = AbortSignal.timeout(timeoutMs);
+    const signal = options.signal ? AbortSignal.any([options.signal, deadline]) : deadline;
+    log('request.start', { requestId, origin, method: options.method || 'GET', timeoutMs });
     try {
-      const response = await transport(url, options);
+      const response = await transport(url, { ...options, signal });
       log('request.response', { requestId, origin, status: response.status,
         server: response.headers.get('server'), cfRay: response.headers.get('cf-ray'),
         cfMitigated: response.headers.get('cf-mitigated'), contentType: response.headers.get('content-type'),

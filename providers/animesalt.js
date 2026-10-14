@@ -6,7 +6,7 @@ const tmdb = require('../utils/tmdb');
 const BASE_URL = 'https://animesalt.cx';
 const ANIMESALT_HOSTS = new Set(['animesalt.ac', 'animesalt.cx']);
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36';
-const REQUEST_TIMEOUT_MS = 15_000;
+const REQUEST_TIMEOUT_MS = 30000;
 
 function cleanTitle(title) {
     return String(title || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();

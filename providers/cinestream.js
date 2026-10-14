@@ -1410,7 +1410,6 @@ function getVideoSources(episodeUrl) {
   return Promise.all([
     _soft(trace.source('Vidfast', () => _scrapeVidfast(p))),
     _soft(trace.source('Vidcore', () => _scrapeVidcore(p))),
-    _soft(trace.source('Vidlink', () => _scrapeVidlink(p))),
     _soft(mirrorJob)
   ]).then(function (results) {
     var out = [];
@@ -1428,8 +1427,7 @@ function getVideoSources(episodeUrl) {
     }
     pushArr(results[0]);
     pushArr(results[1]);
-    pushArr(results[2]);
-    var m = results[3] || [];
+    var m = results[2] || [];
     pushArr(m[0]);
     pushArr(m[1]);
     trace.log('sources.merged', { count: out.length, duplicates });
