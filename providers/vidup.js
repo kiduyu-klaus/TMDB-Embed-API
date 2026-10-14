@@ -138,6 +138,7 @@ async function http(url, { method = 'GET', headers = {}, body, json, asXhr = fal
         // optional header-generator preset. On cPanel/Passenger it can
         // collide with the host's stdin/socket wrapper and fail with
         // `open EEXIST` or an undefined browser-version table.
+        useHeaderGenerator: false,
         http2: true,                         // vidup front-door expects h2
         retry: { limit: 3, methods: ['GET'] },
         throwHttpErrors: false,
