@@ -95,7 +95,7 @@ const providerCategoryMap = {
   'anikoto.js': 'Anime',
   'anizone.js': 'Anime',
   'hianime.js': 'Anime',
-  'byse.js': 'Anime',
+  'byse.js': 'MoviesTv',
   'dahmermovies.js': 'MoviesTv',
   'goojara.js': 'MoviesTv',
   'streamflix.js': 'MoviesTv',
