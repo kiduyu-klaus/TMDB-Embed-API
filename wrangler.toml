@@ -12,3 +12,22 @@ BACKEND_URL = "https://secondbanklabs.com/kiduyuTv_providers"
 
 # Store credentials using `npx wrangler secret put SECRET_NAME` or the dashboard.
 # Never put API keys, passwords, cookies, or stream tokens in this file.
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+redact_query_string = false
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+invocation_logs = true
+persist = true
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 1
+persist = true
+
+[observability.issues]
+enabled = true

@@ -1,73 +1,59 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { Response } = require('node-fetch');
 const { createVidcoreSession } = require('../utils/vidcoreSession');
-const silent = { log() {}, warn() {} };
 
-test('session retains page cookies with CSRF and isolates concurrent extractions', async () => {
-  function session(value) {
-    return createVidcoreSession({ logger: silent, fetch: async (url, options) => {
-      if (url.endsWith('/page')) return new Response('', { headers: {
-        'set-cookie': `session=${value}; Path=/api; Secure; HttpOnly`,
-      } });
-      assert.equal(options.headers.get('cookie'), url.includes('/api/') ? `session=${value}` : null);
-      assert.equal(options.headers.get('x-csrf-token'), 'csrf-value');
-      return new Response('ok');
-    } });
-  }
-  await Promise.all(['one', 'two'].map(async value => {
-    const request = session(value);
-    await request('https://vidcore.io/page');
-    await Promise.all(['/api/server1', '/api/server2', '/other'].map(path =>
-      request('https://vidcore.io' + path, { headers: { 'X-CSRF-Token': 'csrf-value' } })));
-  }));
+function fixture({ status = 200, launchError, cors = false } = {}) {
+  const logs = []; const calls = []; let closes = 0; let releases = 0; let disposed = 0;
+  const responseHeaders = {server:'cloudflare','cf-ray':'ray-id','cf-mitigated':status === 403 ? 'challenge' : '', 'content-type':'text/html'};
+  const response = {ok:()=>status===200,status:()=>status,statusText:()=>'',text:async()=>'<html>initial</html>',allHeaders:async()=>responseHeaders};
+  const page = {goto:async(url)=>{calls.push(['goto',url]);return response;},content:async()=>'<script>{"token":"rendered-secret"}</script>',
+    evaluate:async(fn,args)=>{calls.push(['fetch',args]);if(cors)throw new Error('Failed to fetch');return {status:200,statusText:'OK',text:'ok',headers:responseHeaders};}};
+  const context = {addCookies:async()=>{},addInitScript:async()=>{},route:async()=>{},newPage:async()=>page,close:async()=>{closes++;},
+    request:{fetch:async(url,options)=>{calls.push(['context',options]);return {status:()=>200,statusText:()=>'',text:async()=> 'ok',headers:()=>responseHeaders,dispose:async()=>{disposed++;}};}}};
+  const session = createVidcoreSession({ acquireBrowser:async()=>{if(launchError)throw new Error(launchError);return {version:()=> '156.0',newContext:async()=>context};},
+    releaseBrowser:()=>{releases++;},logger:{log:x=>logs.push(x),warn:x=>logs.push(x)},
+    http:{request:async()=>({status:200,statusText:'OK',data:'decoded',headers:{'content-type':'application/json'}})} });
+  return {session,logs,calls,counts:()=>({closes,releases,disposed})};
+}
+
+test('browser navigation captures rendered HTML and uses the same page for CSRF requests',async()=>{
+  const f=fixture();
+  try {
+    const r=await f.session('https://vidcore.io/movie/550',{},'Page');
+    assert.match(await r.text(),/rendered-secret/);
+    await f.session('https://vidcore.io/api/signed-secret',{method:'POST',headers:{'X-CSRF-Token':'csrf-secret',Cookie:'ignored',Referer:'https://vidcore.io/'}},'handoff');
+    const args=f.calls[1][1];
+    assert.equal(args.headers['X-CSRF-Token'],'csrf-secret');
+    assert.equal(args.headers.Cookie,undefined);
+    assert.equal(args.referrer,'https://vidcore.io/');
+    assert.doesNotMatch(f.logs.join('\n'),/signed-secret|csrf-secret|rendered-secret/);
+  } finally {await f.session.close();await f.session.close();}
+  assert.deepEqual(f.counts(),{closes:1,releases:1,disposed:0});
 });
 
-test('redirect cookies are retained but credentials do not cross origins', async () => {
-  let calls = 0;
-  const request = createVidcoreSession({ logger: silent, fetch: async (url, options) => {
-    calls++;
-    if (calls === 1) return new Response('', { status: 302, headers: {
-      location: '/next', 'set-cookie': 'session=secret; Path=/; Secure',
-    } });
-    if (calls === 2) {
-      assert.equal(options.headers.get('cookie'), 'session=secret');
-      assert.equal(options.headers.get('x-csrf-token'), 'csrf');
-      return new Response('', { status: 307, headers: { location: 'https://enc-dec.app/final' } });
-    }
-    assert.equal(options.headers.get('cookie'), null);
-    assert.equal(options.headers.get('authorization'), null);
-    assert.equal(options.headers.get('x-csrf-token'), null);
-    return new Response('ok');
-  } });
-  await request('https://vidcore.io/start', { headers: { authorization: 'Bearer secret', 'X-CSRF-Token': 'csrf' } });
-  assert.equal(calls, 3);
+test('403 keeps rejection status and records diagnostic headers without reading rendered page',async()=>{
+  const f=fixture({status:403});
+  try {
+    const r=await f.session('https://vidcore.io/private-secret?token=secret',{},'Page');
+    assert.equal(r.status,403);assert.equal(await r.text(),'<html>initial</html>');
+    const log=f.logs.join('\n');
+    for(const value of ['403','cloudflare','ray-id','challenge','text/html','Page'])assert.ok(log.includes(value));
+    assert.doesNotMatch(log,/private-secret|token=secret/);
+  }finally{await f.session.close();}
 });
 
-test('403 diagnostics include stage and allowlisted headers, not secrets or signed paths', async () => {
-  const logs = [];
-  const request = createVidcoreSession({ logger: { log: v => logs.push(v), warn: v => logs.push(v) },
-    fetch: async () => new Response('body-secret', { status: 403, headers: {
-      server: 'cloudflare', 'cf-ray': 'ray-id', 'cf-mitigated': 'challenge',
-      'content-type': 'text/html', 'set-cookie': 'session=cookie-secret; Path=/',
-    } }),
-  });
-  await request('https://vidcore.io/path-secret?token=query-secret', {
-    headers: { authorization: 'Bearer auth-secret', 'X-CSRF-Token': 'csrf-secret' },
-  }, 'Stage 1 Vidcore handoff');
-  const output = logs.join('\n');
-  for (const text of ['Stage 1 Vidcore handoff', '403', 'cloudflare', 'ray-id', 'challenge', 'text/html']) assert.ok(output.includes(text));
-  assert.doesNotMatch(output, /body-secret|cookie-secret|path-secret|query-secret|auth-secret|csrf-secret/);
+test('CORS fallback uses cookie-sharing context request and disposes response',async()=>{
+  const f=fixture({cors:true});
+  try {await f.session('https://vidcore.io/movie/550',{},'Page');await f.session('https://vidcore.io/api',{method:'POST',headers:{'X-CSRF-Token':'csrf'}},'API');
+    assert.equal(f.calls[2][1].headers['X-CSRF-Token'],'csrf');
+  }finally{await f.session.close();}
+  assert.equal(f.counts().disposed,1);
 });
 
-test('network exceptions never expose original URL or response data', async () => {
-  const logs = [];
-  const request = createVidcoreSession({ logger: { log: v => logs.push(v), warn: v => logs.push(v) },
-    fetch: async () => { throw new Error('https://vidcore.io/private-token?secret=value'); },
-  });
-  await assert.rejects(request('https://vidcore.io/private-token?secret=value'), error => {
-    assert.doesNotMatch(error.message, /private-token|secret=value/);
-    return true;
-  });
-  assert.doesNotMatch(logs.join('\n'), /private-token|secret=value/);
+test('missing Chromium is actionable, redacted and releases no unacquired browser',async()=>{
+  const f=fixture({launchError:"Executable doesn't exist /private-secret"});
+  await assert.rejects(f.session('https://vidcore.io/movie/550',{},'Page'),/CHROMIUM_NOT_INSTALLED/);
+  await f.session.close();
+  assert.doesNotMatch(f.logs.join('\n'),/private-secret/);
+  assert.equal(f.counts().releases,0);
 });

@@ -16,201 +16,169 @@
  * @license MIT
  * ======= • ======= • ======= • ======= • =======• =======
  */
+"use strict";
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 
-const os = require('os');
-const { existsSync } = require('fs');
-const path = require('path');
+// Must be set BEFORE playwright is required.
+if (!process.env.PLAYWRIGHT_BROWSERS_PATH && fs.existsSync(path.join(os.homedir(), "pw-browsers"))) {
+  process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(os.homedir(), "pw-browsers");
+}
+const BROWSERS_DIR = process.env.PLAYWRIGHT_BROWSERS_PATH || path.join(os.homedir(), "pw-browsers");
+const IDLE_MS = Number(process.env.PW_IDLE_MS || 30000);
 
-let chromiumBinary = null;
-let chromium = null;
-let useServerlessChromium = false;
-let useSystemChromium = false;
-
-function findSystemChromium() {
-  const candidates = [
-    process.env.CHROME_PATH,
-    process.env.CHROMIUM_PATH,
-    process.platform === 'win32' && process.env.PROGRAMFILES
-      ? path.join(process.env.PROGRAMFILES, 'Google', 'Chrome', 'Application', 'chrome.exe')
-      : null,
-    process.platform === 'win32' && process.env['PROGRAMFILES(X86)']
-      ? path.join(process.env['PROGRAMFILES(X86)'], 'Google', 'Chrome', 'Application', 'chrome.exe')
-      : null,
-    process.platform === 'win32' && process.env['PROGRAMFILES(X86)']
-      ? path.join(process.env['PROGRAMFILES(X86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe')
-      : null,
-    process.platform === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : null,
-    process.platform === 'win32' ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' : null,
-    process.platform === 'win32' ? 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' : null,
-    process.platform === 'win32' && process.env.LOCALAPPDATA
-      ? path.join(process.env.LOCALAPPDATA, 'Google', 'Chrome', 'Application', 'chrome.exe')
-      : null,
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser',
-  ].filter(Boolean);
-  return candidates.find(candidate => existsSync(candidate)) || null;
+let chromiumLib = null;
+function getChromiumLib() {
+  if (!chromiumLib) {
+    try {
+      chromiumLib = require("playwright").chromium;
+    } catch {
+      chromiumLib = require("playwright-core").chromium;
+    }
+  }
+  return chromiumLib;
 }
 
-// ══════════════════════════════════════════════════════════════
-// CHROMIUM LOADING
-// ══════════════════════════════════════════════════════════════
-
-// ---- FEATURE: Auto-detect serverless vs local environment ----
-/**
- * Loads the appropriate Chromium binary and Playwright module.
- *
- * @description
- *   On Linux (serverless), uses @sparticuz/chromium for a lightweight
- *   headless browser. On other OS (local dev), falls back to the
- *   full Playwright package. This ensures the same code works in
- *   both environments without manual configuration.
- */
-// NOTE: Chromium is lazy-loaded inside launchBrowser() to avoid
-// crashing on unsupported platforms (e.g. Android) at require-time.
-// The server starts fine without Playwright; it only fails when
-// someone actually calls launchBrowser().
-
-// ══════════════════════════════════════════════════════════════
-// BROWSER LAUNCHER
-// ══════════════════════════════════════════════════════════════
-
-// ---- FEATURE: Stealth Playwright browser launch ----
-/**
- * Launches a Chromium browser with anti-detection measures.
- *
- * @description
- *   Configures the browser with stealth flags to avoid detection
- *   by Cloudflare and other anti-bot systems. Automatically applies
- *   serverless optimizations when running in Vercel/Netlify/AWS.
- *
- * @returns {Promise<Browser>} Playwright Browser instance
- *
- * @tip The --disable-blink-features=AutomationControlled flag is
- *      critical for bypassing navigator.webdriver detection.
- *
- * @example
- *   const browser = await launchBrowser();
- *   const page = await browser.newPage();
- *   await page.goto('https://animepahe.ch');
- */
-async function launchBrowser(options = {}) {
-  // ---- Lazy-load Chromium if not already loaded ----
-  if (!chromium) {
-    try {
-      chromiumBinary = require('@sparticuz/chromium');
-      chromium = require('playwright-core').chromium;
-      if (os.platform() === 'linux') useServerlessChromium = true;
-    } catch (e) {
-      try {
-        chromium = require('playwright').chromium;
-      } catch (e2) {
-        try {
-          chromium = require('playwright-core').chromium;
-          useSystemChromium = true;
-        } catch (e3) {
-          throw new Error('[Browser] Playwright not available on this platform. Install playwright-core or use got-scraping only.');
-        }
-      }
-    }
-  }
-
-  const isServerless = !!(process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
-
-  // ---- Base Chrome flags for all environments ----
-  const baseArgs = [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-blink-features=AutomationControlled',
-    '--disable-gpu',
-    '--disable-background-networking',
-    '--disable-default-apps',
-    '--disable-extensions',
-    '--disable-infobars',
-    '--disable-notifications',
-    '--disable-offline-sync',
-    '--disable-sync',
-    '--disable-translate',
-    '--no-first-run',
-    '--no-zygote',
-  ];
-
-  // ---- Serverless-specific optimizations ----
-  const serverlessArgs = [
-    '--disable-background-timer-throttling',
-    '--disable-backgrounding-occluded-windows',
-    '--disable-renderer-backgrounding',
-    '--disable-features=TranslateUI',
-    '--disable-ipc-flooding-protection',
-    '--disable-hang-monitor',
-    '--disable-prompt-on-repost',
-    '--disable-domain-reliability',
-    '--disable-component-extensions-with-background-pages',
-    '--memory-pressure-off',
-    '--max_old_space_size=4096',
-  ];
-
-  const headless = options.headless ?? (isServerless ? true : process.env.CHROME_HEADLESS === 'true');
-
-  const launchOptions = {
-    headless,
-    args: isServerless ? [...baseArgs, ...serverlessArgs] : baseArgs,
-    timeout: isServerless ? 30000 : 60000,
-  };
-
-  if (useSystemChromium && !useServerlessChromium) {
-    const executablePath = findSystemChromium();
-    if (!executablePath) {
-      throw new Error('[Browser] Playwright Core needs an installed Chrome/Chromium binary; set CHROME_PATH to its executable.');
-    }
-    launchOptions.executablePath = executablePath;
-  }
-
-  // NOTE: Add user agent to launch args for extra realism
-  launchOptions.args.push(
-    '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-  );
-
-  // ---- FEATURE: Serverless Chromium binary path ----
-  if (useServerlessChromium && chromiumBinary) {
-    try {
-      const executablePath = await chromiumBinary.executablePath();
-      if (existsSync(executablePath)) {
-        launchOptions.executablePath = executablePath;
-        launchOptions.args = [...chromiumBinary.args, ...launchOptions.args];
-      }
-    } catch (error) {
-      console.error('[Browser] Serverless Chromium setup error:', error.message);
-    }
-  }
-
+function latestDir(prefix) {
   try {
-    const browser = await chromium.launch(launchOptions);
-    return browser;
-  } catch (error) {
-    // NOTE: Fallback with minimal args if full config fails
-    console.error('[Browser] Launch failed, trying fallback:', error.message);
-    const fallbackOptions = {
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-    };
-    if (useSystemChromium) fallbackOptions.executablePath = findSystemChromium();
-    if (useServerlessChromium && chromiumBinary) {
-      try {
-        fallbackOptions.executablePath = await chromiumBinary.executablePath();
-      } catch (error) {
-        console.warn('[Browser] Could not resolve fallback Chromium path:', error.message);
-      }
-    }
-    return await chromium.launch(fallbackOptions);
+    const rev = (d) => parseInt(d.split("-").pop(), 10) || 0;
+    return (
+      fs
+        .readdirSync(BROWSERS_DIR)
+        .filter((d) => d.startsWith(prefix + "-"))
+        .sort((a, b) => rev(a) - rev(b))
+        .pop() || null
+    );
+  } catch {
+    return null;
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// EXPORTS
-// ══════════════════════════════════════════════════════════════
+// Prefers the lighter headless shell, then full Chromium.
+function findChromiumExecutable() {
+  const override = process.env.PW_CHROME_PATH || process.env.CHROME_PATH;
+  if (override && fs.existsSync(override)) return override;
+  const candidates = [
+    ["chromium_headless_shell", "chrome-headless-shell-linux64", "chrome-headless-shell"],
+    ["chromium", "chrome-linux64", "chrome"],
+  ];
+  for (const [prefix, sub, bin] of candidates) {
+    const dir = latestDir(prefix);
+    if (!dir) continue;
+    const exe = path.join(BROWSERS_DIR, dir, sub, bin);
+    if (fs.existsSync(exe)) return exe;
+  }
+  return null;
+}
 
-module.exports = { launchBrowser };
+const BASE_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu",
+  "--no-zygote",
+  "--renderer-process-limit=1",
+  "--disable-blink-features=AutomationControlled",
+  "--disable-background-networking",
+  "--disable-extensions",
+  "--disable-sync",
+  "--mute-audio",
+  "--no-first-run",
+];
 
-// ══════════════════════════════════════════════════════════════ END: browser.js
+// Drop-in for the old launchBrowser(): returns a fresh Browser the caller must close.
+async function launchBrowser(options = {}) {
+  const executablePath = findChromiumExecutable();
+  if (!executablePath) {
+    console.warn(
+      `[Browser] No Chromium found under ${BROWSERS_DIR}; relying on Playwright's default lookup`,
+    );
+  }
+  const launchOptions = {
+    headless: options.headless ?? true,
+    args: [...BASE_ARGS, ...(options.args || [])],
+    timeout: options.timeout || 60000,
+  };
+  if (executablePath) launchOptions.executablePath = executablePath;
+
+  const proxy =
+    options.proxy ||
+    (process.env.PW_PROXY
+      ? {
+          server: process.env.PW_PROXY,
+          ...(process.env.PW_PROXY_USER
+            ? { username: process.env.PW_PROXY_USER, password: process.env.PW_PROXY_PASS || "" }
+            : {}),
+        }
+      : undefined);
+  if (proxy) launchOptions.proxy = proxy;
+
+  return getChromiumLib().launch(launchOptions);
+}
+
+// ---- Shared browser (ref-counted, closes itself when idle) ----
+let sharedPromise = null;
+let sharedBrowser = null;
+let refs = 0;
+let idleTimer = null;
+
+async function acquireBrowser() {
+  clearTimeout(idleTimer);
+  if (!sharedPromise) {
+    sharedPromise = launchBrowser()
+      .then((b) => {
+        sharedBrowser = b;
+        b.on("disconnected", () => {
+          if (sharedBrowser === b) {
+            sharedBrowser = null;
+            sharedPromise = null;
+            refs = 0;
+          }
+        });
+        return b;
+      })
+      .catch((err) => {
+        sharedPromise = null;
+        throw err;
+      });
+  }
+  const browser = await sharedPromise;
+  refs += 1;
+  return browser;
+}
+
+async function closeSharedBrowser() {
+  clearTimeout(idleTimer);
+  const p = sharedPromise;
+  sharedPromise = null;
+  sharedBrowser = null;
+  refs = 0;
+  if (p) {
+    try {
+      await (await p).close();
+    } catch {
+      // The browser may already have disconnected.
+    }
+  }
+}
+
+function releaseBrowser() {
+  refs = Math.max(0, refs - 1);
+  if (refs === 0) {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(closeSharedBrowser, IDLE_MS);
+    if (idleTimer.unref) idleTimer.unref();
+  }
+}
+
+// Playwright owns the browser subprocess; per-request contexts and idle cleanup
+// handle normal release (Playwright Browser has no process() method).
+
+module.exports = {
+  launchBrowser,
+  acquireBrowser,
+  releaseBrowser,
+  closeSharedBrowser,
+  findChromiumExecutable,
+};

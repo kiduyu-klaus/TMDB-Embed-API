@@ -314,5 +314,13 @@ async function getVidcoreStreams(tmdbId, mediaType, season, episode) {
 }
 
 module.exports = {
-  getVidcoreStreams: (...args) => sessions.run(createVidcoreSession(), () => getVidcoreStreams(...args)),
+  getVidcoreStreams: async (...args) => {
+    const session = createVidcoreSession();
+    try {
+      return await sessions.run(session, () => getVidcoreStreams(...args));
+    } finally {
+      // Always release the browser context, even if the lookup throws.
+      await session.close();
+    }
+  },
 };
