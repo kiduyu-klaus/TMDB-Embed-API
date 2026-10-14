@@ -1015,12 +1015,34 @@ function _hubResolveCloudPage(url, langLabel, source) {
   var name = source || 'HubCloud';
   return _dynUrl(/vcloud/i.test(url) ? 'vcloud' : 'hubcloud').then(function (latest) {
     var baseUrl = _getBaseUrl(url);
-    if (latest && baseUrl !== latest) {
+    if (latest && baseUrl !== latest && !/pixel\.hubcloud\.ist$/i.test(baseUrl)) {
       url = url.split(baseUrl).join(latest);
       baseUrl = latest;
     }
-    return _getText(url);
-  }).then(function (doc) {
+    return fetch(url, {
+      headers: { 'User-Agent': _UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' },
+      redirect: 'follow'
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+      return r.text().then(function (doc) { return { doc: doc, finalUrl: r.url || url }; });
+    });
+  }).then(function (page) {
+    var doc = page.doc;
+    var pageUrl = page.finalUrl || url;
+    // Current pixel.hubcloud terminals redirect to a link-generator page
+    // whose final URL contains the real Google-hosted media URL as ?link=.
+    // The old parser only looked for `var url = ...`, so it returned the
+    // HTML interstitial instead of the playable file.
+    var generated = /[?&]link=([^&]+)/i.exec(String(pageUrl || ''));
+    if (generated) {
+      var direct = generated[1];
+      try { direct = decodeURIComponent(direct); } catch (e) {}
+      if (/^https?:\/\/(?:[^/]*googleusercontent\.com|[^/]*\.m3u8(?:\?|$)|[^/]*\.(?:mp4|mkv)(?:\?|$))/i.test(direct)) {
+        var directSource = _makeHubSource(name, langLabel, direct, direct, 'HubCloud', _getBaseUrl(pageUrl) + '/');
+        if (directSource && /googleusercontent\.com/i.test(direct)) directSource.container = 'mkv';
+        return directSource ? [directSource] : [];
+      }
+    }
     var link = '';
     if (url.indexOf('/video/') !== -1) {
       var vm = /<div[^>]*class="[^"]*\bvd\b[^"]*"[^>]*>[\s\S]*?<a[^>]+href="([^"]+)"/i.exec(doc);
