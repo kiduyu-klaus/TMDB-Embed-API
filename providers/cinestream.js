@@ -989,6 +989,11 @@ function _hubExtractButtons(page2, page2Url, langLabel, name) {
           var s = _makeHubSource(name, langLabel, u || c.href, header, c.server, pageBase + '/');
           return s ? [s] : [];
         }));
+      } else if (/(?:hubcloud\.|gpdl\.hubcloud\.|vcloud\.)/i.test(c.href)) {
+        // Some 4KHDHub terminal pages now expose gpdl.hubcloud.ist as
+        // another link-generator layer. Resolve it instead of returning
+        // the HTML endpoint as if it were playable media.
+        jobs.push(_hubResolveCloudPage(c.href, langLabel, name));
       } else {
         var s = _makeHubSource(name, langLabel, c.href, header, c.server, pageBase + '/');
         jobs.push(Promise.resolve(s ? [s] : []));
@@ -1015,7 +1020,7 @@ function _hubResolveCloudPage(url, langLabel, source) {
   var name = source || 'HubCloud';
   return _dynUrl(/vcloud/i.test(url) ? 'vcloud' : 'hubcloud').then(function (latest) {
     var baseUrl = _getBaseUrl(url);
-    if (latest && baseUrl !== latest && !/pixel\.hubcloud\.ist$/i.test(baseUrl)) {
+    if (latest && baseUrl !== latest && !/(?:pixel|gpdl)\.hubcloud\.ist$/i.test(baseUrl)) {
       url = url.split(baseUrl).join(latest);
       baseUrl = latest;
     }
@@ -1077,7 +1082,7 @@ function _hubResolveLink(source, url, langLabel) {
   var u = String(url || '');
   if (!u) return Promise.resolve([]);
   if (/hubdrive\./i.test(u)) return _hubResolveDrive(u, langLabel, source);
-  if (/hubcloud\.|vcloud\./i.test(u)) return _hubResolveCloudPage(u, langLabel, source);
+  if (/(?:hubcloud\.|gpdl\.hubcloud\.|vcloud\.)/i.test(u)) return _hubResolveCloudPage(u, langLabel, source);
   if (/gofile\.io\/d\//i.test(u)) return _hubResolveGofile(u, langLabel, source);
   if (/\.(mp4|mkv|m3u8)(\?|$)/i.test(u)) {
     var s = _makeHubSource(source, langLabel, u, u, '', '');
@@ -1179,7 +1184,7 @@ function _vegaMovieLinks(pageHtml, base) {
         var anchors = _anchorList(sub);
         for (var k = 0; k < anchors.length; k++) {
           var h = anchors[k].href;
-          if (/hubcloud|vcloud|hubdrive|gofile|\.(mp4|mkv|m3u8)/i.test(h)) {
+          if (/hubcloud|gpdl\.hubcloud|vcloud|hubdrive|gofile|\.(mp4|mkv|m3u8)/i.test(h)) {
             links.push({ url: _fixUrl(h, _getBaseUrl(item.btn)), label: item.label });
           }
         }
@@ -1277,8 +1282,8 @@ function _scrape4khdhub(p, meta) {
     // Prefer HubCloud/VCloud terminals (verified working); HubDrive
     // currently lands on a login page and resolves to nothing.
     links.sort(function (a, b) {
-      var ah = /hubcloud\.|vcloud\./i.test(a.url) ? 0 : 1;
-      var bh = /hubcloud\.|vcloud\./i.test(b.url) ? 0 : 1;
+      var ah = /(?:hubcloud\.|gpdl\.hubcloud\.|vcloud\.)/i.test(a.url) ? 0 : 1;
+      var bh = /(?:hubcloud\.|gpdl\.hubcloud\.|vcloud\.)/i.test(b.url) ? 0 : 1;
       return ah - bh;
     });
     return _resolveMany('4KHDHub', links);
@@ -1334,11 +1339,11 @@ function _4khdhubResolveButtons(items, base) {
   for (var i = 0; i < items.length; i++) {
     (function (it) {
       var href = _fixUrl(it.href, base);
-      var job = /hubcloud|hubdrive|vcloud|gofile/i.test(href)
+      var job = /hubcloud|gpdl\.hubcloud|hubdrive|vcloud|gofile/i.test(href)
         ? Promise.resolve(href)
         : _hubGetRedirectLinks(href);
       jobs.push(job.then(function (u) {
-        if (!u || !/hubcloud|hubdrive|vcloud|gofile|\.(mp4|mkv|m3u8)/i.test(u)) return [];
+        if (!u || !/hubcloud|gpdl\.hubcloud|hubdrive|vcloud|gofile|\.(mp4|mkv|m3u8)/i.test(u)) return [];
         return [{ url: u, label: it.label }];
       }, function () { return []; }));
     })(items[i]);
