@@ -216,6 +216,29 @@ async function fetchStreamTicket() {
   }
 }
 
+async function fetchIntroDb(imdbId, seasonNum, episodeNum) {
+  if (!imdbId || !Number.isInteger(Number(seasonNum)) || !Number.isInteger(Number(episodeNum))) {
+    return { intro: null, recap: null, outro: null, post_credits: null };
+  }
+  try {
+    const response = await axios.get(`${MEOWTV_API}/introdb/segments`, {
+      params: { imdb_id: String(imdbId), season: Number(seasonNum), episode: Number(episodeNum) },
+      headers: MEOWTV_HEADERS,
+      timeout: REQUEST_TIMEOUT_MS,
+    });
+    const data = response.data && typeof response.data === "object" ? response.data : {};
+    return {
+      intro: data.intro ?? null,
+      recap: data.recap ?? null,
+      outro: data.outro ?? null,
+      post_credits: data.post_credits ?? null,
+    };
+  } catch (error) {
+    console.warn(`[MeowTV] IntroDB request failed: ${error.message}`);
+    return { intro: null, recap: null, outro: null, post_credits: null };
+  }
+}
+
 async function fetchServerStreams(
   server,
   tmdbId,
@@ -239,11 +262,14 @@ async function fetchServerStreams(
         : MEOWTV_HEADERS,
       timeout: REQUEST_TIMEOUT_MS,
     });
+  // Tickets are single-use. A ticket shared by concurrent servers causes
+  // every request after the first one to fail with HTTP 410.
+  const activeTicket = (await fetchStreamTicket()) || ticket || "";
   let encryptedResponse;
   try {
-    encryptedResponse = await request(ticket);
+    encryptedResponse = await request(activeTicket);
   } catch (error) {
-    if (![401, 403].includes(error.response?.status)) throw error;
+    if (![401, 403, 410].includes(error.response?.status)) throw error;
     const refreshedTicket = await fetchStreamTicket();
     if (!refreshedTicket) throw error;
     encryptedResponse = await request(refreshedTicket);
@@ -265,6 +291,7 @@ async function getMeowtvStreams(
   mediaType = "movie",
   seasonNum = null,
   episodeNum = null,
+  imdbId = null,
 ) {
   const isSeries = mediaType === "tv" || mediaType === "series";
   const season = Number(seasonNum);
@@ -281,12 +308,14 @@ async function getMeowtvStreams(
   }
 
   const servers = SERVERS.filter((server) => !isSeries || !server.movieOnly);
-  const [subtitles, ticket] = await Promise.all([
+  const [subtitles, introDb] = await Promise.all([
     fetchSubtitles(tmdbId, mediaType, seasonNum, episodeNum),
-    fetchStreamTicket(),
+    isSeries
+      ? fetchIntroDb(imdbId, season, episode)
+      : Promise.resolve({ intro: null, recap: null, outro: null, post_credits: null }),
   ]);
   console.log(
-    `[MeowTV] Fetching ${servers.length} server(s); subtitles=${subtitles.length}; ticket=${ticket ? "yes" : "no"}`,
+    `[MeowTV] Fetching ${servers.length} server(s); subtitles=${subtitles.length}; introdb=${introDb.intro || introDb.outro ? "yes" : "no"}`,
   );
 
   const results = await Promise.allSettled(
@@ -298,7 +327,7 @@ async function getMeowtvStreams(
         seasonNum,
         episodeNum,
         subtitles,
-        ticket,
+        null,
       ),
     ),
   );
@@ -314,6 +343,7 @@ async function getMeowtvStreams(
       return;
     }
     result.value.forEach((stream) => {
+      Object.assign(stream, introDb);
       if (seen.has(stream.url)) return;
       seen.add(stream.url);
       streams.push(stream);
@@ -329,4 +359,5 @@ module.exports = {
   fetchStreamTicket,
   normalizeStreams,
   normalizeSubtitles,
+  fetchIntroDb,
 };
