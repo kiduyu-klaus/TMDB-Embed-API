@@ -286,7 +286,7 @@ function buildStream(stream, info) {
     title: `${info.title}${info.year ? ` (${info.year})` : ''} [DesiFlix ${quality} ${language}]`,
     url,
     quality,
-    language: 'Hindi . English ',
+    language: 'Multi Audio',
     format: 'mkv',
     mimeType: 'video/x-matroska',
     type: 'video/x-matroska',
