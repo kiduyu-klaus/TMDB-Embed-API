@@ -30,7 +30,14 @@
 //
 // Author: MiniMax Agent
 
-import { gotScraping } from 'got-scraping';
+// The provider registry is CommonJS and cPanel deployments commonly run
+// Node versions where eagerly loading this ESM dependency during `require()`
+// is unreliable. Load it only when Vidup actually makes its first request.
+let gotScrapingPromise;
+async function getGotScraping() {
+    gotScrapingPromise ||= import('got-scraping').then(module => module.gotScraping);
+    return gotScrapingPromise;
+}
 
 // ---------------------------------------------------------------------------
 // Logging
@@ -127,12 +134,10 @@ async function http(url, { method = 'GET', headers = {}, body, json, asXhr = fal
         url,
         method,
         headers: finalHeaders,
-        // Browser-impersonating TLS + header generator.
-        headerGeneratorOptions: {
-            browsers: ['chrome'],
-            operatingSystems: ['windows'],
-            locales: ['en-US'],
-        },
+        // Keep the transport's TLS impersonation, but do not invoke the
+        // optional header-generator preset. On cPanel/Passenger it can
+        // collide with the host's stdin/socket wrapper and fail with
+        // `open EEXIST` or an undefined browser-version table.
         http2: true,                         // vidup front-door expects h2
         retry: { limit: 3, methods: ['GET'] },
         throwHttpErrors: false,
@@ -156,6 +161,7 @@ async function http(url, { method = 'GET', headers = {}, body, json, asXhr = fal
     const t0 = Date.now();
     let res;
     try {
+        const gotScraping = await getGotScraping();
         res = await gotScraping(opts);
     } catch (err) {
         elog(tag, `<-- NETWORK ERROR ${method} ${url} (${Date.now() - t0}ms)`, {
@@ -358,7 +364,7 @@ function formatStreamObject(server, streamData) {
  *   const [first] = await getVidupStreams('27205', 'movie', null, null);
  *   // Play first.stream.url with Referer set on the <video> tag
  */
-export async function getVidupStreams(
+async function getVidupStreams(
     tmdbId,
     mediaType = 'movie',
     seasonNum = null,
@@ -694,7 +700,7 @@ function parseArgs() {
     return { tmdbId: '1399', mediaType: 'tv', seasonNum: 1, episodeNum: 1 };
 }
 
-const isMain = import.meta.url === `file://${process.argv[1]}`;
+const isMain = require.main === module;
 if (isMain) {
     (async () => {
         ilog('cli', 'starting CLI', {
@@ -732,3 +738,5 @@ if (isMain) {
         }
     })();
 }
+
+module.exports = { getVidupStreams };
