@@ -1,5 +1,5 @@
 const { getDetails, getExternalIds } = require('../utils/tmdb');
-const fetch = (url, options = {}) => require('node-fetch')(url, { timeout: 30000, ...options });
+const fetch = (url, options = {}) => require('node-fetch')(url, { timeout: 15000, ...options });
 /**
  * moviesdrive - Built from src/moviesdrive/
  * Generated: 2026-09-22T10:00:32.946Z
