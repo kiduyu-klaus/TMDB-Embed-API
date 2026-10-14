@@ -71,7 +71,20 @@ function updatePassword(username, newPassword){
 }
 
 // Session issuance & validation
-const SESSION_SECRET = crypto.randomBytes(32); // ephemeral; restart invalidates sessions
+// Keep newly issued sessions valid when a successful login restarts the server.
+function loadSessionSecret() {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  const file = path.join(__dirname, '.session-secret');
+  try {
+    fs.writeFileSync(file, crypto.randomBytes(32).toString('hex'), { flag: 'wx', mode: 0o600 });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  const secret = fs.readFileSync(file, 'utf8').trim();
+  if (!/^[a-f0-9]{64}$/.test(secret)) throw new Error('Invalid stored session secret');
+  return secret;
+}
+const SESSION_SECRET = loadSessionSecret();
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12h
 
 function base64url(input){

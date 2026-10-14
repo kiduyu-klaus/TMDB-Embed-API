@@ -9,17 +9,33 @@
   // (e.g. "/kiduyuTv_providers" with no trailing slash is a valid page URL).
   const BASE = window.location.pathname.replace(/\/+$/, '').replace(/\/[^/]*\.[^/]*$/, '');
   const U = p => BASE + p;
+  let loginInProgress = false;
+  async function waitForRestart(previousInstance) {
+    const started = Date.now();
+    while (Date.now() - started < 90000) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      try {
+        const response = await fetch(U('/api/health'), { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+        const health = await response.json();
+        if (response.ok && health.ok && health.instanceId && health.instanceId !== previousInstance && !health.restartPending) return;
+      } catch { /* The server is temporarily unavailable during restart. */ }
+    }
+    throw new Error('Login succeeded, but the server has not restarted. Check the Node.js process manager, then refresh this page.');
+  }
   async function checkSession(){
     try {
       const r = await fetch(U('/auth/session'));
       const j = await r.json();
-      if (j.authenticated) {
+      if (j.authenticated && !loginInProgress) {
         window.location.href = U('/config.html');
       }
     } catch(e) { /* ignore */ }
   }
 
   async function login(username, password){
+    if (loginInProgress) return false;
+    loginInProgress = true;
+    $('#loginBtn').disabled = true;
     const status = $('#status');
     status.textContent = 'Authenticating...';
     status.className = 'status';
@@ -41,6 +57,10 @@
         status.classList.add('error');
         return false;
       }
+      if (j.restarting) {
+        status.textContent = 'Login successful. Restarting server...';
+        await waitForRestart(j.instanceId);
+      }
       status.textContent = 'Success! Redirecting...';
       status.classList.add('success');
       setTimeout(()=>{ window.location.href = U('/config.html'); }, 400);
@@ -50,6 +70,9 @@
       console.log('[login] network error', e);
       status.classList.add('error');
       return false;
+    } finally {
+      loginInProgress = false;
+      $('#loginBtn').disabled = false;
     }
   }
 

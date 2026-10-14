@@ -101,6 +101,26 @@ function recordLoginSuccess(ip){
 
 // Guard against premature process.exit from imported legacy modules, but allow controlled restarts
 const realProcessExit = process.exit.bind(process);
+const instanceId = require('crypto').randomUUID();
+let restartPending = false;
+function scheduleRestart() {
+  if (restartPending) return;
+  restartPending = true;
+  setTimeout(() => {
+    try {
+      const fs = require('fs');
+      fs.writeFileSync(path.join(process.cwd(), 'restart.trigger'), String(Date.now()));
+      // Passenger/cPanel watches tmp/restart.txt; nodemon watches restart.trigger.
+      fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
+      fs.writeFileSync(path.join(process.cwd(), 'tmp', 'restart.txt'), String(Date.now()));
+    } catch (error) {
+      console.warn('[control] failed to write restart marker:', error.message);
+    }
+    console.warn('[control] restarting server');
+    allowControlledExit = true;
+    realProcessExit(0);
+  }, 1000);
+}
 let allowControlledExit = false;
 process.exit = function(code){
   if (allowControlledExit) return realProcessExit(code);
@@ -133,7 +153,8 @@ router.post('/auth/login', (req,res) => {
   recordLoginSuccess(ip);
   const token = issueSession(username);
   res.setHeader('Set-Cookie', `session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${12*60*60}`);
-  res.json({ success:true, username });
+  res.once('finish', scheduleRestart);
+  res.json({ success:true, username, restarting: true, instanceId });
 });
 
 router.post('/auth/logout', (req,res) => {
@@ -283,27 +304,14 @@ router.delete('/api/stream-token', requireAuth, (req,res) => {
 router.post('/api/restart', (req,res) => {
   const sess = getSession(req);
   if(!sess) return res.status(401).json({ success:false, error:'UNAUTHORIZED' });
-  res.json({ success:true, message:'RESTARTING' });
-  // Give the response a moment to flush
-  setTimeout(()=>{
-    try {
-      const fs = require('fs');
-      const restartMarker = require('path').join(process.cwd(), 'restart.trigger');
-      fs.writeFileSync(restartMarker, String(Date.now()));
-      console.warn('[control] wrote restart.trigger to notify nodemon');
-    } catch (e) {
-      console.warn('[control] failed to write restart marker:', e.message);
-    }
-    console.warn('[control] restarting process by exit(0)');
-    // Let nodemon detect the file change and restart the app
-    allowControlledExit = true;
-    realProcessExit(0);
-  }, 300);
+  res.once('finish', scheduleRestart);
+  res.json({ success:true, message:'RESTARTING', instanceId });
 });
 
 // --- Basic informational endpoints ---
 router.get('/api/health', (req, res) => {
-  res.json({ ok: true, service: 'tmdb-embed-api', time: new Date().toISOString() });
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ ok: true, service: 'tmdb-embed-api', instanceId, restartPending, time: new Date().toISOString() });
 });
 
 // Metrics endpoint
