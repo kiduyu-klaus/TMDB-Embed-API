@@ -218,6 +218,7 @@ async function __mdEnrichStream(s, titlePrefix) {
   return __spreadProps(__spreadValues({}, s), {
     title: titlePrefix + s.name + " [" + s.quality + "p]",
     provider: "moviesdrive",
+    language: " English . Hindi",
     headers,
     format: fmt.format,
     mimeType: fmt.mimeType
