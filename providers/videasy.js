@@ -14,24 +14,24 @@ const VIDEASY_HEADERS = {
 
 // Server behavior and optional filtering are based on the sample's server list.
 const SERVERS = [
-    { id: 'miami', label: 'Miami' },
-    { id: 'boise', label: 'Boise' },
-    { id: 'vegas', label: 'Vegas' },
-    { id: 'reno', label: 'Reno' },
-    { id: 'oakland', label: 'Oakland' },
-    { id: 'seattle', label: 'Seattle' },
-    { id: 'phoenix', label: 'Phoenix' },
-    { id: 'atlanta', label: 'Atlanta' },
-    { id: 'portland', label: 'Portland' },
-    { id: 'austin', label: 'Austin', quality: 'English' },
-    { id: 'dallas', label: 'Dallas' },
-    { id: 'tampa', label: 'Tampa' },
-    { id: 'orlando', label: 'Orlando' },
-    { id: 'munich', label: 'Munich', language: 'german', resultLanguage: 'German' },
-    { id: 'berlin', label: 'Berlin', resultLanguage: 'German' },
-    { id: 'paris', label: 'Paris', resultLanguage: 'French' },
-    { id: 'delhi', label: 'Delhi', quality: 'Hindi', resultLanguage: 'Hindi' },
-    { id: 'cancun', label: 'Cancun', resultLanguage: 'Spanish' }
+    { id: 'miami', label: 'Miami', language: 'Original' },
+    { id: 'boise', label: 'Boise', language: 'Original' },
+    { id: 'vegas', label: 'Vegas', language: 'Original' },
+    { id: 'reno', label: 'Reno', language: 'Original' },
+    { id: 'oakland', label: 'Oakland', language: 'Original' },
+    { id: 'seattle', label: 'Seattle', language: 'Original' },
+    { id: 'phoenix', label: 'Phoenix', language: 'Original' },
+    { id: 'atlanta', label: 'Atlanta', language: 'Original' },
+    { id: 'portland', label: 'Portland', language: 'Original' },
+    { id: 'austin', label: 'Austin', language: 'Original', quality: 'English' },
+    { id: 'dallas', label: 'Dallas', language: 'Original' },
+    { id: 'tampa', label: 'Tampa', language: 'Original' },
+    { id: 'orlando', label: 'Orlando', language: 'Original' },
+    { id: 'munich', label: 'Munich', language: 'German', queryLanguage: 'german' },
+    { id: 'berlin', label: 'Berlin', language: 'German' },
+    { id: 'paris', label: 'Paris', language: 'French' },
+    { id: 'delhi', label: 'Delhi', language: 'Hindi', quality: 'Hindi' },
+    { id: 'cancun', label: 'Cancun', language: 'Spanish' }
 ];
 
 function encodeRfc3986(value) {
@@ -83,7 +83,7 @@ function buildSourceUrl(server, details, tmdbId, seasonNum, episodeNum, seed) {
         'enc=2',
         `seed=${encodeURIComponent(seed)}`
     );
-    if (server.language) params.push(`language=${encodeURIComponent(server.language)}`);
+    if (server.queryLanguage) params.push(`language=${encodeURIComponent(server.queryLanguage)}`);
     return `${VIDEASY_API}/${server.id}/sources?${params.join('&')}`;
 }
 
@@ -113,7 +113,7 @@ async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum
             title: `Videasy ${server.label} - ${source.quality || 'Auto'}`,
             url: source.url,
             quality: source.quality || 'Auto',
-            language: server.resultLanguage || 'Original',
+            language: server.language,
             provider: 'Videasy',
             headers: {
                 Referer: VIDEASY_HEADERS.Referer,
