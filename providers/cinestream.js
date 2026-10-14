@@ -21,6 +21,8 @@ var _TMDB_BASE = 'https://api.themoviedb.org/3';
 var _DECRYPT_API = 'https://enc-dec.app/api';
 var _UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const { normalizeStreams } = require('../utils/streamResponse');
+const trace = require('../utils/cinestreamTrace').createCineStreamTrace();
+const fetch = trace.fetch;
 
 function getInfo() {
   return {
@@ -418,7 +420,7 @@ function _fetchJsonWithBrowserFlow(url, init, label) {
   }, init || {});
   return fetch(url, requestInit).then(function (r) {
     if (!r.ok) {
-      console.warn('[CineStream] ' + label + ' HTTP ' + r.status + ' for ' + url);
+      trace.log('stage.http_failed', { stage: label, status: r.status, origin: new URL(url).origin }, true);
       return null;
     }
     return r.text();
@@ -1395,10 +1397,10 @@ function getVideoSources(episodeUrl) {
   if (_cfg('srcVegamovies', true) || _cfg('src4khdhub', true)) {
     mirrorJob = _tmdbDetail(p.mediaType, p.tmdbId).then(function (meta) {
       return Promise.all([
-        _scrapeVegamovies(p, meta),
-        _scrape4khdhub(p, meta)
+        trace.source('VegaMovies', () => _scrapeVegamovies(p, meta)),
+        trace.source('4KHDHub', () => _scrape4khdhub(p, meta))
       ]);
-    }, function () { return [[], []]; });
+    }, function () { trace.log('metadata.failed', {}, true); return [[], []]; });
   } else {
     mirrorJob = Promise.resolve([[], []]);
   }
@@ -1406,16 +1408,18 @@ function getVideoSources(episodeUrl) {
   // Fan out to all enabled sub-sources. Each job is fail-soft: a single
   // flaky sub-source must never abort the whole lookup.
   return Promise.all([
-    _soft(_scrapeVidfast(p)),
-    _soft(_scrapeVidcore(p)),
-    _soft(_scrapeVidlink(p)),
+    _soft(trace.source('Vidfast', () => _scrapeVidfast(p))),
+    _soft(trace.source('Vidcore', () => _scrapeVidcore(p))),
+    _soft(trace.source('Vidlink', () => _scrapeVidlink(p))),
     _soft(mirrorJob)
   ]).then(function (results) {
     var out = [];
     var seen = {};
+    var duplicates = 0;
     function pushArr(arr) {
       for (var j = 0; j < arr.length; j++) {
         var s = arr[j];
+        if (s && s.url && seen[s.url]) duplicates++;
         if (s && s.url && !seen[s.url]) {
           seen[s.url] = true;
           out.push(s);
@@ -1428,13 +1432,16 @@ function getVideoSources(episodeUrl) {
     var m = results[3] || [];
     pushArr(m[0]);
     pushArr(m[1]);
+    trace.log('sources.merged', { count: out.length, duplicates });
     if (!out.length) throw new Error('No streams found. Check TMDB API key in settings and source toggles.');
     return out;
   });
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { getInfo, getSettings, getDetail, getEpisodes, getVideoSources, getcinestreams };
+  module.exports = { getInfo, getSettings, getDetail, getEpisodes,
+    getVideoSources: (...args) => trace.run(() => getVideoSources(...args)),
+    getcinestreams: (...args) => trace.run(() => getcinestreams(...args)) };
 }
 
 // Registry adapter: source metadata/headers survive the shared normalizer.
@@ -1450,7 +1457,7 @@ async function getcinestreams(tmdbId, mediaType = 'movie', season = 1, episode =
   }
   const url = `cs://${isTv ? 'tv' : 'movie'}/${tmdbId}/${isTv ? seasonNum : 1}/${isTv ? episodeNum : 1}`;
   const started = Date.now();
-  console.log('[CineStream] extraction.start', { tmdbId, type, season: isTv ? seasonNum : null, episode: isTv ? episodeNum : null });
+  trace.log('extraction.start', { tmdbId, type, season: isTv ? seasonNum : null, episode: isTv ? episodeNum : null });
   try {
     const sources = await getVideoSources(url);
     const streams = normalizeStreams(sources.filter(s => s && /^https?:\/\//i.test(s.url || '')).map(s => ({
@@ -1463,10 +1470,10 @@ async function getcinestreams(tmdbId, mediaType = 'movie', season = 1, episode =
       format: s.container || s.format,
       subtitles: s.subtitles || [],
     })), 'cinestream');
-    console.log('[CineStream] extraction.complete', { count: streams.length, elapsedMs: Date.now() - started });
+    trace.log('extraction.complete', { count: streams.length, elapsedMs: Date.now() - started });
     return streams;
   } catch (_) {
-    console.warn('[CineStream] extraction.failed', { elapsedMs: Date.now() - started });
+    trace.log('extraction.failed', { elapsedMs: Date.now() - started });
     return [];
   }
 }
