@@ -10,6 +10,56 @@
       "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
       "expires": 1792018713655,
       "subtitles": []
+    },
+    "tv:60625:1:1": {
+      "tmdbId": "60625",
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "imdbId": "tt2861424",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792072755835,
+      "subtitles": []
+    },
+    "tv:1622:1:1": {
+      "tmdbId": "1622",
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "imdbId": "tt0460681",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792072800247,
+      "subtitles": []
+    },
+    "tv:108978:1:1": {
+      "tmdbId": "108978",
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "imdbId": "tt9288030",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792073041537,
+      "subtitles": []
+    },
+    "tv:108978:2:4": {
+      "tmdbId": "108978",
+      "type": "tv",
+      "season": 2,
+      "episode": 4,
+      "imdbId": "tt9288030",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792073206506,
+      "subtitles": []
+    },
+    "movie:1081003": {
+      "tmdbId": "1081003",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt8814476",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792074528649,
+      "subtitles": []
     }
   }
 }

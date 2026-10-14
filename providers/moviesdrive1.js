@@ -127,6 +127,19 @@ function __mdTimer(stage, label) {
   };
 }
 
+async function __mdMapLimit(items, limit, mapper) {
+  var results = new Array(items.length);
+  var nextIndex = 0;
+  var workerCount = Math.min(limit, items.length);
+  await Promise.all(Array.from({ length: workerCount }, async function () {
+    while (nextIndex < items.length) {
+      var index = nextIndex++;
+      results[index] = await mapper(items[index], index);
+    }
+  }));
+  return results;
+}
+
 // ---------------------------------------------------------------------------
 // Stream classification
 // ---------------------------------------------------------------------------
@@ -816,6 +829,36 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
       __mdLog("getMoviesDriveStreams", "debug", "fetch.post.bytes", pageHtml.length);
       var $ = import_cheerio_without_node_native2.load(pageHtml);
       var allStreams = [];
+      var resolveLinks = async function (links, referer, titlePrefix, context) {
+        var extractedByLink = await __mdMapLimit(links, 4, async function (link, index) {
+          __mdLog("getMoviesDriveStreams", "debug", context + ".link.process", {
+            i: index + 1, of: links.length, link
+          });
+          var extracted = await extractMdrive(link);
+          __mdLog("getMoviesDriveStreams", "debug", context + ".link.extracted", {
+            i: index + 1, servers: extracted.length
+          });
+          return extracted.map(function (server) {
+            return { server: server, linkIndex: index + 1 };
+          });
+        });
+        var servers = extractedByLink.reduce(function (all, extracted) {
+          return all.concat(extracted);
+        }, []);
+        var streamsByServer = await __mdMapLimit(servers, 4, async function (entry) {
+          var streams = await loadExtractor(entry.server, referer);
+          __mdLog("getMoviesDriveStreams", "debug", context + ".link.loaded", {
+            i: entry.linkIndex, server: entry.server, streams: streams.length,
+            titles: streams.map(function (s) { return s.name; })
+          });
+          return streams.map(function (stream) {
+            return __mdEnrichStream(stream, titlePrefix);
+          });
+        });
+        return streamsByServer.reduce(function (all, streams) {
+          return all.concat(streams);
+        }, []);
+      };
 
       if (mediaType === "movie") {
         __mdLog("getMoviesDriveStreams", "info", "mode.movie");
@@ -828,25 +871,7 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
         __mdLog("getMoviesDriveStreams", "debug", "movie.links", {
           total: links.length, unique: uniqueLinks.length
         });
-        var linkIdx = 0;
-        for (const link of uniqueLinks) {
-          linkIdx++;
-          __mdLog("getMoviesDriveStreams", "debug", "movie.link.process", {
-            i: linkIdx, of: uniqueLinks.length, link
-          });
-          const extracted = yield extractMdrive(link);
-          __mdLog("getMoviesDriveStreams", "debug", "movie.link.extracted", {
-            i: linkIdx, servers: extracted.length
-          });
-          for (const server of extracted) {
-            const streams = yield loadExtractor(server, href);
-            __mdLog("getMoviesDriveStreams", "debug", "movie.link.loaded", {
-              i: linkIdx, server, streams: streams.length,
-              titles: streams.map(function (s) { return s.name; })
-            });
-            allStreams.push(...streams.map((s) => __mdEnrichStream(s, cleanTitle + " - ")));
-          }
-        }
+        allStreams.push(...(yield resolveLinks(uniqueLinks, href, cleanTitle + " - ", "movie")));
       } else {
         __mdLog("getMoviesDriveStreams", "info", "mode.tv", { seasonNum, episodeNum });
         var sSlug2 = String(seasonNum).padStart(2, "0");
@@ -892,22 +917,12 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
             } else {
               __mdLog("getMoviesDriveStreams", "debug", "tv.sibling-scrape", epLinks.length);
             }
-            var epLinkIdx = 0;
-            for (const epLink of [...new Set(epLinks)]) {
-              epLinkIdx++;
-              __mdLog("getMoviesDriveStreams", "debug", "tv.epLink.process", {
-                i: epLinkIdx, link: epLink
-              });
-              const extracted = yield extractMdrive(epLink);
-              for (const server of extracted) {
-                const streams = yield loadExtractor(server, nextHref);
-                __mdLog("getMoviesDriveStreams", "debug", "tv.epLink.loaded", {
-                  i: epLinkIdx, server, streams: streams.length,
-                  titles: streams.map(function (s) { return s.name; })
-                });
-                allStreams.push(...streams.map((s) => __mdEnrichStream(s, cleanTitle + " S" + seasonNum + "E" + episodeNum + " - ")));
-              }
-            }
+            allStreams.push(...(yield resolveLinks(
+              [...new Set(epLinks)],
+              nextHref,
+              cleanTitle + " S" + seasonNum + "E" + episodeNum + " - ",
+              "tv"
+            )));
           }
         }
       }
