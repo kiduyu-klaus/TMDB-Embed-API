@@ -1081,6 +1081,20 @@ function _hubResolveDrive(url, langLabel, source) {
 function _hubResolveLink(source, url, langLabel) {
   var u = String(url || '');
   if (!u) return Promise.resolve([]);
+  if (/fastdl\.beer\/embed/i.test(u)) {
+    return _getText(u).then(function (html) {
+      var m = /href=["'](https?:\/\/fastdl\.beer\/dl\.php\?link=[^"']+)["']/i.exec(html) ||
+              /(https?:\/\/fastdl\.beer\/dl\.php\?link=https?%3A%2F%2F[^"'\s<]+)/i.exec(html) ||
+              /var\s+reurl\s*=\s*["'](https?:\/\/fastdl\.beer\/dl\.php\?link=[^"']+)["']/i.exec(html);
+      if (!m) return [];
+      var href = _decodeEntities(m[1]);
+      var lm = /[?&]link=(https?:\/\/[^&"'\s<]+)/i.exec(href);
+      var direct = lm ? lm[1] : href;
+      try { direct = decodeURIComponent(direct); } catch (e) {}
+      var s = _makeHubSource(source, langLabel, direct, direct, 'FastDL', _getBaseUrl(u) + '/');
+      return s ? [s] : [];
+    }, function () { return []; });
+  }
   if (/hubdrive\./i.test(u)) return _hubResolveDrive(u, langLabel, source);
   if (/(?:hubcloud\.|gpdl\.hubcloud\.|vcloud\.)/i.test(u)) return _hubResolveCloudPage(u, langLabel, source);
   if (/gofile\.io\/d\//i.test(u)) return _hubResolveGofile(u, langLabel, source);
@@ -1131,9 +1145,19 @@ function _scrapeVegamovies(p, meta) {
       var permalink = '';
       var i, doc;
       if (meta.imdbId) {
+        var bestScore = -1;
         for (i = 0; i < hits.length; i++) {
           doc = hits[i].document || hits[i];
-          if ((doc.imdb_id || doc.imdbId) === meta.imdbId) { permalink = doc.permalink; break; }
+          if ((doc.imdb_id || doc.imdbId) !== meta.imdbId) continue;
+          var score = 0;
+          if (isTv) {
+            var listing = String(doc.post_title || '') + ' ' + String(doc.permalink || '');
+            var wantedSeason = String(p.season);
+            if (new RegExp('season\\s*' + wantedSeason + '\\b|s0?' + wantedSeason + '(?:e|\\b)', 'i').test(listing)) score = 5;
+            var range = /season[-_\s]*(\d+)\s*[-–]&?[-_\s]*(\d+)/i.exec(listing);
+            if (range && p.season >= parseInt(range[1], 10) && p.season <= parseInt(range[2], 10)) score = Math.max(score, 4);
+          }
+          if (score > bestScore) { bestScore = score; permalink = doc.permalink; }
         }
       }
       if (!permalink && meta.title) {
@@ -1203,20 +1227,22 @@ function _vegaMovieLinks(pageHtml, base) {
 
 function _vegaTvLinks(pageHtml, base, season, episode) {
   var links = [];
-  var hre = /<h[34][^>]*>([\s\S]*?)<\/h[34]\s*>/gi;
+  var hre = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]\s*>/gi;
   var m;
+  var activeSeason = null;
   while ((m = hre.exec(pageHtml)) !== null) {
     var t = _clean(m[1]);
-    if (!new RegExp('Season\\s*' + season, 'i').test(t)) continue;
+    var seasonMarker = /\bSeason\s*(\d+)\b/i.exec(t) || /\bS0?(\d+)\b/i.exec(t);
+    if (seasonMarker) activeSeason = parseInt(seasonMarker[1], 10);
+    if (activeSeason !== Number(season)) continue;
     var nextH = pageHtml.indexOf('<h', m.index + m[0].length);
     var end = nextH === -1 ? m.index + m[0].length + 6000 : nextH;
     var anchors = _anchorList(pageHtml.substring(m.index + m[0].length, end));
     for (var i = 0; i < anchors.length; i++) {
-      if (/V-Cloud|Single|Episode|G-Direct/i.test(anchors[i].text)) {
-        links.push({ url: _fixUrl(anchors[i].href, base), label: anchors[i].text });
+      if (/V-Cloud|G-Direct|Single|Episode/i.test(anchors[i].text)) {
+        links.push({ url: _fixUrl(anchors[i].href, base), label: anchors[i].text + ' S' + season + ' E' + episode });
       }
     }
-    break;
   }
   var jobs = [];
   for (var j = 0; j < Math.min(links.length, 4); j++) {
@@ -1227,12 +1253,12 @@ function _vegaTvLinks(pageHtml, base, season, episode) {
         var m2;
         while ((m2 = hre2.exec(sub)) !== null) {
           var t2 = _clean(m2[1]);
-          if (!new RegExp('Episode[^\\d]*' + episode, 'i').test(t2)) continue;
+          if (!new RegExp('Episodes?[^\\d]*0?' + episode + '\\b', 'i').test(t2)) continue;
           var nx = sub.indexOf('<h4', m2.index + m2[0].length);
           var en = nx === -1 ? m2.index + m2[0].length + 4000 : nx;
           var as2 = _anchorList(sub.substring(m2.index + m2[0].length, en));
           for (var k = 0; k < as2.length; k++) {
-            if (/V-Cloud/i.test(as2[k].text)) {
+            if (/V-Cloud|Direct-Download|G-Direct/i.test(as2[k].text) || /fastdl\.beer|filebee\.xyz/i.test(as2[k].href)) {
               out.push({ url: _fixUrl(as2[k].href, base), label: item.label + ' ' + t2 });
             }
           }
