@@ -20,6 +20,7 @@ const { normalizeStreams } = require('../utils/streamResponse');
 
 const API_BASE = 'https://api.framextv.tech';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+const PROVIDERS = ['barbarian', 'goblin', 'wizard', 'archer', 'pekka', 'witch', 'giant', 'lavahound', 'electro_wizard', 'hog_rider', 'headhunter', 'valkyrie'];
 
 function playbackSource(src, sharedHeaders = {}) {
   let url = new URL(src.url);
@@ -98,18 +99,16 @@ async function getAniListId(title) {
 
 // Check which providers are available for a given content
 async function checkProviders(id, type, season, episode) {
-  const providers = ['barbarian', 'goblin', 'wizard', 'archer', 'pekka', 'witch', 'giant', 'lavahound', 'electro_wizard', 'hog_rider', 'headhunter', 'valkyrie'];
   const available = [];
-  for (const p of providers) {
-    try {
-      const params = new URLSearchParams({ id: String(id), type, provider: p });
-      if (season) { params.set('season', String(season)); params.set('episode', String(episode || 1)); }
-      const data = await fetchJson(`${API_BASE}/api/stream/check?${params}`, 30000);
-      if (data && data.available) {
-        available.push(p);
-      }
-    } catch { /* Continue checking the remaining upstream providers. */ }
-  }
+  const results = await Promise.allSettled(PROVIDERS.map(async provider => {
+    const params = new URLSearchParams({ id: String(id), type, provider });
+    if (season) { params.set('season', String(season)); params.set('episode', String(episode || 1)); }
+    const data = await fetchJson(`${API_BASE}/api/stream/check?${params}`, 30000);
+    return data && data.available ? provider : null;
+  }));
+  results.forEach(result => {
+    if (result.status === 'fulfilled' && result.value) available.push(result.value);
+  });
   return available;
 }
 
@@ -133,55 +132,76 @@ async function getStreams(tmdbId, type, season, episode) {
   const apiUrl = `${API_BASE}/api/stream?${params}`;
   console.log(`[FrameX] Fetching: ${apiUrl}`);
 
-  const data = await fetchJson(apiUrl, 30000);
-  if (!data || !data.success || !Array.isArray(data.sources) || data.sources.length === 0) {
-    console.log('[FrameX] No streams from default provider');
+  const [defaultData, availableProviders] = await Promise.all([
+    fetchJson(apiUrl, 30000),
+    checkProviders(tmdbId, apiType, isTV ? season : null, isTV ? episode : null),
+  ]);
+  const providerResults = await Promise.allSettled(availableProviders.map(async provider => {
+    const providerParams = new URLSearchParams(params);
+    providerParams.set('provider', provider);
+    return { provider, data: await fetchJson(`${API_BASE}/api/stream?${providerParams}`, 30000) };
+  }));
+  const payloads = [];
+  if (defaultData && defaultData.success && Array.isArray(defaultData.sources)) payloads.push(defaultData);
+  providerResults.forEach(result => {
+    if (result.status === 'fulfilled' && result.value.data && result.value.data.success && Array.isArray(result.value.data.sources)) {
+      payloads.push(result.value.data);
+    } else if (result.status === 'fulfilled') {
+      const reason = result.value.data && result.value.data.error || 'no playable sources returned';
+      console.warn(`[FrameX] Provider ${result.value.provider} returned no streams: ${reason}`);
+    } else {
+      console.warn(`[FrameX] Provider request failed: ${result.reason && result.reason.message || result.reason}`);
+    }
+  });
+  console.log(`[FrameX] Available providers: ${availableProviders.join(', ') || 'none'}; payloads: ${payloads.length}`);
+  if (!payloads.length) {
+    console.log('[FrameX] No streams from default or available providers');
     return [];
   }
-
-  console.log(`[FrameX] Provider: ${data.provider} | Sources: ${data.sources.length}`);
 
   // Convert API response to Nuvio stream format
   const streams = [];
   const seenUrls = new Set();
 
-  for (const src of data.sources) {
-    let playback;
-    try { playback = playbackSource(src, data.headers); }
-    catch { console.warn('[FrameX] Skipping invalid source URL'); continue; }
-    if (seenUrls.has(playback.url)) continue;
-    seenUrls.add(playback.url);
+  for (const data of payloads) {
+    console.log(`[FrameX] Provider: ${data.provider || 'unknown'} | Sources: ${data.sources.length}`);
+    for (const src of data.sources) {
+      let playback;
+      try { playback = playbackSource(src, data.headers); }
+      catch { console.warn('[FrameX] Skipping invalid source URL'); continue; }
+      if (seenUrls.has(playback.url)) continue;
+      seenUrls.add(playback.url);
 
-    const quality = src.quality || 'Unknown';
-    const server = src.server || data.provider || 'FrameX';
-    const streamType = src.type || 'hls';
-    const headers = playback.headers;
-    console.log('[FrameX] Playback source', { host: new URL(playback.url).hostname,
-      unwrapped: playback.url !== src.url, headerNames: Object.keys(headers) });
-    const category = src.category || '';
+      const quality = src.quality || 'Unknown';
+      const server = src.server || data.provider || 'FrameX';
+      const streamType = src.type || 'hls';
+      const headers = playback.headers;
+      console.log('[FrameX] Playback source', { host: new URL(playback.url).hostname,
+        unwrapped: playback.url !== src.url, headerNames: Object.keys(headers) });
+      const category = src.category || '';
 
-    // Build display title
-    let titleLine = `TMDB ${tmdbId}`;
-    if (isTV) {
-      titleLine += ` S${String(season || 1).padStart(2, '0')}E${String(episode || 1).padStart(2, '0')}`;
+      let titleLine = `TMDB ${tmdbId}`;
+      if (isTV) {
+        titleLine += ` S${String(season || 1).padStart(2, '0')}E${String(episode || 1).padStart(2, '0')}`;
+      }
+      titleLine += ` ${quality} ${server}`;
+      if (category) titleLine += ` [${category}]`;
+
+      streams.push({
+        name: `FrameX - ${quality} ${server}${category ? ' ' + category : ''}`,
+        title: titleLine,
+        url: playback.url,
+        quality: quality,
+        type: streamType,
+        provider: 'framextv',
+        headers: headers,
+        subtitles: src.subtitles || data.subtitles || [],
+        audioTracks: src.audioTracks || [],
+        behaviorHints: {
+          bingeGroup: `framextv-${quality}`,
+        },
+      });
     }
-    titleLine += ` ${quality} ${server}`;
-    if (category) titleLine += ` [${category}]`;
-
-    streams.push({
-      name: `FrameX - ${quality} ${server}${category ? ' ' + category : ''}`,
-      title: titleLine,
-      url: playback.url,
-      quality: quality,
-      type: streamType,
-      provider: 'framextv',
-      headers: headers,
-      subtitles: src.subtitles || data.subtitles || [],
-      audioTracks: src.audioTracks || [],
-      behaviorHints: {
-        bingeGroup: `framextv-${quality}`,
-      },
-    });
   }
 
   console.log(`[FrameX] Returning ${streams.length} stream(s)`);

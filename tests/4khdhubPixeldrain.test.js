@@ -47,3 +47,21 @@ test('does not invent URLs when metadata is absent or return HTML as a stream', 
         head: async () => ({ status: 200, headers: { 'content-type': 'text/html' } }),
     }), []);
 });
+
+test('uses the language badge from each movie download card', () => {
+    const html = '<div class="download-item"><span class="badge">Hindi, Tamil, Telugu, English</span>' +
+        '<a href="https://greenmotors.club/?id=encoded">Download HubCloud</a></div>';
+    const [link] = _test.collectPageLinks(html, 'https://4khdhub.one/love-of-your-life-movie-8345/', 'movie');
+    const stream = _test.buildStream(link.label, 'https://cdn.example/video.mkv');
+    assert.equal(stream.language, ' Hindi . Tamil . Telugu . English');
+});
+
+test('uses the language badge from the matching TV season release header', () => {
+    const html = '<div class="episodes-list"><div class="season-item">' +
+        '<div class="episode-number">S01</div><div class="episode-header"><span class="badge">Hindi, Tamil, Telugu, English</span></div>' +
+        '<div class="episode-download-item"><div class="episode-file-info"><span class="badge-psa">Episode-02</span></div>' +
+        '<a href="https://greenmotors.club/?id=encoded">Download HubCloud</a></div></div></div>';
+    const [link] = _test.collectPageLinks(html, 'https://4khdhub.one/visionquest-series-8342/', 'tv', 1, 2);
+    const stream = _test.buildStream(link.label, 'https://cdn.example/video.mkv');
+    assert.equal(stream.language, ' Hindi . Tamil . Telugu . English');
+});

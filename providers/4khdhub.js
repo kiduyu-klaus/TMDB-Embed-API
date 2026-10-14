@@ -90,6 +90,27 @@ function parseQuality(...values) {
     return 'Auto';
 }
 
+function extractLanguages(value) {
+    const supported = new Map([
+        ['english', 'English'], ['hindi', 'Hindi'], ['tamil', 'Tamil'],
+        ['telugu', 'Telugu'], ['kannada', 'Kannada'], ['malayalam', 'Malayalam'],
+        ['bengali', 'Bengali'], ['punjabi', 'Punjabi'], ['marathi', 'Marathi'],
+        ['gujarati', 'Gujarati'], ['urdu', 'Urdu'], ['arabic', 'Arabic'],
+        ['spanish', 'Spanish'], ['french', 'French'], ['german', 'German'],
+        ['korean', 'Korean'], ['japanese', 'Japanese'], ['chinese', 'Chinese'],
+        ['russian', 'Russian'], ['portuguese', 'Portuguese'], ['thai', 'Thai'],
+        ['indonesian', 'Indonesian'], ['turkish', 'Turkish'],
+    ]);
+    const found = [];
+    const pattern = new RegExp(`\\b(${[...supported.keys()].join('|')})\\b`, 'gi');
+    let match;
+    while ((match = pattern.exec(String(value || ''))) !== null) {
+        const language = supported.get(match[1].toLowerCase());
+        if (language && !found.includes(language)) found.push(language);
+    }
+    return found.length ? ` ${found.join(' . ')}` : '';
+}
+
 async function getTmdbDetails(tmdbId, mediaType) {
     const apiKey = getTmdbApiKey();
     if (!apiKey) throw new Error('TMDB API key is missing');
@@ -138,10 +159,11 @@ function collectPageLinks(html, pageUrl, mediaType, season, episode) {
     const results = [];
     if (mediaType === 'movie' || !$('div.episodes-list').length) {
         $('div.download-item a[href]').each((_, element) => {
+            const card = $(element).closest('div.download-item');
+            const cardLanguages = extractLanguages(card.find('span.badge').map((__, badge) => $(badge).text()).get().join(' '));
             results.push({
                 url: fixUrl($(element).attr('href'), pageUrl),
-                label: $(element).text().replace(/\s+/g, ' ').trim()
-                    || $(element).closest('div.download-item').text().replace(/\s+/g, ' ').trim()
+                label: `${cardLanguages} ${card.text().replace(/\s+/g, ' ').trim()} ${$(element).text().replace(/\s+/g, ' ').trim()}`.trim()
             });
         });
     } else {
@@ -149,15 +171,18 @@ function collectPageLinks(html, pageUrl, mediaType, season, episode) {
             const seasonText = $(seasonElement).find('div.episode-number').first().text();
             const seasonMatch = seasonText.match(/S?0*(\d+)/i);
             if (!seasonMatch || Number(seasonMatch[1]) !== Number(season)) return;
+            const seasonLanguageText = $(seasonElement).find('div.episode-header span.badge').map((__, badge) => $(badge).text()).get().join(' ')
+                || $(seasonElement).find('div.episode-header').first().text();
             $(seasonElement).find('div.episode-download-item').each((__, episodeElement) => {
                 const episodeText = $(episodeElement).find('div.episode-file-info span.badge-psa').text()
                     || $(episodeElement).text();
                 const episodeMatch = episodeText.match(/(?:episode|e)[-\s_]*0*(\d+)/i);
                 if (!episodeMatch || Number(episodeMatch[1]) !== Number(episode)) return;
                 $(episodeElement).find('a[href]').each((___, linkElement) => {
+                    const episodeDetails = $(episodeElement).text().replace(/\s+/g, ' ').trim();
                     results.push({
                         url: fixUrl($(linkElement).attr('href'), pageUrl),
-                        label: $(linkElement).text().replace(/\s+/g, ' ').trim() || `S${season}E${episode}`
+                        label: `${extractLanguages(seasonLanguageText)} ${seasonLanguageText} ${episodeDetails} ${$(linkElement).text().replace(/\s+/g, ' ').trim()}`.trim()
                     });
                 });
             });
@@ -219,6 +244,7 @@ function buildStream(label, url, referer = '') {
         title: `${DISPLAY_NAME} - ${quality}${label ? ` - ${label}` : ''}`,
         url,
         quality,
+        language: extractLanguages(label) || ' English . Hindi',
         provider: PROVIDER,
         type: isHls ? 'hls' : 'direct',
         mimeType: isHls ? 'application/vnd.apple.mpegurl'
@@ -394,5 +420,5 @@ async function get4KHDHubStreams(tmdbId, mediaType = 'movie', season = null, epi
 
 module.exports = {
     get4KHDHubStreams,
-    _test: { normalizeTitle, titleScore, collectPageLinks, decodeRedirectPayload, parseQuality, isDirectMedia, pixeldrainMediaUrls, resolvePixeldrain }
+    _test: { normalizeTitle, titleScore, collectPageLinks, decodeRedirectPayload, parseQuality, extractLanguages, buildStream, isDirectMedia, pixeldrainMediaUrls, resolvePixeldrain }
 };
