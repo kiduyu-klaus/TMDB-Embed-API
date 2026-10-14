@@ -67,3 +67,5 @@ test-results/vid-providers/vidup-series-registry.json
 test-results/vid-providers/vidup-tv.json
 /.manus
 /.work
+/test-results
+/test-results/anikoto-trace

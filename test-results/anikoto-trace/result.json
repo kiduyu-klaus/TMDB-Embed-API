@@ -1,200 +1,285 @@
-{
-  "tmdbId": 82684,
-  "season": 2,
-  "episode": 16,
-  "count": 6,
-  "streams": [
-    {
-      "name": "Anikoto [SUB] Vidstream-2",
-      "title": "Anikoto SUB - Vidstream-2",
-      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTcxMHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.RviuslVI3H0gZpFFzAtG-ShPi74yLxdvQE3cXG0WbEU",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    },
-    {
-      "name": "Anikoto [SUB] HD-1",
-      "title": "Anikoto SUB - HD-1",
-      "url": "https://megap.shiora.top/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTcxMHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.RviuslVI3H0gZpFFzAtG-ShPi74yLxdvQE3cXG0WbEU",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    },
-    {
-      "name": "Anikoto [SUB] Vidstream-1",
-      "title": "Anikoto SUB - Vidstream-1",
-      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/master.m3u8?token=MTc5MTY1OTcxMHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS9kYjM1ZWNhN2Y3MzhkZTAyOTRkMmY5MDc4ZDUwNzBiYw.RviuslVI3H0gZpFFzAtG-ShPi74yLxdvQE3cXG0WbEU",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    },
-    {
-      "name": "Anikoto [DUB] Vidstream-1",
-      "title": "Anikoto DUB - Vidstream-1",
-      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTcxMHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.HHT04DSp8nUZtfJmFbREFVhgI4J2fcq4WvUJqVwbr00",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    },
-    {
-      "name": "Anikoto [DUB] HD-1",
-      "title": "Anikoto DUB - HD-1",
-      "url": "https://megap.shiora.top/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTcxMHxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.HHT04DSp8nUZtfJmFbREFVhgI4J2fcq4WvUJqVwbr00",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    },
-    {
-      "name": "Anikoto [DUB] Vidstream-2",
-      "title": "Anikoto DUB - Vidstream-2",
-      "url": "https://fetch.nexabloom.top/anime/b57fac77ca8ccadbcca2335607697701/25ea5a39e6d15f12e8964c7268d2838e/master.m3u8?token=MTc5MTY1OTcxMXxiNTdmYWM3N2NhOGNjYWRiY2NhMjMzNTYwNzY5NzcwMS8yNWVhNWEzOWU2ZDE1ZjEyZTg5NjRjNzI2OGQyODM4ZQ.ZgAIR98RDKUbWf9cz8nP_ljNxKTMdu14oMtA04axy64",
-      "quality": "multi-quality",
-      "headers": {
-        "Referer": "https://megaplay.buzz/",
-        "Origin": "https://megaplay.buzz",
-        "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-        "Accept": "*/*"
-      },
-      "subtitle": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-      "subtitleFormat": "vtt",
-      "subtitles": [
-        {
-          "url": "https://6a8y6.broforgotsave.online/anime/b57fac77ca8ccadbcca2335607697701/db35eca7f738de0294d2f9078d5070bc/subtitles/eng-2.vtt",
-          "name": "English",
-          "language": "en",
-          "format": "vtt",
-          "default": true,
-          "headers": {
-            "Referer": "https://megaplay.buzz/",
-            "Origin": "https://megaplay.buzz",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",
-            "Accept": "*/*"
-          }
-        }
-      ],
-      "backup": false,
-      "provider": "anikoto",
-      "type": "m3u8"
-    }
-  ]
+zonH2xCT2_j3bORNAWiNSQO2KncOsJ2CaaaSZnUWO0KDFAcKbyZgkmGQastK_whBV87HLsv5EooLdcnBp_eXA1yUWQOnDLhO9tFyciaj4WHNXzEWc9o8c_So15gptRg_jiOLPO4Ap7m7zcn5gpUfOn2BaBWTvcgyL3cA687U_x7-EwwLOxs',
+  format: 'direct',
+  mimeType: 'application/octet-stream'
+}
+[2026-10-14T05:18:13.535Z] [LOG] [MoviesDrive][DEBUG][getMoviesDriveStreams]#897 stream.enrich {
+  name: 'HubCloud - Pixeldrain',
+  url: 'https://pixeldrain.dev/api/file/5J7odEJK?download',
+  format: 'direct',
+  mimeType: 'application/octet-stream'
+}
+[2026-10-14T05:18:13.535Z] [LOG] [MoviesDrive][INFO][getMoviesDriveStreams]#898 done {
+  totalStreams: 24,
+  types: { 'HubCloud - Pixeldrain': 10, 'HubCloud - Instant': 14 },
+  formats: { direct: 24 },
+  mimeTypes: { 'application/octet-stream': 22, 'video/x-matroska': 2 }
+}
+[2026-10-14T05:18:13.535Z] [LOG] [MoviesDrive][DEBUG][getMoviesDriveStreams]#899 elapsed_ms 6655 (total)
+[2026-10-14T05:18:13.535Z] [LOG] [registry] moviesdrive1 fetch duration 6655ms
+[2026-10-14T05:18:14.770Z] [LOG] [CineSrc] Tet: 0 new source(s)
+[2026-10-14T05:18:14.771Z] [LOG] [CineSrc] Total streams: 7
+[2026-10-14T05:18:14.771Z] [LOG] [registry] cinesrc fetch duration 7028ms
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server reno failed: timeout of 8000ms exceeded
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server phoenix failed: timeout of 8000ms exceeded
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server atlanta failed: timeout of 8000ms exceeded
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server austin failed: Request failed with status code 500
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server munich failed: timeout of 8000ms exceeded
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server berlin failed: Request failed with status code 500
+[2026-10-14T05:18:16.970Z] [WARN] [Videasy] Server delhi failed: timeout of 8000ms exceeded
+[2026-10-14T05:18:16.970Z] [LOG] [Videasy] Total streams: 16
+[2026-10-14T05:18:16.970Z] [LOG] [registry] videasy fetch duration 8403ms
+[2026-10-14T05:18:23.518Z] [LOG] [WioSinema Vidcore] Starting movie lookup: TMDB ID 1771
+[2026-10-14T05:18:23.518Z] [LOG] [WioSinema Vidcore] Page: GET https://vidcore.io
+[2026-10-14T05:18:23.842Z] [LOG] [WioSinema Vidcore] Page: HTTP 403; 4545 response characters (324ms)
+[2026-10-14T05:18:23.842Z] [WARN] [WioSinema Vidcore] WARN: Page: request returned a non-success HTTP status
+[2026-10-14T05:18:23.853Z] [LOG] [registry] vidcore fetch duration 335ms
+[2026-10-14T05:19:04.841Z] [LOG] [diagnostic] heartbeat 60s elapsed, process alive
+[2026-10-14T05:20:04.842Z] [LOG] [diagnostic] heartbeat 60s elapsed, process alive
+[2026-10-14T05:21:04.843Z] [LOG] [diagnostic] heartbeat 60s elapsed, process alive
+[2026-10-14T05:22:00.485Z] [LOG] [CineStream] extraction.start { tmdbId: '385687', type: 'movie', season: null, episode: null }
+[2026-10-14T05:22:00.495Z] [LOG] [CineStream] request.response {
+  origin: 'https://api.themoviedb.org',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 9
+}
+[2026-10-14T05:22:00.521Z] [LOG] [CineStream] request.response {
+  origin: 'https://enc-dec.app',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 31
+}
+[2026-10-14T05:22:00.608Z] [LOG] [CineStream] request.response {
+  origin: 'https://vidcore.io',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 120
+}
+[2026-10-14T05:22:00.611Z] [LOG] [CineStream] request.response {
+  origin: 'https://vidlink.pro',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 90
+}
+[2026-10-14T05:22:00.624Z] [LOG] [CineStream] request.response {
+  origin: 'https://vidfast.vc',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 138
+}
+[2026-10-14T05:22:00.680Z] [LOG] [CineStream] request.response {
+  origin: 'https://4khdhub.one',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 182
+}
+[2026-10-14T05:22:00.687Z] [LOG] [CineStream] request.response {
+  origin: 'https://vegamovies.gallery',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 191
+}
+[2026-10-14T05:22:00.719Z] [LOG] [CineStream] request.response {
+  origin: 'https://vegamovies.gallery',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 30
+}
+[2026-10-14T05:22:00.734Z] [LOG] [CineStream] request.response {
+  origin: 'https://4khdhub.one',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 52
+}
+[2026-10-14T05:22:00.768Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 45
+}
+[2026-10-14T05:22:00.770Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 46
+}
+[2026-10-14T05:22:00.771Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 42
+}
+[2026-10-14T05:22:00.786Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 58
+}
+[2026-10-14T05:22:00.789Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 64
+}
+[2026-10-14T05:22:00.798Z] [LOG] [CineStream] request.response {
+  origin: 'https://nexdrive.beer',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 71
+}
+[2026-10-14T05:22:00.818Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 71
+}
+[2026-10-14T05:22:00.819Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 74
+}
+[2026-10-14T05:22:00.836Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 87
+}
+[2026-10-14T05:22:00.837Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 95
+}
+[2026-10-14T05:22:00.838Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 87
+}
+[2026-10-14T05:22:00.840Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 97
+}
+[2026-10-14T05:22:00.841Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 91
+}
+[2026-10-14T05:22:00.842Z] [LOG] [CineStream] request.response {
+  origin: 'https://greenmotors.club',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 96
+}
+[2026-10-14T05:22:00.862Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 52
+}
+[2026-10-14T05:22:00.874Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 62
+}
+[2026-10-14T05:22:00.882Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubcloud.ist',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 29
+}
+[2026-10-14T05:22:00.883Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubcloud.ist',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 27
+}
+[2026-10-14T05:22:00.884Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 73
+}
+[2026-10-14T05:22:00.885Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubcloud.ist',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 30
+}
+[2026-10-14T05:22:00.889Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubcloud.ist',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 38
+}
+[2026-10-14T05:22:00.939Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 125
+}
+[2026-10-14T05:22:01.037Z] [LOG] [CineStream] request.response {
+  origin: 'https://gamerxyt.com',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 141
+}
+[2026-10-14T05:22:01.039Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 100
+}
+[2026-10-14T05:22:01.040Z] [LOG] [CineStream] request.response {
+  origin: 'https://vcloud.fit',
+  method: 'GET',
+  status: 403,
+  elapsedMs: 100
+}
+[2026-10-14T05:22:01.041Z] [LOG] [CineStream] request.response {
+  origin: 'https://gamerxyt.com',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 151
+}
+[2026-10-14T05:22:01.042Z] [LOG] [CineStream] request.response {
+  origin: 'https://gamerxyt.com',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 155
+}
+[2026-10-14T05:22:01.044Z] [LOG] [CineStream] request.response {
+  origin: 'https://gamerxyt.com',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 144
+}
+[2026-10-14T05:22:01.251Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubdrive.pics',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 200
+}
+[2026-10-14T05:22:01.252Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubdrive.pics',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 204
+}
+[2026-10-14T05:22:01.264Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubdrive.pics',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 212
+}
+[2026-10-14T05:22:01.733Z] [LOG] [CineStream] request.response {
+  origin: 'https://hubdrive.pics',
+  method: 'GET',
+  status: 200,
+  elapsedMs: 683
 }

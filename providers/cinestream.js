@@ -16,30 +16,11 @@
  *   src4khdhub    - enable 4KHDHub source (Hindi/English)
  */
 'use strict';
-const { normalizeStreams } = require('../utils/streamResponse');
-const nativeFetch = require('node-fetch');
-const { fetchWithFreeProxyFallback } = require('../utils/freeProxyPool');
-async function fetch(url, options = {}) {
-  const started = Date.now();
-  const origin = new URL(url).origin;
-  try {
-    const response = await fetchWithFreeProxyFallback(
-      url,
-      { ...options, timeout: 15000 },
-      { request: nativeFetch, maxAttempts: 3 }
-    );
-    console.log('[CineStream] request.response', { origin, method: options.method || 'GET', status: response.status, elapsedMs: Date.now() - started });
-    return response;
-  } catch (_) {
-    console.warn('[CineStream] request.failed', { origin, elapsedMs: Date.now() - started });
-    throw new Error('CineStream upstream request failed');
-  }
-}
-
 
 var _TMDB_BASE = 'https://api.themoviedb.org/3';
 var _DECRYPT_API = 'https://enc-dec.app/api';
 var _UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
+const { normalizeStreams } = require('../utils/streamResponse');
 
 function getInfo() {
   return {
@@ -108,7 +89,7 @@ function getSettings() {
 
 function _cfg(key, def) {
   try {
-    var s = (globalThis.__settings && globalThis.__settings.cinestream) || {};
+    var s = (__settings && __settings.cinestream) || {};
     var v = s[key];
     return (v === undefined || v === null) ? def : v;
   } catch (e) {
@@ -119,7 +100,7 @@ function _cfg(key, def) {
 var _BUILTIN_TMDB_KEY = '1865f43a0549ca50d341dd9ab8b29f49';
 function _tmdbKey() {
   var k = _cfg('tmdbApiKey', '');
-  return k || process.env.TMDB_API_KEY || _BUILTIN_TMDB_KEY;
+  return k || _BUILTIN_TMDB_KEY;
 }
 
 /* ---- HTTP helpers ---- */
@@ -128,7 +109,7 @@ function _getJson(url, headers) {
   h['User-Agent'] = _UA;
   h['Accept'] = 'application/json';
   return fetch(url, { headers: h }).then(function (r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + new URL(url).origin);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
     return r.json();
   });
 }
@@ -137,7 +118,7 @@ function _getText(url, headers) {
   var h = headers || {};
   h['User-Agent'] = _UA;
   return fetch(url, { headers: h }).then(function (r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + new URL(url).origin);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
     return r.text();
   });
 }
@@ -152,7 +133,7 @@ function _postJson(url, data, headers) {
     headers: h,
     body: JSON.stringify(data)
   }).then(function (r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + new URL(url).origin);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
     return r.json();
   });
 }
@@ -410,35 +391,80 @@ function _extractToken(page) {
   return m ? m[1] : null;
 }
 
+function _browserHeaders(baseUrl, extra) {
+  var origin = /^(https?:)?\/\//.test(baseUrl || '') ? String(baseUrl).replace(/\/+$/, '') : 'https://vidcore.io';
+  var headers = {
+    'User-Agent': _UA,
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Origin': origin,
+    'Referer': origin + '/'
+  };
+  if (extra) {
+    for (var key in extra) {
+      headers[key] = extra[key];
+    }
+  }
+  return headers;
+}
+
+function _fetchJsonWithBrowserFlow(url, init, label) {
+  var requestInit = Object.assign({
+    credentials: 'include',
+    redirect: 'follow',
+    cache: 'no-store'
+  }, init || {});
+  return fetch(url, requestInit).then(function (r) {
+    if (!r.ok) {
+      console.warn('[CineStream] ' + label + ' HTTP ' + r.status + ' for ' + url);
+      return null;
+    }
+    return r.text();
+  });
+}
+
 function _scrapeVidfast(p) {
   if (!_cfg('srcVidfast', true)) return Promise.resolve([]);
   var base = 'https://vidfast.vc';
   var pageUrl = p.mediaType === 'movie'
     ? base + '/movie/' + p.tmdbId + '/'
     : base + '/tv/' + p.tmdbId + '/' + p.season + '/' + p.episode + '/';
-  var headers = { 'Referer': base + '/' };
+  var headers = _browserHeaders(base, {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-Dest': 'document'
+  });
   return _getText(pageUrl, headers).then(function (page) {
     var token = _extractToken(page);
     if (!token) return [];
     return _getJson(_DECRYPT_API + '/enc-vidfast?text=' + encodeURIComponent(token) + '&stage=1').then(function (ij1) {
       var stage1 = (ij1 && ij1.result) || {};
       if (!stage1.stage1) return [];
-      var h1 = { 'User-Agent': _UA, 'Referer': base + '/', 'X-Requested-With': 'XMLHttpRequest' };
+      var h1 = _browserHeaders(base, {
+        'Accept': 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-Dest': 'empty'
+      });
       if (stage1.token) h1['X-CSRF-Token'] = stage1.token;
-      return fetch(stage1.stage1, { method: 'POST', headers: h1 }).then(function (r) {
-        if (!r.ok) return null;
-        return r.text();
-      }).then(function (stage1Text) {
+      return _fetchJsonWithBrowserFlow(stage1.stage1, { method: 'POST', headers: h1 }, 'Vidfast stage1').then(function (stage1Text) {
         if (!stage1Text) return [];
         return _getJson(_DECRYPT_API + '/enc-vidfast?text=' + encodeURIComponent(stage1Text) + '&stage=2').then(function (ij2) {
           var init = (ij2 && ij2.result) || {};
           if (!init.servers || !init.stream) return [];
-          var h2 = { 'User-Agent': _UA, 'Referer': base + '/', 'X-Requested-With': 'XMLHttpRequest' };
+          var h2 = _browserHeaders(base, {
+            'Accept': 'application/json, text/plain, */*',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Dest': 'empty'
+          });
           if (init.token) h2['X-CSRF-Token'] = init.token;
-          return fetch(init.servers, { method: 'POST', headers: h2 }).then(function (r) {
-            if (!r.ok) return null;
-            return r.text();
-          }).then(function (serversEnc) {
+          return _fetchJsonWithBrowserFlow(init.servers, { method: 'POST', headers: h2 }, 'Vidfast servers').then(function (serversEnc) {
             if (!serversEnc) return [];
             return _postJson(_DECRYPT_API + '/dec-vidfast', { text: serversEnc });
           }).then(function (sj) {
@@ -447,8 +473,7 @@ function _scrapeVidfast(p) {
             for (var i = 0; i < Math.min(servers.length, 5); i++) {
               (function (server) {
                 jobs.push(
-                  fetch(init.stream + '/' + server.data, { method: 'POST', headers: h2 })
-                    .then(function (r) { if (!r.ok) return null; return r.text(); })
+                  _fetchJsonWithBrowserFlow(init.stream + '/' + server.data, { method: 'POST', headers: h2 }, 'Vidfast stream ' + (server.name || i + 1))
                     .then(function (streamEnc) {
                       if (!streamEnc) return null;
                       return _postJson(_DECRYPT_API + '/dec-vidfast', { text: streamEnc });
@@ -500,29 +525,40 @@ function _scrapeVidcore(p) {
   var pageUrl = p.mediaType === 'movie'
     ? base + '/movie/' + p.tmdbId
     : base + '/tv/' + p.tmdbId + '/' + p.season + '/' + p.episode;
-  var pageHeaders = { 'User-Agent': _UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' };
+  var pageHeaders = _browserHeaders(base, {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-Dest': 'document'
+  });
   return _getText(pageUrl, pageHeaders).then(function (page) {
     var token = _extractToken(page);
     if (!token) return [];
     return _getJson(_DECRYPT_API + '/enc-vidcore?text=' + encodeURIComponent(token) + '&stage=1').then(function (ij1) {
       var stage1 = (ij1 && ij1.result) || {};
       if (!stage1.stage1) return [];
-      var h1 = { 'User-Agent': _UA, 'Referer': base + '/', 'X-Requested-With': 'XMLHttpRequest' };
+      var h1 = _browserHeaders(base, {
+        'Accept': 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-Dest': 'empty'
+      });
       if (stage1.token) h1['X-CSRF-Token'] = stage1.token;
-      return fetch(stage1.stage1, { method: 'POST', headers: h1 }).then(function (r) {
-        if (!r.ok) return null;
-        return r.text();
-      }).then(function (stage1Text) {
+      return _fetchJsonWithBrowserFlow(stage1.stage1, { method: 'POST', headers: h1 }, 'Vidcore stage1').then(function (stage1Text) {
         if (!stage1Text) return [];
         return _getJson(_DECRYPT_API + '/enc-vidcore?text=' + encodeURIComponent(stage1Text) + '&stage=2').then(function (ij2) {
           var init = (ij2 && ij2.result) || {};
           if (!init.servers || !init.stream) return [];
-          var h2 = { 'User-Agent': _UA, 'Referer': base + '/', 'X-Requested-With': 'XMLHttpRequest' };
+          var h2 = _browserHeaders(base, {
+            'Accept': 'application/json, text/plain, */*',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Dest': 'empty'
+          });
           if (init.token) h2['X-CSRF-Token'] = init.token;
-          return fetch(init.servers, { method: 'POST', headers: h2 }).then(function (r) {
-            if (!r.ok) return null;
-            return r.text();
-          }).then(function (serversEnc) {
+          return _fetchJsonWithBrowserFlow(init.servers, { method: 'POST', headers: h2 }, 'Vidcore servers').then(function (serversEnc) {
             if (!serversEnc) return [];
             return _postJson(_DECRYPT_API + '/dec-vidcore', { text: serversEnc });
           }).then(function (sj) {
@@ -531,8 +567,7 @@ function _scrapeVidcore(p) {
             for (var i = 0; i < Math.min(servers.length, 5); i++) {
               (function (server) {
                 jobs.push(
-                  fetch(init.stream + '/' + server.data, { method: 'POST', headers: h2 })
-                    .then(function (r) { if (!r.ok) return null; return r.text(); })
+                  _fetchJsonWithBrowserFlow(init.stream + '/' + server.data, { method: 'POST', headers: h2 }, 'Vidcore stream ' + (server.name || i + 1))
                     .then(function (streamEnc) {
                       if (!streamEnc) return null;
                       return _postJson(_DECRYPT_API + '/dec-vidcore', { text: streamEnc });
@@ -663,7 +698,7 @@ function _dynUrl(key) {
 var _B64CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
 function _b64ToBytes(b64) {
-  var clean = String(b64 || '').replace(/[^A-Za-z0-9+/=]/g, '');
+  var clean = String(b64 || '').replace(/[^A-Za-z0-9+\/=]/g, '');
   var bytes = [];
   var i = 0;
   while (i < clean.length) {
@@ -740,7 +775,7 @@ function _decodeEntities(s) {
 }
 
 function _getBaseUrl(url) {
-  var m = /^(https?:\/\/[^/]+)/i.exec(String(url || ''));
+  var m = /^(https?:\/\/[^\/]+)/i.exec(String(url || ''));
   return m ? m[1] : String(url || '');
 }
 
@@ -868,7 +903,7 @@ function _hubResolveGofile(url, langLabel, source) {
       var children = (content && content.data && content.data.children) || {};
       var files = [];
       for (var k in children) {
-        if (Object.prototype.hasOwnProperty.call(children, k)) files.push(children[k]);
+        if (children.hasOwnProperty(k)) files.push(children[k]);
       }
       var best = null;
       for (var i = 0; i < files.length; i++) {
