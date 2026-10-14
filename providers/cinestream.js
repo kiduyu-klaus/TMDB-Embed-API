@@ -1470,6 +1470,16 @@ async function getcinestreams(tmdbId, mediaType = 'movie', season = 1, episode =
       format: s.container || s.format,
       subtitles: s.subtitles || [],
     })), 'cinestream');
+    const matroskaHosts = new Set([
+      '4dad9ad3e94138b7447532d7884e3068.r2.cloudflarestorage.com',
+      'video-downloads.googleusercontent.com',
+      'pixeldrain.dev',
+    ]);
+    for (const stream of streams) {
+      try {
+        if (matroskaHosts.has(new URL(stream.url).hostname)) stream.mimeType = 'video/x-matroska';
+      } catch { /* Leave malformed URLs to the existing stream validation. */ }
+    }
     trace.log('extraction.complete', { count: streams.length, elapsedMs: Date.now() - started });
     return streams;
   } catch (_) {
