@@ -824,6 +824,14 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
                 reqHeaders = { ...VIDLOVE_HEADERS, Accept: '*/*' };
             } else if (server.name === 'Viz') {
                 reqHeaders = { ...SOURCE_HEADERS, Referer: 'https://player.vidzee.wtf/', Origin: 'https://player.vidzee.wtf' };
+            } else if (server.name === 'Tet') {
+                reqHeaders = { 'User-Agent': USER_AGENT, 'Referer': 'https://player.videasy.net/', 'Origin': 'https://player.videasy.net', 'Accept': '*/*' };
+            } else if (server.name === 'prime') {
+                reqHeaders = { 'User-Agent': USER_AGENT, 'Referer': 'https://embedmaster.link/', 'Origin': 'https://embedmaster.link', 'Accept': '*/*' };
+            } else if (server.name === 'vipplay') {
+                reqHeaders = { 'User-Agent': USER_AGENT, 'Referer': 'https://cinemaos.tech/', 'Origin': 'https://cinemaos.tech', 'Accept': '*/*' };
+            } else if (server.name === 'Movip') {
+                reqHeaders = { 'User-Agent': USER_AGENT, 'Referer': 'https://moviesapi.to/', 'Origin': 'https://moviesapi.to', 'Accept': '*/*' };
             } else {
                 reqHeaders = { ...SOURCE_HEADERS };
             }
@@ -834,6 +842,8 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
                 reqHeaders[key] = value;
             }
 
+            const isDash = stream.type === 'dash' || /\.mpd(?:[?#]|$)/i.test(stream.url);
+            const isMp4 = stream.type === 'mp4' || /\.mp4(?:[?#]|$)/i.test(stream.url);
             const streamObj = {
                 name: `CineSrc ${server.name}`,
                 title: `CineSrc - ${server.name} - ${quality}`,
@@ -841,9 +851,9 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
                 quality,
                 provider: 'CineSrc',
                 headers: reqHeaders,
-                type: 'hls',
-                format: 'hls',
-                mimeType: 'application/vnd.apple.mpegurl'
+                type: isDash ? 'dash' : isMp4 ? 'mp4' : 'hls',
+                format: isDash ? 'dash' : isMp4 ? 'mp4' : 'hls',
+                mimeType: isDash ? 'application/dash+xml' : isMp4 ? 'video/mp4' : 'application/vnd.apple.mpegurl'
             };
             if (subtitles.length) streamObj.subtitles = subtitles;
 
@@ -858,3 +868,4 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
 }
 
 module.exports = { getCinesrcStreams, EMBED_SERVERS, resolveSourceUrl, parseHlsVariants, extractPlaybackHeaders, extractStreamData };
+
