@@ -1458,6 +1458,7 @@ function getVideoSources(episodeUrl) {
     function pushArr(arr) {
       for (var j = 0; j < arr.length; j++) {
         var s = arr[j];
+        if (s && _isGoogleDownloadUrl(s.url)) continue;
         if (s && s.url && seen[s.url]) duplicates++;
         if (s && s.url && !seen[s.url]) {
           seen[s.url] = true;

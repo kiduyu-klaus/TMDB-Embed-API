@@ -286,7 +286,10 @@ function buildStream(stream, info) {
     title: `${info.title}${info.year ? ` (${info.year})` : ''} [DesiFlix ${quality} ${language}]`,
     url,
     quality,
-    type: isHls ? 'application/vnd.apple.mpegurl' : 'video/mp4',
+    language: 'Hindi . English ',
+    format: 'mkv',
+    mimeType: 'video/x-matroska',
+    type: 'video/x-matroska',
     behaviorHints: {
       bingeGroup: `desiflix-${quality.toLowerCase()}-${host}`,
     },

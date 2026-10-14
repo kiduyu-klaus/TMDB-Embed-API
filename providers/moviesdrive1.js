@@ -159,6 +159,14 @@ function __mdInferFormat(url) {
   return { format: "direct", mimeType: "application/octet-stream" };
 }
 
+function __mdIsGoogleDownloadUrl(url) {
+  try {
+    return new URL(url).hostname.toLowerCase() === "video-downloads.googleusercontent.com";
+  } catch (e) {
+    return false;
+  }
+}
+
 // Wraps the raw extractor output with the metadata consumers expect:
 //   - title     : human-readable label
 //   - provider  : source identifier
@@ -960,9 +968,10 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
           }
         }
       }
-      // Do not expose GDFlix landing pages as playable streams.
+      // Do not expose GDFlix landing pages or Googleusercontent downloads as playable streams.
       allStreams = allStreams.filter((stream) =>
-        !String(stream.url || "").trim().toLowerCase().startsWith("https://gdflix.dev")
+        !String(stream.url || "").trim().toLowerCase().startsWith("https://gdflix.dev") &&
+        !__mdIsGoogleDownloadUrl(stream.url)
       );
       __mdLog("getMoviesDriveStreams", "info", "done", {
         totalStreams: allStreams.length,

@@ -27,11 +27,11 @@ const SERVERS = [
     { id: 'dallas', label: 'Dallas' },
     { id: 'tampa', label: 'Tampa' },
     { id: 'orlando', label: 'Orlando' },
-    { id: 'munich', label: 'Munich', language: 'german' },
-    { id: 'berlin', label: 'Berlin' },
-    { id: 'paris', label: 'Paris' },
-    { id: 'delhi', label: 'Delhi', quality: 'Hindi' },
-    { id: 'cancun', label: 'Cancun' }
+    { id: 'munich', label: 'Munich', language: 'german', resultLanguage: 'German' },
+    { id: 'berlin', label: 'Berlin', resultLanguage: 'German' },
+    { id: 'paris', label: 'Paris', resultLanguage: 'French' },
+    { id: 'delhi', label: 'Delhi', quality: 'Hindi', resultLanguage: 'Hindi' },
+    { id: 'cancun', label: 'Cancun', resultLanguage: 'Spanish' }
 ];
 
 function encodeRfc3986(value) {
@@ -113,6 +113,7 @@ async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum
             title: `Videasy ${server.label} - ${source.quality || 'Auto'}`,
             url: source.url,
             quality: source.quality || 'Auto',
+            language: server.resultLanguage || 'Original',
             provider: 'Videasy',
             headers: {
                 Referer: VIDEASY_HEADERS.Referer,
