@@ -936,6 +936,46 @@ function _makeHubSource(source, langLabel, url, qualityText, server, referer) {
   };
 }
 
+function _isGoogleDownloadUrl(url) {
+  try {
+    return new URL(url).hostname.toLowerCase() === 'video-downloads.googleusercontent.com';
+  } catch (e) {
+    return false;
+  }
+}
+
+/* Googleusercontent exposes the real container metadata only on the download
+ * response. Perform a GET and cancel the body immediately after headers arrive
+ * so we do not download multi-gigabyte files while still capturing every
+ * response header for the player result. */
+function _getGoogleDownloadHeaders(url) {
+  var controller = typeof AbortController === 'function' ? new AbortController() : null;
+  var timer = controller ? setTimeout(function () { controller.abort(); }, 10000) : null;
+  return fetch(url, {
+    method: 'GET',
+    headers: { 'User-Agent': _UA, 'Accept': '*/*' },
+    redirect: 'follow',
+    signal: controller ? controller.signal : undefined
+  }).then(function (response) {
+    var headers = {};
+    if (response.headers && typeof response.headers.forEach === 'function') {
+      response.headers.forEach(function (value, name) { headers[name] = value; });
+    }
+    if (response.body && typeof response.body.cancel === 'function') {
+      return Promise.resolve(response.body.cancel()).catch(function () {}).then(function () { return headers; });
+    }
+    return headers;
+  }).catch(function () {
+    return {};
+  }).then(function (headers) {
+    if (timer) clearTimeout(timer);
+    return headers;
+  }, function (error) {
+    if (timer) clearTimeout(timer);
+    throw error;
+  });
+}
+
 /* Buzz Server pages hide the real link behind a .download-btn. */
 function _hubBuzzDl(href, base) {
   return _getText(href).then(function (bHtml) {
@@ -1458,13 +1498,20 @@ async function getcinestreams(tmdbId, mediaType = 'movie', season = 1, episode =
   trace.log('extraction.start', { tmdbId, type, season: isTv ? seasonNum : null, episode: isTv ? episodeNum : null });
   try {
     const sources = await getVideoSources(url);
-    const streams = normalizeStreams(sources.filter(s => s && /^https?:\/\//i.test(s.url || '')).map(s => ({
+    const eligibleSources = sources.filter(s => s && /^https?:\/\//i.test(s.url || ''));
+    const googleHeaderCache = new Map();
+    const streamsWithHeaders = await Promise.all(eligibleSources.map(async (s) => {
+      if (!_isGoogleDownloadUrl(s.url)) return { source: s, responseHeaders: {} };
+      if (!googleHeaderCache.has(s.url)) googleHeaderCache.set(s.url, _getGoogleDownloadHeaders(s.url));
+      return { source: s, responseHeaders: await googleHeaderCache.get(s.url) };
+    }));
+    const streams = normalizeStreams(streamsWithHeaders.map(({ source: s, responseHeaders }) => ({
       name: `CineStream - ${s.label || 'Stream'}`,
       title: s.label || 'CineStream',
       url: s.url,
       quality: s.quality || (String(s.label || '').match(/\b(\d{3,4}p)\b/i) || [])[1] || 'Auto',
       provider: 'cinestream',
-      headers: { 'User-Agent': _UA, ...(s.headers || {}) },
+      headers: { 'User-Agent': _UA, ...(s.headers || {}), ...responseHeaders },
       format: s.container || s.format,
       subtitles: s.subtitles || [],
     })), 'cinestream');

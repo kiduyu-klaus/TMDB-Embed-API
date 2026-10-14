@@ -26,3 +26,30 @@ test('normalizes streams while preserving required headers and subtitles',async(
  assert.equal(s.headers['User-Agent'],'upstream-agent');assert.equal(s.headers.Referer,'https://vidcore.io/');
  assert.equal(s.subtitles.length,1);
 });
+test('probes Googleusercontent downloads with GET and preserves response headers',async()=>{
+ let request;
+ const originalFetch=globalThis.fetch;
+ globalThis.fetch=async(url,options)=>{
+  request={url,options};
+  return {ok:true,status:200,headers:new Map([
+   ['content-type','video/mkv'],
+   ['x-guploader-uploadid','upload-123'],
+   ['content-disposition','attachment; filename="episode.mkv"'],
+   ['content-length','6303134380'],
+   ['server','UploadServer']
+  ]),body:{cancel:async()=>{}}};
+ };
+ try {
+  const {provider}=load([{url:'https://video-downloads.googleusercontent.com/stream?id=1',label:'HubCloud [1080p]',container:'mkv',headers:{Referer:'https://hubcloud.example/'}}]);
+  const [s]=await provider.getcinestreams(550,'movie');
+  assert.equal(request.options.method,'GET');
+  assert.equal(request.url,'https://video-downloads.googleusercontent.com/stream?id=1');
+  assert.equal(s.headers['content-type'],'video/mkv');
+  assert.equal(s.headers['x-guploader-uploadid'],'upload-123');
+  assert.equal(s.headers['content-disposition'],'attachment; filename="episode.mkv"');
+  assert.equal(s.headers['content-length'],'6303134380');
+  assert.equal(s.headers.server,'UploadServer');
+ } finally {
+  globalThis.fetch=originalFetch;
+ }
+});
