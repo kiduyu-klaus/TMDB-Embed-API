@@ -1,382 +1,318 @@
-const axios = require("axios");
+/* SPDX-License-Identifier: GPL-3.0-only
+ * Nuvio port of WioSinema/CineStream invokeVidcore.
+ */
+"use strict";
 
-const VIDCORE_BASE = "https://vidcore.io";
-const ENC_DEC_API = "https://enc-dec.app/api";
-const REQUEST_TIMEOUT_MS = 10000;
+const { AsyncLocalStorage } = require("node:async_hooks");
+const { createVidcoreSession } = require("../utils/vidcoreSession");
+const sessions = new AsyncLocalStorage();
+const fetch = (url, options, stage) => sessions.getStore()(url, options, stage);
 
-const VIDCORE_HEADERS = {
-  "User-Agent": "Mozilla/5.0",
-  Referer: `${VIDCORE_BASE}/`,
-  "X-Requested-With": "XMLHttpRequest",
-};
+const VIDCORE = "https://vidcore.io";
+const DECRYPT = "https://enc-dec.app/api";
+const UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36";
+const LOG_TAG = "[WioSinema Vidcore]";
 
-// ---------------------------------------------------------------------------
-// HTTP client adapter (curl-cffi / curl-impersonate).
-// The Python sample uses curl_cffi so requests carry a browser TLS fingerprint.
-// All network I/O goes through get/post below, so adjusting the client library
-// only requires editing createClient().
-//
-// Expected shape of the client: { get(url, {headers, timeout}) -> {status, text},
-//                                 post(url, {headers, json, timeout}) -> {status, text} }
-// ---------------------------------------------------------------------------
-let clientPromise = null;
+function log(message) {
+  console.log(`${LOG_TAG} ${message}`);
+}
 
-async function createClient() {
-  let impersonate = null;
+function warn(message) {
+  console.warn(`${LOG_TAG} WARN: ${message}`);
+}
+
+function logError(message) {
+  console.error(`${LOG_TAG} ERROR: ${message}`);
+}
+
+function elapsed(startedAt) {
+  return `${Date.now() - startedAt}ms`;
+}
+
+// Only log origins: signed tokens may also occur in URL paths.
+function safeUrl(value) {
   try {
-    // Adjust the module name / call below to match the curl-cffi package you install.
-    impersonate = require("curl-cffi");
-  } catch {
-    impersonate = null;
+    const parsed = new URL(value);
+    return parsed.origin;
+  } catch (_) {
+    return "<unavailable URL>";
   }
+}
 
-  if (impersonate && typeof impersonate.get === "function") {
-    const wrap = (res) => ({
-      status: res.status ?? res.statusCode,
-      text:
-        typeof res.text === "function"
-          ? res.text()
-          : (res.text ?? res.body ?? res.data ?? ""),
-    });
-    return {
-      async get(url, { headers, timeout } = {}) {
-        return wrap(
-          await impersonate.get(url, {
-            headers,
-            timeout,
-            impersonate: "chrome",
-          }),
-        );
-      },
-      async post(url, { headers, json, timeout } = {}) {
-        return wrap(
-          await impersonate.post(url, {
-            headers,
-            ...(json !== undefined ? { json } : {}),
-            timeout,
-            impersonate: "chrome",
-          }),
-        );
-      },
-    };
-  }
-
-  console.warn("[Vidcore] curl-cffi not available; falling back to axios");
+function pageHeaders() {
   return {
-    async get(url, { headers, timeout } = {}) {
-      const res = await axios.get(url, {
-        headers,
-        timeout,
-        responseType: "text",
-        transformResponse: (d) => d,
-      });
-      return { status: res.status, text: String(res.data) };
-    },
-    async post(url, { headers, json, timeout } = {}) {
-      const res = await axios.post(url, json, {
-        headers,
-        timeout,
-        responseType: "text",
-        transformResponse: (d) => d,
-      });
-      return { status: res.status, text: String(res.data) };
-    },
+    "User-Agent": UA,
+    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
   };
 }
 
-function getClient() {
-  if (!clientPromise) clientPromise = createClient();
-  return clientPromise;
-}
-
-async function httpGet(url, headers = {}) {
-  const client = await getClient();
-  const res = await client.get(url, { headers, timeout: REQUEST_TIMEOUT_MS });
-  return await res.text;
-}
-
-async function httpPost(url, headers = {}, json) {
-  const client = await getClient();
-  const res = await client.post(url, {
-    headers,
-    json,
-    timeout: REQUEST_TIMEOUT_MS,
-  });
-  return await res.text;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-function isHttpUrl(value) {
-  if (typeof value !== "string") return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function parsePayload(value) {
-  if (typeof value !== "string") return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return value;
-  }
+function ajaxHeaders(csrfToken) {
+  const headers = {
+    "User-Agent": UA,
+    Referer: `${VIDCORE}/`,
+    "X-Requested-With": "XMLHttpRequest",
+  };
+  if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
+  return headers;
 }
 
 function parseJson(text, label) {
   try {
     return JSON.parse(text);
-  } catch {
-    throw new Error(`Vidcore ${label} returned non-JSON response`);
+  } catch (err) {
+    warn(`${label}: response was not valid JSON (details redacted)`);
+    return null;
   }
 }
 
-function validateResponse(data, path) {
-  if (
-    !data ||
-    data.status !== 200 ||
-    data.result === undefined ||
-    data.result === null
-  ) {
-    const status = data && data.status !== undefined ? data.status : "unknown";
-    const error = data && data.error ? String(data.error) : "unknown";
-    throw new Error(
-      `Vidcore API error at ${path} (status=${status}, error=${error})`,
+function resultOf(obj) {
+  return obj && obj.result != null ? obj.result : null;
+}
+
+async function getText(url, headers, label) {
+  const startedAt = Date.now();
+  log(`${label}: GET ${safeUrl(url)}`);
+  try {
+    const response = await fetch(url, { headers }, label);
+    const text = await response.text();
+    log(
+      `${label}: HTTP ${response.status}${response.statusText ? ` ${response.statusText}` : ""}; ${text.length} response characters (${elapsed(startedAt)})`,
     );
+    if (!response.ok) warn(`${label}: request returned a non-success HTTP status`);
+    return { ok: response.ok, status: response.status, text };
+  } catch (err) {
+    logError(`${label}: GET failed after ${elapsed(startedAt)}: request or response processing failed (details redacted)`);
+    throw err;
   }
-  return parsePayload(data.result);
 }
 
-function inferStreamType(url, rawType) {
-  const type = String(rawType || "").toLowerCase();
-  if (type.includes("hls") || /\.m3u8(?:$|[?#])/i.test(url)) return "hls";
-  if (type.includes("dash") || /\.mpd(?:$|[?#])/i.test(url)) return "dash";
-  return "direct";
+async function getJson(url, headers, label) {
+  const response = await getText(url, headers, label);
+  if (!response.ok) return null;
+  const parsed = parseJson(response.text, label);
+  if (parsed === null) throw new Error(`${label}: invalid JSON response`);
+  return parsed;
 }
 
-function normalizeQuality(value) {
-  const quality = String(value || "Auto").trim();
-  if (/^\d{3,4}$/.test(quality)) return `${quality}p`;
-  return quality || "Auto";
-}
+async function post(url, payload, headers, label) {
+  const startedAt = Date.now();
+  const requestHeaders = Object.assign({}, headers || {});
+  let body = null;
+  if (payload != null) {
+    requestHeaders["Content-Type"] = "application/json";
+    body = JSON.stringify(payload);
+  }
 
-function collectStreamCandidates(
-  value,
-  inherited = {},
-  output = [],
-  seenObjects = new Set(),
-) {
-  const parsed = parsePayload(value);
-  if (!parsed || typeof parsed !== "object") return output;
-  if (seenObjects.has(parsed)) return output;
-  seenObjects.add(parsed);
-
-  if (Array.isArray(parsed)) {
-    parsed.forEach((item) =>
-      collectStreamCandidates(item, inherited, output, seenObjects),
+  log(
+    `${label}: POST ${safeUrl(url)}${body ? ` (JSON body: ${body.length} characters)` : " (no body)"}`,
+  );
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: requestHeaders,
+      body,
+    }, label);
+    const text = await response.text();
+    log(
+      `${label}: HTTP ${response.status}${response.statusText ? ` ${response.statusText}` : ""}; ${text.length} response characters (${elapsed(startedAt)})`,
     );
-    return output;
+    if (!response.ok) warn(`${label}: request returned a non-success HTTP status`);
+    return response.ok ? text : "";
+  } catch (err) {
+    logError(`${label}: POST failed after ${elapsed(startedAt)}: request or response processing failed (details redacted)`);
+    throw err;
   }
-
-  const quality =
-    parsed.quality || parsed.label || parsed.resolution || inherited.quality;
-  const language = parsed.language || parsed.lang || inherited.language;
-  const url =
-    parsed.url || parsed.file || parsed.src || parsed.playlist || parsed.link;
-  if (isHttpUrl(url)) {
-    output.push({
-      url,
-      quality,
-      language,
-      type: parsed.type || parsed.format || inherited.type,
-      headers:
-        parsed.headers && typeof parsed.headers === "object"
-          ? parsed.headers
-          : null,
-    });
-  }
-
-  Object.entries(parsed).forEach(([key, child]) => {
-    if (["url", "file", "src", "playlist", "link", "headers"].includes(key))
-      return;
-    const next = { ...inherited };
-    if (/^\d{3,4}p?$/i.test(key)) next.quality = key;
-    collectStreamCandidates(child, next, output, seenObjects);
-  });
-  return output;
 }
 
-function normalizeStreams(payload, serverLabel) {
-  const candidates = collectStreamCandidates(payload);
-  const seen = new Set();
-  return candidates.flatMap((item) => {
-    if (!isHttpUrl(item.url) || seen.has(item.url)) return [];
-    if (/\.(?:srt|vtt|ass|ssa)(?:$|[?#])/i.test(item.url)) return [];
-    seen.add(item.url);
-    const type = inferStreamType(item.url, item.type);
-    const quality = normalizeQuality(item.quality);
-    return [
-      {
-        name: `Vidcore ${serverLabel}`,
-        title: `Vidcore ${serverLabel} - ${quality}`,
-        url: item.url,
-        quality,
-        provider: "vidcore",
-        type,
-        ...(type === "hls"
-          ? { mimeType: "application/vnd.apple.mpegurl" }
-          : {}),
-        ...(type === "dash" ? { mimeType: "application/dash+xml" } : {}),
-        headers: item.headers
-          ? { Referer: VIDCORE_HEADERS.Referer, ...item.headers }
-          : { Referer: VIDCORE_HEADERS.Referer },
-      },
-    ];
-  });
-}
-
-function buildPageUrl(tmdbId, mediaType, seasonNum, episodeNum) {
-  const isSeries = mediaType === "tv" || mediaType === "series";
-  return isSeries
-    ? `${VIDCORE_BASE}/tv/${encodeURIComponent(tmdbId)}/${seasonNum}/${episodeNum}/`
-    : `${VIDCORE_BASE}/movie/${encodeURIComponent(tmdbId)}/`;
-}
-
-function extractToken(html) {
-  const match = html.match(/\\"(?:en|token)\\":\\"(.*?)\\"/);
+function tokenFrom(text) {
+  let match = /\\["](?:en|token)\\["]\s*:\s*\\["](.*?)\\["]/.exec(text || "");
+  if (match) return match[1];
+  match = /"(?:en|token)"\s*:\s*"(.*?)"/.exec(text || "");
   return match ? match[1] : null;
 }
 
-async function apiGet(path, params) {
-  const query = Object.entries(params)
-    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-    .join("&");
-  const url = `${ENC_DEC_API}/${path}?${query}`;
-  const text = await httpGet(url, {});
-  return validateResponse(parseJson(text, path), url);
-}
-
-async function apiDecrypt(text) {
-  const url = `${ENC_DEC_API}/dec-vidcore`;
-  const responseText = await httpPost(
-    url,
-    { "Content-Type": "application/json" },
+async function decrypt(text, label) {
+  log(`${label}: submitting ${text.length} encrypted characters for decryption`);
+  const response = await post(
+    `${DECRYPT}/dec-vidcore`,
     { text },
+    null,
+    `${label} decrypt`,
   );
-  return validateResponse(parseJson(responseText, "dec-vidcore"), url);
+  if (!response) {
+    warn(`${label}: decryption endpoint returned an empty response`);
+    return null;
+  }
+  return parseJson(response, `${label} decrypt`);
 }
 
-// ---------------------------------------------------------------------------
-// Main flow
-// ---------------------------------------------------------------------------
-async function fetchServerStream(server, streamBase, headers) {
-  const data = server && server.data;
-  if (!data) return [];
-  const label = String(server.name || server.label || server.title || data);
-  const encrypted = await httpPost(
-    `${streamBase}/${data}`,
-    headers,
-    undefined,
-  );
-  if (!encrypted || encrypted.startsWith("<")) return [];
-  const decrypted = await apiDecrypt(encrypted);
-  return normalizeStreams(decrypted, label);
-}
-
-async function getVidcoreStreams(
-  tmdbId,
-  mediaType = "movie",
-  seasonNum = null,
-  episodeNum = null,
-) {
-  const isSeries = mediaType === "tv" || mediaType === "series";
-  if (
-    isSeries &&
-    (!Number.isInteger(Number(seasonNum)) ||
-      Number(seasonNum) < 1 ||
-      !Number.isInteger(Number(episodeNum)) ||
-      Number(episodeNum) < 1)
-  ) {
-    console.warn("[Vidcore] Series request is missing season or episode");
+async function resolveServer(server, streamBase, csrfToken, index, total) {
+  if (!server || !server.data) {
+    warn(`Server ${index + 1}/${total}  has no data field; skipping`);
     return [];
   }
 
-  const headers = { ...VIDCORE_HEADERS };
-  let servers;
-  let streamBase;
+  const startedAt = Date.now();
+  const endpoint = `${streamBase.replace(/\/$/, "")}/${server.data}`;
+  log(`Server ${index + 1}/${total} : resolving stream`);
 
   try {
-    // 1. Page -> content token
-    const html = await httpGet(
-      buildPageUrl(tmdbId, mediaType, seasonNum, episodeNum),
-      headers,
+    const encrypted = await post(
+      endpoint,
+      null,
+      ajaxHeaders(csrfToken),
+      `Server ${index + 1}/${total} stream request`,
     );
-    const enToken = extractToken(html);
-    if (!enToken) {
-      console.error("[Vidcore] Content token not found on page.");
+    if (!encrypted) {
+      warn(`Server ${index + 1}/${total} : empty encrypted response`);
       return [];
     }
 
-    // 2. Stage 1 -> servers-token request
-    const stage1 = await apiGet("enc-vidcore", { text: enToken, stage: 1 });
-    headers["X-CSRF-Token"] = stage1.token;
-    const stage1Text = await httpPost(stage1.stage1, headers, undefined);
+    const decoded = await decrypt(encrypted, `Server ${index + 1}/${total}`);
+    const data = resultOf(decoded);
+    if (!data || !data.url) {
+      warn(`Server ${index + 1}/${total} : decrypted result has no stream URL`);
+      return [];
+    }
 
-    // 3. Stage 2 -> servers / stream URLs + new token
-    const stage2 = await apiGet("enc-vidcore", {
-      text: stage1Text,
-      stage: 2,
-    });
-    headers["X-CSRF-Token"] = stage2.token;
-    streamBase = stage2.stream;
+    const url = data.url;
+    const tracks = Array.isArray(data.tracks) ? data.tracks : [];
+    const format = url.indexOf(".m3u8") >= 0 ? "m3u8" : "video";
+    log(
+      `Server ${index + 1}/${total} : stream resolved (${format}, ${tracks.length} subtitle track(s), ${safeUrl(url)}) in ${elapsed(startedAt)}`,
+    );
 
-    // 4. Server list (encrypted) -> decrypt
-    const serversEncrypted = await httpPost(stage2.servers, headers, undefined);
-    const decrypted = await apiDecrypt(serversEncrypted);
-    servers = Array.isArray(decrypted) ? decrypted : [];
-  } catch (error) {
-    console.error(`[Vidcore] Setup failed: ${error.message}`);
+    return [
+      {
+        name: "WioSinema • Vidcore",
+        title: `Vidcore • ${server.name || "Server"}`,
+        url,
+        quality: 1080,
+        provider: "wiosinema-vidcore",
+        format,
+        subtitles: tracks.map((track) => ({
+          file: track.file,
+          label: track.label || track.language,
+        })),
+        headers: { "User-Agent": UA, Referer: `${VIDCORE}/` },
+      },
+    ];
+  } catch (err) {
+    logError(
+      `Server ${index + 1}/${total}  failed after ${elapsed(startedAt)}: request or response processing failed (details redacted)`,
+    );
+    return [];
+  }
+}
+
+async function getVidcoreStreams(tmdbId, mediaType, season, episode) {
+  const startedAt = Date.now();
+  if (tmdbId == null) {
+    warn("No TMDB ID supplied; returning no streams");
     return [];
   }
 
-  if (!servers.length || !streamBase) {
-    console.warn("[Vidcore] No servers returned.");
-    return [];
-  }
-
-  const results = await Promise.allSettled(
-    servers.map((server) => fetchServerStream(server, streamBase, headers)),
+  const isTv = mediaType === "tv" && season != null && episode != null;
+  const page = isTv
+    ? `${VIDCORE}/tv/${encodeURIComponent(String(tmdbId))}/${encodeURIComponent(String(season))}/${encodeURIComponent(String(episode))}`
+    : `${VIDCORE}/movie/${encodeURIComponent(String(tmdbId))}`;
+  log(
+    `Starting ${isTv ? "TV" : "movie"} lookup: TMDB ID ${tmdbId}` +
+      (isTv ? `, season ${season}, episode ${episode}` : ""),
   );
 
-  const streams = [];
-  const seen = new Set();
-  results.forEach((result, index) => {
-    if (result.status === "rejected") {
-      const reason =
-        result.reason && result.reason.message
-          ? result.reason.message
-          : "unknown error";
-      console.warn(`[Vidcore] Server #${index} failed: ${reason}`);
-      return;
+  try {
+    // Page -> content token
+    const pageResponse = await getText(page, pageHeaders(), "Page");
+    if (!pageResponse.ok) return [];
+    const encrypted = tokenFrom(pageResponse.text);
+    if (!encrypted) {
+      throw new Error(`Could not extract token from Vidcore page (HTTP ${pageResponse.status})`);
     }
-    result.value.forEach((stream) => {
-      if (seen.has(stream.url)) return;
-      seen.add(stream.url);
-      streams.push(stream);
-    });
-  });
+    log(`Page: content token extracted (${encrypted.length} characters; value redacted)`);
 
-  console.log(`[Vidcore] Emitted ${streams.length} unique stream(s)`);
-  return streams;
+    // Stage 1 -> server-token request
+    const stage1Url = `${DECRYPT}/enc-vidcore?text=${encodeURIComponent(encrypted)}&stage=1`;
+    const stage1Json = await getJson(stage1Url, undefined, "Stage 1 decrypt request");
+    const stage1 = resultOf(stage1Json);
+    if (!stage1 || !stage1.stage1) {
+      throw new Error("Invalid stage 1 response: result or handoff URL is missing");
+    }
+    log(`Stage 1: handoff URL received; CSRF token ${stage1.token ? "present" : "missing"}`);
+
+    const stage1Text = await post(
+      stage1.stage1,
+      null,
+      ajaxHeaders(stage1.token),
+      "Stage 1 Vidcore handoff",
+    );
+    if (!stage1Text) throw new Error("Stage 1 Vidcore handoff returned an empty response");
+
+    // Stage 2 -> server-list and stream endpoints
+    const stage2Url = `${DECRYPT}/enc-vidcore?text=${encodeURIComponent(stage1Text)}&stage=2`;
+    const stage2Json = await getJson(stage2Url, undefined, "Stage 2 decrypt request");
+    const stage2 = resultOf(stage2Json);
+    if (!stage2 || !stage2.servers || !stage2.stream) {
+      throw new Error("Invalid stage 2 response: server-list or stream endpoint is missing");
+    }
+    log(
+      `Stage 2: server-list and stream endpoints received; CSRF token ${stage2.token ? "present" : "missing"}`,
+    );
+
+    // Encrypted server list -> decrypted server array
+    const serversEncrypted = await post(
+      stage2.servers,
+      null,
+      ajaxHeaders(stage2.token),
+      "Server list request",
+    );
+    if (!serversEncrypted) throw new Error("Server list request returned an empty response");
+    const serversDecoded = await decrypt(serversEncrypted, "Server list");
+    const servers = resultOf(serversDecoded);
+    if (!Array.isArray(servers)) {
+      throw new Error("Decrypted server list is not an array");
+    }
+    log(
+      `Server list: ${servers.length} server(s) received`,
+    );
+    if (!servers.length) {
+      log(`Finished with no servers in ${elapsed(startedAt)}`);
+      return [];
+    }
+
+    // Resolve every server concurrently and remove duplicate stream URLs.
+    const groups = await Promise.all(
+      servers.map((server, index) =>
+        resolveServer(server, stage2.stream, stage2.token, index, servers.length),
+      ),
+    );
+    const streams = [];
+    const seen = new Set();
+    let duplicates = 0;
+    groups.forEach((group) => {
+      group.forEach((stream) => {
+        if (!stream.url || seen.has(stream.url)) {
+          if (stream.url) duplicates += 1;
+          return;
+        }
+        seen.add(stream.url);
+        streams.push(stream);
+      });
+    });
+
+    log(
+      `Finished in ${elapsed(startedAt)}: ${servers.length} server(s), ${streams.length} unique stream(s), ${duplicates} duplicate(s) removed`,
+    );
+    if (!streams.length) warn("No streams were resolved from any server");
+    return streams;
+  } catch (err) {
+    logError(`Lookup failed after ${elapsed(startedAt)}: request or response processing failed (details redacted)`);
+
+    return [];
+  }
 }
 
 module.exports = {
-  getVidcoreStreams,
-  buildPageUrl,
-  extractToken,
-  normalizeStreams,
+  getVidcoreStreams: (...args) => sessions.run(createVidcoreSession(), () => getVidcoreStreams(...args)),
 };
