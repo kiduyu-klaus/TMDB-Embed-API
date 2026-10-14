@@ -23,8 +23,52 @@
 //   node vidup.js                       (GoT S01E01 default)
 //   node vidup.js movie <tmdb|imdb>
 //   node vidup.js tv    <tmdb|imdb> <season> <episode>
+//
+// Logging:
+//   - Default:       progress + warnings + errors.
+//   - VIDUP_DEBUG=1: full request/response detail + stack traces + timings.
+//
+// Author: MiniMax Agent
 
 import { gotScraping } from 'got-scraping';
+
+// ---------------------------------------------------------------------------
+// Logging
+// ---------------------------------------------------------------------------
+
+const DEBUG = process.env.VIDUP_DEBUG === '1' || process.env.VIDUP_DEBUG === 'true';
+
+function ts() {
+    const d = new Date();
+    return d.toISOString().split('T')[1].replace('Z', '');
+}
+
+function fmtBytes(n) {
+    if (n === undefined || n === null) return '?B';
+    if (n < 1024) return `${n}B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)}KB`;
+    return `${(n / 1024 / 1024).toFixed(2)}MB`;
+}
+
+function log(level, tag, msg, extra) {
+    const line = `[${ts()}] [${level}] [vidup:${tag}] ${msg}`;
+    if (extra !== undefined) {
+        if (level === 'ERROR' || level === 'WARN') {
+            console.error(line, extra);
+        } else {
+            console.log(line, extra);
+        }
+    } else if (level === 'ERROR' || level === 'WARN') {
+        console.error(line);
+    } else {
+        console.log(line);
+    }
+}
+
+const dlog = (tag, msg, extra) => DEBUG && log('DEBUG', tag, msg, extra);
+const ilog = (tag, msg, extra) => log('INFO', tag, msg, extra);
+const wlog = (tag, msg, extra) => log('WARN', tag, msg, extra);
+const elog = (tag, msg, extra) => log('ERROR', tag, msg, extra);
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -48,6 +92,11 @@ const ORIGIN  = REFERER.replace(/\/+$/, '');
 // Mirrors the Python `validate()` function from the original sample.
 function validate(data, path) {
     if (data?.status !== 200) {
+        elog('validate', `enc-dec API returned non-200 status for ${path}`, {
+            status: data?.status,
+            error: data?.error,
+            payload: data,
+        });
         const err = new Error(`enc-dec API returned status ${data?.status} for ${path}: ${data?.error ?? 'unknown'}`);
         err.payload = data;
         throw err;
@@ -63,7 +112,7 @@ function validate(data, path) {
 //
 // The initial page GET MUST NOT carry X-Requested-With (Cloudflare
 // WAF returns 403). Real browsers don't either, so this matches.
-async function http(url, { method = 'GET', headers = {}, body, json, asXhr = false } = {}) {
+async function http(url, { method = 'GET', headers = {}, body, json, asXhr = false, tag = 'http' } = {}) {
     const finalHeaders = { ...BASE_HEADERS, ...headers };
     if (asXhr) {
         finalHeaders['X-Requested-With'] = 'XMLHttpRequest';
@@ -98,18 +147,56 @@ async function http(url, { method = 'GET', headers = {}, body, json, asXhr = fal
         opts.body = body;
     }
 
-    const res = await gotScraping(opts);
+    dlog(tag, `--> ${method} ${url}`, {
+        asXhr,
+        headerKeys: Object.keys(finalHeaders),
+        bodyPreview: json ? JSON.stringify(json).slice(0, 200) : (body ? String(body).slice(0, 200) : undefined),
+    });
+
+    const t0 = Date.now();
+    let res;
+    try {
+        res = await gotScraping(opts);
+    } catch (err) {
+        elog(tag, `<-- NETWORK ERROR ${method} ${url} (${Date.now() - t0}ms)`, {
+            message: err.message,
+            code: err.code,
+            stack: DEBUG ? err.stack : undefined,
+        });
+        throw err;
+    }
+
+    const elapsed = Date.now() - t0;
+    const bodyStr = res.body === undefined || res.body === null ? '' : String(res.body);
+    const bodyLen = bodyStr.length;
+
+    dlog(tag, `<-- ${res.statusCode} ${method} ${url} (${elapsed}ms, ${fmtBytes(bodyLen)})`, {
+        status: res.statusCode,
+        bodyPreview: bodyStr.slice(0, 300),
+    });
 
     if (res.statusCode === 403 || res.statusCode === 503) {
+        const snippet = bodyStr.slice(0, 500);
+        elog(tag, `BLOCKED by WAF (${res.statusCode}) ${url}`, {
+            status: res.statusCode,
+            elapsedMs: elapsed,
+            bodySnippet: snippet,
+        });
         const e = new Error(`Request blocked (${res.statusCode}) at ${url}`);
         e.statusCode = res.statusCode;
-        e.body = String(res.body).slice(0, 500);
+        e.body = snippet;
         throw e;
     }
     if (res.statusCode >= 400) {
+        const snippet = bodyStr.slice(0, 500);
+        elog(tag, `HTTP ERROR ${res.statusCode} ${url}`, {
+            status: res.statusCode,
+            elapsedMs: elapsed,
+            bodySnippet: snippet,
+        });
         const e = new Error(`HTTP ${res.statusCode} at ${url}`);
         e.statusCode = res.statusCode;
-        e.body = String(res.body).slice(0, 500);
+        e.body = snippet;
         throw e;
     }
     return res;
@@ -280,73 +367,205 @@ export async function getVidupStreams(
 ) {
     const { onlyServerIndex = null, concurrency = 5, silent = false } = options;
 
+    const totalStart = Date.now();
+    ilog('start', `getVidupStreams(tmdbId=${tmdbId}, type=${mediaType}${seasonNum != null ? `, S${seasonNum}E${episodeNum}` : ''})`, {
+        onlyServerIndex,
+        concurrency,
+        debug: DEBUG,
+    });
+
     // ---- Input validation ----
     if (tmdbId === null || tmdbId === undefined || tmdbId === '') {
+        elog('input', 'tmdbId is required');
         throw new Error('getVidupStreams: tmdbId is required');
     }
     if (mediaType !== 'movie' && mediaType !== 'tv') {
+        elog('input', `invalid mediaType: ${JSON.stringify(mediaType)}`);
         throw new Error(`getVidupStreams: mediaType must be 'movie' or 'tv' (got ${JSON.stringify(mediaType)})`);
     }
     if (mediaType === 'tv') {
         if (seasonNum === null || episodeNum === null) {
+            elog('input', 'tv requested but season/episode missing');
             throw new Error('getVidupStreams: seasonNum and episodeNum are required when mediaType is "tv"');
         }
     }
+    dlog('input', 'input validation passed');
 
     const headers = { ...BASE_HEADERS };
 
     // ---- Step 1: Fetch page and pull out the embedded `en`/`token` field.
     const pageUrl = buildPageUrl(mediaType, tmdbId, seasonNum, episodeNum);
-    const pageRes = await http(pageUrl);
+    ilog('step1', `fetching vidup page: ${pageUrl}`);
+    const t1 = Date.now();
+    let pageRes;
+    try {
+        pageRes = await http(pageUrl, { tag: 'page' });
+    } catch (err) {
+        elog('step1', `failed to fetch vidup page (${Date.now() - t1}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+            stack: DEBUG ? err.stack : undefined,
+        });
+        throw err;
+    }
     const html = pageRes.body;
+    ilog('step1', `page fetched OK (${Date.now() - t1}ms, ${fmtBytes(html.length)})`);
 
     const tokenMatch = html.match(/\\"(?:en|token)\\":\\"(.*?)\\"/);
     if (!tokenMatch) {
+        elog('step1', 'no embedded en/token field found in vidup HTML', {
+            htmlLength: html.length,
+            htmlPreview: html.slice(0, 500),
+        });
         throw new Error('Could not find embedded en/token in vidup page');
     }
     const enToken = tokenMatch[1];
+    ilog('step1', `extracted en/token (len=${enToken.length})`);
 
     // ---- Step 2: Stage 1 - ask enc-dec to interpret the token. Returns an
     // encrypted URL (`stage1`) and a CSRF token.
+    ilog('step2', 'enc-dec stage1 GET');
     const stage1Url = `${API}/enc-vidup?text=${encodeURIComponent(enToken)}&stage=1`;
-    const stage1Res = await http(stage1Url);
-    const parts1 = validate(JSON.parse(stage1Res.body), stage1Url);
+    const t2 = Date.now();
+    let stage1Res;
+    try {
+        stage1Res = await http(stage1Url, { tag: 'stage1' });
+    } catch (err) {
+        elog('step2', `stage1 GET failed (${Date.now() - t2}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+        });
+        throw err;
+    }
+    let parts1;
+    try {
+        parts1 = validate(JSON.parse(stage1Res.body), stage1Url);
+    } catch (err) {
+        elog('step2', `stage1 JSON parse or validation failed`, {
+            raw: stage1Res.body?.slice(0, 500),
+            error: err.message,
+        });
+        throw err;
+    }
     const stage1Encrypted = parts1.stage1;
+    ilog('step2', `stage1 OK (${Date.now() - t2}ms) - got stage1 URL + CSRF token`, {
+        stage1Url: stage1Encrypted,
+        csrfPrefix: parts1.token?.slice(0, 8) + '...',
+    });
 
     // ---- Step 3: POST to that encrypted URL with the CSRF token to get
     // more encrypted text to feed into stage 2.
+    ilog('step3', `POST to stage1 URL with CSRF`);
     headers['X-CSRF-Token'] = parts1.token;
-    const stage1Post = await http(stage1Encrypted, {
-        method: 'POST',
-        headers,
-        asXhr: true,
-    });
+    const t3 = Date.now();
+    let stage1Post;
+    try {
+        stage1Post = await http(stage1Encrypted, {
+            method: 'POST',
+            headers,
+            asXhr: true,
+            tag: 'stage1-post',
+        });
+    } catch (err) {
+        elog('step3', `stage1 POST failed (${Date.now() - t3}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+        });
+        throw err;
+    }
     const text = stage1Post.body;
+    ilog('step3', `stage1 POST OK (${Date.now() - t3}ms, ${fmtBytes(text.length)})`);
 
     // ---- Step 4: Stage 2 - get the servers list, stream base URL, and a
     // new CSRF token.
+    ilog('step4', 'enc-dec stage2 GET');
     const stage2Url = `${API}/enc-vidup?text=${encodeURIComponent(text)}&stage=2`;
-    const stage2Res = await http(stage2Url);
-    const parts2 = validate(JSON.parse(stage2Res.body), stage2Url);
+    const t4 = Date.now();
+    let stage2Res;
+    try {
+        stage2Res = await http(stage2Url, { tag: 'stage2' });
+    } catch (err) {
+        elog('step4', `stage2 GET failed (${Date.now() - t4}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+        });
+        throw err;
+    }
+    let parts2;
+    try {
+        parts2 = validate(JSON.parse(stage2Res.body), stage2Url);
+    } catch (err) {
+        elog('step4', `stage2 JSON parse or validation failed`, {
+            raw: stage2Res.body?.slice(0, 500),
+            error: err.message,
+        });
+        throw err;
+    }
     const { servers: serversEndpoint, stream: streamEndpoint, token: csrfToken } = parts2;
+    ilog('step4', `stage2 OK (${Date.now() - t4}ms)`, {
+        serversEndpoint,
+        streamEndpoint,
+        csrfPrefix: csrfToken?.slice(0, 8) + '...',
+    });
 
     headers['X-CSRF-Token'] = csrfToken;
 
     // ---- Step 5: Fetch the encrypted servers payload and decrypt it.
-    const serversEncRes = await http(serversEndpoint, {
-        method: 'POST',
-        headers,
-        asXhr: true,
-    });
+    ilog('step5a', 'fetch encrypted servers list');
+    const t5a = Date.now();
+    let serversEncRes;
+    try {
+        serversEncRes = await http(serversEndpoint, {
+            method: 'POST',
+            headers,
+            asXhr: true,
+            tag: 'servers-fetch',
+        });
+    } catch (err) {
+        elog('step5a', `servers fetch failed (${Date.now() - t5a}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+        });
+        throw err;
+    }
     const serversEncrypted = serversEncRes.body;
+    ilog('step5a', `servers payload fetched (${Date.now() - t5a}ms, ${fmtBytes(serversEncrypted.length)})`);
 
+    ilog('step5b', 'decrypt servers list via enc-dec /dec-vidup');
     const decUrl = `${API}/dec-vidup`;
-    const serversDecRes = await http(decUrl, {
-        method: 'POST',
-        json: { text: serversEncrypted },
-        asXhr: true,
+    const t5b = Date.now();
+    let serversDecRes;
+    try {
+        serversDecRes = await http(decUrl, {
+            method: 'POST',
+            json: { text: serversEncrypted },
+            asXhr: true,
+            tag: 'servers-dec',
+        });
+    } catch (err) {
+        elog('step5b', `servers decrypt failed (${Date.now() - t5b}ms): ${err.message}`, {
+            status: err.statusCode,
+            body: err.body,
+        });
+        throw err;
+    }
+    let serversDecrypted;
+    try {
+        serversDecrypted = validate(JSON.parse(serversDecRes.body), decUrl);
+    } catch (err) {
+        elog('step5b', `servers decrypt JSON parse or validation failed`, {
+            raw: serversDecRes.body?.slice(0, 500),
+            error: err.message,
+        });
+        throw err;
+    }
+    ilog('step5b', `servers decrypted (${Date.now() - t5b}ms) - found ${serversDecrypted.length} server(s)`, {
+        servers: serversDecrypted.map((s, i) => ({
+            idx: i,
+            name: s?.name,
+            dataPrefix: s?.data ? String(s.data).slice(0, 24) + '...' : null,
+        })),
     });
-    const serversDecrypted = validate(JSON.parse(serversDecRes.body), decUrl);
 
     // ---- Step 6: Build the list of server indices to fetch.
     const indices = onlyServerIndex !== null
@@ -354,54 +573,104 @@ export async function getVidupStreams(
         : serversDecrypted.map((_, i) => i);
 
     if (onlyServerIndex !== null && (onlyServerIndex < 0 || onlyServerIndex >= serversDecrypted.length)) {
+        elog('step6', `onlyServerIndex ${onlyServerIndex} out of range (have ${serversDecrypted.length} servers)`);
         throw new Error(`onlyServerIndex ${onlyServerIndex} out of range (have ${serversDecrypted.length} servers)`);
     }
+    ilog('step6', `will fetch ${indices.length} server(s) with concurrency=${concurrency}`);
 
     // ---- Step 7: Fetch each server's stream in parallel (bounded).
     const fetchOne = async (idx) => {
         const server = serversDecrypted[idx];
-        const streamUrl = `${streamEndpoint}/${server.data}`;
+        const serverName = server?.name ?? `server[${idx}]`;
+        dlog('fetch', `[${idx}] ${serverName}: begin`);
+        const ts0 = Date.now();
 
-        const streamEncRes = await http(streamUrl, {
-            method: 'POST',
-            headers,
-            asXhr: true,
-        });
+        const streamUrl = `${streamEndpoint}/${server.data}`;
+        dlog('fetch', `[${idx}] POST stream URL: ${streamUrl}`);
+
+        let streamEncRes;
+        try {
+            streamEncRes = await http(streamUrl, {
+                method: 'POST',
+                headers,
+                asXhr: true,
+                tag: `stream-${idx}`,
+            });
+        } catch (err) {
+            dlog('fetch', `[${idx}] stream fetch failed: ${err.message}`);
+            throw err;
+        }
         const streamEncrypted = streamEncRes.body;
 
-        const finalDecRes = await http(decUrl, {
-            method: 'POST',
-            json: { text: streamEncrypted },
-            asXhr: true,
-        });
-        const streamData = validate(JSON.parse(finalDecRes.body), decUrl);
+        let finalDecRes;
+        try {
+            finalDecRes = await http(decUrl, {
+                method: 'POST',
+                json: { text: streamEncrypted },
+                asXhr: true,
+                tag: `stream-dec-${idx}`,
+            });
+        } catch (err) {
+            dlog('fetch', `[${idx}] stream decrypt failed: ${err.message}`);
+            throw err;
+        }
 
-        return formatStreamObject(server, streamData);
+        let streamData;
+        try {
+            streamData = validate(JSON.parse(finalDecRes.body), decUrl);
+        } catch (err) {
+            dlog('fetch', `[${idx}] stream validate failed: ${err.message}`);
+            throw err;
+        }
+
+        const formatted = formatStreamObject(server, streamData);
+        ilog('fetch', `[${idx}] ${serverName} OK (${Date.now() - ts0}ms)`, {
+            quality: formatted.quality,
+            format: formatted.format,
+            urlPrefix: formatted.url?.slice(0, 80),
+            subs: formatted.subtitles.length,
+        });
+        return formatted;
     };
 
     // Simple bounded concurrency (Promise.all in chunks).
     const results = new Array(indices.length);
     let cursor = 0;
-    async function worker() {
+    async function worker(workerId) {
         while (cursor < indices.length) {
             const idx = indices[cursor++];
             const serverName = serversDecrypted[idx]?.name ?? `server[${idx}]`;
+            dlog('worker', `worker#${workerId} picked [${idx}] ${serverName}`);
             try {
                 results[idx] = { ok: true, value: await fetchOne(idx) };
             } catch (err) {
+                wlog('worker', `[${idx}] ${serverName} failed: ${err.message}`, DEBUG ? {
+                    status: err.statusCode,
+                    body: err.body,
+                    stack: err.stack,
+                } : undefined);
                 if (!silent) console.warn(`[vidup] ${serverName} (idx ${idx}) failed: ${err.message}`);
                 results[idx] = { ok: false, idx, error: err.message, serverName };
             }
         }
     }
-    await Promise.all(Array.from({ length: Math.min(concurrency, indices.length) }, worker));
+    const workerCount = Math.min(concurrency, indices.length);
+    const t7 = Date.now();
+    await Promise.all(Array.from({ length: workerCount }, (_, i) => worker(i)));
+    ilog('step7', `all workers done in ${Date.now() - t7}ms`);
 
     // Build the final array in the original server order, dropping failures.
     const streams = [];
     for (const idx of indices) {
         const r = results[idx];
         if (r?.ok) streams.push(r.value);
+        else dlog('step7', `dropping failed server [${idx}] ${r?.serverName}: ${r?.error}`);
     }
+    ilog('done', `getVidupStreams complete in ${Date.now() - totalStart}ms`, {
+        requested: indices.length,
+        succeeded: streams.length,
+        failed: indices.length - streams.length,
+    });
     return streams;
 }
 
@@ -428,6 +697,12 @@ function parseArgs() {
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
     (async () => {
+        ilog('cli', 'starting CLI', {
+            argv: process.argv.slice(2),
+            debug: DEBUG,
+            pid: process.pid,
+            node: process.version,
+        });
         try {
             const args = parseArgs();
             const streams = await getVidupStreams(
@@ -446,6 +721,11 @@ if (isMain) {
             console.log(`\n${'-'.repeat(25)} Full JSON ${'-'.repeat(25)}\n`);
             console.log(JSON.stringify(streams, null, 2));
         } catch (err) {
+            elog('cli', `FATAL: ${err.message}`, {
+                status: err.statusCode,
+                body: err.body,
+                stack: DEBUG ? err.stack : undefined,
+            });
             console.error('\nFATAL:', err.message);
             if (err.body) console.error('Response body:', err.body);
             process.exit(1);
