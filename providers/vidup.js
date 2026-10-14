@@ -1,7 +1,7 @@
 // Dynamic import keeps this provider compatible with CommonJS callers.
 let dnsModule;
 function loadDns() {
-    return dnsModule ??= import('./dns-fix.mjs');
+    return dnsModule ??= import('../utils/dns-fix.mjs');
 }
 
 async function dnsRequest(method, url, data, config = {}) {
