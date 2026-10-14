@@ -1,4 +1,3 @@
-const { fetch } = require('../utils/providerFetch');
 // src/nuvio/framextv.cjs
 // FrameX TV — movies, TV series, anime (sub+dub) with HLS streams up to 4K
 //
@@ -16,9 +15,36 @@ const { fetch } = require('../utils/providerFetch');
 // The source wrapper handles metadata enrichment + Referer routing.
 
 'use strict';
+const { fetch } = require('../utils/providerFetch');
+const { normalizeStreams } = require('../utils/streamResponse');
 
 const API_BASE = 'https://api.framextv.tech';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
+function playbackSource(src, sharedHeaders = {}) {
+  let url = new URL(src.url);
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Invalid media URL');
+  const headers = { 'User-Agent': UA };
+  function merge(values) {
+    for (const [name, value] of Object.entries(values || {})) {
+      if (typeof value !== 'string' || /[\r\n]/.test(name + value)) continue;
+      const existing = Object.keys(headers).find(key => key.toLowerCase() === name.toLowerCase());
+      if (existing) delete headers[existing];
+      headers[name] = value;
+    }
+  }
+  // FrameX embeds the upstream playback headers in its proxy query, even
+  // when sources[].headers is absent. Native players can use the CDN directly.
+  if (url.origin === API_BASE && url.pathname === '/api/proxy') {
+    const upstream = new URL(url.searchParams.get('url'));
+    if (!['http:', 'https:'].includes(upstream.protocol)) throw new Error('Invalid upstream URL');
+    merge({ Referer: url.searchParams.get('referer'), Origin: url.searchParams.get('origin') });
+    url = upstream;
+  }
+  merge(sharedHeaders);
+  merge(src.headers);
+  return { url: url.href, headers };
+}
 
 // got-scraping loader
 let _gs = null;
@@ -91,7 +117,7 @@ async function getStreams(tmdbId, type, season, episode) {
   // FrameX API only supports 'movie' and 'tv' types.
   // Anime is handled as type=tv (anime IS TV on TMDB).
   // The API resolves anime by TMDB TV ID directly — no AniList mapping needed.
-  const isTV = type === 'tv' || type === 'anime';
+  const isTV = type === 'tv' || type === 'series' || type === 'anime';
   const apiType = isTV ? 'tv' : 'movie';
 
   console.log(`[FrameX] Request: tmdb=${tmdbId} type=${apiType} S${season || '?'}E${episode || '?'}`);
@@ -120,14 +146,18 @@ async function getStreams(tmdbId, type, season, episode) {
   const seenUrls = new Set();
 
   for (const src of data.sources) {
-    if (!src.url || !src.url.startsWith('http')) continue;
-    if (seenUrls.has(src.url)) continue;
-    seenUrls.add(src.url);
+    let playback;
+    try { playback = playbackSource(src, data.headers); }
+    catch { console.warn('[FrameX] Skipping invalid source URL'); continue; }
+    if (seenUrls.has(playback.url)) continue;
+    seenUrls.add(playback.url);
 
     const quality = src.quality || 'Unknown';
     const server = src.server || data.provider || 'FrameX';
     const streamType = src.type || 'hls';
-    const headers = src.headers || {};
+    const headers = playback.headers;
+    console.log('[FrameX] Playback source', { host: new URL(playback.url).hostname,
+      unwrapped: playback.url !== src.url, headerNames: Object.keys(headers) });
     const category = src.category || '';
 
     // Build display title
@@ -141,10 +171,13 @@ async function getStreams(tmdbId, type, season, episode) {
     streams.push({
       name: `FrameX - ${quality} ${server}${category ? ' ' + category : ''}`,
       title: titleLine,
-      url: src.url,
+      url: playback.url,
       quality: quality,
-      type: streamType === 'hls' ? 'application/vnd.apple.mpegurl' : 'video/mp4',
+      type: streamType,
+      provider: 'framextv',
       headers: headers,
+      subtitles: src.subtitles || data.subtitles || [],
+      audioTracks: src.audioTracks || [],
       behaviorHints: {
         bingeGroup: `framextv-${quality}`,
       },
@@ -152,7 +185,7 @@ async function getStreams(tmdbId, type, season, episode) {
   }
 
   console.log(`[FrameX] Returning ${streams.length} stream(s)`);
-  return streams;
+  return normalizeStreams(streams, 'framextv');
 }
 
-module.exports = { getStreams };
+module.exports = { getStreams, playbackSource };
