@@ -5,6 +5,7 @@
 
 const { AsyncLocalStorage } = require("node:async_hooks");
 const { createVidcoreSession } = require("../utils/vidcoreSession");
+const { getFreeProxies } = require("../utils/freeProxyPool");
 const sessions = new AsyncLocalStorage();
 const fetch = (url, options, stage) => sessions.getStore()(url, options, stage);
 
@@ -313,14 +314,41 @@ async function getVidcoreStreams(tmdbId, mediaType, season, episode) {
   }
 }
 
+async function runVidcoreSession(args, proxy = null) {
+  const session = createVidcoreSession(proxy ? { proxy } : {});
+  try {
+    const streams = await sessions.run(session, () => getVidcoreStreams(...args));
+    return { streams, hadProxyable403: session.hadProxyable403() };
+  } finally {
+    // Always release the browser context, even if the lookup throws.
+    await session.close();
+  }
+}
+
+async function getVidcoreStreamsWithProxyFallback(...args) {
+  const direct = await runVidcoreSession(args);
+  if (direct.streams.length || !direct.hadProxyable403) return direct.streams;
+
+  let proxies = [];
+  try {
+    proxies = await getFreeProxies({ max: 3 });
+  } catch (_) {
+    warn("Free proxy lists were unavailable after HTTP 403");
+  }
+  if (!proxies.length) {
+    warn("No usable public HTTP proxies were available after HTTP 403");
+    return direct.streams;
+  }
+
+  for (let index = 0; index < Math.min(proxies.length, 3); index += 1) {
+    const proxy = proxies[index];
+    log(`Retrying lookup after HTTP 403 through ${proxy.source || "public"} proxy ${index + 1}/${Math.min(proxies.length, 3)}`);
+    const attempt = await runVidcoreSession(args, proxy);
+    if (attempt.streams.length) return attempt.streams;
+  }
+  return direct.streams;
+}
+
 module.exports = {
-  getVidcoreStreams: async (...args) => {
-    const session = createVidcoreSession();
-    try {
-      return await sessions.run(session, () => getVidcoreStreams(...args));
-    } finally {
-      // Always release the browser context, even if the lookup throws.
-      await session.close();
-    }
-  },
+  getVidcoreStreams: async (...args) => getVidcoreStreamsWithProxyFallback(...args),
 };

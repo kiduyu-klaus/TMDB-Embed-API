@@ -18,11 +18,16 @@
 'use strict';
 const { normalizeStreams } = require('../utils/streamResponse');
 const nativeFetch = require('node-fetch');
+const { fetchWithFreeProxyFallback } = require('../utils/freeProxyPool');
 async function fetch(url, options = {}) {
   const started = Date.now();
   const origin = new URL(url).origin;
   try {
-    const response = await nativeFetch(url, { ...options, timeout: 15000 });
+    const response = await fetchWithFreeProxyFallback(
+      url,
+      { ...options, timeout: 15000 },
+      { request: nativeFetch, maxAttempts: 3 }
+    );
     console.log('[CineStream] request.response', { origin, method: options.method || 'GET', status: response.status, elapsedMs: Date.now() - started });
     return response;
   } catch (_) {

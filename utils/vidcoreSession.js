@@ -30,13 +30,14 @@ function makeResponse(status, statusText, text, headers = {}) {
 }
 
 function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
-  releaseBrowser = browserPool.releaseBrowser, http = axios, logger = console } = {}) {
+  releaseBrowser = browserPool.releaseBrowser, http = axios, logger = console, proxy = null } = {}) {
   let context = null;
   let page = null;
   let acquired = false;
   let closed = false;
   let ready = null;
   let requestId = 0;
+  let proxyable403Count = 0;
 
   async function init() {
     logger.log('[Vidcore] browser.acquire.start');
@@ -45,11 +46,17 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
     logger.log('[Vidcore] browser.acquire.complete ' + JSON.stringify({ version: browser.version() }));
     // Headless builds advertise "HeadlessChrome"; present a normal Chrome UA of the same major version.
     const major = String(browser.version()).split(".")[0];
-    context = await browser.newContext({
+    const contextOptions = {
       userAgent: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${major}.0.0.0 Safari/537.36`,
       locale: "en-US",
       viewport: { width: 1366, height: 768 },
-    });
+    };
+    const proxyServer = typeof proxy === "string" ? proxy : proxy && proxy.server;
+    if (proxyServer) {
+      contextOptions.proxy = { server: proxyServer };
+      logger.log('[Vidcore] context.proxy.enabled ' + JSON.stringify({ source: proxy.source || "configured" }));
+    }
+    context = await browser.newContext(contextOptions);
     // Cookie seen in the browser capture; harmless if the site doesn't need it.
     await context.addCookies([
       { name: "perf_dv6Tr4n", value: "1", domain: "vidcore.io", path: "/" },
@@ -184,6 +191,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
     logger.log('[Vidcore] request.start ' + JSON.stringify({ stage, requestId: id, origin, method: options.method || 'GET' }));
     try {
       const response = await dispatch(url, options, stage);
+      if (response.status === 403 && new URL(url).hostname !== "enc-dec.app") proxyable403Count += 1;
       const headers = response.headers || {};
       logger[response.ok ? "log" : "warn"]("[Vidcore] request.response " + JSON.stringify({
         stage, requestId: id, origin, status: response.status,
@@ -230,6 +238,7 @@ function createVidcoreSession({ acquireBrowser = browserPool.acquireBrowser,
   if (watchdog.unref) watchdog.unref();
 
   sessionFetch.close = close;
+  sessionFetch.hadProxyable403 = () => proxyable403Count > 0;
   return sessionFetch;
 }
 

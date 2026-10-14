@@ -65,3 +65,5 @@ test-results/vid-providers/vidup-movie.json
 test-results/vid-providers/vidup-series-api.json
 test-results/vid-providers/vidup-series-registry.json
 test-results/vid-providers/vidup-tv.json
+/.manus
+/.work
