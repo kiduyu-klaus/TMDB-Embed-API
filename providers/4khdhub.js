@@ -231,6 +231,49 @@ function buildStream(label, url, referer = '') {
     };
 }
 
+function pixeldrainMediaUrls(html, pageUrl) {
+    const $ = cheerio.load(html);
+    const urls = [];
+    $('meta[property]').each((_, element) => {
+        if (!['og:video', 'og:video:url', 'og:video:secure_url'].includes($(element).attr('property'))) return;
+        const url = fixUrl($(element).attr('content'), pageUrl);
+        if (validHttpUrl(url)) urls.push(url);
+    });
+    return [...new Set(urls)];
+}
+
+async function resolvePixeldrain(url, label, referer, http = client) {
+    let mediaUrls;
+    if (/\/api\/file\//i.test(new URL(url).pathname)) mediaUrls = [url];
+    else {
+        const page = await http.get(url, { headers: { Referer: referer || url } });
+        mediaUrls = pixeldrainMediaUrls(String(page.data), url);
+        console.log('[4KHDHub] Pixeldrain metadata', { candidates: mediaUrls.length });
+    }
+    const settled = await Promise.allSettled(mediaUrls.map(async mediaUrl => {
+        let response;
+        const headers = { 'User-Agent': USER_AGENT, Referer: url };
+        try {
+            response = await http.head(mediaUrl, { headers });
+        } catch {
+            // Some hosts do not support HEAD. Read headers only, never the full video.
+            response = await http.get(mediaUrl, { headers: { ...headers, Range: 'bytes=0-0' }, responseType: 'stream', validateStatus: () => true });
+            response.data.destroy();
+            if (response.status < 200 || response.status >= 300) return null;
+        }
+        const responseHeaders = { ...response.headers };
+        delete responseHeaders['set-cookie'];
+        const stream = buildStream(`${label} - Pixeldrain`, mediaUrl, url);
+        stream.responseHeaders = responseHeaders;
+        const contentType = String(responseHeaders['content-type'] || '').split(';')[0];
+        if (/text\/html|application\/json/i.test(contentType)) return null;
+        if (/^(video\/|application\/(?:vnd\.apple\.mpegurl|x-mpegurl))/.test(contentType)) stream.mimeType = contentType;
+        console.log('[4KHDHub] Pixeldrain media response', { status: response.status, contentType, contentLength: responseHeaders['content-length'], acceptRanges: responseHeaders['accept-ranges'] });
+        return stream;
+    }));
+    return settled.flatMap(result => result.status === 'fulfilled' && result.value ? [result.value] : []);
+}
+
 async function resolveHubcloud(url, label, referer) {
     let entryUrl = url;
     let response = await client.get(entryUrl, { headers: { Referer: referer || url } });
@@ -245,29 +288,28 @@ async function resolveHubcloud(url, label, referer) {
     const header = $('div.card-header').first().text().replace(/\s+/g, ' ').trim();
     const size = $('i#size').first().text().trim();
     const results = [];
+    const pixelJobs = [];
     $('a.btn[href]').each((_, element) => {
         const link = fixUrl($(element).attr('href'), entryUrl);
         const text = $(element).text().replace(/\s+/g, ' ').trim();
         const lower = text.toLowerCase();
         if (!link || /telegram/.test(lower)) return;
-        if (lower.includes('pixeldrain') && !link.includes('/api/file/')) {
-            try {
-                const parsed = new URL(link);
-                const id = parsed.pathname.split('/').filter(Boolean).pop();
-                if (id) {
-                    const direct = `${parsed.origin}/api/file/${id}?download`;
-                    results.push(buildStream(`${label} - ${text} ${header} ${size}`.trim(), direct, entryUrl));
-                }
-            } catch {
-                // Ignore malformed mirrors independently.
-            }
+        if (/(^|\.)pixeldrain\.(dev|com)$/i.test(new URL(link).hostname)) {
+            pixelJobs.push(resolvePixeldrain(link, `${label} - ${text} ${header} ${size}`.trim(), entryUrl));
             return;
         }
         if (isDirectMedia(link, `${text} ${header}`) || /(?:download file|fsl|s3 server|mega server|pdl server|buzzserver)/i.test(text)) {
             results.push(buildStream(`${label} - ${text} ${header} ${size}`.trim(), link, entryUrl));
         }
     });
-    return results;
+    const pixels = await Promise.allSettled(pixelJobs);
+    for (const result of pixels) {
+        if (result.status === 'rejected') console.warn('[4KHDHub] Pixeldrain page unavailable', {
+            status: result.reason?.response?.status || null,
+            code: result.reason?.code || 'EXTRACTION_FAILED'
+        });
+    }
+    return results.concat(pixels.flatMap(result => result.status === 'fulfilled' ? result.value : []));
 }
 
 async function resolveLink(rawUrl, label, referer = '', depth = 0) {
@@ -275,10 +317,10 @@ async function resolveLink(rawUrl, label, referer = '', depth = 0) {
     let url = rawUrl;
     if (/[?&]id=/i.test(url)) url = await resolveRedirect(url) || url;
     if (!validHttpUrl(url)) return [];
-    if (isDirectMedia(url, label)) return [buildStream(label, url, referer)];
-
     const hostname = new URL(url).hostname.toLowerCase();
     try {
+        if (/(^|\.)pixeldrain\.(dev|com)$/i.test(hostname)) return await resolvePixeldrain(url, label, referer);
+        if (isDirectMedia(url, label)) return [buildStream(label, url, referer)];
         if (hostname.includes('hubdrive')) {
             const response = await client.get(url);
             const $ = cheerio.load(String(response.data));
@@ -339,7 +381,8 @@ async function get4KHDHubStreams(tmdbId, mediaType = 'movie', season = null, epi
         const seen = new Set();
         const unique = streams
             .filter(stream => validHttpUrl(stream.url) && !seen.has(stream.url) && seen.add(stream.url))
-            .filter(stream => /fsl/i.test(stream.title || ''))
+            // Keep the existing FSL selection and additionally allow resolved Pixeldrain files.
+            .filter(stream => /fsl/i.test(stream.title || '') || /(^|\.)pixeldrain\.(dev|com)$/i.test(new URL(stream.url).hostname))
             .sort((a, b) => (parseInt(b.quality, 10) || 0) - (parseInt(a.quality, 10) || 0));
         console.log(`[4KHDHub] Returning ${unique.length} streams`);
         return unique;
@@ -351,5 +394,5 @@ async function get4KHDHubStreams(tmdbId, mediaType = 'movie', season = null, epi
 
 module.exports = {
     get4KHDHubStreams,
-    _test: { normalizeTitle, titleScore, collectPageLinks, decodeRedirectPayload, parseQuality, isDirectMedia }
+    _test: { normalizeTitle, titleScore, collectPageLinks, decodeRedirectPayload, parseQuality, isDirectMedia, pixeldrainMediaUrls, resolvePixeldrain }
 };
