@@ -30,6 +30,9 @@
 //
 // Author: MiniMax Agent
 
+const nodeHttp = require('node:http');
+const https = require('node:https');
+
 // The provider registry is CommonJS and cPanel deployments commonly run
 // Node versions where eagerly loading this ESM dependency during `require()`
 // is unreliable. Load it only when Vidup actually makes its first request.
@@ -139,7 +142,10 @@ async function http(url, { method = 'GET', headers = {}, body, json, asXhr = fal
         // collide with the host's stdin/socket wrapper and fail with
         // `open EEXIST` or an undefined browser-version table.
         useHeaderGenerator: false,
-        http2: true,                         // vidup front-door expects h2
+        // cPanel/Passenger can reject got-scraping's wrapped HTTP/2 agent
+        // with `open EEXIST`; use Node's stable HTTP/1.1 global agents.
+        http2: false,
+        agent: { http: nodeHttp.globalAgent, https: https.globalAgent },
         retry: { limit: 3, methods: ['GET'] },
         throwHttpErrors: false,
         responseType: 'text',
