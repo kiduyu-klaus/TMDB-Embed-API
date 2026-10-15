@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { EventEmitter } = require('node:events');
 
-test('successful login schedules restart only after the response finishes', () => {
+test('successful login does not schedule a process restart', () => {
   const source = fs.readFileSync(path.join(__dirname, '../apiServer.js'), 'utf8');
   const route = source.slice(source.indexOf("router.post('/auth/login'"), source.indexOf("router.post('/auth/logout'"));
   let handler;
@@ -27,17 +27,18 @@ test('successful login schedules restart only after the response finishes', () =
   }
   const success = response();
   handler({ body: { username: 'test', password: 'test' } }, success);
-  assert.equal(success.body.restarting, true);
-  assert.equal(success.body.instanceId, 'old-process');
+  assert.equal(success.body.success, true);
+  assert.equal(success.body.username, 'test');
+  assert.equal(success.body.restarting, undefined);
   assert.equal(restarts, 0);
   success.emit('finish');
-  assert.equal(restarts, 1);
+  assert.equal(restarts, 0);
   valid = false;
   const failure = response();
   handler({ body: { username: 'test', password: 'wrong' } }, failure);
   failure.emit('finish');
   assert.equal(failure.code, 401);
-  assert.equal(restarts, 1);
+  assert.equal(restarts, 0);
 });
 
 test('session remains valid after reloading auth with the persisted secret', () => {

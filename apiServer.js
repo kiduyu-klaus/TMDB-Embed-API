@@ -153,8 +153,7 @@ router.post('/auth/login', (req,res) => {
   recordLoginSuccess(ip);
   const token = issueSession(username);
   res.setHeader('Set-Cookie', `session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${12*60*60}`);
-  res.once('finish', scheduleRestart);
-  res.json({ success:true, username, restarting: true, instanceId });
+  res.json({ success:true, username });
 });
 
 router.post('/auth/logout', (req,res) => {

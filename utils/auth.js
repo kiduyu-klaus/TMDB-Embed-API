@@ -71,7 +71,6 @@ function updatePassword(username, newPassword){
 }
 
 // Session issuance & validation
-// Keep newly issued sessions valid when a successful login restarts the server.
 function loadSessionSecret() {
   if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
   const file = path.join(__dirname, '.session-secret');

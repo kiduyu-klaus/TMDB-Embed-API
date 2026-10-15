@@ -15,6 +15,32 @@ async function addFallbackSubtitles(streams, context) {
   return stillMissing ? addOpenSubtitlesFallback(withWyzie, context) : withWyzie;
 }
 
+const standardProviderLabels = {
+  cinejoy: 'Cinejoy',
+  bower: 'Bowler',
+  miner: 'Miner',
+};
+
+function standardizeNewProviderStreams(streams, providerName) {
+  const label = standardProviderLabels[providerName];
+  if (!label) return streams;
+  return streams.map(stream => {
+    let name = label;
+    if (providerName === 'cinejoy') {
+      const server = String(stream.name || stream.title || '').match(/Cinejoy(?:-TV)?\s*-\s*([^-|]+)/i);
+      if (server) name = `${label} ${server[1].trim()}`;
+    }
+    const quality = String(stream.quality || 'Auto');
+    return {
+      ...stream,
+      name,
+      title: `${name} - ${quality}`,
+      language: stream.language || 'Original',
+      provider: label,
+    };
+  });
+}
+
 // Lazy load cache for providers
 const providerCache = new Map();
 
@@ -44,6 +70,7 @@ const providerFunctionMap = {
   'anikoto.js': 'getStreams',
   'anizone.js': 'getStreams',
   'hianime.js': 'getStreams',
+  'byse.js': 'getStreams',
   'dahmermovies.js': 'getDahmermoviesStreams',
   'goojara.js': 'getStreams',
   'streamflix.js': 'getStreamflixStreams',
@@ -64,6 +91,9 @@ const providerFunctionMap = {
   'animepahe.js': 'getStreams',
   'kickassanime.js': 'getStreams',
   'flixcloud.js': 'getFlixcloudStreams',
+  'cinejoy.js': 'getStreams',
+  'bower.js': 'getStreams',
+  'miner.js': 'getStreams',
 };
 
 // Providers may belong to more than one media category.
@@ -94,6 +124,7 @@ const providerCategoryMap = {
   'anikoto.js': 'Anime',
   'anizone.js': 'Anime',
   'hianime.js': 'Anime',
+  'byse.js': 'MoviesTv',
   'dahmermovies.js': 'MoviesTv',
   'goojara.js': 'MoviesTv',
   'streamflix.js': 'MoviesTv',
@@ -114,6 +145,9 @@ const providerCategoryMap = {
   'animepahe.js': 'Anime',
   'kickassanime.js': 'Anime',
   'flixcloud.js': 'Anime',
+  'cinejoy.js': 'MoviesTv',
+  'bower.js': 'MoviesTv',
+  'miner.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
@@ -209,7 +243,10 @@ function createFetchFunction(providerInfo) {
 
       if (!Array.isArray(result)) return [];
 
-      const streams = normalizeStreams(result, providerInfo.name);
+      const streams = standardizeNewProviderStreams(
+        normalizeStreams(result, providerInfo.name),
+        providerInfo.name
+      );
       if (!providerInfo.categories.includes('MoviesTv')) return streams;
       return await addFallbackSubtitles(streams, {
         tmdbId: ctx.tmdbId,

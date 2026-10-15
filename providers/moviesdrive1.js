@@ -1,5 +1,5 @@
 const { getDetails, getExternalIds } = require('../utils/tmdb');
-const fetch = (url, options = {}) => require('node-fetch')(url, { timeout: 30000, ...options });
+const fetch = (url, options = {}) => require('node-fetch')(url, { timeout: 15000, ...options });
 /**
  * moviesdrive - Built from src/moviesdrive/
  * Generated: 2026-09-22T10:00:32.946Z
@@ -159,13 +159,49 @@ function __mdInferFormat(url) {
   return { format: "direct", mimeType: "application/octet-stream" };
 }
 
+function __mdIsGoogleDownloadUrl(url) {
+  try {
+    return new URL(url).hostname.toLowerCase() === "video-downloads.googleusercontent.com";
+  } catch (e) {
+    return false;
+  }
+}
+
 // Wraps the raw extractor output with the metadata consumers expect:
 //   - title     : human-readable label
 //   - provider  : source identifier
 //   - headers   : request headers the player should replay
 //   - format    : "hls" | "dash" | "direct"
 //   - mimeType  : inferred content type
-function __mdEnrichStream(s, titlePrefix) {
+async function __mdGetResponseHeaders(url) {
+  var response;
+  try {
+    response = await fetch(url, { method: "GET", headers: HEADERS, redirect: "follow" });
+    var responseHeaders = {};
+    response.headers.forEach((value, name) => {
+      responseHeaders[name.toLowerCase()] = value;
+    });
+    __mdLog("getMoviesDriveStreams", "debug", "stream.response-headers", {
+      status: response.status,
+      headerNames: Object.keys(responseHeaders)
+    });
+    return responseHeaders;
+  } catch (e) {
+    __mdLog("getMoviesDriveStreams", "warn", "stream.response-headers.failed", {
+      url,
+      error: e && e.message || String(e)
+    });
+    return {};
+  } finally {
+    // Fetch resolves as soon as response headers arrive. Stop the body stream
+    // immediately so metadata lookup never downloads the video itself.
+    if (response && response.body && typeof response.body.destroy === "function") {
+      response.body.destroy();
+    }
+  }
+}
+
+async function __mdEnrichStream(s, titlePrefix) {
   var fmt = __mdInferFormat(s && s.url);
   __mdLog("getMoviesDriveStreams", "debug", "stream.enrich", {
     name: s && s.name,
@@ -173,10 +209,17 @@ function __mdEnrichStream(s, titlePrefix) {
     format: fmt.format,
     mimeType: fmt.mimeType
   });
+  var headers = __spreadValues({}, HEADERS);
+  try {
+    if (new URL(s && s.url).hostname.toLowerCase() === "video-downloads.googleusercontent.com") {
+      headers = __spreadValues(headers, await __mdGetResponseHeaders(s.url));
+    }
+  } catch (e) { /* Non-HTTP or malformed URLs are handled by the caller. */ }
   return __spreadProps(__spreadValues({}, s), {
     title: titlePrefix + s.name + " [" + s.quality + "p]",
     provider: "moviesdrive",
-    headers: HEADERS,
+    language: " English . Hindi",
+    headers,
     format: fmt.format,
     mimeType: fmt.mimeType
   });
@@ -851,9 +894,9 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
             i: entry.linkIndex, server: entry.server, streams: streams.length,
             titles: streams.map(function (s) { return s.name; })
           });
-          return streams.map(function (stream) {
+          return Promise.all(streams.map(function (stream) {
             return __mdEnrichStream(stream, titlePrefix);
-          });
+          }));
         });
         return streamsByServer.reduce(function (all, streams) {
           return all.concat(streams);
@@ -926,9 +969,10 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
           }
         }
       }
-      // Do not expose GDFlix landing pages as playable streams.
+      // Do not expose GDFlix landing pages or Googleusercontent downloads as playable streams.
       allStreams = allStreams.filter((stream) =>
-        !String(stream.url || "").trim().toLowerCase().startsWith("https://gdflix.dev")
+        !String(stream.url || "").trim().toLowerCase().startsWith("https://gdflix.dev") &&
+        !__mdIsGoogleDownloadUrl(stream.url)
       );
       __mdLog("getMoviesDriveStreams", "info", "done", {
         totalStreams: allStreams.length,
