@@ -15,6 +15,32 @@ async function addFallbackSubtitles(streams, context) {
   return stillMissing ? addOpenSubtitlesFallback(withWyzie, context) : withWyzie;
 }
 
+const standardProviderLabels = {
+  cinejoy: 'Cinejoy',
+  bower: 'Bowler',
+  miner: 'Miner',
+};
+
+function standardizeNewProviderStreams(streams, providerName) {
+  const label = standardProviderLabels[providerName];
+  if (!label) return streams;
+  return streams.map(stream => {
+    let name = label;
+    if (providerName === 'cinejoy') {
+      const server = String(stream.name || stream.title || '').match(/Cinejoy(?:-TV)?\s*-\s*([^-|]+)/i);
+      if (server) name = `${label} ${server[1].trim()}`;
+    }
+    const quality = String(stream.quality || 'Auto');
+    return {
+      ...stream,
+      name,
+      title: `${name} - ${quality}`,
+      language: stream.language || 'Original',
+      provider: label,
+    };
+  });
+}
+
 // Lazy load cache for providers
 const providerCache = new Map();
 
@@ -217,7 +243,10 @@ function createFetchFunction(providerInfo) {
 
       if (!Array.isArray(result)) return [];
 
-      const streams = normalizeStreams(result, providerInfo.name);
+      const streams = standardizeNewProviderStreams(
+        normalizeStreams(result, providerInfo.name),
+        providerInfo.name
+      );
       if (!providerInfo.categories.includes('MoviesTv')) return streams;
       return await addFallbackSubtitles(streams, {
         tmdbId: ctx.tmdbId,
