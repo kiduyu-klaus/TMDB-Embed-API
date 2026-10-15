@@ -265,7 +265,7 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `goojara`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
-The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidrock`, `vidcore`, and `moviesdrive1`. HDMovie2 currently handles movies only; TV requests return no streams. MoviesDrive uses the configured TMDB API key. Superstream includes the Vidnest decoding helper.
+The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidrock`, and `moviesdrive1`. HDMovie2 currently handles movies only; TV requests return no streams. MoviesDrive uses the configured TMDB API key. Superstream includes the Vidnest decoding helper.
 
 1. **Create** `providers/yourprovider.js` with your stream fetching logic
 2. **Export** a function like `getYourproviderStreams(tmdbId, mediaType, season, episode)`
@@ -538,6 +538,3 @@ Inspired by community scraping/stream aggregation efforts. Credits also to the o
 
 ---
 
-### Vidup browser impersonation
-
-Vidup uses `curl-cffi` with the `chrome136` profile for page requests, both handshake stages, decryption calls, and playback probes. Each extraction uses a separate cookie session and closes its native handles afterward. Run `npm install` to install the native library; if lifecycle scripts were skipped, run `npm rebuild curl-cffi --foreground-scripts`. The adapter handles the Windows `lib`/`bin` DLL layout difference in curl-cffi 0.1.50.

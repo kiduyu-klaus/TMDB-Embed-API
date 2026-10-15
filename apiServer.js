@@ -103,23 +103,12 @@ function recordLoginSuccess(ip){
 const realProcessExit = process.exit.bind(process);
 const instanceId = require('crypto').randomUUID();
 let restartPending = false;
+let shutdownManager;
 function scheduleRestart() {
   if (restartPending) return;
   restartPending = true;
-  setTimeout(() => {
-    try {
-      const fs = require('fs');
-      fs.writeFileSync(path.join(process.cwd(), 'restart.trigger'), String(Date.now()));
-      // Passenger/cPanel watches tmp/restart.txt; nodemon watches restart.trigger.
-      fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
-      fs.writeFileSync(path.join(process.cwd(), 'tmp', 'restart.txt'), String(Date.now()));
-    } catch (error) {
-      console.warn('[control] failed to write restart marker:', error.message);
-    }
-    console.warn('[control] restarting server');
-    allowControlledExit = true;
-    realProcessExit(0);
-  }, 1000);
+  // The restart endpoint calls this after its response has flushed.
+  setTimeout(() => shutdownManager.shutdown('restart'), 300);
 }
 let allowControlledExit = false;
 process.exit = function(code){
@@ -129,6 +118,13 @@ process.exit = function(code){
 };
 setImmediate(()=>console.log('[diagnostic] post-start setImmediate fired'));
 router.use(cors());
+router.use((req, res, next) => {
+  if (restartPending) {
+    res.setHeader('Connection', 'close');
+    return res.status(503).json({ success: false, error: 'SERVER_RESTARTING' });
+  }
+  next();
+});
 router.use(express.json());
 
 // --- Auth Routes (login before static serving) ---
@@ -541,3 +537,31 @@ const server = app.listen(PORT, HOST, () => {
 });
 
 server.on('error', (err)=>{ console.error('[diagnostic] server error', err); });
+
+// Close this application's resources before notifying its process supervisor.
+const { resources, createShutdownManager } = require('./utils/appLifecycle');
+shutdownManager = createShutdownManager(server, {
+  resources,
+  beforeExit(reason) {
+    if (reason !== 'restart') return;
+    const fs = require('fs');
+    fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
+    fs.writeFileSync(path.join(process.cwd(), 'tmp', 'restart.txt'), String(Date.now()));
+    fs.writeFileSync(path.join(process.cwd(), 'restart.trigger'), String(Date.now()));
+  },
+  exit(code, reason) {
+    allowControlledExit = true;
+    // Nodemon recognizes SIGUSR2 as a restart, rather than a clean stop.
+    if (reason === 'SIGUSR2' && process.platform !== 'win32') {
+      process.kill(process.pid, 'SIGUSR2');
+      return;
+    }
+    realProcessExit(code);
+  },
+});
+for (const signal of ['SIGTERM', 'SIGINT', 'SIGUSR2']) {
+  process.once(signal, () => {
+    restartPending = true;
+    shutdownManager.shutdown(signal);
+  });
+}

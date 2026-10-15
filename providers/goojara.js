@@ -3,6 +3,7 @@ const tmdb = require('../utils/tmdb');
 const { scoreCandidate } = require('../utils/titleMatch');
 const path = require('path');
 const { Worker } = require('worker_threads');
+const { resources } = require('../utils/appLifecycle');
 
 const BASE_URL = 'https://ww1.goojara.to';
 const BASE_HOST = new URL(BASE_URL).host;
@@ -467,10 +468,10 @@ async function decryptVidSrcStreamUrls(encryptedValue, wasmBytes) {
   const exportNames = new Set(WebAssembly.Module.exports(module).map(item => item.name));
   if (!['memory', 'alloc', 'decrypt'].every(name => exportNames.has(name))) return [];
 
-  const worker = new Worker(path.join(__dirname, '../utils/vidsrcDecoderWorker.js'), {
+  const worker = resources.trackWorker(new Worker(path.join(__dirname, '../utils/vidsrcDecoderWorker.js'), {
     workerData: { encryptedValue, wasmBytes },
     resourceLimits: { maxOldGenerationSizeMb: 32, maxYoungGenerationSizeMb: 8, stackSizeMb: 2 },
-  });
+  }));
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, value) => {
