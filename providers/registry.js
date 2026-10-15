@@ -66,6 +66,8 @@ const providerFunctionMap = {
   'kickassanime.js': 'getStreams',
   'flixcloud.js': 'getFlixcloudStreams',
   'cinejoy.js': 'getStreams',
+  'bower.js': 'getStreams',
+  'miner.js': 'getStreams',
 };
 
 // Providers may belong to more than one media category.
@@ -118,6 +120,8 @@ const providerCategoryMap = {
   'kickassanime.js': 'Anime',
   'flixcloud.js': 'Anime',
   'cinejoy.js': 'MoviesTv',
+  'bower.js': 'MoviesTv',
+  'miner.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
