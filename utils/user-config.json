@@ -34,5 +34,6 @@
   "enableStreamflixProvider": false,
   "enableZxcstreamsProvider": false,
   "enableAnime-dekhoProvider": false,
-  "animeProviderCheckTmdbId": "1363974"
+  "animeProviderCheckTmdbId": "1363974",
+  "enableVidboxProvider": true
 }

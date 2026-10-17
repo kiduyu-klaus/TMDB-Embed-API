@@ -65,3 +65,6 @@ test-results/vid-providers/vidup-tv.json
 /.work
 /test-results
 /test-results/anikoto-trace
+/tests
+/tests
+tests/abyss.py
