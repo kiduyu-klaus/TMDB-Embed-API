@@ -1,4 +1,5 @@
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('AniZone');
+const { fetch } = diagnostics;
 const BASE="https://anizone.to",MAPPING_URL="https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping",TMDB_API_KEY="68e094699525b18a70bab2f86b1fa706",UA="Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36",HEADERS={"User-Agent":UA,"Referer":BASE+"/"},TIMEOUT=30000;
 
 async function req(url,opt={},timeout=TIMEOUT){
@@ -406,6 +407,7 @@ async function resolveStream(tmdbId,mediaType,season,episode,settings){
 
   if(!movie){
     mappingResult=await dbMapping(tmdbId,season,episode);
+    diagnostics.log('mapping.lookup.complete',{found:!!(mappingResult&&mappingResult.mapping),mediaType:'tv'});
     if(!mappingResult||!mappingResult.mapping){
       const autoPopulate=!["false","0","disabled","off"].includes(String(getSetting(settings,["autoPopulateMissingMappings","auto_populate_missing_mappings","autoPopulate","autoPopulateMappings"],"enabled")).toLowerCase());
       if(!autoPopulate){
@@ -630,6 +632,7 @@ async function resolveStream(tmdbId,mediaType,season,episode,settings){
     }
   }
 
+  diagnostics.log('streams.assembled',{streams:streams.length,servers:buttons.length});
   console.log("[AniZone Lazy] STREAMS FOUND",{title,slug,episode:malEpisode,count:streams.length});
   return streams
 }
@@ -642,7 +645,8 @@ function getSetting(settings,names,fallback){
 function onSettings(){
   return [{type:"select",key:"autoPopulateMissingMappings",name:"autoPopulateMissingMappings",label:"Auto-populate missing mappings",options:[{label:"Enabled",value:"enabled"},{label:"Disabled",value:"disabled"}],default:"enabled"}]
 }
-async function getStreams(tmdbId,mediaType,season,episode,settings={}){
+function getStreams(...args){return diagnostics.run(()=>getStreamsImpl(...args),args)}
+async function getStreamsImpl(tmdbId,mediaType,season,episode,settings={}){
   try{
     return await resolveStream(
       String(tmdbId||""),

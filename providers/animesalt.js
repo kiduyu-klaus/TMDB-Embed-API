@@ -1,6 +1,7 @@
 'use strict';
 
 const cheerio = require('cheerio');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('AnimeSalt');
 const tmdb = require('../utils/tmdb');
 
 const BASE_URL = 'https://animesalt.cx';
@@ -94,7 +95,7 @@ function findEpisodeUrlFromHtml(html, season, episode) {
 }
 
 async function request(url, { method = 'GET', headers = {}, body, json = false } = {}) {
-    const fetchImpl = typeof globalThis.fetch === 'function' ? globalThis.fetch.bind(globalThis) : require('node-fetch');
+    const fetchImpl = diagnostics.fetch;
     const controller = typeof AbortController === 'function' ? new AbortController() : null;
     const timeout = controller ? setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS) : null;
     try {
@@ -372,12 +373,17 @@ async function getStreamsFromPage(pageUrl) {
     return results.flat();
 }
 
-async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) {
+function getStreams(...args) {
+    return diagnostics.run(() => getStreamsImpl(...args), args);
+}
+
+async function getStreamsImpl(tmdbId, mediaType = 'anime', season = 1, episode = 1) {
     const id = String(tmdbId || '').trim();
     const isMovie = mediaType === 'movie';
     const seasonNumber = Number(season) || 1;
     const episodeNumber = Number(episode) || 1;
     if (!/^\d+$/.test(id) || !Number.isInteger(seasonNumber) || seasonNumber < 1 || !Number.isInteger(episodeNumber) || episodeNumber < 1) {
+        diagnostics.log('input.invalid', { reason: 'invalid-id-season-or-episode' });
         console.warn('[AnimeSalt] Expected a numeric TMDB ID, season, and episode');
         return [];
     }
@@ -385,16 +391,19 @@ async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) 
     try {
         const details = await tmdb.getDetails(isMovie ? 'movie' : 'tv', id);
         const title = details && (isMovie ? details.title || details.name : details.name || details.title);
+        diagnostics.log('tmdb.lookup.complete', { found: !!title, mediaType: isMovie ? 'movie' : 'tv' });
         if (!title) return [];
         const releaseDate = isMovie ? details.release_date : details.first_air_date;
         const year = releaseDate ? Number.parseInt(releaseDate.slice(0, 4), 10) : null;
         const searchUrl = new URL('/', BASE_URL);
         searchUrl.searchParams.set('s', title);
+        diagnostics.log('search.start', { mediaType: isMovie ? 'movie' : 'tv', season: seasonNumber, episode: episodeNumber });
         console.log(`[AnimeSalt] Searching ${title} (${year || 'year unknown'}) for S${seasonNumber}E${episodeNumber}`);
 
         const searchHtml = await request(searchUrl.href, { headers: { Referer: `${BASE_URL}/` } });
         const results = parseSearchResults(searchHtml, isMovie ? 'movie' : 'anime');
         const candidates = rankSearchResults(results, title, year);
+        diagnostics.log('search.complete', { results: results.length, candidates: candidates.length, mediaType: isMovie ? 'movie' : 'tv' });
         console.log(`[AnimeSalt] Search parsed ${results.length} ${isMovie ? 'movie' : 'series'} result(s); ranked ${candidates.length} candidate(s)`);
         if (!candidates.length) {
             console.warn(`[AnimeSalt] No matching ${isMovie ? 'movie' : 'series'} found for ${title}`);
@@ -402,6 +411,7 @@ async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) 
         }
 
         const candidate = candidates[0];
+        diagnostics.log('title.selected', { year: candidate.year || null, mediaType: isMovie ? 'movie' : 'tv' });
         console.log(`[AnimeSalt] Selected ${candidate.title}${candidate.year ? ` (${candidate.year})` : ''}`);
         let pageUrl;
         if (isMovie) {
@@ -416,6 +426,7 @@ async function getStreams(tmdbId, mediaType = 'anime', season = 1, episode = 1) 
 
         console.log(`[AnimeSalt] Fetching sources from ${new URL(pageUrl).pathname}`);
         const streams = await getStreamsFromPage(pageUrl);
+        diagnostics.log('streams.resolved', { streams: streams.length, mediaType: isMovie ? 'movie' : 'tv' });
         return streams.map(stream => ({
             name: 'AnimeSalt',
             title: `${title} - AnimeSalt ${isMovie ? 'Movie' : `S${seasonNumber}E${episodeNumber}`} - ${stream.server}`,

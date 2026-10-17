@@ -234,12 +234,16 @@ var HEADERS = {
   "Accept": "application/json, text/plain, */*"
 };
 
+function tracedFetch(diagnostics, url, options) {
+  return diagnostics ? diagnostics.fetch(url, options) : fetch(url, options);
+}
+
 // src/cinejoy-tv/utils.js
 var cachedDomain = DEFAULT_DOMAIN;
 var lastDomainResolvedTime = 0;
 var DOMAIN_CACHE_TTL = 3 * 60 * 60 * 1e3;
 var cachedApiHost = DEFAULT_API_HOST;
-function resolveDomain(force = false) {
+function resolveDomain(force = false, diagnostics = null) {
   return __async(this, null, function* () {
     const now = Date.now();
     if (!force && lastDomainResolvedTime > 0 && now - lastDomainResolvedTime < DOMAIN_CACHE_TTL) {
@@ -248,7 +252,7 @@ function resolveDomain(force = false) {
     const candidates = [cachedDomain, ...CANDIDATE_DOMAINS.filter((d) => d !== cachedDomain)];
     for (const candidate of candidates) {
       try {
-        const res = yield fetch(candidate, {
+        const res = yield tracedFetch(diagnostics, candidate, {
           headers: { "User-Agent": HEADERS["User-Agent"] }
         });
         if (res.ok || res.status >= 200 && res.status < 400) {
@@ -262,13 +266,13 @@ function resolveDomain(force = false) {
     return cachedDomain || DEFAULT_DOMAIN;
   });
 }
-function getActiveServers() {
-  return __async(this, arguments, function* (domain = DEFAULT_DOMAIN) {
+function getActiveServers(domain = DEFAULT_DOMAIN, diagnostics = null) {
+  return __async(this, arguments, function* (domain = DEFAULT_DOMAIN, diagnostics = null) {
     const cleanDomain = domain.replace(/\/+$/, "");
     const apiHosts = [cachedApiHost, ...CANDIDATE_API_HOSTS.filter((h) => h !== cachedApiHost)];
     for (const host of apiHosts) {
       try {
-        const res = yield fetch(`${host}/servers`, {
+        const res = yield tracedFetch(diagnostics, `${host}/servers`, {
           headers: {
             "Origin": cleanDomain,
             "Referer": `${cleanDomain}/`,
@@ -306,13 +310,13 @@ function getActiveServers() {
     return { host: cachedApiHost, servers: [...FALLBACK_SERVERS] };
   });
 }
-function getTmdbDetails(tmdbId, mediaType = "movie") {
+function getTmdbDetails(tmdbId, mediaType = "movie", diagnostics = null) {
   return __async(this, null, function* () {
     var _a;
     try {
       const type = mediaType === "tv" || mediaType === "series" ? "tv" : "movie";
       const url = `${TMDB_BASE_URL}/${type}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-      const res = yield fetch(url, {
+      const res = yield tracedFetch(diagnostics, url, {
         headers: {
           "Accept": "application/json",
           "User-Agent": HEADERS["User-Agent"]
@@ -327,7 +331,10 @@ function getTmdbDetails(tmdbId, mediaType = "movie") {
       const imdbId = ((_a = data.external_ids) == null ? void 0 : _a.imdb_id) || "";
       return { title, year, imdbId };
     } catch (e) {
-      console.warn("[Cinejoy-TV] TMDB metadata fetch error:", e.message);
+      if (diagnostics)
+        diagnostics.log("metadata.failed", { errorType: e.name });
+      else
+        console.warn("[Cinejoy-TV] TMDB metadata fetch error:", e.message);
       return null;
     }
   });
@@ -355,10 +362,10 @@ function getLanguageDisplayName(code) {
   const norm = normalizeLanguageCode(code);
   return LANGUAGE_NAMES[norm] || LANGUAGE_NAMES[code] || norm.toUpperCase();
 }
-function fetchJson(_0) {
-  return __async(this, arguments, function* (url, options = {}) {
+function fetchJson(url, options = {}, diagnostics = null) {
+  return __async(this, arguments, function* (url, options = {}, diagnostics = null) {
     try {
-      const res = yield fetch(url, options);
+      const res = yield tracedFetch(diagnostics, url, options);
       let data = null;
       if (res.ok) {
         data = yield res.json();
@@ -370,7 +377,7 @@ function fetchJson(_0) {
   });
 }
 var cachedSubtitlesHost = DEFAULT_SUBTITLES_HOST;
-function fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang = 3) {
+function fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang = 3, diagnostics = null) {
   return __async(this, null, function* () {
     var _a, _b;
     const subtitles = [];
@@ -392,7 +399,7 @@ function fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang = 
             "Referer": `${DEFAULT_DOMAIN}/`,
             "User-Agent": HEADERS["User-Agent"]
           }
-        });
+        }, diagnostics);
         if (!result.ok || !result.data)
           continue;
         const list = Array.isArray(result.data) ? result.data : Array.isArray((_a = result.data) == null ? void 0 : _a.subtitles) ? result.data.subtitles : Array.isArray((_b = result.data) == null ? void 0 : _b.data) ? result.data.data : [];
@@ -435,19 +442,22 @@ function fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang = 
           return subtitles;
         }
       } catch (e) {
-        console.warn(`[Cinejoy] Subtitle fetch from ${host} error:`, e.message);
+        if (diagnostics)
+          diagnostics.log("subtitles.source.failed", { host, errorType: e.name });
+        else
+          console.warn(`[Cinejoy] Subtitle fetch from ${host} error:`, e.message);
       }
     }
     return subtitles;
   });
 }
-function fetchGranite(tmdbId, mediaType, season, episode, maxPerLang = 3) {
+function fetchGranite(tmdbId, mediaType, season, episode, maxPerLang = 3, diagnostics = null) {
   return __async(this, null, function* () {
     if (!tmdbId)
       return [];
     const isTv = mediaType === "tv" || mediaType === "series";
     const url = isTv ? `${GRANITE_BASE}/tv/${encodeURIComponent(tmdbId)}/${encodeURIComponent(season || 1)}/${encodeURIComponent(episode || 1)}` : `${GRANITE_BASE}/movie/${encodeURIComponent(tmdbId)}`;
-    const result = yield fetchJson(url, { headers: { "User-Agent": HEADERS["User-Agent"] } });
+    const result = yield fetchJson(url, { headers: { "User-Agent": HEADERS["User-Agent"] } }, diagnostics);
     if (!result.ok || !Array.isArray(result.data)) {
       return [];
     }
@@ -478,7 +488,7 @@ function fetchGranite(tmdbId, mediaType, season, episode, maxPerLang = 3) {
     return tracks;
   });
 }
-function fetchNatsuki(imdbId, season, episode, maxPerLang = 3) {
+function fetchNatsuki(imdbId, season, episode, maxPerLang = 3, diagnostics = null) {
   return __async(this, null, function* () {
     if (!imdbId)
       return [];
@@ -493,7 +503,7 @@ function fetchNatsuki(imdbId, season, episode, maxPerLang = 3) {
       "Referer": "https://atlantic.st/",
       "User-Agent": HEADERS["User-Agent"]
     };
-    const result = yield fetchJson(`${NATSUKI_BASE}?${parts.join("&")}`, { headers });
+    const result = yield fetchJson(`${NATSUKI_BASE}?${parts.join("&")}`, { headers }, diagnostics);
     if (!result.ok || !result.data || !Array.isArray(result.data.subtitles)) {
       return [];
     }
@@ -520,7 +530,7 @@ function fetchNatsuki(imdbId, season, episode, maxPerLang = 3) {
     return tracks;
   });
 }
-function fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang = 3) {
+function fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang = 3, diagnostics = null) {
   return __async(this, null, function* () {
     var _a;
     if (!imdbId)
@@ -530,7 +540,7 @@ function fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang = 3) 
       const subUrl = isTv ? `https://opensubtitles-v3.strem.io/subtitles/series/${imdbId}:${season || 1}:${episode || 1}.json` : `https://opensubtitles-v3.strem.io/subtitles/movie/${imdbId}.json`;
       const res = yield fetchJson(subUrl, {
         headers: { "User-Agent": HEADERS["User-Agent"] }
-      });
+      }, diagnostics);
       if (res.ok && Array.isArray((_a = res.data) == null ? void 0 : _a.subtitles) && res.data.subtitles.length > 0) {
         const tracks = [];
         const langCount = {};
@@ -564,7 +574,7 @@ function fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang = 3) 
           "User-Agent": HEADERS["User-Agent"],
           "X-User-Agent": OPENSUBS_USER_AGENT
         }
-      });
+      }, diagnostics);
       if (res.ok && Array.isArray(res.data)) {
         const tracks = [];
         const langCount = {};
@@ -594,13 +604,13 @@ function fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang = 3) 
     return [];
   });
 }
-function fetchAllSubtitles(tmdbId, mediaType, season, episode, imdbId, maxPerLang = 3) {
+function fetchAllSubtitles(tmdbId, mediaType, season, episode, imdbId, maxPerLang = 3, diagnostics = null) {
   return __async(this, null, function* () {
     const jobs = [
-      fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang),
-      fetchGranite(tmdbId, mediaType, season, episode, maxPerLang),
-      fetchNatsuki(imdbId, season, episode, maxPerLang),
-      fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang)
+      fetchCinejoySubtitles(tmdbId, mediaType, season, episode, maxPerLang, diagnostics),
+      fetchGranite(tmdbId, mediaType, season, episode, maxPerLang, diagnostics),
+      fetchNatsuki(imdbId, season, episode, maxPerLang, diagnostics),
+      fetchOpenSubtitles(imdbId, mediaType, season, episode, maxPerLang, diagnostics)
     ];
     const settled = yield Promise.all(jobs.map((job) => job.catch(() => [])));
     const allTracks = [];
@@ -1355,7 +1365,7 @@ function sealWithWasm(path, payloadJson) {
     }
   });
 }
-function sealWithApi(serverInfo) {
+function sealWithApi(serverInfo, diagnostics = null) {
   return __async(this, null, function* () {
     const isTv = !!serverInfo.isTv;
     const tmdbId = serverInfo.tmdbId;
@@ -1376,7 +1386,7 @@ function sealWithApi(serverInfo) {
     if (imdbId)
       sheguUrl += `&imdb=${imdbId}`;
     const encUrl = `${ENC_DEC_API}?url=${encodeURIComponent(sheguUrl)}`;
-    const res = yield fetch(encUrl, {
+    const res = yield tracedFetch(diagnostics, encUrl, {
       headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
     });
     if (!res.ok)
@@ -1397,18 +1407,21 @@ function sealWithApi(serverInfo) {
     };
   });
 }
-function seal(path, payloadJson, serverInfo) {
+function seal(path, payloadJson, serverInfo, diagnostics = null) {
   return __async(this, null, function* () {
     const isMockRuntime = typeof __native_fetch !== "undefined" || typeof HermesInternal !== "undefined" || typeof WebAssembly !== "undefined" && typeof WebAssembly.instantiate === "function" && (WebAssembly.instantiate.toString().includes("placeholder") || WebAssembly.instantiate.name === "");
     if (!isMockRuntime && typeof WebAssembly !== "undefined" && typeof WebAssembly.instantiate === "function") {
       try {
         return yield sealWithWasm(path, payloadJson);
       } catch (wasmErr) {
-        console.warn("[Cinejoy] Local WASM seal failed, attempting API fallback:", wasmErr.message);
+        if (diagnostics)
+          diagnostics.log("seal.wasm.failed", { errorType: wasmErr.name, fallback: "API" });
+        else
+          console.warn("[Cinejoy] Local WASM seal failed, attempting API fallback:", wasmErr.message);
       }
     }
     if (serverInfo) {
-      return yield sealWithApi(serverInfo);
+      return yield sealWithApi(serverInfo, diagnostics);
     }
     throw new Error("Cannot seal request: WebAssembly is unavailable and no serverInfo was provided");
   });
@@ -1502,7 +1515,7 @@ function relabelResolverStreams(list, serverDisplayName, customResolver = "") {
     });
   });
 }
-function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode = 1, allowedServers = null) {
+function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode = 1, allowedServers = null, diagnostics = null) {
   return __async(this, null, function* () {
     let id = tmdbId;
     let type = mediaType;
@@ -1516,21 +1529,30 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
     }
     const cleanTmdb = String(id || "").trim();
     if (!cleanTmdb || cleanTmdb === "[object Object]") {
-      console.warn("[Cinejoy-TV] Invalid TMDB ID provided:", tmdbId);
+      if (diagnostics)
+        diagnostics.log("lookup.rejected", { reason: "invalid TMDB ID" });
+      else
+        console.warn("[Cinejoy-TV] Invalid TMDB ID provided:", tmdbId);
       return [];
     }
     const cleanMediaType = String(type || "movie").toLowerCase().trim();
     const isTv = cleanMediaType === "tv" || cleanMediaType === "series";
     const cleanSeason = Number(s) || 1;
     const cleanEpisode = Number(ep) || 1;
-    console.log(`[Cinejoy-TV] Fetching streams for TMDB: ${cleanTmdb}, Type: ${isTv ? "tv" : "movie"}, S: ${cleanSeason}, E: ${cleanEpisode}`);
+    if (diagnostics)
+      diagnostics.log("lookup.start", { tmdbId: cleanTmdb, mediaType: isTv ? "tv" : "movie", season: cleanSeason, episode: cleanEpisode, allowedServers });
+    else
+      console.log(`[Cinejoy-TV] Fetching streams for TMDB: ${cleanTmdb}, Type: ${isTv ? "tv" : "movie"}, S: ${cleanSeason}, E: ${cleanEpisode}`);
     const streams = [];
     const settings = globalThis.SCRAPER_SETTINGS || {};
     let customResolver = (settings.resolverUrl || HARDCODED_WORKER_URL).trim().replace(/\/+$/, "");
     if (customResolver && !customResolver.startsWith("http://") && !customResolver.startsWith("https://")) {
       customResolver = "https://" + customResolver;
     }
-    console.log(`[Cinejoy-TV] Using stream resolver: ${customResolver}`);
+    if (diagnostics)
+      diagnostics.log("resolver.selected", { resolver: customResolver });
+    else
+      console.log(`[Cinejoy-TV] Using stream resolver: ${customResolver}`);
     let maxPerLang = 3;
     if (settings.maxSubtitlesPerLanguage !== void 0) {
       const parsed = Number(settings.maxSubtitlesPerLanguage);
@@ -1538,11 +1560,11 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
         maxPerLang = parsed;
     }
     try {
-      const domainPromise = resolveDomain();
-      const tmdbInfoPromise = getTmdbDetails(cleanTmdb, isTv ? "tv" : "movie");
+      const domainPromise = resolveDomain(false, diagnostics);
+      const tmdbInfoPromise = getTmdbDetails(cleanTmdb, isTv ? "tv" : "movie", diagnostics);
       const [domain, tmdbInfo] = yield Promise.all([domainPromise, tmdbInfoPromise]);
-      const serversPromise = getActiveServers(domain);
-      const subsPromise = fetchAllSubtitles(cleanTmdb, isTv ? "tv" : "movie", cleanSeason, cleanEpisode, tmdbInfo == null ? void 0 : tmdbInfo.imdbId, maxPerLang);
+      const serversPromise = getActiveServers(domain, diagnostics);
+      const subsPromise = fetchAllSubtitles(cleanTmdb, isTv ? "tv" : "movie", cleanSeason, cleanEpisode, tmdbInfo == null ? void 0 : tmdbInfo.imdbId, maxPerLang, diagnostics);
       const [{ host: apiHost, servers: discoveredServers }, combinedSubtitles] = yield Promise.all([
         serversPromise,
         subsPromise
@@ -1553,8 +1575,12 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
       const servers = allowed
         ? discoveredServers.filter((name) => allowed.has(String(name).toLowerCase()))
         : discoveredServers;
-      console.log(`[Cinejoy-TV] Active domain: ${domain}, API Host: ${apiHost}, Servers: ${servers.join(", ")}`);
-      console.log(`[Cinejoy-TV] Resolved ${combinedSubtitles.length} subtitle track(s)`);
+      if (diagnostics) {
+        diagnostics.log("sources.discovered", { domain, apiHost, servers, subtitles: combinedSubtitles.length });
+      } else {
+        console.log(`[Cinejoy-TV] Active domain: ${domain}, API Host: ${apiHost}, Servers: ${servers.join(", ")}`);
+        console.log(`[Cinejoy-TV] Resolved ${combinedSubtitles.length} subtitle track(s)`);
+      }
       const streamHeaders = {
         "Origin": domain,
         "Referer": `${domain}/`,
@@ -1564,12 +1590,16 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
         var _a, _b;
         try {
           const serverDisplayName = server.charAt(0).toUpperCase() + server.slice(1);
+          if (diagnostics)
+            diagnostics.log("server.start", { server });
           if (customResolver) {
             try {
               const targetUrl = `${customResolver}/api/stream?tmdb=${cleanTmdb}&type=${isTv ? "series" : "movie"}&server=${encodeURIComponent(server)}&season=${cleanSeason}&episode=${cleanEpisode}&imdb=${encodeURIComponent((tmdbInfo == null ? void 0 : tmdbInfo.imdbId) || "")}&title=${encodeURIComponent((tmdbInfo == null ? void 0 : tmdbInfo.title) || "")}&year=${encodeURIComponent((tmdbInfo == null ? void 0 : tmdbInfo.year) || "")}`;
-              const rRes = yield fetch(targetUrl, {
+              const rRes = yield tracedFetch(diagnostics, targetUrl, {
                 headers: { "User-Agent": HEADERS["User-Agent"] }
               });
+              if (diagnostics)
+                diagnostics.log("resolver.response", { server, status: rRes.status, url: rRes.url || targetUrl });
               if (rRes.ok) {
                 const rJson = yield rRes.json();
                 if (Array.isArray(rJson == null ? void 0 : rJson.streams) && rJson.streams.length > 0) {
@@ -1585,6 +1615,8 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
                     }
                     st.subtitles = sSubs;
                   }
+                  if (diagnostics)
+                    diagnostics.log("server.complete", { server, streams: list.length, source: "resolver" });
                   return list;
                 }
                 const rRawStreams = ((_a = rJson == null ? void 0 : rJson.data) == null ? void 0 : _a.stream) || [];
@@ -1604,7 +1636,7 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
                   }
                   if (item.type === "hls" && item.playlist) {
                     try {
-                      const m3u8Res = yield fetch(item.playlist, { headers: streamHeaders });
+                      const m3u8Res = yield tracedFetch(diagnostics, item.playlist, { headers: streamHeaders });
                       if (m3u8Res.ok) {
                         const m3u8Text = yield m3u8Res.text();
                         const variants = parseHlsVariants(m3u8Text, item.playlist);
@@ -1633,13 +1665,22 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
                     });
                   }
                 }
-                if (parsedFromResolver.length > 0)
+                if (parsedFromResolver.length > 0) {
+                  if (diagnostics)
+                    diagnostics.log("server.complete", { server, streams: parsedFromResolver.length, source: "resolver" });
                   return parsedFromResolver;
+                }
               } else {
-                console.warn(`[Cinejoy-TV] Custom resolver returned HTTP ${rRes.status} for server ${server}`);
+                if (diagnostics)
+                  diagnostics.log("resolver.rejected", { server, status: rRes.status });
+                else
+                  console.warn(`[Cinejoy-TV] Custom resolver returned HTTP ${rRes.status} for server ${server}`);
               }
             } catch (resolverErr) {
-              console.warn(`[Cinejoy-TV] Custom resolver error for ${server}:`, resolverErr.message);
+              if (diagnostics)
+                diagnostics.log("resolver.failed", { server, errorType: resolverErr.name });
+              else
+                console.warn(`[Cinejoy-TV] Custom resolver error for ${server}:`, resolverErr.message);
             }
           }
           const path = `/${server.toLowerCase()}/${isTv ? "series" : "movie"}`;
@@ -1660,8 +1701,9 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
             year: (tmdbInfo == null ? void 0 : tmdbInfo.year) || "",
             imdbId: (tmdbInfo == null ? void 0 : tmdbInfo.imdbId) || ""
           };
-          const sealed = yield seal(path, payloadObj, serverInfo);
-          const res = yield fetch(`${apiHost}/g`, {
+          const sealed = yield seal(path, payloadObj, serverInfo, diagnostics);
+          const gatewayUrl = `${apiHost}/g`;
+          const res = yield tracedFetch(diagnostics, gatewayUrl, {
             method: "POST",
             body: sealed.body,
             headers: {
@@ -1671,8 +1713,13 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
               "User-Agent": HEADERS["User-Agent"]
             }
           });
+          if (diagnostics)
+            diagnostics.log("gateway.response", { server, status: res.status, url: res.url || gatewayUrl });
           if (!res.ok) {
-            console.warn(`[Cinejoy-TV] [${server}] HTTP ${res.status}: Gateway rejected request`);
+            if (diagnostics)
+              diagnostics.log("gateway.rejected", { server, status: res.status });
+            else
+              console.warn(`[Cinejoy-TV] [${server}] HTTP ${res.status}: Gateway rejected request`);
             return null;
           }
           let encBytes;
@@ -1708,7 +1755,7 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
             }
             if (type2 === "hls" && playlist) {
               try {
-                const m3u8Res = yield fetch(playlist, { headers: streamHeaders });
+                const m3u8Res = yield tracedFetch(diagnostics, playlist, { headers: streamHeaders });
                 if (m3u8Res.ok) {
                   const m3u8Text = yield m3u8Res.text();
                   const variants = parseHlsVariants(m3u8Text, playlist);
@@ -1726,7 +1773,10 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
                   }
                 }
               } catch (mErr) {
-                console.warn(`[Cinejoy-TV] Failed to parse HLS variants for ${server}:`, mErr.message);
+                if (diagnostics)
+                  diagnostics.log("playlist.failed", { server, url: playlist, errorType: mErr.name });
+                else
+                  console.warn(`[Cinejoy-TV] Failed to parse HLS variants for ${server}:`, mErr.message);
               }
               serverStreams.push({
                 name: streamLabel(serverDisplayName, "Auto (Adaptive)"),
@@ -1756,9 +1806,14 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
               }
             }
           }
+          if (diagnostics)
+            diagnostics.log("server.complete", { server, streams: serverStreams.length });
           return serverStreams;
         } catch (serverErr) {
-          console.warn(`[Cinejoy-TV] Error querying server ${server}:`, serverErr.message);
+          if (diagnostics)
+            diagnostics.log("server.failed", { server, errorType: serverErr.name });
+          else
+            console.warn(`[Cinejoy-TV] Error querying server ${server}:`, serverErr.message);
           return null;
         }
       }));
@@ -1773,9 +1828,15 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
           }
         }
       }
-      console.log(`[Cinejoy-TV] Successfully retrieved ${streams.length} stream(s)`);
+      if (diagnostics)
+        diagnostics.log("lookup.complete", { streams: streams.length });
+      else
+        console.log(`[Cinejoy-TV] Successfully retrieved ${streams.length} stream(s)`);
     } catch (error) {
-      console.error(`[Cinejoy-TV] Error: ${error.message}`);
+      if (diagnostics)
+        diagnostics.log("lookup.failed", { errorType: error.name, code: error.code });
+      else
+        console.error(`[Cinejoy-TV] Error: ${error.message}`);
     }
     return streams;
   });

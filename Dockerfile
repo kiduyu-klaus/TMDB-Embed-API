@@ -47,7 +47,7 @@ RUN chown -R app:app /app
 USER app
 
 # Labels / metadata
-LABEL org.opencontainers.image.title="KiduyuTvProviders" \
+LABEL org.opencontainers.image.title="kiduyuTv" \
     org.opencontainers.image.description="Streaming metadata + source aggregation API with multi-key TMDB rotation" \
     org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.source="https://github.com/Inside4ndroid/TMDB-Embed-API" \

@@ -68,3 +68,4 @@ test-results/vid-providers/vidup-tv.json
 /tests
 /tests
 tests/abyss.py
+.tmp-ua2.js

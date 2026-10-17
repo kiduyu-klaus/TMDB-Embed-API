@@ -1,4 +1,5 @@
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('Anikoto');
+const { fetch } = diagnostics;
 /*
  * Anikoto Nuvio provider.
  * Source-derived Anikoto -> MegaPlay/VidTube extraction.
@@ -16,7 +17,7 @@ const AJAX_HEADERS={
   "Accept":"*/*"
 };
 
-function log(x){console.log("[Anikoto] "+x)}
+function log(x){diagnostics.log('provider.message',{message:x})}
 
 class TTLCache{
   constructor(){this.m=new Map()}
@@ -890,22 +891,26 @@ async function resolveMode(episodeId,isDub,quality){
 }
 
 /* ---------- Main ---------- */
-async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
+function getStreams(...args){return diagnostics.run(()=>getStreamsImpl(...args),args)}
+async function getStreamsImpl(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
   try{
     const type=String(mediaType||"tv").toLowerCase();
-    if(type!=="tv"&&type!=="movie")return[];
+    if(type!=="tv"&&type!=="movie"){diagnostics.log('input.invalid',{reason:'unsupported-media-type',mediaType:type});return[]}
     const id=String(tmdbId||"").trim(),s=Number(season)||1,e=Number(episode)||1;
-    if(!/^\d{1,10}$/.test(id)||Number(id)<=0)return[];
+    if(!/^\d{1,10}$/.test(id)||Number(id)<=0){diagnostics.log('input.invalid',{reason:'invalid-tmdb-id'});return[]}
     const key=type==="movie"?"anikoto:streams:v2:movie:"+id+":"+JSON.stringify(settings||{}):"anikoto:streams:v2:tv:"+id+":"+s+":"+e+":"+JSON.stringify(settings||{});
     const hit=CACHE.get(key);
-    if(hit!==undefined)return await Promise.resolve(hit);
+    if(hit!==undefined){diagnostics.log('cache.hit',{mediaType:type,season:s,episode:e});return await Promise.resolve(hit)}
     const p=(async()=>{
       const started=Date.now();
+      diagnostics.log('lookup.start',{mediaType:type,season:s,episode:e});
       log("REQUEST TMDB="+id+" type="+type+" S"+s+"E"+e);
       if(type==="movie"){
         const [mapping,tmdbInfo]=await Promise.all([movieMapperLookup(id),tmdbMovieTitle(id)]);
+        diagnostics.log('mapping.lookup.complete',{found:!!mapping,mediaType:'movie'});
         if(!mapping||!tmdbInfo)return[];
         const movieCard=await findMovie(mapping,tmdbInfo);
+        diagnostics.log('search.match.complete',{found:!!movieCard,mediaType:'movie'});
         if(!movieCard)return[];
         const animeUrl=absoluteUrl(movieCard.href),animeId=await getAnimeId(animeUrl);
         if(!animeId)return[];
@@ -921,6 +926,7 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
       }
       const mapperStarted=Date.now();
       const mapping=await mapperLookup(id,s,e);
+      diagnostics.log('mapping.lookup.complete',{found:!!mapping,mediaType:'tv',elapsedMs:Date.now()-mapperStarted});
       log("MAPPER "+(Date.now()-mapperStarted)+"ms");
       if(!mapping){
         log("MAPPING MISS — READ ONLY, NO POPULATION");
@@ -931,6 +937,7 @@ async function getStreams(tmdbId,mediaType="tv",season=1,episode=1,settings={}){
       const anime=findAnime(mapping,s);
       const modesList=modes(settings);
       const [animeResult]=await Promise.all([anime]);
+      diagnostics.log('search.match.complete',{found:!!animeResult,mediaType:'tv'});
       log("SEARCH/MATCH TOTAL "+(Date.now()-searchStarted)+"ms");
       if(!animeResult){
         log("ANIME MATCH FAILED");

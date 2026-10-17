@@ -1,6 +1,7 @@
 'use strict';
 
 const cheerio = require('cheerio');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('AllWish');
 const tmdb = require('../utils/tmdb');
 const { applyAnimeStreamHeaders } = require('../utils/animeStreamHeaders');
 const animeKai = require('./animekai');
@@ -109,9 +110,7 @@ function parseServerEntries(html) {
 }
 
 async function fetchResponse(url, { json = false, headers = REQUEST_HEADERS } = {}) {
-    const fetchImpl = typeof globalThis.fetch === 'function'
-        ? globalThis.fetch.bind(globalThis)
-        : require('node-fetch');
+    const fetchImpl = diagnostics.fetch;
     const controller = typeof AbortController === 'function' ? new AbortController() : null;
     const timeout = controller ? setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS) : null;
     try {
@@ -143,6 +142,8 @@ function createStream(source, server, playerUrl) {
 }
 
 async function resolveServer(server) {
+    const started = Date.now();
+    diagnostics.log('server.resolve.start', { label: server.label || 'Server' });
     try {
         const url = new URL('/ajax/server', BASE_URL);
         url.searchParams.set('get', server.dataLinkId);
@@ -153,18 +154,23 @@ async function resolveServer(server) {
         if (!['https:', 'http:'].includes(parsedPlayerUrl.protocol)) return [];
         const playerUrl = parsedPlayerUrl.href;
         const host = parsedPlayerUrl.hostname.toLowerCase();
+        diagnostics.log('server.player.discovered', { host, supportedPlayer: SUPPORTED_PLAYER_DOMAINS.some(domain => host === domain || host.endsWith(`.${domain}`)) });
         const isPlayer = SUPPORTED_PLAYER_DOMAINS.some(domain => host === domain || host.endsWith(`.${domain}`));
         const isDirectMedia = /\.(?:m3u8|mp4|mpd)(?:$|[?#])/i.test(playerUrl);
 
         if (isPlayer) {
             const resolved = await animeKai.resolveDirectM3u8(playerUrl);
-            if (resolved && resolved.url) return [createStream(resolved, server, playerUrl)];
+            if (resolved && resolved.url) {
+                diagnostics.log('server.resolve.complete', { label: server.label || 'Server', mode: 'extractor', elapsedMs: Date.now() - started });
+                return [createStream(resolved, server, playerUrl)];
+            }
             if (!isDirectMedia) {
                 console.warn(`[AllWish] Could not resolve player source for ${host}`);
                 return [];
             }
         }
 
+        diagnostics.log('server.resolve.complete', { label: server.label || 'Server', mode: isDirectMedia ? 'direct-media' : 'player-url', elapsedMs: Date.now() - started });
         return [createStream({ url: playerUrl, referer: playerUrl }, server, playerUrl)];
     } catch (error) {
         console.warn(`[AllWish] Server ${server.dataLinkId} failed: ${error.message}`);
@@ -172,7 +178,11 @@ async function resolveServer(server) {
     }
 }
 
-async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = null) {
+function getStreams(...args) {
+    return diagnostics.run(() => getStreamsImpl(...args), args);
+}
+
+async function getStreamsImpl(tmdbId, mediaType = 'anime', season = null, episode = null) {
     const isMovie = mediaType === 'movie' || (mediaType === 'anime' && season == null && episode == null);
     const id = String(tmdbId || '').trim();
     const seasonNumber = Number(season) || 1;
@@ -183,8 +193,10 @@ async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = 
     }
 
     try {
+        const tmdbStarted = Date.now();
         const details = await tmdb.getDetails(isMovie ? 'movie' : 'tv', id);
         const title = details && (isMovie ? details.title : details.name || details.title);
+        diagnostics.log('tmdb.lookup.complete', { found: !!title, mediaType: isMovie ? 'movie' : 'tv', elapsedMs: Date.now() - tmdbStarted });
         if (!title) {
             console.warn(`[AllWish] TMDB returned no ${isMovie ? 'movie' : 'TV'} title for ${id}`);
             return [];
@@ -193,9 +205,11 @@ async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = 
         const query = isMovie ? title : buildAnimeSearchTitle(title, seasonNumber);
         const searchUrl = new URL('/filter', BASE_URL);
         searchUrl.searchParams.set('keyword', query);
+        diagnostics.log('search.start', { mediaType: isMovie ? 'movie' : 'tv', season: seasonNumber, episode: episodeNumber });
         console.log(`[AllWish] Searching ${query} (S${seasonNumber}E${episodeNumber})`);
         const searchHtml = await fetchResponse(searchUrl.href);
         const candidates = findAnimeSearchCandidates(searchHtml, title, seasonNumber, isMovie ? 'movie' : 'tv');
+        diagnostics.log('search.complete', { candidates: candidates.length, mediaType: isMovie ? 'movie' : 'tv' });
         const seasonDetails = !isMovie && candidates.some(result => partNumber(result.title) !== null)
             ? await tmdb.getSeasonDetails(id, seasonNumber) : null;
         const selection = isMovie ? { results: candidates, episode: 1, part: null }
@@ -206,6 +220,7 @@ async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = 
             console.warn(`[AllWish] No matching title found for ${query}`);
             return [];
         }
+        diagnostics.log('title.selected', { part: selection.part || null, episode: sourceEpisode });
         console.log(`[AllWish] S${seasonNumber}E${episodeNumber} -> ${candidate.title}; part=${selection.part || 'unsplit'} episode=${sourceEpisode}`);
 
         const animePage = await fetchResponse(candidate.href);
@@ -238,8 +253,10 @@ async function getStreams(tmdbId, mediaType = 'anime', season = null, episode = 
         }
 
         const servers = parseServerEntries(serverList.result || '').slice(0, 5);
+        diagnostics.log('servers.parsed', { count: servers.length, mediaType: isMovie ? 'movie' : 'tv' });
         console.log(`[AllWish] ${candidate.title} S${seasonNumber}E${episodeNumber}: ${servers.length} server(s)`);
         const streams = (await Promise.all(servers.map(resolveServer))).flat();
+        diagnostics.log('streams.assembled', { streams: streams.length, servers: servers.length });
         console.log(`[AllWish] Returning ${streams.length} stream(s) for S${seasonNumber}E${episodeNumber}`);
         return streams;
     } catch (error) {

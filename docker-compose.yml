@@ -1,8 +1,10 @@
+name: kiduyutv
 version: '3.9'
 services:
-  tmdb-embed-api:
+  kiduyutv:
+    image: kiduyutv:latest
     build: .
-    container_name: tmdb-embed-api
+    container_name: kiduyuTv
     environment:
       # Provide at least one TMDB key (comma separated or override via UI later)
       - TMDB_API_KEY=${TMDB_API_KEY:-}

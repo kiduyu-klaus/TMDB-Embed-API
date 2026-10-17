@@ -16,7 +16,8 @@ function getStreamsImpl(tmdbId, mediaType, season, episode) {
     mediaType,
     season == null ? 1 : season,
     episode == null ? 1 : episode,
-    ['Lisbon', 'Riga', 'Athens']
+    ['Lisbon', 'Riga', 'Athens'],
+    diagnostics
   );
 }
 
