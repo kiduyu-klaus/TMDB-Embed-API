@@ -1,7 +1,7 @@
 /* FrameXTV provider for Nuvio TV. */
 (function () {
   'use strict';
-  const diagnostics = require('../utils/providerTrace').createProviderTrace('FrameXTV');
+  const diagnostics = require('../utils/providerTrace').createProviderTrace('titan');
   const fetch = diagnostics.fetch;
   const API = 'https://api.framextv.tech';
   const PROVIDER = "titan";
@@ -196,7 +196,7 @@
       const master = parseMaster(response.text, response.base);
       // Drop confirmed HTML error pages. Retain API URLs when a probe fails.
       if (!master) {
-        const isErrorPage = /^\s*(?:<!doctype|<html|[\[{])/i.test(response.text);
+        const isErrorPage = /^\s*(?:<!doctype|<html|[[{])/i.test(response.text);
         diagnostics.log('playlist.invalid', {
           characters: response.text.length,
           isErrorPage: isErrorPage,

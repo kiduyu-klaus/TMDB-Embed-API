@@ -25,7 +25,7 @@
   "enableNotorrentProvider": false,
   "enableDahmermoviesProvider": true,
   "port": 8787,
-  "providerCheckTmdbId": "550",
+  "providerCheckTmdbId": "385687",
   "enableVaplayerProvider": true,
   "enableNetmirrorProvider": true,
   "enableCastletvProvider": true,
@@ -36,5 +36,6 @@
   "enableAnime-dekhoProvider": false,
   "animeProviderCheckTmdbId": "1363974",
   "enableVidboxProvider": true,
-  "enableSuperstreamProvider": false
+  "enableSuperstreamProvider": false,
+  "enableVidloveProvider": false
 }

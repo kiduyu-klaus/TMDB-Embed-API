@@ -1,7 +1,7 @@
 /* Bowler provider backed by FrameXTV. */
 (function () {
   'use strict';
-  var diagnostics = require('../utils/providerTrace').createProviderTrace('Bowler');
+  var diagnostics = require('../utils/providerTrace').createProviderTrace('Valkyrie');
   var fetch = diagnostics.fetch;
   var API = 'https://api.framextv.tech';
   var PROVIDER = "valkyrie";
