@@ -92,6 +92,10 @@ const providerFunctionMap = {
   'cinejoytv.js': 'getStreams',
   'bower.js': 'getStreams',
   'miner.js': 'getStreams',
+  'valkyrie.js': 'getStreams',
+  'titan.js': 'getStreams',
+  'Barbarian.js': 'getStreams',
+
 };
 
 // Providers may belong to more than one media category.
@@ -143,6 +147,9 @@ const providerCategoryMap = {
   'cinejoytv.js': 'MoviesTv',
   'bower.js': 'MoviesTv',
   'miner.js': 'MoviesTv',
+  'valkyrie.js': 'MoviesTv',
+  'titan.js': 'MoviesTv',
+  'Barbarian.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint

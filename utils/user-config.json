@@ -35,5 +35,6 @@
   "enableZxcstreamsProvider": false,
   "enableAnime-dekhoProvider": false,
   "animeProviderCheckTmdbId": "1363974",
-  "enableVidboxProvider": true
+  "enableVidboxProvider": true,
+  "enableSuperstreamProvider": false
 }

@@ -1,13 +1,8 @@
 let sequence = 0;
 
 function safeText(value) {
-    return String(value).replace(/https?:\/\/[^\s"<>]+/g, raw => {
-        try {
-            const url = new URL(raw);
-            const pathname = url.pathname.split('/').map(part => part.length > 48 ? '[redacted]' : part).join('/');
-            return url.origin + pathname + (url.search ? '?[redacted]' : '');
-        } catch { return '[invalid URL]'; }
-    }).replace(/eyJ[\w-]+\.[\w-]+\.[\w-]+/g, '[redacted]');
+    return String(value).replace(/https?:\/\/[^\s"<>]+|eyJ[\w-]+\.[\w-]+\.[\w-]+/g, match =>
+        /^https?:\/\//i.test(match) ? match : '[redacted]');
 }
 
 function createDiagnosticLogger(scope) {

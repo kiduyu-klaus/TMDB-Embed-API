@@ -1,6 +1,8 @@
-/* FrameXTV provider for Nuvio TV. No imports, Node APIs, or build step. */
+/* Bowler provider backed by FrameXTV. */
 (function () {
   'use strict';
+  var diagnostics = require('../utils/providerTrace').createProviderTrace('Bowler');
+  var fetch = diagnostics.fetch;
   var API = 'https://api.framextv.tech';
   var PROVIDER = "bowler";
   var LABEL = "Bowler";
@@ -172,20 +174,47 @@
   function expandQualities(stream) {
     var original = copyStream(stream, stream.url, stream.quality, 'API source');
     var isHls = stream._type === 'hls' || /\.m3u8(?:[?#]|$)/i.test(stream.url);
-    if (!isHls) return Promise.resolve([original]);
+    if (!isHls) {
+      diagnostics.log('source.kept', {
+        type: stream._type || 'unknown',
+        quality: stream.quality,
+        url: stream.url
+      });
+      return Promise.resolve([original]);
+    }
+    diagnostics.log('playlist.probe.start', { quality: stream.quality, url: stream.url });
     return Promise.resolve().then(function () {
       return fetchWithin(stream.url, { headers: stream.headers }, 10000);
     }).then(function (response) {
+      diagnostics.log('playlist.response', {
+        status: response.status,
+        url: response.url || stream.url
+      });
       if (!response.ok) { var error = new Error('Playlist HTTP ' + response.status); error.status = response.status; throw error; }
       return response.text().then(function (text) { return { text: text, base: response.url || stream.url }; });
     }).then(function (response) {
       var master = parseMaster(response.text, response.base);
       // Drop confirmed HTML error pages. Retain API URLs when a probe fails.
-      if (!master) return /^\s*(?:<!doctype|<html|[\[{])/i.test(response.text) ? [] : [original];
-      if (!master.variants.length) return [original];
+      if (!master) {
+        var isErrorPage = /^\s*(?:<!doctype|<html|[\[{])/i.test(response.text);
+        diagnostics.log('playlist.invalid', {
+          characters: response.text.length,
+          isErrorPage: isErrorPage,
+          action: isErrorPage ? 'drop source' : 'retain API source'
+        });
+        return isErrorPage ? [] : [original];
+      }
+      if (!master.variants.length) {
+        diagnostics.log('playlist.empty', { action: 'retain API source' });
+        return [original];
+      }
       var qualities = [];
       master.variants.forEach(function (variant) {
         if (variant.quality && qualities.indexOf(variant.quality) < 0) qualities.push(variant.quality);
+      });
+      diagnostics.log('playlist.variants.parsed', {
+        count: master.variants.length,
+        qualities: qualities
       });
       var auto = copyStream(stream, stream.url, 'Auto', qualities.length ? qualities.join(' / ') : 'Adaptive');
       var seen = {};
@@ -200,10 +229,16 @@
         output.push(copyStream(stream, variant.url, quality,
           variant.bandwidth ? (variant.bandwidth / 1000000).toFixed(1) + ' Mbps' : ''));
       });
+      diagnostics.log('playlist.expanded', { streams: output.length });
       return output;
     }).catch(function (error) {
-      console.log('[FrameXTV ' + LABEL + '] Playlist: ' + error.message);
+      diagnostics.log('playlist.probe.failed', {
+        url: stream.url,
+        errorType: error.name,
+        status: error.status
+      });
       if (error.status === 404 || error.status === 410) return [];
+      diagnostics.log('source.retained', { reason: 'playlist probe failed' });
       return [original];
     });
   }
@@ -212,22 +247,56 @@
     var type = String(mediaType || '').toLowerCase();
     if (type === 'series') type = 'tv';
     var id = String(tmdbId == null ? '' : tmdbId).replace(/^tmdb[:/]/i, '').trim();
-    if ((type !== 'movie' && type !== 'tv') || !/^[1-9]\d*$/.test(id)) return Promise.resolve([]);
+    diagnostics.log('lookup.start', {
+      tmdbId: id,
+      mediaType: type,
+      season: type === 'tv' ? season : undefined,
+      episode: type === 'tv' ? episode : undefined
+    });
+    if (type !== 'movie' && type !== 'tv') {
+      diagnostics.log('lookup.rejected', { reason: 'unsupported media type', mediaType: type });
+      return Promise.resolve([]);
+    }
+    if (!/^[1-9]\d*$/.test(id)) {
+      diagnostics.log('lookup.rejected', { reason: 'invalid TMDB ID', tmdbId: id });
+      return Promise.resolve([]);
+    }
     var url = API + '/api/stream?type=' + type + '&id=' + encodeURIComponent(id);
     if (type === 'tv') {
       var s = String(season == null ? '' : season);
       var e = String(episode == null ? '' : episode);
       // Season 0 is valid for specials. Never silently request episode 1.
-      if (!/^\d+$/.test(s) || !/^[1-9]\d*$/.test(e)) return Promise.resolve([]);
+      if (!/^\d+$/.test(s) || !/^[1-9]\d*$/.test(e)) {
+        diagnostics.log('lookup.rejected', {
+          reason: 'invalid TV episode coordinates',
+          season: s,
+          episode: e
+        });
+        return Promise.resolve([]);
+      }
       url += '&season=' + encodeURIComponent(s) + '&episode=' + encodeURIComponent(e);
     }
     url += '&provider=' + encodeURIComponent(PROVIDER);
+    diagnostics.log('source-list.request', { provider: PROVIDER, url: url });
     return Promise.resolve().then(function () {
       return fetchWithin(url, { headers: { Accept: 'application/json' } }, 25000);
     }).then(function (response) {
+      diagnostics.log('source-list.response', {
+        status: response.status,
+        url: response.url || url
+      });
       if (!response.ok) throw new Error('API HTTP ' + response.status);
       return response.json();
-    }).then(normalize).then(function (streams) {
+    }).then(function (payload) {
+      diagnostics.log('source-list.parsed', {
+        success: !!payload && payload.success !== false,
+        sources: payload && Array.isArray(payload.sources) ? payload.sources.length : 0,
+        provider: payload && payload.provider
+      });
+      var streams = normalize(payload);
+      diagnostics.log('sources.normalized', { sources: streams.length });
+      return streams;
+    }).then(function (streams) {
       // Each FrameXTV provider is a separate Nuvio scraper, so one failed API
       // provider cannot discard the results from the other scrapers.
       return Promise.all(streams.map(expandQualities)).then(function (groups) {
@@ -236,13 +305,24 @@
         groups.forEach(function (group) { group.forEach(function (stream) {
           if (!seen[stream.url]) { seen[stream.url] = true; result.push(stream); }
         }); });
+        diagnostics.log('lookup.complete', { streams: result.length });
         return result;
       });
     }).catch(function (error) {
-      console.log('[FrameXTV] ' + (error && error.message ? error.message : 'Request failed'));
+      diagnostics.log('lookup.failed', {
+        errorType: error && error.name,
+        code: error && error.code
+      });
       return [];
     });
   }
 
-  module.exports = { getStreams: getStreams };
+  module.exports = {
+    getStreams: function () {
+      var args = Array.prototype.slice.call(arguments);
+      return diagnostics.run(function () {
+        return getStreams.apply(null, args);
+      }, args);
+    }
+  };
 }());
