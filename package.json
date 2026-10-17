@@ -4,8 +4,8 @@
   "description": "Standalone streaming embed source aggregation API (TMDB ID in, streams out)",
   "main": "apiServer.js",
   "scripts": {
-    "start": "nodemon --watch restart.trigger apiServer.js",
-    "start:dev": "nodemon --watch restart.trigger --ignore providers/.cache --ignore **/cache apiServer.js",
+    "start": "node serverLauncher.js",
+    "start:dev": "node serverLauncher.js",
     "lint": "eslint . --ext .js"
   },
   "dependencies": {
@@ -18,7 +18,6 @@
     "cheerio-without-node-native": "^0.20.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
-    "cycletls": "^2.0.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "form-data": "^4.0.3",
@@ -35,7 +34,6 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "nodemon": "^1.14.10"
+    "eslint": "^8.57.0"
   }
 }

@@ -117,6 +117,7 @@ function normalizeConfig(base) {
   if (cfg.disable4khdhubUrlValidation === undefined) cfg.disable4khdhubUrlValidation = false;
   // TMDB ID used by the dashboard's "Run Provider Functional Checks" feature
   if (!cfg.providerCheckTmdbId) cfg.providerCheckTmdbId = '278';
+  if (!cfg.animeProviderCheckTmdbId) cfg.animeProviderCheckTmdbId = '1363974';
   // Stream API token: accept the env-style uppercase alias too (people paste
   // STREAM_TOKEN_HASH straight out of .env into the override file), then keep
   // only a canonical sha256 hex string; anything else means "unset".

@@ -58,8 +58,11 @@
             </div>
             <div class="field">
               <label for="animeProviderCheckTmdbId">Anime provider check TMDB movie ID</label>
-              <input class="form-control" type="text" inputmode="numeric" id="animeProviderCheckTmdbId" value="1363974" style="max-width:14rem;" />
-              <p class="hint">Used for this run's Anime-category checks. No season or episode is sent, so the anime endpoint checks a movie.</p>
+              <div style="display:flex; align-items:center; gap:.5rem;">
+                <input class="form-control" type="text" inputmode="numeric" id="animeProviderCheckTmdbId" value="1363974" style="max-width:14rem;" />
+                <button class="btn btn-outline-primary" id="saveAnimeProviderCheckTmdbBtn" type="button">Save</button>
+              </div>
+              <p class="hint">Saved movie used for Anime-category checks. No season or episode is sent, so the anime endpoint checks a movie.</p>
             </div>
             <button class="btn btn-outline-primary" style="margin-bottom: 1rem;" id="runProviderChecksBtn" type="button">Run Provider Functional Checks</button>
             <span style="margin-left: .5rem; margin-bottom: 1rem;" id="providerCheckSummary" class="hint"></span>

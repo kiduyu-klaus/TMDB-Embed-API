@@ -182,7 +182,10 @@ docker compose up -d --build
 
 ### Restart from Admin UI
 The Admin panel includes a Restart Server control.
-- Local (nodemon): the backend writes a `restart.trigger` file and exits; nodemon detects the change and restarts automatically.
+- Local: `npm start` and `npm run start:dev` run a lightweight launcher with exactly one server child. An admin restart exits with code 75; the launcher waits for exit before starting its replacement. It does not watch files or retry crashes.
+- cPanel/Passenger: keep `apiServer.js` as the startup file. Set `APP_RESTART_MODE=passenger` if automatic Passenger detection is unavailable. After cleanup, the app writes `tmp/restart.txt` and exits so Passenger can start a replacement.
+- Direct `node apiServer.js` on supported Linux Node versions replaces the current process with `process.execve`. On platforms without this support, use `npm start`; the endpoint rejects unsupported restarts before stopping the server.
+- External supervisors using `node apiServer.js` can set `APP_RESTART_MODE=supervisor` to handle replacement themselves.
 - Docker Compose: the container exits and is restarted by `restart: unless-stopped`.
 
 ### Healthcheck
@@ -260,9 +263,8 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `allwish` - AllWish anime streams (Anime category; season/episode-aware)
 - `animesalt` - AnimeSalt anime streams (Anime category; season/episode-aware)
 - `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
-- `goojara` - Goojara movie and TV streams (MoviesTv category; requires a TMDB API key)
 
-Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `goojara`) require at least one TMDB API key configured.
+Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`) require at least one TMDB API key configured.
 
 ### Adding a New Provider
 The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidrock`, and `moviesdrive1`. HDMovie2 currently handles movies only; TV requests return no streams. MoviesDrive uses the configured TMDB API key. Superstream includes the Vidnest decoding helper.
@@ -287,7 +289,6 @@ The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidroc
      'onetouchtv.js': 'getOnetouchtvStreams',
      'zxcstreams.js': 'getZxcstreamsStreams',
      'moviebox.js': 'getMovieboxStreams',
-     'goojara.js': 'getStreams',
      'yourprovider.js': 'getYourproviderStreams'
    };
    ```
@@ -336,7 +337,7 @@ The system automatically:
 | `GET /api/streams/:provider/anime/:tmdbId` | Anime provider streams; omit season and episode for movies, or supply them for series |
 | `GET /api/config` | `{ merged, override, overridePath }` |
 | `POST /api/config` | Apply override patch (persisted to `utils/user-config.json`) |
-| `POST /api/restart` | Graceful restart (writes `restart.trigger` + exits) |
+| `POST /api/restart` | Graceful shutdown and supervisor restart (Passenger marker + exit) |
 | `POST /api/stream-token` | Set the stream token (admin session required) |
 | `DELETE /api/stream-token` | Disable stream token auth (admin session required) |
 | `GET /api/debug/env` | Debug environment/config snapshot |

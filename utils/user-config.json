@@ -29,8 +29,10 @@
   "enableVaplayerProvider": true,
   "enableNetmirrorProvider": true,
   "enableCastletvProvider": true,
-  "enableOnetouchtvProvider": false,
+  "enableOnetouchtvProvider": true,
   "enableHdghartvProvider": false,
   "enableStreamflixProvider": false,
-  "enableZxcstreamsProvider": false
+  "enableZxcstreamsProvider": false,
+  "enableAnime-dekhoProvider": false,
+  "animeProviderCheckTmdbId": "1363974"
 }

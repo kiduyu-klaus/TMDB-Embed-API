@@ -4,12 +4,14 @@ const { getDetails, resolveImdbId } = require('../utils/tmdb');
 const { getEpisodesPerSeason } = require('../utils/cinemetaEpisodes');
 const { findBestMatch } = require('../utils/titleMatch');
 const { tmdbTitleToImdbId } = require('../utils/tmdbTitleToImdb');
+const { normalizeStreams } = require('../utils/streamResponse');
 
 const MAIN_URL = 'https://api3.devcorp.me';
 const AES_KEY = Buffer.from('im72charPasswordofdInitVectorStm', 'utf8');
 const AES_IV = Buffer.from('im72charPassword', 'utf8');
 const FETCH_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+    'Origin': 'https://onetouchtv.xyz',
     'Referer': 'https://onetouchtv.xyz/'
 };
 const FETCH_TIMEOUT_MS = 30000;
@@ -54,9 +56,15 @@ async function fetchEncryptedOnce(url) {
         headers: FETCH_HEADERS,
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
+    console.log('[OneTouchTV] response', { path: new URL(url).pathname, status: res.status, contentType: res.headers.get('content-type') });
+    if (!res.ok) throw Object.assign(new Error(`OneTouchTV HTTP ${res.status}`), { status: res.status });
     const text = await res.text();
     const parsed = decrypt(text);
+    if (!parsed || parsed.success === false || (parsed.code != null && Number(parsed.code) !== 200)
+        || (parsed.status != null && !['200', 'success'].includes(String(parsed.status).toLowerCase()))
+        || !Object.prototype.hasOwnProperty.call(parsed, 'result')) {
+        throw new Error('OneTouchTV returned an unsuccessful or invalid decrypted response');
+    }
     return parsed.result;
 }
 
@@ -76,6 +84,7 @@ async function fetchEncrypted(path, cacheTtlMs = CACHE_TTL_MS) {
             return data;
         } catch (err) {
             lastErr = err;
+            if (err.status >= 400 && err.status < 500 && err.status !== 429) break;
             if (attempt < FETCH_RETRIES) {
                 console.warn(`[OneTouchTV] fetch failed (attempt ${attempt + 1}): ${err.message}`);
                 await sleep(FETCH_RETRY_DELAY_MS * (attempt + 1));
@@ -93,7 +102,7 @@ const TYPE_MAP = {
 function isTypeCompatible(stremioType, onetouchType) {
     const allowed = TYPE_MAP[stremioType];
     if (!allowed) return true;
-    return allowed.has(onetouchType.toLowerCase());
+    return allowed.has(String(onetouchType || '').toLowerCase());
 }
 
 function findBestOttMatch(results, title, year, stremioType, targetSeason) {
@@ -104,7 +113,7 @@ function findBestOttMatch(results, title, year, stremioType, targetSeason) {
     if (filtered.length === 0) return null;
 
     const candidates = filtered.map((r) => ({
-        title: r.title,
+        title: String(r.title || '').replace(/\s*\(\d{4}\)\s*$/, '').trim(),
         year: parseInt(r.year, 10) || undefined,
         type: stremioType,
         season: targetSeason ?? undefined,
@@ -119,7 +128,7 @@ function findBestOttMatch(results, title, year, stremioType, targetSeason) {
             season: targetSeason ?? undefined
         },
         candidates,
-        { provider: 'OneTouchTV' }
+        { provider: 'OneTouchTV', threshold: 0.65 }
     );
 
     return best ? best.raw : null;
@@ -148,7 +157,7 @@ async function getDetail(id) {
 
 async function getEpisodeStreams(id, playId) {
     try {
-        const result = await fetchEncrypted(`/vod/${id}/episode/${playId}`, 0);
+        const result = await fetchEncrypted(`/web/vod/${encodeURIComponent(id)}/episode/${encodeURIComponent(playId)}`, 0);
         return result ?? null;
     } catch (err) {
         console.error(`[OneTouchTV] episode fetch failed ${id}/${playId}: ${err.message}`);
@@ -186,8 +195,9 @@ async function getOnetouchtvStreams(tmdbId, mediaType = 'movie', seasonNum = nul
     console.log(`[OneTouchTV] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
 
     try {
-        const type = mediaType === 'tv' ? 'series' : 'movie';
-        const tmdbType = mediaType === 'tv' ? 'tv' : 'movie';
+        const isTv = ['tv', 'series'].includes(String(mediaType).toLowerCase());
+        const type = isTv ? 'series' : 'movie';
+        const tmdbType = isTv ? 'tv' : 'movie';
         const details = await getDetails(tmdbType, tmdbId);
         const title = (details && (details.title || details.name)) || '';
         const year = (details && (details.release_date || details.first_air_date || '').slice(0, 4)) || null;
@@ -311,10 +321,7 @@ async function getOnetouchtvStreams(tmdbId, mediaType = 'movie', seasonNum = nul
                 format: src.type,
                 quality,
                 provider: 'OneTouchTV',
-                headers: {
-                    'User-Agent': 'Mozilla/5.0',
-                    'Referer': `${MAIN_URL}/`
-                },
+                headers: playbackHeaders(src.headers),
                 ...(subtitles.length ? { subtitles } : {})
             });
         }
@@ -326,11 +333,22 @@ async function getOnetouchtvStreams(tmdbId, mediaType = 'movie', seasonNum = nul
             return true;
         });
         console.log(`[OneTouchTV] Got ${streams.length} stream(s) for "${matchResult.title}"`);
-        return streams;
+        return normalizeStreams(streams, 'onetouchtv');
     } catch (err) {
         console.error(`[OneTouchTV] Error: ${err.message}`);
         return [];
     }
 }
 
-module.exports = { getOnetouchtvStreams };
+function playbackHeaders(upstream = {}) {
+    const headers = { ...FETCH_HEADERS };
+    for (const [name, value] of Object.entries(upstream || {})) {
+        if (typeof value !== 'string' || /[\r\n]/.test(name + value)) continue;
+        const previous = Object.keys(headers).find(key => key.toLowerCase() === name.toLowerCase());
+        if (previous) delete headers[previous];
+        headers[name] = value;
+    }
+    return headers;
+}
+
+module.exports = { getOnetouchtvStreams, _test: { decrypt, fetchEncryptedOnce, getEpisodeStreams, findBestOttMatch, playbackHeaders } };

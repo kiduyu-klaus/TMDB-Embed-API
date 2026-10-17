@@ -2,6 +2,7 @@ const { config } = require('../utils/config');
 const fs = require('fs');
 const path = require('path');
 const { normalizeStreams } = require('../utils/streamResponse');
+const { providerGate } = require('../utils/resourceLimits');
 const { addFallbackSubtitles: addWyzieSubtitles } = require('../utils/wyzieSubtitles');
 const { addOpenSubtitlesFallback } = require('../utils/opensubtitles');
 
@@ -70,7 +71,6 @@ const providerFunctionMap = {
   'hianime.js': 'getStreams',
   'byse.js': 'getStreams',
   'dahmermovies.js': 'getDahmermoviesStreams',
-  'goojara.js': 'getStreams',
   'streamflix.js': 'getStreamflixStreams',
   'vaplayer.js': 'getVaplayerStreams',
   'castletv.js': 'getCastletvStreams',
@@ -89,6 +89,7 @@ const providerFunctionMap = {
   'kickassanime.js': 'getStreams',
   'flixcloud.js': 'getFlixcloudStreams',
   'cinejoy.js': 'getStreams',
+  'cinejoytv.js': 'getStreams',
   'bower.js': 'getStreams',
   'miner.js': 'getStreams',
 };
@@ -121,7 +122,6 @@ const providerCategoryMap = {
   'hianime.js': 'Anime',
   'byse.js': 'MoviesTv',
   'dahmermovies.js': 'MoviesTv',
-  'goojara.js': 'MoviesTv',
   'streamflix.js': 'MoviesTv',
   'vaplayer.js': 'MoviesTv',
   'castletv.js': 'MoviesTv',
@@ -140,6 +140,7 @@ const providerCategoryMap = {
   'kickassanime.js': 'Anime',
   'flixcloud.js': 'Anime',
   'cinejoy.js': 'MoviesTv',
+  'cinejoytv.js': 'MoviesTv',
   'bower.js': 'MoviesTv',
   'miner.js': 'MoviesTv',
 };
@@ -194,7 +195,9 @@ function createFetchFunction(providerInfo) {
       return [];
     }
 
+    let release;
     try {
+      release = await providerGate.acquire();
       const animeMovie = ctx.type === 'anime' && ctx.season == null && ctx.episode == null;
       // Anime series is TV on TMDB, so providers get 'tv' rather than 'anime'
       // and don't each have to special-case it. Anime movies still map to 'movie'.
@@ -253,6 +256,8 @@ function createFetchFunction(providerInfo) {
     } catch (e) {
       console.error(`[registry] ${providerInfo.name} fetch error:`, e.message);
       return [];
+    } finally {
+      release?.();
     }
   };
 }

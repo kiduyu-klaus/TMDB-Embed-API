@@ -240,10 +240,8 @@ All notable changes to this project will be documented in this file.
 - Clear All: Now fully resets TMDB keys, FebBox cookies, providers, and filters; added a themed confirmation modal with optional "Don't ask again" preference.
 - Live Config: Hide legacy `tmdbApiKey` (only show `tmdbApiKeys`).
 - Restart behavior:
-  - Local dev: Nodemon watches `restart.trigger`; backend writes it before a clean exit to force a restart.
   - Docker: Compose uses `restart: unless-stopped`; Docker restarts the container after restart endpoint triggers exit.
 - Dockerfile: Ensure non-root `app` user owns `/app` for writing overrides and restart marker.
-- package.json scripts: Simplified to `start`, `start:dev`, and `lint`; both start scripts are nodemon-based and watch `restart.trigger`.
 
 ### Fixed
 - Provider matrix re-renders immediately after Clear All (no page refresh needed).

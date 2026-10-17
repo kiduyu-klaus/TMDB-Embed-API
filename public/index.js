@@ -483,6 +483,7 @@ async function clearAll(){
 		disable4khdhubUrlValidation: false,
 		showboxCacheDir: null,
 		providerCheckTmdbId: null,
+		animeProviderCheckTmdbId: null,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -563,6 +564,8 @@ async function loadServerStatus(){
 		metricsEl.textContent = JSON.stringify(j.metrics, null, 2);
 		const checkTmdbEl = document.getElementById('providerCheckTmdbId');
 		if(checkTmdbEl) checkTmdbEl.value = j.providerCheckTmdbId || '278';
+		const animeCheckTmdbEl = document.getElementById('animeProviderCheckTmdbId');
+		if(animeCheckTmdbEl && document.activeElement !== animeCheckTmdbEl) animeCheckTmdbEl.value = j.animeProviderCheckTmdbId || '1363974';
 		if(endpointsEl) endpointsEl.textContent = (j.endpoints||[]).join('\n');
 		if(provEnhanced){
 			provEnhanced.innerHTML = '';
@@ -683,6 +686,20 @@ async function saveProviderCheckTmdbId(){
 		setStatus('Provider check TMDB ID saved: '+val);
 	} catch(e){ setStatus(e.message, true); }
 }
+async function saveAnimeProviderCheckTmdbId(){
+	const input = document.getElementById('animeProviderCheckTmdbId');
+	const button = document.getElementById('saveAnimeProviderCheckTmdbBtn');
+	const val = (input ? input.value : '').trim();
+	if(!/^[1-9]\d*$/.test(val)){ setStatus('Enter a positive numeric anime TMDB movie ID', true); return; }
+	button.disabled = true;
+	try {
+		const r = await fetch(U('/api/config'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ animeProviderCheckTmdbId: val }) });
+		const result = await r.json();
+		if(!r.ok || !result.success) throw new Error(result.error || 'Save failed');
+		setStatus('Anime provider check TMDB movie ID saved: '+val);
+	} catch(e){ setStatus(e.message, true); }
+	finally { button.disabled = false; }
+}
 document.addEventListener('DOMContentLoaded', ()=> {
 	initTheme();
 	attachCoreListeners();
@@ -705,14 +722,18 @@ document.addEventListener('DOMContentLoaded', ()=> {
 			try {
 				const r = await fetch(U('/api/restart'),{ method:'POST' });
 				if(!r.ok){ const t = await r.text().catch(()=>r.statusText); throw new Error(t||('HTTP '+r.status)); }
+				const restart = await r.json();
 				// Server will shut down soon; start polling until it comes back
 				await new Promise(resolve => setTimeout(resolve, 1000));
 				const start = Date.now();
 				const timeoutMs = 60_000;
 				(async function poll(){
 					try {
-						const pr = await fetch(U('/api/health'),{ cache:'no-store' });
-						if(pr.ok){ location.reload(); return; }
+						const pr = await fetch(U('/api/health'),{ cache:'no-store', signal: AbortSignal.timeout(5000) });
+						if(pr.ok){
+							const health = await pr.json();
+							if (health.instanceId && health.instanceId !== restart.instanceId && !health.restartPending) { location.reload(); return; }
+						}
 					} catch {}
 					if(Date.now()-start > timeoutMs){ setStatus('Restart timed out', true); return; }
 					setTimeout(poll, 1000);
@@ -742,6 +763,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	if(rpc) rpc.addEventListener('click', runProviderFunctionalChecks);
 	const spc = document.getElementById('saveProviderCheckTmdbBtn');
 	if(spc) spc.addEventListener('click', saveProviderCheckTmdbId);
+	const animeSave = document.getElementById('saveAnimeProviderCheckTmdbBtn');
+	if(animeSave) animeSave.addEventListener('click', saveAnimeProviderCheckTmdbId);
 });
 function toggleSidebar(force){
 	const sb = document.getElementById('sidebar');

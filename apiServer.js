@@ -35,6 +35,9 @@ function normalizeMountPath(raw) {
 }
 const MOUNT_PATH = normalizeMountPath(process.env.MOUNT_PATH);
 const router = express.Router();
+const errorPages = require('./utils/errorPages').createErrorPages(MOUNT_PATH);
+app.use(errorPages.middleware);
+router.get('/error.html', (req, res) => errorPages.send(req, res, req.query.status || 500));
 
 if (config.enableProxy) {
   console.log('[startup] enableProxy flag active: mounting proxy routes');
@@ -102,6 +105,7 @@ function recordLoginSuccess(ip){
 // Guard against premature process.exit from imported legacy modules, but allow controlled restarts
 const realProcessExit = process.exit.bind(process);
 const instanceId = require('crypto').randomUUID();
+const { restartMode } = require('./utils/restartMode');
 let restartPending = false;
 let shutdownManager;
 function scheduleRestart() {
@@ -299,6 +303,8 @@ router.delete('/api/stream-token', requireAuth, (req,res) => {
 router.post('/api/restart', (req,res) => {
   const sess = getSession(req);
   if(!sess) return res.status(401).json({ success:false, error:'UNAUTHORIZED' });
+  if (restartMode() === 'unavailable') return res.status(503).json({ success: false,
+    error: 'RESTART_UNAVAILABLE', message: 'Start the app with npm start, or use the cPanel application manager.' });
   res.once('finish', scheduleRestart);
   res.json({ success:true, message:'RESTARTING', instanceId });
 });
@@ -354,7 +360,7 @@ router.get('/api/status', (req,res) => {
     const cookieOk = !cookieRequired || (config.febboxCookies && config.febboxCookies.length > 0);
     return { name: p.name, category: p.category, categories: p.categories, enabled: p.enabled, cookieRequired, cookieOk };
   });
-  res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, metrics: {
+  res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, animeProviderCheckTmdbId: config.animeProviderCheckTmdbId, metrics: {
     uptimeSeconds: Math.round((Date.now()-metrics.startTime)/1000),
     requestsTotal: metrics.requestsTotal,
     streamRequests: metrics.streamRequests,
@@ -517,6 +523,9 @@ if (MOUNT_PATH) {
   app.use(router);
 }
 
+app.use(errorPages.notFound);
+app.use(errorPages.onError);
+
 const PORT = config.port;
 const HOST = process.env.BIND_HOST || '0.0.0.0';
 const server = app.listen(PORT, HOST, () => {
@@ -543,23 +552,29 @@ const { resources, createShutdownManager } = require('./utils/appLifecycle');
 shutdownManager = createShutdownManager(server, {
   resources,
   beforeExit(reason) {
-    if (reason !== 'restart') return;
+    if (reason !== 'restart' || restartMode() !== 'passenger') return;
     const fs = require('fs');
     fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
     fs.writeFileSync(path.join(process.cwd(), 'tmp', 'restart.txt'), String(Date.now()));
-    fs.writeFileSync(path.join(process.cwd(), 'restart.trigger'), String(Date.now()));
   },
   exit(code, reason) {
     allowControlledExit = true;
-    // Nodemon recognizes SIGUSR2 as a restart, rather than a clean stop.
-    if (reason === 'SIGUSR2' && process.platform !== 'win32') {
-      process.kill(process.pid, 'SIGUSR2');
-      return;
+    if (reason === 'restart') {
+      const mode = restartMode();
+      if (mode === 'launcher') return realProcessExit(75);
+      if (mode === 'execve') {
+        try {
+          process.execve(process.execPath, [process.execPath, ...process.execArgv, ...process.argv.slice(1)], process.env);
+        } catch (error) {
+          console.error('[control] process replacement failed:', error.code);
+          return realProcessExit(1);
+        }
+      }
     }
     realProcessExit(code);
   },
 });
-for (const signal of ['SIGTERM', 'SIGINT', 'SIGUSR2']) {
+for (const signal of ['SIGTERM', 'SIGINT']) {
   process.once(signal, () => {
     restartPending = true;
     shutdownManager.shutdown(signal);
