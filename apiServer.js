@@ -360,7 +360,9 @@ router.get('/api/status', (req,res) => {
     const cookieOk = !cookieRequired || (config.febboxCookies && config.febboxCookies.length > 0);
     return { name: p.name, category: p.category, categories: p.categories, enabled: p.enabled, cookieRequired, cookieOk };
   });
-  res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, animeProviderCheckTmdbId: config.animeProviderCheckTmdbId, metrics: {
+  res.json({ success:true, providerCheckTmdbId: config.providerCheckTmdbId, animeProviderCheckTmdbId: config.animeProviderCheckTmdbId,
+    providerCheckType: config.providerCheckType, providerCheckSeriesTmdbId: config.providerCheckSeriesTmdbId,
+    providerCheckSeason: config.providerCheckSeason, providerCheckEpisode: config.providerCheckEpisode, metrics: {
     uptimeSeconds: Math.round((Date.now()-metrics.startTime)/1000),
     requestsTotal: metrics.requestsTotal,
     streamRequests: metrics.streamRequests,

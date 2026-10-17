@@ -1,7 +1,8 @@
-const { fetch } = require('../utils/providerFetch');
 "use strict";
 
 const crypto = require("crypto");
+const diagnostics = require("../utils/providerTrace").createProviderTrace("HiAnime");
+const fetch = diagnostics.fetch;
 
 const PROVIDER = "h!anime";
 const TMDB_API_URL = "https://api.themoviedb.org/3";
@@ -340,7 +341,7 @@ function applyQualityAndAudioFilters(streams) {
     });
 }
 
-async function getStreams(tmdbId, mediaType, season, episode) {
+async function getStreamsImpl(tmdbId, mediaType, season, episode) {
     try {
         if (mediaType !== "tv" || episode == null) return [];
 
@@ -386,6 +387,11 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     } catch {
         return [];
     }
+}
+
+function getStreams(tmdbId, mediaType, season, episode) {
+    const args = [tmdbId, mediaType, season, episode];
+    return diagnostics.run(() => getStreamsImpl(...args), args);
 }
 
 async function onSettings() {

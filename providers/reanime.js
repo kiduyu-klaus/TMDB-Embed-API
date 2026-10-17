@@ -64,7 +64,7 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/reanime/reanime.js
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var import_cheerio_without_node_native = __toESM(require("cheerio"));
 // [PATCH] Bridge to the project's TMDB utility so getStreams() can resolve a
 // pure-numeric contentId (e.g. "82684") to an IMDB id ("tt...") before
 // falling through to the existing Cinemeta + AniList date-match branch.

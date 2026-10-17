@@ -37,5 +37,9 @@
   "animeProviderCheckTmdbId": "1363974",
   "enableVidboxProvider": true,
   "enableSuperstreamProvider": false,
-  "enableVidloveProvider": false
+  "enableVidloveProvider": false,
+  "providerCheckType": "series",
+  "providerCheckSeriesTmdbId": "1622",
+  "providerCheckSeason": 1,
+  "providerCheckEpisode": 1
 }

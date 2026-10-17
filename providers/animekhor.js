@@ -28,7 +28,7 @@ var __async = (__this, __arguments, generator) => {
 // src/utils/extractors.js
 var require_extractors = __commonJS({
   "src/utils/extractors.js"(exports2, module2) {
-    var cheerio2 = require("cheerio-without-node-native");
+    var cheerio2 = require("cheerio");
     function unpack(packed) {
       const regex = new RegExp('eval\\s*\\(\\s*function\\s*\\(\\s*p\\s*,\\s*a\\s*,\\s*c\\s*,\\s*k\\s*,\\s*e\\s*,\\s*d\\s*\\).*?return\\s+p\\s*}\\s*\\(\\s*\\"(.*?)\\"\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*\\"(.*?)\\"\\.split\\(\\"\\|\\"\\)', "s");
       let match = packed.match(regex);
@@ -129,7 +129,7 @@ var require_extractors = __commonJS({
 });
 
 // src/providers/animekhor.js
-var cheerio = require("cheerio-without-node-native");
+var cheerio = require("cheerio");
 var BASE_URL = "https://animekhor.org";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var HEADERS = {

@@ -50,11 +50,28 @@
           <div class="status-block">
             <h2>Providers</h2>
             <div class="field" style="margin-bottom:.75rem;">
-              <label for="providerCheckTmdbId">Movie provider check TMDB ID<p class="hint">Movie used to check MoviesTv providers (e.g. 278 = Shawshank Redemption).</p></label>
-              <div style="display:flex; align-items:center; gap:.5rem;">
-                <input class="form-control" type="text" id="providerCheckTmdbId" placeholder="278" style="width:7rem;" />
-                <button class="btn btn-outline-primary" id="saveProviderCheckTmdbBtn" type="button">Save</button>
+              <label for="providerCheckType">MoviesTv provider check type<p class="hint">Choose whether MoviesTv providers are checked against a movie or a specific TV episode.</p></label>
+              <div style="display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;">
+                <select class="form-control" id="providerCheckType" style="width:auto;">
+                  <option value="movie">Movie</option>
+                  <option value="series">TV show</option>
+                </select>
+                <span id="providerCheckMovieRow" style="display:flex; align-items:center; gap:.5rem;">
+                  <label for="providerCheckTmdbId" class="mb-0">TMDB ID</label>
+                  <input class="form-control" type="text" inputmode="numeric" id="providerCheckTmdbId" placeholder="278" style="width:7rem;" />
+                  <button class="btn btn-outline-primary" id="saveProviderCheckTmdbBtn" type="button">Save</button>
+                </span>
               </div>
+              <div id="providerCheckSeriesRow" style="display:none; align-items:center; gap:.5rem; flex-wrap:wrap; margin-top:.5rem;">
+                <label for="providerCheckSeriesTmdbId" class="mb-0">TMDB ID</label>
+                <input class="form-control" type="text" inputmode="numeric" id="providerCheckSeriesTmdbId" placeholder="1396" style="width:7rem;" />
+                <label for="providerCheckSeason" class="mb-0">Season</label>
+                <input class="form-control" type="text" inputmode="numeric" id="providerCheckSeason" placeholder="1" style="width:4.5rem;" />
+                <label for="providerCheckEpisode" class="mb-0">Episode</label>
+                <input class="form-control" type="text" inputmode="numeric" id="providerCheckEpisode" placeholder="1" style="width:4.5rem;" />
+                <button class="btn btn-outline-primary" id="saveProviderCheckSeriesBtn" type="button">Save</button>
+              </div>
+              <p class="hint" id="providerCheckTypeHint">Movie used to check MoviesTv providers (e.g. 278 = Shawshank Redemption).</p>
             </div>
             <div class="field">
               <label for="animeProviderCheckTmdbId">Anime provider check TMDB movie ID</label>

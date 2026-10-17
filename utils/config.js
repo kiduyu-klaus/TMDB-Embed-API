@@ -118,6 +118,15 @@ function normalizeConfig(base) {
   // TMDB ID used by the dashboard's "Run Provider Functional Checks" feature
   if (!cfg.providerCheckTmdbId) cfg.providerCheckTmdbId = '278';
   if (!cfg.animeProviderCheckTmdbId) cfg.animeProviderCheckTmdbId = '1363974';
+  // MoviesTv functional checks can target either a movie or a specific TV episode
+  if (cfg.providerCheckType !== 'series') cfg.providerCheckType = 'movie';
+  if (!/^\d+$/.test(String(cfg.providerCheckSeriesTmdbId == null ? '' : cfg.providerCheckSeriesTmdbId))) {
+    cfg.providerCheckSeriesTmdbId = '1396';
+  }
+  const checkSeason = Number(cfg.providerCheckSeason);
+  if (!Number.isInteger(checkSeason) || checkSeason < 1) cfg.providerCheckSeason = '1';
+  const checkEpisode = Number(cfg.providerCheckEpisode);
+  if (!Number.isInteger(checkEpisode) || checkEpisode < 1) cfg.providerCheckEpisode = '1';
   // Stream API token: accept the env-style uppercase alias too (people paste
   // STREAM_TOKEN_HASH straight out of .env into the override file), then keep
   // only a canonical sha256 hex string; anything else means "unset".

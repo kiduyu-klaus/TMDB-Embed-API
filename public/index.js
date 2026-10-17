@@ -217,6 +217,10 @@ document.addEventListener('click',(e)=>{
 	if (e.target.closest('#updateStreamTokenBtn')) updateStreamToken();
 	if (e.target.closest('#copyStreamTokenBtn')) copyStreamToken();
 	if (e.target.closest('#disableStreamTokenBtn')) disableStreamToken();
+	if (e.target.closest('#saveProviderCheckSeriesBtn')) saveProviderCheckSeries();
+});
+document.addEventListener('change',(e)=>{
+	if (e.target.id === 'providerCheckType') applyProviderCheckMode();
 });
 document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='streamTokenInput'){ e.preventDefault(); updateStreamToken(); }});
 
@@ -484,6 +488,10 @@ async function clearAll(){
 		showboxCacheDir: null,
 		providerCheckTmdbId: null,
 		animeProviderCheckTmdbId: null,
+		providerCheckType: null,
+		providerCheckSeriesTmdbId: null,
+		providerCheckSeason: null,
+		providerCheckEpisode: null,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -564,6 +572,15 @@ async function loadServerStatus(){
 		metricsEl.textContent = JSON.stringify(j.metrics, null, 2);
 		const checkTmdbEl = document.getElementById('providerCheckTmdbId');
 		if(checkTmdbEl) checkTmdbEl.value = j.providerCheckTmdbId || '278';
+		const typeEl = document.getElementById('providerCheckType');
+		if(typeEl && document.activeElement !== typeEl) typeEl.value = j.providerCheckType === 'series' ? 'series' : 'movie';
+		const seriesIdEl = document.getElementById('providerCheckSeriesTmdbId');
+		if(seriesIdEl && document.activeElement !== seriesIdEl) seriesIdEl.value = j.providerCheckSeriesTmdbId || '1396';
+		const seasonEl = document.getElementById('providerCheckSeason');
+		if(seasonEl && document.activeElement !== seasonEl) seasonEl.value = j.providerCheckSeason || '1';
+		const episodeEl = document.getElementById('providerCheckEpisode');
+		if(episodeEl && document.activeElement !== episodeEl) episodeEl.value = j.providerCheckEpisode || '1';
+		if(typeof applyProviderCheckMode === 'function') applyProviderCheckMode();
 		const animeCheckTmdbEl = document.getElementById('animeProviderCheckTmdbId');
 		if(animeCheckTmdbEl && document.activeElement !== animeCheckTmdbEl) animeCheckTmdbEl.value = j.animeProviderCheckTmdbId || '1363974';
 		if(endpointsEl) endpointsEl.textContent = (j.endpoints||[]).join('\n');
@@ -606,10 +623,56 @@ async function readStreamCheckResponse(response){
 	if(!data) throw new Error('Invalid JSON response from stream endpoint');
 	return data;
 }
+// --- MoviesTv provider check: movie vs TV episode ---
+function applyProviderCheckMode(){
+	const typeEl = document.getElementById('providerCheckType');
+	const movieRow = document.getElementById('providerCheckMovieRow');
+	const seriesRow = document.getElementById('providerCheckSeriesRow');
+	const hint = document.getElementById('providerCheckTypeHint');
+	const isSeries = typeEl && typeEl.value === 'series';
+	if(movieRow) movieRow.style.display = isSeries ? 'none' : 'flex';
+	if(seriesRow) seriesRow.style.display = isSeries ? 'flex' : 'none';
+	if(hint) hint.textContent = isSeries
+		? 'TV show used to check MoviesTv providers (e.g. 1396 = Breaking Bad).'
+		: 'Movie used to check MoviesTv providers (e.g. 278 = Shawshank Redemption).';
+}
+function readProviderCheckTarget(){
+	const typeEl = document.getElementById('providerCheckType');
+	if(typeEl && typeEl.value === 'series'){
+		const idEl = document.getElementById('providerCheckSeriesTmdbId');
+		const seasonEl = document.getElementById('providerCheckSeason');
+		const episodeEl = document.getElementById('providerCheckEpisode');
+		return {
+			type: 'series',
+			id: (idEl && idEl.value.trim()) || '1396',
+			season: (seasonEl && seasonEl.value.trim()) || '1',
+			episode: (episodeEl && episodeEl.value.trim()) || '1'
+		};
+	}
+	const movieEl = document.getElementById('providerCheckTmdbId');
+	return { type: 'movie', id: (movieEl && movieEl.value.trim()) || '278' };
+}
+async function saveProviderCheckSeries(){
+	const target = readProviderCheckTarget();
+	if(!/^\d+$/.test(target.id)){ setStatus('TMDB ID must be numeric', true); return; }
+	if(!/^\d+$/.test(target.season) || Number(target.season) < 1){ setStatus('Season must be a positive number', true); return; }
+	if(!/^\d+$/.test(target.episode) || Number(target.episode) < 1){ setStatus('Episode must be a positive number', true); return; }
+	try {
+		const r = await fetch(U('/api/config'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+			providerCheckType: 'series',
+			providerCheckSeriesTmdbId: target.id,
+			providerCheckSeason: Number(target.season),
+			providerCheckEpisode: Number(target.episode)
+		})});
+		const js = await r.json();
+		if(!js.success) throw new Error(js.error||'Save failed');
+		setStatus(`TV provider check saved: ${target.id} S${target.season}E${target.episode}`);
+	} catch(e){ setStatus(e.message, true); }
+}
 async function runProviderFunctionalChecks(){
 	if(providerChecksRunning) return;
-	const checkTmdbEl = document.getElementById('providerCheckTmdbId');
-	const targetTmdb = (checkTmdbEl && checkTmdbEl.value.trim()) || '278'; // TMDB ID (editable on status page)
+	const checkTarget = readProviderCheckTarget();
+	const targetTmdb = checkTarget.id;
 	const animeCheckTmdbEl = document.getElementById('animeProviderCheckTmdbId');
 	const animeTargetTmdb = (animeCheckTmdbEl && animeCheckTmdbEl.value.trim()) || '1363974';
 	const provEnhanced = document.getElementById('statusProvidersEnhanced');
@@ -638,9 +701,12 @@ async function runProviderFunctionalChecks(){
 			const token = currentStreamTokenHash();
 			const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
 			const isAnime = row.dataset.category === 'Anime';
-			const checkType = isAnime ? 'anime' : 'movie';
-			const checkId = isAnime ? animeTargetTmdb : targetTmdb;
-			const r = await fetch(U(`/api/streams/${name}/${checkType}/${checkId}${tokenQuery}`));
+			const checkType = isAnime ? 'anime' : checkTarget.type;
+			const checkId = isAnime ? animeTargetTmdb : checkTarget.id;
+			const seriesQuery = (!isAnime && checkTarget.type === 'series')
+				? `&season=${encodeURIComponent(checkTarget.season)}&episode=${encodeURIComponent(checkTarget.episode)}`
+				: '';
+			const r = await fetch(U(`/api/streams/${name}/${checkType}/${checkId}${tokenQuery}${seriesQuery}`));
 			const j = await readStreamCheckResponse(r);
 			const isOk = j && Array.isArray(j.streams) && j.streams.length>0;
 			if(isOk){

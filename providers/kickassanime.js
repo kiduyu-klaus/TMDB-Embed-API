@@ -27,7 +27,7 @@ var __async = (__this, __arguments, generator) => {
 // src/utils/extractors.js
 var require_extractors = __commonJS({
   "src/utils/extractors.js"(exports2, module2) {
-    var cheerio = require("cheerio-without-node-native");
+    var cheerio = require("cheerio");
     function unpack(packed) {
       const regex = new RegExp('eval\\s*\\(\\s*function\\s*\\(\\s*p\\s*,\\s*a\\s*,\\s*c\\s*,\\s*k\\s*,\\s*e\\s*,\\s*d\\s*\\).*?return\\s+p\\s*}\\s*\\(\\s*\\"(.*?)\\"\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*\\"(.*?)\\"\\.split\\(\\"\\|\\"\\)', "s");
       let match = packed.match(regex);
