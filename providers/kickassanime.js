@@ -200,6 +200,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
             const serverHost = new URL(server.src).origin;
             const serverHeaders = {
               "Origin": serverHost,
+              "Referer": `${serverHost}/`,
               "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
             };
             const pageResp = yield fetch(server.src, { headers: serverHeaders, skipSizeCheck: true });
@@ -211,7 +212,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
                 url: m3u8Url,
                 quality: "1080p",
                 title: `KickassAnime ${server.name}`,
-                subtitles: []
+                subtitles: [],
+                headers: { ...serverHeaders }
               });
               continue;
             }
@@ -229,7 +231,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
                       const src = sub[1].src && sub[1].src[1];
                       const name = sub[1].name && sub[1].name[1];
                       if (src)
-                        subtitles.push({ url: src, lang: name || "Unknown" });
+                        subtitles.push({ url: src, lang: name || "Unknown", headers: { ...serverHeaders } });
                     }
                   }
                 }
@@ -237,7 +239,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
                   url: videoUrl,
                   quality: "1080p",
                   title: `KickassAnime ${server.name}`,
-                  subtitles
+                  subtitles,
+                  headers: { ...serverHeaders }
                 });
               }
             }
