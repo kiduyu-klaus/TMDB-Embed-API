@@ -50,7 +50,7 @@ USER app
 LABEL org.opencontainers.image.title="kiduyuTv" \
     org.opencontainers.image.description="Streaming metadata + source aggregation API with multi-key TMDB rotation" \
     org.opencontainers.image.version="${VERSION}" \
-    org.opencontainers.image.source="https://github.com/Inside4ndroid/TMDB-Embed-API" \
+    org.opencontainers.image.source="https://github.com/kiduyu-klaus/TMDB-Embed-API" \
     org.opencontainers.image.licenses="MIT"
 
 # Healthcheck (simple)

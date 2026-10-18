@@ -6,9 +6,11 @@ workers_dev = true
 # Providers and authenticated pages run on the existing Node.js backend.
 # BACKEND_URL includes the backend's application mount path.
 
+
 [vars]
+BACKEND_URL = "https://sflatransport.com/kiduyuTv_providers"
 MOUNT_PATH = "/kiduyuTv_providers"
-BACKEND_URL = "https://secondbanklabs.com/kiduyuTv_providers"
+
 
 # Store credentials using `npx wrangler secret put SECRET_NAME` or the dashboard.
 # Never put API keys, passwords, cookies, or stream tokens in this file.

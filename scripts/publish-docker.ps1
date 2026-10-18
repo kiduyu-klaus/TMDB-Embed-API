@@ -1,7 +1,7 @@
 Param(
-    [string]$ImageName = "tmdb-embed-api",
+    [string]$ImageName = "kiduyutv",
     [string]$Registry = "docker.io",
-    [string]$Repo = "yourdockeruser",  # e.g. docker hub username or org
+    [string]$Repo = "kiduyu-klaus",  # Docker Hub namespace; override if your registry namespace differs
     [string]$Tag = "latest",
     [switch]$UseGitTag,
     [switch]$Push,
@@ -10,9 +10,9 @@ Param(
 )
 
 # Usage examples:
-#   .\scripts\publish-docker.ps1 -Repo youruser -Tag test -Push
-#   .\scripts\publish-docker.ps1 -Repo youruser -UseGitTag -Push
-#   .\scripts\publish-docker.ps1 -Repo youruser -UseGitTag -Push -MultiArch
+#   .\scripts\publish-docker.ps1 -Repo kiduyu-klaus -Tag test -Push
+#   .\scripts\publish-docker.ps1 -Repo kiduyu-klaus -UseGitTag -Push
+#   .\scripts\publish-docker.ps1 -Repo kiduyu-klaus -UseGitTag -Push -MultiArch
 
 $ErrorActionPreference = 'Stop'
 
@@ -33,9 +33,9 @@ if($UseGitTag){
 
 # Normalize registry prefix
 if($Registry -in @('docker.io','index.docker.io','')){
-    $FullImage = "$Repo/$ImageName:$Tag"
+    $FullImage = "${Repo}/${ImageName}:${Tag}"
 } else {
-    $FullImage = "$Registry/$Repo/$ImageName:$Tag"
+    $FullImage = "${Registry}/${Repo}/${ImageName}:${Tag}"
 }
 
 Write-Info "Building image: $FullImage"

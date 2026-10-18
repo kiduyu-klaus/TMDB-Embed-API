@@ -50,6 +50,764 @@
       "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
       "expires": 1792361442387,
       "subtitles": []
+    },
+    "movie:1101412": {
+      "tmdbId": "1101412",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt31192372",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792368020313,
+      "subtitles": [
+        {
+          "url": "https://sub.wyzie.io/c/19b40c52/id/1962660515?format=srt&encoding=UTF-8&id=tt31192372&tok=3.cedm6tPaU-UuzIi-TtYegs8aHMQ7tybvVwyP5lqEI9aJb_mjYR4FMvM8SXj59sRJrCc8V5jcHWoSKhgyskPF_ZK1SYVP9htH2c2ySy7c8TnQlggcWb06D41oUsf16ZMP",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Fall.2.Deadpoint.2026.WEB.H264-RBB",
+          "name": "Arabic - Fall.2.Deadpoint.2026.WEB.H264-RBB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c51/id/1962680242?format=srt&encoding=UTF-8&id=tt31192372&tok=3.VUVFL05NrvQHRvrp1U5bkd6MzleJh0RKZ_XHQ6JUro3ouKfJlIwu2X30ZbyFBgD2CscdvSNZn4CnRY3UAxg3PGSFbZcugFg918LP3II3lGeb8M0meJ2S87iBheIpHXyn",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Fall.2.Deadpoint.2026.1080p.WEBRip.x265-PSA",
+          "name": "Portuguese - Fall.2.Deadpoint.2026.1080p.WEBRip.x265-PSA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c55/id/1962632762?format=srt&encoding=UTF-8&id=tt31192372&tok=3.AI8Nh6J5tRiIpn4JLLCTUYcKXj6fJiYD_wVWmU9Efbk3lzxjPK70mh0rL6ShQ6hwZewZHsGcogck1GTCM7rXQ3qS_adwMhGHnnT7GobtD63oedS8yPmzzNrI2csuYd07",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c51/id/1962660460?format=srt&encoding=UTF-8&id=tt31192372&tok=3.0lgwn7zWRXGV6CL6SdI19qLhTFY55Ggl0AZ2-D2_00_0MzKCe8KxkM3llAUGRoE4sP3EoyALznSur-lCS8WwpUJU_hOwOaa1G-NTwoGiCiSM36FaQWGF4g0ubxxHHB0n",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c56/id/1962632763?format=srt&encoding=UTF-8&id=tt31192372&tok=3.I3XeXvK_2IqEUpPmEBTcrJIyZrztpPrqLdlC1oknXBrisUBmPeR5gBRVItJJnURA94P1RAS6CfbAhk7qGZ60Y_C16n9M1wwGMmyVUz2iUaef-dQjj-2rFzLQ3GtOy99a",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264",
+          "name": "English (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c52/id/1962660461?format=srt&encoding=UTF-8&id=tt31192372&tok=3.ep0ECinPyB5_mYY9P0SjVF-G350TjezvT2C50kphqbbhOAmXQHbe0PCa6_xevlP5pW1DKA75HVMw9rJBeI9ZkLOdQdTAotRKkphNkPK-EOyZo0SXtd67NqgAkJd_y204",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "English (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c52/id/1962660641?format=srt&encoding=UTF-8&id=tt31192372&tok=3.ysjdrBOYlwBlG_D74wfUXThtxPeIRpXNlFqTUewLlkSW997WIj3Nfixjpuxxpu-VGPCzZ3llkHlsyrBjxvdeSF-4Ja9UaKzi__EBVDkn1VFJpytELt-tI9NGIQDeLq66",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5f/id/1962676836?format=srt&encoding=UTF-8&id=tt31192372&tok=3.HaN6XgeVCVBdMaaMlERTSeLpy6le6oCIGLG1G-S3EhzcZ99NkfgKHn330rbUYDx2eVSrmBDoi3pwWLUcNFzw0mrD98edVHVQh2Qtau0MKMFfyefW1TJgFA3JggqlIeKw",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c51/id/1962660640?format=srt&encoding=UTF-8&id=tt31192372&tok=3.xZhnv6KvgSlJkTDLT7oEPYWekQTDpHjmH945T4vIZz0N1RhYOYZQQ-ORuRU_aY09n9oPAMmuj9XfXxDaUsALDpKW9DDSbCN3DI2cqsRVDvTYpQQXFkrJa9S2-8w8D_0W",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "English (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19de0c5e/id/1962676835?format=srt&encoding=UTF-8&id=tt31192372&tok=3.R1fijm_6xvWPRxCdN5nOET24IU-1hJKiHqfB4w-YmEg7Ex1DUWZ5W6OFc3zBgwEEiQZmLalbm4KIMQhVVXUZKvcYnfEjN6m3bXx5unwsP4lKLBwVJx-iYE3S0ztnHV8R",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "name": "English (SDH) - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c4c/id/1962661211?format=srt&encoding=UTF-8&id=tt31192372&tok=3.IkkmlDp8UtFw7IJ4UWQF3-j366NZFFF733Iz7FGZgr5KU0Yha1Q6ByBGN3sRSCjINUiiFS-sqVONBZwgLw0JuIeIP6Rmf98cVoBGEcuLfZrcdvDiPIAp2tj4_NnpMjv0",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Fall 2 Deadpoint (2026) [720p] [WEBRip] [YTS.GG - YTS.BZ]",
+          "name": "Turkish - Fall 2 Deadpoint (2026) [720p] [WEBRip] [YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c57/id/1962637822?format=srt&encoding=UTF-8&id=tt31192372&tok=3.s3IqMldJ3o_xj9_a4eiwcCQdFa13LmbWs-M4SxrUQ8u7TiDfrjpVdKDgGvhybtm2RRGjmi-jBB-5_aWEaaa5SDXYn5iLPX6MiIQ1y6LdiH40uVyw-pJ0aynxZm1Osh2V",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264 (SDH).UniVerseHub.SHQIP",
+          "name": "Albanian (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264 (SDH).UniVerseHub.SHQIP",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c52/id/1962661280?format=srt&encoding=UTF-8&id=tt31192372&tok=3.i7yuSaBO4-aES3_sFs3h18igGAcK4t2PuN-FXQipnRCMk4ffkTWWvaCgggDfH2zNB7Z_wMHol4L8LVeJDUvFfmbz7PUyHxsf01qbEJpzGpg1PIZ45LnS3m4lHaMuGZNz",
+          "mimeType": "application/x-subrip",
+          "language": "sl",
+          "label": "Slovenian - Fall.2.Deadpoint.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Slovenian - Fall.2.Deadpoint.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c51/id/1962662332?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Hg-E9XaXTOXwDEZ1qvOC6YDThdDzJ47D2iw65x_ozDSflGCTTaQerPTpg1AFrvXGl80Rbj_6gdqHRtueuIi9Z2znuyCvTpUayJHMJDN5XZR7DDJTY-nSM-Wcw_yE17x8",
+          "mimeType": "application/x-subrip",
+          "language": "uk",
+          "label": "Ukrainian - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR.UKR.SviySUB",
+          "name": "Ukrainian - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR.UKR.SviySUB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c54/id/1962662830?format=srt&encoding=UTF-8&id=tt31192372&tok=3.zVrldmUgdXY_c_yCo-J3q3MEiLH_uQOwToYAn-r88GUAPV2ApPs1yasGqA4-llIx7Py2N8XjjuzZErFnIFAcS-i5B3hlczmbDIPLTqzRN6mqrtxASXiB0JqqSpULxbhx",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.WEB",
+          "name": "Persian - Fall.2.Deadpoint.2026.WEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c55/id/1962662831?format=srt&encoding=UTF-8&id=tt31192372&tok=3.qyh9YiNJtISCLRPV0UYzRCaCOibQHdr18ciPd8t4ibA2eTAP2g2nsVAyPB-VcHZb8g_2znIAhhB20xQwJ6ZTTN6UIVr0sE2wY5Ck2i-jlY1pJoghHLPcsM9dNLC1WqPY",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.WEB",
+          "name": "Persian - Fall.2.Deadpoint.2026.WEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d70c61/id/1962637868?format=srt&encoding=UTF-8&id=tt31192372&tok=3.C7IMXp4Upr4hS2U7FuYN12cdtQnFkaKCgr8lHlsMuHmyfebDN7jKViNMwVvLcrB6n7iBOKewfRuHJEPNG1zonjPinjLMpiwdwx2a8zG9OH3M-ePFolYJi2_MtAVkc7Uv",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264.UniVerseHub.SHQIP",
+          "name": "Albanian - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264.UniVerseHub.SHQIP",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d60c61/id/1962637859?format=srt&encoding=UTF-8&id=tt31192372&tok=3.BeBcHaXv3V9frjQ87ItNxamPE7SwGEY3093kVBbnNQ7pq22f4L8VpkmP0-9mK_lsGKb6MlMJHRAz4B-mn8RI_5sJ4nOOpaHiXzcpKigKY06147d3NO_ZzRceCi-PX80I",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR).UniVerseHub.SHQIP",
+          "name": "Albanian - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR).UniVerseHub.SHQIP",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d50c60/id/1962637858?format=srt&encoding=UTF-8&id=tt31192372&tok=3.HLlk77yAvn-H6TxJTfgXtwFxXgyE89uvPMROBqjg9ly70b8wE9csu0A0-lsv1o-LBUGMjShbXnBAl_HaHJQVbptZbyWcqFJemnYWfyqvP3zJDfPRndlPdhPBCF-nE2k_",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - Fall.2.Deadpoint.2026.720p.CAM-Rip-OnlyFlix_[eng].UniVerseHub.SHQIP",
+          "name": "Albanian - Fall.2.Deadpoint.2026.720p.CAM-Rip-OnlyFlix_[eng].UniVerseHub.SHQIP",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5e/id/1962669392?format=srt&encoding=UTF-8&id=tt31192372&tok=3.laxfshMPNgAPspjb69S_322pf9Hv_Bo-yA9rbAOpP1-fqJCxjOhG6bXdUUA7f3c26AU8F5yhqXFQSQKaK6L1zpmdW7WSPNBM-W9kopRswffEJxCea_Adv8GxAhU2a9jv",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR_SDH.UniVerseHub.SHQIP",
+          "name": "Albanian (SDH) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR_SDH.UniVerseHub.SHQIP",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e00c5d/id/1962677590?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Yr3B1geiMNZw74ytK3bATUTE5_RSYD4MYw7hXgIDfC35Ouk18x7EAOcQajcVQ9F62u5nMMPM0rOzblBeVph6479w9t_a6MrR4OUDS3Of-WVX22tu10AZ6kVMW1zJ8g1v",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - Fall 2 Deadpoint.2026.tt31192372",
+          "name": "Albanian - Fall 2 Deadpoint.2026.tt31192372",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c57/id/1962665164?format=srt&encoding=UTF-8&id=tt31192372&tok=3.I6tPwCXYf-71lbYGIyRK9Hh2A27mVJSubxBn3BBzq9s3buduNoiyKbpokR5qmwO2VaSzsvlOfasPqep9zeOVVe9Tdcs2hbWgFRfOXAKLl6jkjzasPXDJb5mmf2FnSqqP",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "name": "Hungarian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c59/id/1962664158?format=srt&encoding=UTF-8&id=tt31192372&tok=3.xV1B3g9nTz3Z8utW0Ksw_KgeB2f1w86LVKIltYfo7fxCk5_ZMmULgJwhYoTxEQCy7I6rOCLl3rjY6zvF8zMhbpwU0B3oXQUrfB9mLFtF5Cn35CmVFv1u4PxJ7aTEiY85",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5.1 H264-BYNDR",
+          "name": "Spanish - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5.1 H264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c60/id/1962660988?format=srt&encoding=UTF-8&id=tt31192372&tok=3.iyvea-H0zZLvSTac3VTxMxvWmZMlOuK_MwkOVZoViQ2inHivW_uzDMWpu2B0YpivLGFtbcn7G-TXoIRm1-UN4lM4pfP-Gu9fNRZvAoFC6qSJ4ZBQ3coZHzOvyabSGPOB",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Fall 2 Deadpoint 2026 WEB",
+          "name": "Indonesian - Fall 2 Deadpoint 2026 WEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ae0c51/id/1962661117?format=srt&encoding=UTF-8&id=tt31192372&tok=3.WDwLInncAhFv3Zhua3tnnAlqEarCcssKsoQyjL_wMR3336i1Yk3atQx0YuuA8DOR9uoHLZ5cTK0UcYAdT9LSQkUG8vKpCfSJ971_A0VJTUZKPjDbzCziMsefCHR3XKAc",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Croatian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c54/id/1962661732?format=srt&encoding=UTF-8&id=tt31192372&tok=3.BRiewGKgej2fVtDt4baNNmOdZXIKiGh0w7vp9GcJ6SqLPRUQ_esN5Qxxf8Sj7PWlGORfeQF-XLZEcRk3pQwGj6dmctrl9Cg1MvzxPfpHQRt6EJR_aSQApKnAzkSNPpPi",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Fall.2.Deadpoint.2026.1080p.WEBRip.mora.25r",
+          "name": "Arabic - Fall.2.Deadpoint.2026.1080p.WEBRip.mora.25r",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5e/id/1962662678?format=srt&encoding=UTF-8&id=tt31192372&tok=3.TTAS4zoa33yDYblIAewY8hVg35UwGUk7fVJZvdqfM5bRSSDx8w6vghQas5AJ8y88_NcB4gJFzEwBD6g4xcvynPrRZo0Qqd7fOi-LZQZfvgMwpjvki1lKCqoLnZjFv0oQ",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "French - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f20c63/id/1962688882?format=srt&encoding=UTF-8&id=tt31192372&tok=3.cDe6At4UkCwlpSGHXbhENtm9U70TrfzlUvFXMZS19RHbSD_gTioJd9m4ODqUpTEGv5pFluslT6I79GtAXIr5oP0sXp4gBxH5grlegxAN6bEmYIYzSWlThQ8zw5o9YrNf",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Fall.2.Deadpoin",
+          "name": "Japanese - Fall.2.Deadpoin",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d70c60/id/1962665578?format=srt&encoding=UTF-8&id=tt31192372&tok=3.4RT3REtnbvW1kVRU--1kIvb5kVXx95zvhMAEZIflblWPcMISPmLsKmoiBOzwjGr4-dfCn_2ySL_dau7QHwIhJztG2ND-yX7oVhSd8dKLt8gHC4zVIQx0nMYmnzVEZc0G",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Fall 2 Deadpoint 2026 HDR 2160p WEB H265-ETHEL",
+          "name": "Spanish - Fall 2 Deadpoint 2026 HDR 2160p WEB H265-ETHEL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c55/id/1962661436?format=srt&encoding=UTF-8&id=tt31192372&tok=3.jfnf8cgmCSfdlEv9kYEsz_zrhnjZlI-O3-uIcse5e92ElyKwovScQAiBNhz6n2Fok6zO6jym2WMM9KnxsL7nQWIP8B_-CETn_CUGSxoRF-H0ciQ4GvW6E4n7pznR0iQn",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Fall 2 Deadpoint 2026 1080P Amzn Web-Dl Ddp5 1 HEVC-Miha",
+          "name": "Croatian - Fall 2 Deadpoint 2026 1080P Amzn Web-Dl Ddp5 1 HEVC-Miha",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c53/id/1962661461?format=srt&encoding=UTF-8&id=tt31192372&tok=3.u1r-I43ZEQZtV67IPQevGZGN6WIQ-dsXhK2tFwnqwkffGx7m_0M6oEqKjOKOth6bYaAtNaXbs5uQu2eNrSRIvMCn4gD0xbhyzxoalOH2ld-DnxTCWYYKmM8CLKH8yuxx",
+          "mimeType": "application/x-subrip",
+          "language": "bn",
+          "label": "Bengali - Fall 2 Deadpoint.WEB-DL.BSub by SAYEM & Sazzad.[1.37.22]",
+          "name": "Bengali - Fall 2 Deadpoint.WEB-DL.BSub by SAYEM & Sazzad.[1.37.22]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c52/id/1962664304?format=srt&encoding=UTF-8&id=tt31192372&tok=3.eqkb6oxpR4SCp_Ic1N9-MG00K_OLDcMmz82X9z_jaoAoXoBAtpn7UjTzHQLCVYmhgJLm6qo4rM_Xx4l9IqILT8Jeafsi7UyMQjINTrLMQ_T_XX019gi_zr4Ig-yAtSpt",
+          "mimeType": "application/x-subrip",
+          "language": "bs",
+          "label": "Bosnian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Bosnian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c59/id/1962665256?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Ipj_vUts77s3jb0iCnLVhRfMldxDSRA8yGHAbmcoU10kYn6In_VZ0t7ZYPleMmbYMtVpdjeNKJwz_CVL2c7NdgNYDrcBcWIvIlLMR4vChSmnOtfuec9xJQ2JDMa3U-aJ",
+          "mimeType": "application/x-subrip",
+          "language": "mk",
+          "label": "Macedonian - 720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Macedonian - 720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c50/id/1962672213?format=srt&encoding=UTF-8&id=tt31192372&tok=3.iBZMI1eB-kOFRf9FiskEiDyvecL7IUMn1vteI09_RebnYH9xcC1M7lenh6eYgMMV2WSDy8QpnJn8W0OwB4IceMHic01objRK2SS-4E79NitUoadytA81H3c4WbRVQZX9",
+          "mimeType": "application/x-subrip",
+          "language": "no",
+          "label": "Norwegian - Fall 2 - Deadpoint (2026) (2160p MA WEB-DL Hybrid H265 DV HDR DDP 5.1 English - HONE)",
+          "name": "Norwegian - Fall 2 - Deadpoint (2026) (2160p MA WEB-DL Hybrid H265 DV HDR DDP 5.1 English - HONE)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e20c62/id/1962676677?format=srt&encoding=UTF-8&id=tt31192372&tok=3.KJ0lHTWshryro3sL_k7gK486Rq1njsxRwdEIfWayP3I9QJ6A0CznqqXlrSGXT1mr17se3ZxW6dGZsMiF7tGhA0HacYVi1bbI5ZWlv8iHj600wMlDAPVTNRdCxm14heAs",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - Fall2 Deadpoint 2026 1080p WEBRip H264 AAC5.1-YTS.GG.mkv",
+          "name": "Chinese (simplified) - Fall2 Deadpoint 2026 1080p WEBRip H264 AAC5.1-YTS.GG.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c57/id/1962680167?format=srt&encoding=UTF-8&id=tt31192372&tok=3.QBZVryA6q9bpLNyOUqc65uuC_xSKGPye2erI6rTe4NlDHALRzLl9wmuKam3jfv0Pz7exmFJMjlRes-s73bskh2Li8d8bhN57TDg7MOwkZi5BF_0p5JE1AzrIdXHFiecC",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Fall.2.Deadpoint.2026.2160p.4K.WEB.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Greek - Fall.2.Deadpoint.2026.2160p.4K.WEB.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c54/id/1962680236?format=srt&encoding=UTF-8&id=tt31192372&tok=3.hBxqhbqUTcJYB9EpTfSnjdQDcyUrpcWqiMc8v23xpO3gMSaw9zjH250e-TozbnEvsbeKqGRK344xEnqvvk5Kb5jbmhI_tuNHXI__MD4aX2n2jHm-X5KuUj_CqpO2TCTs",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Fall.2.Deadpoint.2026.2160p.4K.WEB.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Croatian - Fall.2.Deadpoint.2026.2160p.4K.WEB.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c58/id/1962676325?format=srt&encoding=UTF-8&id=tt31192372&tok=3.m_USDE7lb0h17b00478OiCtDH3fLg7OirRBHCU5Iiuob8wkWbPzNwgQHglouTiHBtBjjZGPob3WYc9TxFccazoFAhejXwFk7l3ocVcFVVkoRjimKTHJZjlTZTCKmzZng",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.AMZN.WEB.DigiMoviez",
+          "name": "Persian - Fall.2.Deadpoint.2026.AMZN.WEB.DigiMoviez",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c54/id/1962676330?format=srt&encoding=UTF-8&id=tt31192372&tok=3.BYGFifcgl6LVnyMjzKAot1VvSlBgA6HY-02eIuIPiMb2g3htEEOV6QCLWniDdbc-yJsEa3Ti9leJtLkBotSCgTH7Vs_S-sRKqmfQ8VmEnhVOsrB5VeExLLCLkCxLeAfA",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.MA.WEB.30nama.ARZ_110_SUB",
+          "name": "Persian - Fall.2.Deadpoint.2026.MA.WEB.30nama.ARZ_110_SUB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c59/id/1962676326?format=srt&encoding=UTF-8&id=tt31192372&tok=3.DUo5egN2U1Ai6pQ9ml871Yj3AElJJRRvyS4LjVHDIZER_JYX_0Y3FuBWmHw6yi_4GG5NOQc-IC79XRMvdMkEdajK8ZZbbssopRV-reuXtDcOJFLyFCdbPsriYtw-cW0W",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.MA.WEB.DigiMoviez",
+          "name": "Persian - Fall.2.Deadpoint.2026.MA.WEB.DigiMoviez",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c5c/id/1962676329?format=srt&encoding=UTF-8&id=tt31192372&tok=3.XSRpE4EWsebcy-Jq3icIRs1_ZChtkPwY8FqGYNnv_Uy4LSFLozlDtOdedumU9iHvz3UEnmVWJ1FvCsc5uEFLDucj-ZautHW_ZzC9l_ka_lSwC6ppMMv7DEYtBEmQl-2g",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Fall.2.Deadpoint.2026.AMZN.WEB.30nama.ARZ_110_SUB",
+          "name": "Persian - Fall.2.Deadpoint.2026.AMZN.WEB.30nama.ARZ_110_SUB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c53/id/1962684231?format=srt&encoding=UTF-8&id=tt31192372&tok=3.MTHWN0K1s8KRuJizQlboB7xxeRx4BPuX48yo9HBmoMX2hHLD8vJTrBJIuNWPWCsuUipzZR6ibzHZcXmxYFT88QGAGL8HVwG7tzBr4TjrueAmkwuO2bpFxQOPHx3tPnOP",
+          "mimeType": "application/x-subrip",
+          "language": "bn",
+          "label": "Bengali - FALL 2 (2026)_ENGLISH_1080p_WEB_DL_BSUB_BY_FARHAN AHMAD SAIDUL",
+          "name": "Bengali - FALL 2 (2026)_ENGLISH_1080p_WEB_DL_BSUB_BY_FARHAN AHMAD SAIDUL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e20c5d/id/1962687652?format=srt&encoding=UTF-8&id=tt31192372&tok=3.bZiXtAtrB4d8rGpDlPUeCo-VbLryD0IiGaKxBIVnlJKqRut8dxOXe3XroDC1YD30RBCey78HS5hloC15tIhuPxAaQfFq3NaysOeH-Yj7nLJ6BokDRjMzW6fxbwI3ZRnA",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Fall 2: Deadpoint (2026) 1080p-720p WEBRip (CRETA STAR)",
+          "name": "Greek - Fall 2: Deadpoint (2026) 1080p-720p WEBRip (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c57/id/1962661708?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Tj73VnYRGBFHmr2XH1zqlzRp5BGZ_av3cOj9Oqmm5e947wqIGY7O7E2jfrsNRw20Y52x5LpKaAwcYvOWBFPLiFD-LA8q0RCeHfTNsDyuVCiNPJ7p06frXStVR7F-37WN",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "Portuguese (BR) - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c57/id/1962590275?format=srt&encoding=UTF-8&id=tt31192372&tok=3.3KDVPoc_nnGiWj4nNbbD3ieTHHbZd-xeztbkLN5cfmaoyJsBQMFGJ-iIm_G2LVH2T1g_8OOR-LFK9yoXujO843SP0zrInjfAqqmwup-lAoiCQ7HkiCuKUS8VfTzzddQJ",
+          "mimeType": "application/x-subrip",
+          "language": "sk",
+          "label": "Slovak - Fall.2.2026.1080p.CAM.x264-DKS",
+          "name": "Slovak - Fall.2.2026.1080p.CAM.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e00c5f/id/1962675954?format=srt&encoding=UTF-8&id=tt31192372&tok=3.f1Yp4LluwuMfX3H7fOTXqwR-HA1d9kzpimSWlPEjVsMnEJTTNQ8a_Ncw6ORqFXtjakcYBEqKZBgENV_aWliEtO9de4tpNn0CJfXU7u2wegx9b3BUNPNJQtD4Zwd-9Sg2",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5.1 H264-BYNDR.vie",
+          "name": "Vietnamese - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5.1 H264-BYNDR.vie",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5f/id/1962678294?format=srt&encoding=UTF-8&id=tt31192372&tok=3.tmZ5GqrtNG8Z87tsRvDdfzjhI932tNwSavPWu7rH3MA9uxmB71vu5CZ8tm_i3_jvUqmlUYg7rGC9Z871z6j-v0KEsBPBD6u5MfTdT0ijJnpdYGskbu4S8QSa6dLGK0X_",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e00c5b/id/1962669911?format=srt&encoding=UTF-8&id=tt31192372&tok=3.zgIPP93tzd9qi3P1FXjonD1pYyjpQrXkKJGLrDX8OK8LL8Z3V6XiT_xWtS7IGI7IdlwUz4zAdO3JxqQ2zskXaDXx7oXZIACY6ajHx0JJJc5YSWJUHtZ9Mq0UE_FsYv4D",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "name": "Portuguese (BR) - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c59/id/1962668802?format=srt&encoding=UTF-8&id=tt31192372&tok=3.c-ndljdO7fiiigbdcJ9_bN3BqHC7VM5KYmztdapkuVzQDDtONmRTaf9WvZ-BHnROqM1P3Ne8KN_-dMEj-L1rgHdnfsY2byXR-hk_4uWd8LjZrMFpWEXLrtslbok7zgwm",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL.mkv",
+          "name": "Indonesian - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5b/id/1962664637?format=srt&encoding=UTF-8&id=tt31192372&tok=3.SQ3KJHRBWrHthI3-Gb7Fk-vL5K1zcJiuHEVeS_JKY9R9ILUIIKhiv7A6w7hpOX-rUCMbQ_2j8EN7Ypm3WuTyn2HCeJpImCdywUec5D04GpGZiL3a3ZgqPl1c-Q2oIYOJ",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Fall.2.Deadpoint.2026.Hybrid.2160p.MA.WEB-DL.DDP5.1.DoVi.HDR.H.265-HONE",
+          "name": "Romanian - Fall.2.Deadpoint.2026.Hybrid.2160p.MA.WEB-DL.DDP5.1.DoVi.HDR.H.265-HONE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dd0c5d/id/1962678292?format=srt&encoding=UTF-8&id=tt31192372&tok=3.mtI9rON3KMOYKropbeiEpazsOhdtvbVy-nmBK9ABp5IKZ1_FQB-8XNCWQJmumoq9E_FW_XXOzks8nWmGdJMnp2vKyIkTnJDg6DoJPTaq6obeAsMoaDsn50BtEAh90a3f",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.SDH",
+          "name": "English (SDH) - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.SDH",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c52/id/1962664160?format=srt&encoding=UTF-8&id=tt31192372&tok=3.LBouaN8dyt3FMMu9HEBHhQV_VmsQUotajOQlodUUj4xgqamxRpstwcdIifaPPmgxdYummB54vuyU6emJ-R-OJJeueP0t9WlRMnFA-NdpZyMXsakpzU0zf7eO-9FwyysO",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Fall.2.Deadpoint.2026.SDR.2160p.WEB.h265-ETHEL",
+          "name": "Bulgarian - Fall.2.Deadpoint.2026.SDR.2160p.WEB.h265-ETHEL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a90c4a/id/1962662100?format=srt&encoding=UTF-8&id=tt31192372&tok=3.qWSv3pS9ro1mCRrS9nakagmoyCqNdNdC2jvKhPmrqR6sFkRO9jLVA6JjgZtP65x8aOLVLpkv4YWxTpsYnK0KpCpbFqGHvlsde5_WSncbBZIF7n5dNMCzC8qSy3D8pWlE",
+          "mimeType": "application/x-subrip",
+          "language": "ze",
+          "label": "Chinese bilingual - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "name": "Chinese bilingual - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c51/id/1962662035?format=srt&encoding=UTF-8&id=tt31192372&tok=3.PS8PpoNiGuF7D0R9BHFquJubZ7BYI_Zhn3oH9lwsxAhtKKXhZ35A_hJzYolIpSnbPvt1QIkxUOo13zhTjiSatIRXwITYwQf-E1SvaQICrWuGuBkF4hKIoTppzJZHxwgQ",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "name": "Chinese (simplified) - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c55/id/1962661445?format=srt&encoding=UTF-8&id=tt31192372&tok=3.333gBtZmoIuXSyjDKLerk1whtIhUcsiR5feNswRJKgeBvd81jCiyfLaSsrp68uMcu5k__6rFaoewDygSF72gCvF2GMOOlYWmzDLi7efovYZY9_trYUXm13q3frvDV56j",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Fall.2.Deadpoint.2026.2160p.MA.WEB-DL.DDP5.1.Atmos.H.265-HONE",
+          "name": "Turkish - Fall.2.Deadpoint.2026.2160p.MA.WEB-DL.DDP5.1.Atmos.H.265-HONE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c51/id/1962661405?format=srt&encoding=UTF-8&id=tt31192372&tok=3.FiP4e3JHP_-aqxLrqHeB1b7neyC6abxo4ECBpOcg25GaDwCzGsz8zLDsdgjWbTgc1TI8H5b4FSE3p5hHEPcPvptW8biHpnDEpnyfHX2OExVmHngCdLIPnW_exhDrI2y7",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Turkish - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c59/id/1962660639?format=srt&encoding=UTF-8&id=tt31192372&tok=3.9gGDEodz7C_YrhrvoKrvTjrYBSWVPGJwBRuufQxFBIdEZMXJygE_FBXWZbnau5UqOA-HXL0cpKRlSCDWjj1ewOzPqKIhXKL_Bi3rnQvOXPNJ_TSBXZDL19-9KQDUBZeG",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "name": "Turkish - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c59/id/1962665571?format=srt&encoding=UTF-8&id=tt31192372&tok=3._s_BY-KkcqPaJnN11149-aTdtpglvCuM7rA4IM40GOzuH0senvRRcsbkNfn3I4XxnXWJEABoq8S7fi6G_dUQFgAMw02oadiGUpNf8EVJprQW8VMhFTwMnxnvyCaJSkbA",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "name": "Hungarian - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c5d/id/1962664657?format=srt&encoding=UTF-8&id=tt31192372&tok=3.nnWuKayoQaGO3lgX-_nTZo09DNSFOXrIO8N6fED7gCeN9fjSG1nVaPjWgQx1hVWlJTRf0_3_Ymy--sCTVnsuRCLt9FWEz9XrvFzh5LN-eeqiyZfRHQGWGYdkOfp0IsdS",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Fall.2.2026.1080p.CAM.x264-DKS",
+          "name": "Romanian - Fall.2.2026.1080p.CAM.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5a/id/1962679414?format=srt&encoding=UTF-8&id=tt31192372&tok=3.vi_ARmT6PozWlah7RUL556H16_-3kclja8oJbTbD_c_WQr6xHivU8Ck7-56wpspWnnUFpPQ0akelSS6PasV6KsDzjF9C8ZAADpL992bpJRUF26RTOOQ_mkok9skUC-IA",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Fall 2 Deadpoint 2026 1080p WEB-DL HEVC x265 10Bit DDP5.1 Subs KINGDOM_new",
+          "name": "Romanian - Fall 2 Deadpoint 2026 1080p WEB-DL HEVC x265 10Bit DDP5.1 Subs KINGDOM_new",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c57/id/1962684460?format=srt&encoding=UTF-8&id=tt31192372&tok=3.cPEnJ529NTj2_s7W9vqG0g7brNJByRi_UX9jt6hmnWHmcN9qpmMWqabJ9Ua_FBeb94FXOMfjBG_LBe2Vwq7jkqve5aWgfmiFi2Ealc8PZzJSMUMZuESMFID8NJh-JxGB",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Fall.2.Deadpoint.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Indonesian - Fall.2.Deadpoint.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c52/id/1962690161?format=srt&encoding=UTF-8&id=tt31192372&tok=3.1s2p073KUMWQq5BSDPbr09HNAQYEI2Fs676RV7DsfxPtb6dDAMufErnwfD_dfq4WjdQdpfuvjIi1eraBzWFl9GvAJyyeSj-gNh399o3MuCuxa0K0-U58Npcfk-hbIrh_",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Italian - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c56/id/1962591543?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Szh2JxZtCsvlR-z-puu7qNdQGQZzPsUzxr1jRVXnuQbSJ_W-dDOPbeSOXBrVhsKRrMFX87E_CiERvirqwVPAAiHz8bg_VuzjrsdaYJcr_7tl12sXemjdqAIauEoWL6Tg",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Fall.2.2026.1080p.CAM.x264-DKS",
+          "name": "Bulgarian - Fall.2.2026.1080p.CAM.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c54/id/1962664090?format=srt&encoding=UTF-8&id=tt31192372&tok=3.hwaac3_eybN_KLlnO_8Cyip9k7X56z9Qrti2s0l3RiFi_SGTXG8ob5FDma1IHdzg0gRPzX8RMwzGcj6m3YZ_n_xHSrTwpXq6xW_r5Zl_GwSWhLfBAJJBgy3sM0avrKz6",
+          "mimeType": "application/x-subrip",
+          "language": "hi",
+          "label": "Hindi - Fall.2.Deadpoint.2026.TS.1080p",
+          "name": "Hindi - Fall.2.Deadpoint.2026.TS.1080p",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c57/id/1962664534?format=srt&encoding=UTF-8&id=tt31192372&tok=3.9CIcMa5NlPbfCprDCbSgxoxxYYSBHJDXDDTLvUUPCxUNg18tPGYFLSzW0ws-VvSIdUNxhBYo4Yr3Bqdqi9aRpWYfwECSeYoocVLA_XqlYxiUsDtkJBRsmvcJAUWxJms4",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "Romanian - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5d/id/1962688066?format=srt&encoding=UTF-8&id=tt31192372&tok=3.bVLC7oFVVEkv2lige-V0vzDU3pG9KBXYBDxCMTR2vbyHn4rjHz9tOKXYPwU2zxb31Jh8WxvbecS8f5e9dUuvx0kS2WiHY_aPhk-BSy24eTM3u7K1QHnROspPFvA_xDyD",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Fall 2 Deadpoint",
+          "name": "Japanese - Fall 2 Deadpoint",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c53/id/1962660462?format=srt&encoding=UTF-8&id=tt31192372&tok=3.2sY877wu2z6ezpoaaKeKC8COK8N3q6u_UaZ_RUSvEbGiGsn3sihSFWs2ZT3WUh4GpV7eh5jdsof3MfEcV2M5zq0wQBnv0b1EsXNzgGjKbcj7vzREQ3uJTbuMtdkvCXE6",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR-Forced",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR-Forced",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c55/id/1962660644?format=srt&encoding=UTF-8&id=tt31192372&tok=3.gGgClHMiMpO4ZqVHotqgkO3LYRdDWl_j_WL5W9-UB_87WdyYud2Aqxc-IqoCFEK--uZ_84EsdI58wFLf62xhrbqpVwbnSACIxCNDIBEQiMSvs_ZwOg4F-T3tfP4g7zeD",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDRforced",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDRforced",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c55/id/1962665153?format=srt&encoding=UTF-8&id=tt31192372&tok=3.eczhnYs5_4C7v1ZVntq3yrkxzN33OF6-BUyZzq8iIcYZEdxaSS4-Zhu7W4fAuLgKh8YZ61pjmtmHhWAFGwo78coAk69sE3zedKWbpZjXr9Y56yMsg3SUAhlgIxaaIXlZ",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.BZ]",
+          "name": "Greek - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c51/id/1962590233?format=srt&encoding=UTF-8&id=tt31192372&tok=3._WRkMnyz_8MfzMploo434bzGgw2K3IHNLLzxSKTWEOip8B-z8dYg0eg-6CZL6_D28jfup5HwTIkGqwiRdr04kGFY4qt-Jli0dX6BafUUFhpvisNc6QdmymZq1GkwxEhW",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR)",
+          "name": "English - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c53/id/1962590217?format=srt&encoding=UTF-8&id=tt31192372&tok=3.37F_JMSAU2HzwNLyYD9E10NRuUodcupErM6Ci_JYA75vOeC24tdwnxsSemy0CXUvlcnC4RL-9J1HNOauLNkS2sTtw6a0D75vNqQJVC2uzT60VsJJiyxo2KblnmGKVRNE",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR)",
+          "name": "Greek - Fall 2 (2026) 1080p-720p CAM x264-DKS (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c52/id/1962590306?format=srt&encoding=UTF-8&id=tt31192372&tok=3.ik0V1z79ljbJMhvZXhzHdd8gu6FW_o37Qy00HfEFSvVGnRS-1ElWF-qyne1mUX4IQx8KR-N22tIqyxlTHxdHZjrUYdoxcT5M6lUtuXoQpRs3sChJJWjyYcoHYx2p1IjP",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - Fall.2.2026.1080p.CAM.x264-DKS",
+          "name": "Czech - Fall.2.2026.1080p.CAM.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5a/id/1962680656?format=srt&encoding=UTF-8&id=tt31192372&tok=3.w164j6omK_yO01hUGgRvGMfZ0fTsroHCjM4BfDp76dlyzKIP2fzR1hNbbDK1i95DI5VI7BKo824pPnPxWPrc1ystt1yZUyeB__qcporoY1VBZXVAOviXBn-HtY4azV5l",
+          "mimeType": "application/x-subrip",
+          "language": "ms",
+          "label": "Malay - Fall.2.Deadpoint.2026.1080p.WEBRip",
+          "name": "Malay - Fall.2.Deadpoint.2026.1080p.WEBRip",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dc0c5e/id/1962682973?format=srt&encoding=UTF-8&id=tt31192372&tok=3.gnLR7Xx7DfspqVcxMAgK-VqGmR5eK6LM_6WKZHsXBotMJa8QUYGeze-T1dCUr8HmH5PIy1_KoOsm01XEx6BYIsTbVoG7kaGdue-mGCQKcUv2z4ADgf94H-RY1VUqvxIq",
+          "mimeType": "application/x-subrip",
+          "language": "fi",
+          "label": "Finnish - Fall 2 Deadpoint 2026 1080p WEB-DL HEVC x265 5.1 BONE",
+          "name": "Finnish - Fall 2 Deadpoint 2026 1080p WEB-DL HEVC x265 5.1 BONE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c54/id/1962661093?format=srt&encoding=UTF-8&id=tt31192372&tok=3.wo6HJNbKx-SRUsykSLtxNL3DKi700ruqpyPkjiSDARWvAZTPs0JtDItTEiKUGJ7YjEVf2ivBbIx7HYhanA1gqgnzOtmG44ct4baLc2TrriktlYEq1nC9nw6cwiRgUDEl",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "name": "Bulgarian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19de0c5e/id/1962678293?format=srt&encoding=UTF-8&id=tt31192372&tok=3.l9TDtG3NLuQfOWd9rs7pU8VJR3Y28BktHJ9HUlf6e4VoCabqzWx4K-C1A6EXwd3QtIp-LMjfFFXA4Xc5cGd4jZ3oL0Th07ptTXuAle3UgUMrCXULKbp5IJWOmp6rBz94",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.forced",
+          "name": "English - Fall.2.Deadpoint.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.forced",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c52/id/1962662081?format=srt&encoding=UTF-8&id=tt31192372&tok=3.9v30B4f0YcHQiRib1sCpLDyNvejgKztmbAr7ay8-UwvhQ7Z4_51UN5OpuXLAA9Pzy9njKXz5BEP2JCe_LuKGbalLFVRnFVF82xJDAxBsw7-fPrO4bcpJqHjVHAtcpO8P",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "name": "Russian - Fall.2.Deadpoint.2026.HDR.2160p.WEB.h265-ETHEL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c56/id/1962660861?format=srt&encoding=UTF-8&id=tt31192372&tok=3.U8hzh_-UwtIie3vIl1KbRQtj9cV_Wme9IfhO4knXmSr9_KoGkApoGiY3TgMAc5-eFcXQho3-tJs003ZzVxZ4NZYwaZd0QOEN1g0N6NnA_g3r5vImR8vKIVcMJ0jxDmy_",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "name": "Czech - Fall.2.Deadpoint.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c58/id/1962661628?format=srt&encoding=UTF-8&id=tt31192372&tok=3.LLJh5KzKQyHcYGdy2HKa6BIP55UByGdYrz_rzQvFo9-bL3XEvXki_BJfnwP3I4OJPCxXoslAXOXJKHHWNgqfPqXwYMpbb4nLlQ_7wpg6NAE-kpct8uYuIQmzE6ic9K7d",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265",
+          "name": "Vietnamese - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c52/id/1962664331?format=srt&encoding=UTF-8&id=tt31192372&tok=3.UcksQfTYZD5dKcXUiSBkeWIvfjl6a43Af_XH-EHFITgtJgp_ShhVsXx5wxPzXfV-C5ZWtU9guWhJvxFc8Ckqr1-1-nvg1aM7w_0qr6NqR-6-Cgd1P8py6YwPfdpZ__7a",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]70.720p.x264.YIFY",
+          "name": "Greek - Fall.2.Deadpoint.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]70.720p.x264.YIFY",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c56/id/1962661734?format=srt&encoding=UTF-8&id=tt31192372&tok=3.fpHVaCUaf3AEjdOSbK31M7bd7rHSQl4cCN46UPRrDjjuDW1f3efRz3C4WTc136A547nJMIiu4sE95d0JoSfHAVaA8qkoyaCNj7mqW6uOyFsyeTv2zAGFP9iYicCuZR1-",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "name": "Spanish (LA) - Fall.2.Deadpoint.2026.1080p.WEBRip.DD5.1.10bits.x265-Rapta",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c57/id/1962661771?format=srt&encoding=UTF-8&id=tt31192372&tok=3.ugtktj35jQyMfFycOibOKgr7aEcnOA3PVPJPkLyuqt99U1HpzHb8MrwRHW5NmPQLVmXzLzvzNDkNN0RnxxrfynaCCbyApROSQsfHGJw7N0H3nxbESll5hObwGduPTX-F",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264 (SDH)",
+          "name": "Spanish (LA) (SDH) - Fall.2.Deadpoint.2026.1080p.MA.WEB-DL.DDP5.1.H.264 (SDH)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c50/id/1962664401?format=srt&encoding=UTF-8&id=tt31192372&tok=3.Gwn43If1RKejM7hbrnP0u3LqchOTCUd0n6pigcb2fjQNRmCojj5Z6vOnxI8ovmvro5O-t3GzCWBczaI-HretO420qisXvx1vDLYqR7rsYEHh4OFlmv9XnuD9h6I1QZuJ",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL",
+          "name": "Russian - Fall 2 Deadpoint 2026 1080p AMZN WEB-DL",
+          "format": "srt",
+          "headers": {}
+        }
+      ]
     }
   }
 }
