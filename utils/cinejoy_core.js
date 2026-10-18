@@ -1581,9 +1581,11 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
         console.log(`[Cinejoy-TV] Active domain: ${domain}, API Host: ${apiHost}, Servers: ${servers.join(", ")}`);
         console.log(`[Cinejoy-TV] Resolved ${combinedSubtitles.length} subtitle track(s)`);
       }
+      const playbackOrigin = new URL(domain).origin;
+      const playbackReferer = `${playbackOrigin}/`;
       const streamHeaders = {
-        "Origin": domain,
-        "Referer": `${domain}/`,
+        "Origin": playbackOrigin,
+        "Referer": playbackReferer,
         "User-Agent": HEADERS["User-Agent"]
       };
       const serverPromises = servers.map((server) => __async(this, null, function* () {
@@ -1708,8 +1710,8 @@ function getStreamsForServers(tmdbId, mediaType = "movie", season = 1, episode =
             body: sealed.body,
             headers: {
               "Content-Type": "application/octet-stream",
-              "Origin": domain,
-              "Referer": `${domain}/`,
+              "Origin": playbackOrigin,
+              "Referer": playbackReferer,
               "User-Agent": HEADERS["User-Agent"]
             }
           });

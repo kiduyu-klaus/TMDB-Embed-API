@@ -712,6 +712,16 @@ async function scrapeViz(info, id, s, e) {
             const payload = await decryptVidzeePayload(await res.json());
             if (!payload) return;
             for (const stream of extractStreamData(payload, [], endpoint)) {
+                // Vidzee currently advertises this CDN1 manifest route, but
+                // the origin responds with a Fastify 404 for tested titles.
+                // Keep other Viz mirrors (including cdn2.fastcloud.live).
+                try {
+                    const streamUrl = new URL(stream.url);
+                    if (streamUrl.hostname.toLowerCase() === 'cdn1.fastcloud.live'
+                        && /^\/e\/[^/]+\/master\.m3u8$/i.test(streamUrl.pathname)) {
+                        continue;
+                    }
+                } catch { /* Keep opaque URLs for the common extractor. */ }
                 stream.quality = stream.quality && stream.quality !== 'Auto'
                     ? `${serverName} - ${stream.quality}`
                     : serverName;
@@ -869,4 +879,3 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
 }
 
 module.exports = { getCinesrcStreams, EMBED_SERVERS, resolveSourceUrl, parseHlsVariants, extractPlaybackHeaders, extractStreamData };
-
