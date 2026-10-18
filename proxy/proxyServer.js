@@ -446,6 +446,9 @@ function processStreamsForProxy(streams, serverUrl) {
         if (['mp4', 'mkv', 'webm', 'avi', 'ts'].includes(s.format) || /\.(mp4|mkv|webm|avi|ts)(\?|$)/i.test(original)) {
             return { ...s, url: `${serverUrl}/ts-proxy?url=${encodeURIComponent(original)}${hParam}` };
         }
+        if (s.format === 'dash' || /\.mpd(\?|$)/i.test(original)) {
+            return s;
+        }
         return { ...s, url: `${serverUrl}/m3u8-proxy?url=${encodeURIComponent(original)}${hParam}` };
     });
 }

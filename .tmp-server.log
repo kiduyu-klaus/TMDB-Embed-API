@@ -1,0 +1,1402 @@
+
+> tmdb-embed-api@1.3.0 start
+> node serverLauncher.js
+
+[registry] 4khdhub provider loaded
+[registry] allwish provider loaded
+[registry] anikoto provider loaded
+[registry] anime-dekho provider loaded
+[registry] animekai provider loaded
+[registry] animekhor provider loaded
+[registry] animeonsen provider loaded
+[registry] animesalt provider loaded
+[registry] anizone provider loaded
+[registry] barbarian provider loaded
+[registry] bower provider loaded
+[registry] byse provider loaded
+[registry] castletv provider loaded
+[registry] cinejoy provider loaded
+[registry] cinejoytv provider loaded
+[registry] cinesrc provider loaded
+[registry] cinestream provider loaded
+[registry] dahmermovies provider loaded
+[registry] desiflix provider loaded
+[registry] flixcloud provider loaded
+[registry] framextv provider loaded
+[registry] hdghartv provider loaded
+[registry] hdmovie2 provider loaded
+[registry] hianime provider loaded
+[registry] kickassanime provider loaded
+[registry] megaplay provider loaded
+[registry] meowtv provider loaded
+[registry] miner provider loaded
+[registry] moviebox provider loaded
+[registry] moviesdrive1 provider loaded
+[registry] netmirror provider loaded
+[registry] onetouchtv provider loaded
+[registry] playimdb provider loaded
+[registry] reanime provider loaded
+[registry] showbox provider loaded
+[registry] streamflix provider loaded
+[registry] superstream provider loaded
+[registry] titan provider loaded
+[registry] valkyrie provider loaded
+[registry] vaplayer provider loaded
+[registry] vidbox provider loaded
+[registry] videasy provider loaded
+[registry] vidfast provider loaded
+[registry] vidlink provider loaded
+[registry] vidlove provider loaded
+[registry] vidrock provider loaded
+[registry] vixsrc provider loaded
+[registry] zxcstreams provider loaded
+[startup] enableProxy flag disabled: proxy routes not mounted
+[startup] MOUNT_PATH active: serving under /kiduyuTv_providers
+KiduyuTvProviders listening on http://0.0.0.0:8787/kiduyuTv_providers
+Local access (if running on your machine): http://localhost:8787/kiduyuTv_providers
+Endpoints:
+  GET  /kiduyuTv_providers/api/health
+  GET  /kiduyuTv_providers/api/metrics
+  GET  /kiduyuTv_providers/api/providers
+  GET  /kiduyuTv_providers/api/streams/:type/:id
+  POST /kiduyuTv_providers/api/streams/:type/:id
+[diagnostic] post-start setImmediate fired
+[CineJoyTV-1][2026-10-18T22:22:45.762Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-1][2026-10-18T22:22:45.764Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-1][2026-10-18T22:22:45.765Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-1][2026-10-18T22:22:45.771Z] request.start {"requestId":1,"url":"https://cinejoy.pk/","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:45.796Z] request.start {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.298Z] request.response {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":502,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:46.310Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":515}
+[CineJoyTV-1][2026-10-18T22:22:46.540Z] request.response {"requestId":1,"url":"https://cinejoy.pk/","status":200,"ok":true,"elapsedMs":770,"contentType":"text/html"}
+[CineJoyTV-1][2026-10-18T22:22:46.541Z] request.start {"requestId":3,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.547Z] request.start {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.553Z] request.start {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.557Z] request.start {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.562Z] request.start {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:46.843Z] request.response {"requestId":3,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":302,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:46.847Z] request.response {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":301,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:46.855Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":314}
+[CineJoyTV-1][2026-10-18T22:22:46.861Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":315}
+[CineJoyTV-1][2026-10-18T22:22:46.981Z] request.response {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":419,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:47.007Z] request.response {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":450,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:47.020Z] request.response {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":468,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-1][2026-10-18T22:22:47.024Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":472}
+[CineJoyTV-1][2026-10-18T22:22:47.152Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":590}
+[CineJoyTV-1][2026-10-18T22:22:47.229Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":672}
+[CineJoyTV-1][2026-10-18T22:22:47.230Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-1][2026-10-18T22:22:47.233Z] server.start {"server":"Lisbon"}
+[CineJoyTV-1][2026-10-18T22:22:47.233Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:47.237Z] server.start {"server":"Athens"}
+[CineJoyTV-1][2026-10-18T22:22:47.237Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:47.239Z] server.start {"server":"Riga"}
+[CineJoyTV-1][2026-10-18T22:22:47.240Z] request.start {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-1][2026-10-18T22:22:47.939Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":702,"contentType":"application/json"}
+[CineJoyTV-1][2026-10-18T22:22:47.939Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-1][2026-10-18T22:22:47.943Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":706}
+[CineJoyTV-1][2026-10-18T22:22:47.988Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-1][2026-10-18T22:22:48.002Z] request.response {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":762,"contentType":"application/json"}
+[CineJoyTV-1][2026-10-18T22:22:48.002Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-1][2026-10-18T22:22:48.005Z] response.parsed {"requestId":10,"parser":"json","elapsedMs":765}
+[CineJoyTV-1][2026-10-18T22:22:48.012Z] request.start {"requestId":12,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-1][2026-10-18T22:22:48.029Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":796,"contentType":"application/json"}
+[CineJoyTV-1][2026-10-18T22:22:48.029Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-1][2026-10-18T22:22:48.035Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":802}
+[CineJoyTV-1][2026-10-18T22:22:48.037Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-1][2026-10-18T22:22:48.203Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":216,"contentType":"application/octet-stream"}
+[CineJoyTV-1][2026-10-18T22:22:48.203Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-1][2026-10-18T22:22:48.210Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-1][2026-10-18T22:22:48.222Z] request.response {"requestId":12,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":211,"contentType":"application/octet-stream"}
+[CineJoyTV-1][2026-10-18T22:22:48.222Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-1][2026-10-18T22:22:48.225Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-1][2026-10-18T22:22:48.225Z] lookup.complete {"streams":4}
+[CineJoyTV-1][2026-10-18T22:22:48.225Z] extract.complete {"streams":4,"requests":12,"elapsedMs":2463}
+[CineJoyTV-1][2026-10-18T22:22:48.225Z] extract.end {"elapsedMs":2463}
+[registry] cinejoytv fetch duration 2464ms
+[CineSrc] Fetching streams for TMDB ID: 1622, Type: tv
+[CineSrc] cld: 4 new source(s)
+[CineSrc] SPE: 0 new source(s)
+[CineSrc] Movip: 0 new source(s)
+[CineSrc] VidRock: 2 new source(s)
+[CineSrc] vipplay: 0 new source(s)
+[CineSrc] Viz: 1 new source(s)
+[CineSrc] Tet: 0 new source(s)
+[CineSrc] Mega: 0 new source(s)
+[CineSrc] prime: 0 new source(s)
+[CineSrc] Total streams: 7
+[registry] cinesrc fetch duration 2753ms
+[subtitles] Wyzie lookup failed (HTTP 429)
+[subtitles] OpenSubtitles download failed (HTTP 403)
+[subtitles] OpenSubtitles found candidates but /download needs OPEN_SUBTITLES_TOKEN (a login token from opensubtitles.com). Skipping.
+[diagnostic] heartbeat 60s elapsed, process alive
+[CineJoyTV-2][2026-10-18T22:23:37.079Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-2][2026-10-18T22:23:37.079Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-2][2026-10-18T22:23:37.079Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-2][2026-10-18T22:23:37.080Z] request.start {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.564Z] request.response {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":485,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:37.568Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":489}
+[CineJoyTV-2][2026-10-18T22:23:37.569Z] request.start {"requestId":2,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.572Z] request.start {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.574Z] request.start {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.577Z] request.start {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.580Z] request.start {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:37.679Z] request.response {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":100,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:37.689Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":110}
+[CineJoyTV-2][2026-10-18T22:23:37.847Z] request.response {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":274,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:37.853Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":281}
+[CineJoyTV-2][2026-10-18T22:23:37.867Z] request.response {"requestId":2,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":297,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:37.869Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":300}
+[CineJoyTV-2][2026-10-18T22:23:37.973Z] request.response {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":397,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:38.187Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":611}
+[CineJoyTV-2][2026-10-18T22:23:38.548Z] request.response {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":974,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-2][2026-10-18T22:23:38.552Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":978}
+[CineJoyTV-2][2026-10-18T22:23:38.554Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-2][2026-10-18T22:23:38.554Z] server.start {"server":"Lisbon"}
+[CineJoyTV-2][2026-10-18T22:23:38.555Z] request.start {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:38.558Z] server.start {"server":"Athens"}
+[CineJoyTV-2][2026-10-18T22:23:38.558Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:38.560Z] server.start {"server":"Riga"}
+[CineJoyTV-2][2026-10-18T22:23:38.561Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-2][2026-10-18T22:23:39.282Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":721,"contentType":"application/json"}
+[CineJoyTV-2][2026-10-18T22:23:39.283Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-2][2026-10-18T22:23:39.286Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":725}
+[CineJoyTV-2][2026-10-18T22:23:39.291Z] request.start {"requestId":10,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-2][2026-10-18T22:23:39.423Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":865,"contentType":"application/json"}
+[CineJoyTV-2][2026-10-18T22:23:39.424Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-2][2026-10-18T22:23:39.425Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":867}
+[CineJoyTV-2][2026-10-18T22:23:39.429Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-2][2026-10-18T22:23:39.499Z] request.response {"requestId":10,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":207,"contentType":"application/octet-stream"}
+[CineJoyTV-2][2026-10-18T22:23:39.500Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-2][2026-10-18T22:23:39.503Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-2][2026-10-18T22:23:39.512Z] request.response {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":957,"contentType":"application/json"}
+[CineJoyTV-2][2026-10-18T22:23:39.513Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-2][2026-10-18T22:23:39.514Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":959}
+[CineJoyTV-2][2026-10-18T22:23:39.514Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-2][2026-10-18T22:23:39.636Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":207,"contentType":"application/octet-stream"}
+[CineJoyTV-2][2026-10-18T22:23:39.636Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-2][2026-10-18T22:23:39.639Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-2][2026-10-18T22:23:39.639Z] lookup.complete {"streams":4}
+[CineJoyTV-2][2026-10-18T22:23:39.639Z] extract.complete {"streams":4,"requests":11,"elapsedMs":2560}
+[CineJoyTV-2][2026-10-18T22:23:39.640Z] extract.end {"elapsedMs":2561}
+[registry] cinejoytv fetch duration 2561ms
+[CineJoyTV-3][2026-10-18T22:24:11.339Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-3][2026-10-18T22:24:11.339Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-3][2026-10-18T22:24:11.339Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-3][2026-10-18T22:24:11.339Z] request.start {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:11.798Z] request.response {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":459,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:11.804Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":465}
+[CineJoyTV-3][2026-10-18T22:24:11.804Z] request.start {"requestId":2,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:11.807Z] request.start {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:11.809Z] request.start {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:11.811Z] request.start {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:11.814Z] request.start {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:12.002Z] request.response {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":188,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:12.005Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":191}
+[CineJoyTV-3][2026-10-18T22:24:12.053Z] request.response {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":241,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:12.154Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":343}
+[CineJoyTV-3][2026-10-18T22:24:12.178Z] request.response {"requestId":2,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":374,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:12.181Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":377}
+[CineJoyTV-3][2026-10-18T22:24:12.188Z] request.response {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":381,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:12.197Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":390}
+[CineJoyTV-3][2026-10-18T22:24:12.294Z] request.response {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":485,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-3][2026-10-18T22:24:12.296Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":487}
+[CineJoyTV-3][2026-10-18T22:24:12.297Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-3][2026-10-18T22:24:12.297Z] server.start {"server":"Lisbon"}
+[CineJoyTV-3][2026-10-18T22:24:12.298Z] request.start {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:12.301Z] server.start {"server":"Athens"}
+[CineJoyTV-3][2026-10-18T22:24:12.301Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:12.303Z] server.start {"server":"Riga"}
+[CineJoyTV-3][2026-10-18T22:24:12.303Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-3][2026-10-18T22:24:12.970Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":669,"contentType":"application/json"}
+[CineJoyTV-3][2026-10-18T22:24:12.971Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-3][2026-10-18T22:24:12.975Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":674}
+[CineJoyTV-3][2026-10-18T22:24:12.980Z] request.start {"requestId":10,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-3][2026-10-18T22:24:12.991Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":687,"contentType":"application/json"}
+[CineJoyTV-3][2026-10-18T22:24:12.991Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-3][2026-10-18T22:24:12.994Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":691}
+[CineJoyTV-3][2026-10-18T22:24:13.002Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-3][2026-10-18T22:24:13.066Z] request.response {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":769,"contentType":"application/json"}
+[CineJoyTV-3][2026-10-18T22:24:13.070Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-3][2026-10-18T22:24:13.073Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":776}
+[CineJoyTV-3][2026-10-18T22:24:13.074Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-3][2026-10-18T22:24:13.180Z] request.response {"requestId":10,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":200,"contentType":"application/octet-stream"}
+[CineJoyTV-3][2026-10-18T22:24:13.180Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-3][2026-10-18T22:24:13.183Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-3][2026-10-18T22:24:13.201Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":200,"contentType":"application/octet-stream"}
+[CineJoyTV-3][2026-10-18T22:24:13.202Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-3][2026-10-18T22:24:13.204Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-3][2026-10-18T22:24:13.205Z] lookup.complete {"streams":4}
+[CineJoyTV-3][2026-10-18T22:24:13.205Z] extract.complete {"streams":4,"requests":11,"elapsedMs":1866}
+[CineJoyTV-3][2026-10-18T22:24:13.205Z] extract.end {"elapsedMs":1866}
+[registry] cinejoytv fetch duration 1866ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[CineJoyTV-4][2026-10-18T22:24:32.240Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-4][2026-10-18T22:24:32.240Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-4][2026-10-18T22:24:32.240Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-4][2026-10-18T22:24:32.241Z] request.start {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.686Z] request.response {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":445,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:32.689Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":448}
+[CineJoyTV-4][2026-10-18T22:24:32.689Z] request.start {"requestId":2,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.692Z] request.start {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.695Z] request.start {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.698Z] request.start {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.701Z] request.start {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:32.820Z] request.response {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":119,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:32.824Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":123}
+[CineJoyTV-4][2026-10-18T22:24:32.946Z] request.response {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":248,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:33.012Z] request.response {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":319,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:33.017Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":325}
+[CineJoyTV-4][2026-10-18T22:24:33.020Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":322}
+[CineJoyTV-4][2026-10-18T22:24:33.028Z] request.response {"requestId":2,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":339,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:33.030Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":341}
+[CineJoyTV-4][2026-10-18T22:24:33.228Z] request.response {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":533,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-4][2026-10-18T22:24:33.230Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":535}
+[CineJoyTV-4][2026-10-18T22:24:33.231Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-4][2026-10-18T22:24:33.232Z] server.start {"server":"Lisbon"}
+[CineJoyTV-4][2026-10-18T22:24:33.232Z] request.start {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:33.235Z] server.start {"server":"Athens"}
+[CineJoyTV-4][2026-10-18T22:24:33.236Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:33.238Z] server.start {"server":"Riga"}
+[CineJoyTV-4][2026-10-18T22:24:33.238Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-4][2026-10-18T22:24:33.881Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":643,"contentType":"application/json"}
+[CineJoyTV-4][2026-10-18T22:24:33.882Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-4][2026-10-18T22:24:33.887Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":649}
+[CineJoyTV-4][2026-10-18T22:24:33.897Z] request.start {"requestId":10,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-4][2026-10-18T22:24:33.973Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":738,"contentType":"application/json"}
+[CineJoyTV-4][2026-10-18T22:24:33.974Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-4][2026-10-18T22:24:33.976Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":740}
+[CineJoyTV-4][2026-10-18T22:24:33.982Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-4][2026-10-18T22:24:34.106Z] request.response {"requestId":10,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":209,"contentType":"application/octet-stream"}
+[CineJoyTV-4][2026-10-18T22:24:34.106Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-4][2026-10-18T22:24:34.108Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-4][2026-10-18T22:24:34.122Z] request.response {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":890,"contentType":"application/json"}
+[CineJoyTV-4][2026-10-18T22:24:34.122Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-4][2026-10-18T22:24:34.123Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":891}
+[CineJoyTV-4][2026-10-18T22:24:34.124Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-4][2026-10-18T22:24:34.192Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":210,"contentType":"application/octet-stream"}
+[CineJoyTV-4][2026-10-18T22:24:34.192Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-4][2026-10-18T22:24:34.193Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-4][2026-10-18T22:24:34.193Z] lookup.complete {"streams":4}
+[CineJoyTV-4][2026-10-18T22:24:34.193Z] extract.complete {"streams":4,"requests":11,"elapsedMs":1953}
+[CineJoyTV-4][2026-10-18T22:24:34.194Z] extract.end {"elapsedMs":1953}
+[registry] cinejoytv fetch duration 1954ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[CineJoyTV-5][2026-10-18T22:25:50.765Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-5][2026-10-18T22:25:50.765Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-5][2026-10-18T22:25:50.765Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-5][2026-10-18T22:25:50.765Z] request.start {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.241Z] request.response {"requestId":1,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":476,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.243Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":478}
+[CineJoyTV-5][2026-10-18T22:25:51.243Z] request.start {"requestId":2,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.247Z] request.start {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.251Z] request.start {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.254Z] request.start {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.257Z] request.start {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.340Z] request.response {"requestId":6,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":83,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.342Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":84}
+[CineJoyTV-5][2026-10-18T22:25:51.496Z] request.response {"requestId":5,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":242,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.509Z] request.response {"requestId":2,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":266,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.510Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":267}
+[CineJoyTV-5][2026-10-18T22:25:51.528Z] request.response {"requestId":3,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":281,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.533Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":286}
+[CineJoyTV-5][2026-10-18T22:25:51.684Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":430}
+[CineJoyTV-5][2026-10-18T22:25:51.694Z] request.response {"requestId":4,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":443,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-5][2026-10-18T22:25:51.695Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":444}
+[CineJoyTV-5][2026-10-18T22:25:51.696Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-5][2026-10-18T22:25:51.696Z] server.start {"server":"Lisbon"}
+[CineJoyTV-5][2026-10-18T22:25:51.696Z] request.start {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.698Z] server.start {"server":"Athens"}
+[CineJoyTV-5][2026-10-18T22:25:51.698Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:51.700Z] server.start {"server":"Riga"}
+[CineJoyTV-5][2026-10-18T22:25:51.700Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-5][2026-10-18T22:25:52.369Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":671,"contentType":"application/json"}
+[CineJoyTV-5][2026-10-18T22:25:52.369Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-5][2026-10-18T22:25:52.370Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":672}
+[CineJoyTV-5][2026-10-18T22:25:52.374Z] request.start {"requestId":10,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-5][2026-10-18T22:25:52.411Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":711,"contentType":"application/json"}
+[CineJoyTV-5][2026-10-18T22:25:52.411Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-5][2026-10-18T22:25:52.413Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":713}
+[CineJoyTV-5][2026-10-18T22:25:52.418Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-5][2026-10-18T22:25:52.467Z] request.response {"requestId":7,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":771,"contentType":"application/json"}
+[CineJoyTV-5][2026-10-18T22:25:52.468Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-5][2026-10-18T22:25:52.470Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":774}
+[CineJoyTV-5][2026-10-18T22:25:52.470Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-5][2026-10-18T22:25:52.570Z] request.response {"requestId":10,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":196,"contentType":"application/octet-stream"}
+[CineJoyTV-5][2026-10-18T22:25:52.571Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-5][2026-10-18T22:25:52.572Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-5][2026-10-18T22:25:52.614Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":196,"contentType":"application/octet-stream"}
+[CineJoyTV-5][2026-10-18T22:25:52.614Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-5][2026-10-18T22:25:52.615Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-5][2026-10-18T22:25:52.616Z] lookup.complete {"streams":4}
+[CineJoyTV-5][2026-10-18T22:25:52.616Z] extract.complete {"streams":4,"requests":11,"elapsedMs":1852}
+[CineJoyTV-5][2026-10-18T22:25:52.616Z] extract.end {"elapsedMs":1852}
+[registry] cinejoytv fetch duration 1852ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[CineSrc] Fetching streams for TMDB ID: 1084242, Type: tv
+[CineSrc] TMDB ID 1084242 is movie, not tv; routing with TMDB's confirmed type.
+[CineSrc] cld: 2 new source(s)
+[CineSrc] SPE: 0 new source(s)
+[CineSrc] VidRock: 2 new source(s)
+[CineSrc] Movip: 0 new source(s)
+[CineSrc] vipplay: 0 new source(s)
+[CineSrc] Tet: 0 new source(s)
+[CineSrc] Mega: 0 new source(s)
+[CineSrc] Viz: 2 new source(s)
+[CineSrc] prime: 0 new source(s)
+[CineSrc] Total streams: 6
+[registry] cinesrc fetch duration 2330ms
+[subtitles] Wyzie lookup failed (HTTP 429)
+[AnimeSalt-6][2026-10-18T22:27:12.355Z] extract.start {"tmdbId":"1311031","mediaType":"movie","season":null,"episode":null}
+[AnimeSalt-6][2026-10-18T22:27:12.522Z] tmdb.lookup.complete {"found":true,"mediaType":"movie"}
+[AnimeSalt-6][2026-10-18T22:27:12.522Z] search.start {"mediaType":"movie","season":1,"episode":1}
+[AnimeSalt] Searching Demon Slayer: Kimetsu no Yaiba Infinity Castle (2025) for S1E1
+[AnimeSalt-6][2026-10-18T22:27:12.523Z] request.start {"requestId":1,"url":"https://animesalt.cx/?s=Demon+Slayer%3A+Kimetsu+no+Yaiba+Infinity+Castle","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:12.975Z] request.response {"requestId":1,"url":"https://animesalt.cx/?s=Demon+Slayer%3A+Kimetsu+no+Yaiba+Infinity+Castle","status":200,"ok":true,"elapsedMs":452,"contentType":"text/html; charset=UTF-8"}
+[AnimeSalt-6][2026-10-18T22:27:12.983Z] response.parsed {"requestId":1,"parser":"text","characters":48739,"elapsedMs":460}
+[AnimeSalt-6][2026-10-18T22:27:13.075Z] search.complete {"results":1,"candidates":1,"mediaType":"movie"}
+[AnimeSalt] Search parsed 1 movie result(s); ranked 1 candidate(s)
+[AnimeSalt-6][2026-10-18T22:27:13.075Z] title.selected {"year":null,"mediaType":"movie"}
+[AnimeSalt] Selected Demon Slayer: Kimetsu no Yaiba Infinity Castle
+[AnimeSalt] Fetching sources from /movies/demon-slayer-kimetsu-no-yaiba-infinity-castle/
+[AnimeSalt-6][2026-10-18T22:27:13.075Z] request.start {"requestId":2,"url":"https://animesalt.cx/movies/demon-slayer-kimetsu-no-yaiba-infinity-castle/","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:13.289Z] request.response {"requestId":2,"url":"https://animesalt.cx/movies/demon-slayer-kimetsu-no-yaiba-infinity-castle/","status":200,"ok":true,"elapsedMs":214,"contentType":"text/html; charset=UTF-8"}
+[AnimeSalt-6][2026-10-18T22:27:13.456Z] response.parsed {"requestId":2,"parser":"text","characters":266164,"elapsedMs":381}
+[AnimeSalt] Resolving 2 server(s): SERVER 1 playX, SERVER 2 Abyss
+[AnimeSalt-6][2026-10-18T22:27:13.590Z] request.start {"requestId":3,"url":"https://ravok.buzz/player/index.php?data=6def9da7f04a4bb4d727b97cb4c3d179&do=getVideo","method":"POST"}
+[AnimeSalt-6][2026-10-18T22:27:13.592Z] request.start {"requestId":4,"url":"https://animesalt.cx/wp-content/themes/torofilm/public/plyr/player.php?data=W3sibGFuZ3VhZ2UiOiJIaW5kaSIsImxpbmsiOiJodHRwczpcL1wvcGxheWVyLmFieXNzcGxheWVyLmNvbVwvSGZVU3BLNnlkIn0seyJsYW5ndWFnZSI6IlRhbWlsIiwibGluayI6Imh0dHBzOlwvXC9wbGF5ZXIuYWJ5c3NwbGF5ZXIuY29tXC90R2dFWUJTbUQifSx7Imxhbmd1YWdlIjoiVGVsdWd1IiwibGluayI6Imh0dHBzOlwvXC9wbGF5ZXIuYWJ5c3NwbGF5ZXIuY29tXC8xejVHMExWUEcifSx7Imxhbmd1YWdlIjoiSmFwYW5lc2UiLCJsaW5rIjoiaHR0cHM6XC9cL3BsYXllci5hYnlzc3BsYXllci5jb21cL3Vqejd4Rnp5diJ9XQ%3D%3D","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:13.796Z] request.response {"requestId":4,"url":"https://animesalt.cx/wp-content/themes/torofilm/public/plyr/player.php?data=W3sibGFuZ3VhZ2UiOiJIaW5kaSIsImxpbmsiOiJodHRwczpcL1wvcGxheWVyLmFieXNzcGxheWVyLmNvbVwvSGZVU3BLNnlkIn0seyJsYW5ndWFnZSI6IlRhbWlsIiwibGluayI6Imh0dHBzOlwvXC9wbGF5ZXIuYWJ5c3NwbGF5ZXIuY29tXC90R2dFWUJTbUQifSx7Imxhbmd1YWdlIjoiVGVsdWd1IiwibGluayI6Imh0dHBzOlwvXC9wbGF5ZXIuYWJ5c3NwbGF5ZXIuY29tXC8xejVHMExWUEcifSx7Imxhbmd1YWdlIjoiSmFwYW5lc2UiLCJsaW5rIjoiaHR0cHM6XC9cL3BsYXllci5hYnlzc3BsYXllci5jb21cL3Vqejd4Rnp5diJ9XQ%3D%3D","status":200,"ok":true,"elapsedMs":204,"contentType":"text/html; charset=UTF-8"}
+[AnimeSalt-6][2026-10-18T22:27:13.798Z] response.parsed {"requestId":4,"parser":"text","characters":13536,"elapsedMs":206}
+[AnimeSalt-6][2026-10-18T22:27:13.809Z] request.start {"requestId":5,"url":"https://player.abyssplayer.com/HfUSpK6yd","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:13.811Z] request.start {"requestId":6,"url":"https://player.abyssplayer.com/tGgEYBSmD","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:13.812Z] request.start {"requestId":7,"url":"https://player.abyssplayer.com/1z5G0LVPG","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:13.813Z] request.start {"requestId":8,"url":"https://player.abyssplayer.com/ujz7xFzyv","method":"GET"}
+[AnimeSalt-6][2026-10-18T22:27:14.221Z] request.response {"requestId":5,"url":"https://player.abyssplayer.com/HfUSpK6yd","status":200,"ok":true,"elapsedMs":412,"contentType":"text/html; charset=utf-8"}
+[AnimeSalt-6][2026-10-18T22:27:14.224Z] response.parsed {"requestId":5,"parser":"text","characters":10248,"elapsedMs":415}
+[AnimeSalt] SERVER 2 Abyss Hindi: no direct media URL exposed by embedded player
+[AnimeSalt-6][2026-10-18T22:27:14.242Z] request.response {"requestId":6,"url":"https://player.abyssplayer.com/tGgEYBSmD","status":200,"ok":true,"elapsedMs":431,"contentType":"text/html; charset=utf-8"}
+[AnimeSalt-6][2026-10-18T22:27:14.245Z] response.parsed {"requestId":6,"parser":"text","characters":10823,"elapsedMs":434}
+[AnimeSalt] SERVER 2 Abyss Tamil: no direct media URL exposed by embedded player
+[AnimeSalt-6][2026-10-18T22:27:14.252Z] request.response {"requestId":3,"url":"https://ravok.buzz/player/index.php?data=6def9da7f04a4bb4d727b97cb4c3d179&do=getVideo","status":200,"ok":true,"elapsedMs":662,"contentType":"text/html; charset=utf-8"}
+[AnimeSalt-6][2026-10-18T22:27:14.255Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":665}
+[AnimeSalt] SERVER 1 playX: 1 source(s); playback headers: Referer,Origin,User-Agent
+[AnimeSalt-6][2026-10-18T22:27:14.261Z] request.response {"requestId":8,"url":"https://player.abyssplayer.com/ujz7xFzyv","status":200,"ok":true,"elapsedMs":448,"contentType":"text/html; charset=utf-8"}
+[AnimeSalt-6][2026-10-18T22:27:14.263Z] response.parsed {"requestId":8,"parser":"text","characters":10872,"elapsedMs":450}
+[AnimeSalt] SERVER 2 Abyss Japanese: no direct media URL exposed by embedded player
+[AnimeSalt-6][2026-10-18T22:27:14.281Z] request.response {"requestId":7,"url":"https://player.abyssplayer.com/1z5G0LVPG","status":200,"ok":true,"elapsedMs":469,"contentType":"text/html; charset=utf-8"}
+[AnimeSalt-6][2026-10-18T22:27:14.283Z] response.parsed {"requestId":7,"parser":"text","characters":10760,"elapsedMs":471}
+[AnimeSalt] SERVER 2 Abyss Telugu: no direct media URL exposed by embedded player
+[AnimeSalt] SERVER 2 Abyss: 0 source(s); playback headers: none
+[AnimeSalt] SERVER 2 Abyss did not yield a playable source
+[AnimeSalt-6][2026-10-18T22:27:14.287Z] streams.resolved {"streams":1,"mediaType":"movie"}
+[AnimeSalt-6][2026-10-18T22:27:14.287Z] extract.complete {"streams":1,"requests":8,"elapsedMs":1932}
+[AnimeSalt-6][2026-10-18T22:27:14.287Z] extract.end {"elapsedMs":1932}
+[registry] animesalt fetch duration 1932ms
+[registry] animeonsen fetch duration 1ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[registry] animeonsen fetch duration 0ms
+[registry] animeonsen fetch duration 0ms
+[registry] animeonsen fetch duration 0ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[control] shutdown.start { reason: 'restart', connections: 1 }
+[control] shutdown.complete { reason: 'restart', forced: false }
+[diagnostic] exit code= 75
+[launcher] previous server exited; starting replacement
+[registry] 4khdhub provider loaded
+[registry] allwish provider loaded
+[registry] anikoto provider loaded
+[registry] anime-dekho provider loaded
+[registry] animekai provider loaded
+[registry] animekhor provider loaded
+[registry] animeonsen provider loaded
+[registry] animesalt provider loaded
+[registry] anizone provider loaded
+[registry] barbarian provider loaded
+[registry] bower provider loaded
+[registry] byse provider loaded
+[registry] castletv provider loaded
+[registry] cinejoy provider loaded
+[registry] cinejoytv provider loaded
+[registry] cinesrc provider loaded
+[registry] cinestream provider loaded
+[registry] dahmermovies provider loaded
+[registry] desiflix provider loaded
+[registry] flixcloud provider loaded
+[registry] framextv provider loaded
+[registry] hdghartv provider loaded
+[registry] hdmovie2 provider loaded
+[registry] hianime provider loaded
+[registry] kickassanime provider loaded
+[registry] megaplay provider loaded
+[registry] meowtv provider loaded
+[registry] miner provider loaded
+[registry] moviebox provider loaded
+[registry] moviesdrive1 provider loaded
+[registry] netmirror provider loaded
+[registry] onetouchtv provider loaded
+[registry] playimdb provider loaded
+[registry] reanime provider loaded
+[registry] showbox provider loaded
+[registry] streamflix provider loaded
+[registry] superstream provider loaded
+[registry] titan provider loaded
+[registry] valkyrie provider loaded
+[registry] vaplayer provider loaded
+[registry] vidbox provider loaded
+[registry] videasy provider loaded
+[registry] vidfast provider loaded
+[registry] vidlink provider loaded
+[registry] vidlove provider loaded
+[registry] vidrock provider loaded
+[registry] vixsrc provider loaded
+[registry] zxcstreams provider loaded
+[startup] enableProxy flag disabled: proxy routes not mounted
+[startup] MOUNT_PATH active: serving under /kiduyuTv_providers
+KiduyuTvProviders listening on http://0.0.0.0:8787/kiduyuTv_providers
+Local access (if running on your machine): http://localhost:8787/kiduyuTv_providers
+Endpoints:
+  GET  /kiduyuTv_providers/api/health
+  GET  /kiduyuTv_providers/api/metrics
+  GET  /kiduyuTv_providers/api/providers
+  GET  /kiduyuTv_providers/api/streams/:type/:id
+  POST /kiduyuTv_providers/api/streams/:type/:id
+[diagnostic] post-start setImmediate fired
+[registry] animeonsen fetch duration 1ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[AllWish-1][2026-10-18T22:30:41.680Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[Anikai][INFO]  2026-10-18T22:30:41.684Z getAnimekaiStreams() START | tmdbId=1363974 mediaType=movie season=1 episode=1
+[Anikai][INFO]  2026-10-18T22:30:41.684Z getTitleFromTmdb() called | tmdbId=1363974 mediaType=movie
+[Anikai][INFO]  2026-10-18T22:30:41.685Z getTitleFromTmdb() -> fetching TMDB /movie/1363974
+[Anikoto-2][2026-10-18T22:30:41.712Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[Anikoto-2][2026-10-18T22:30:41.712Z] lookup.start {"mediaType":"movie","season":1,"episode":1}
+[Anikoto-2][2026-10-18T22:30:41.712Z] provider.message {"message":"REQUEST TMDB=1363974 type=movie S1E1"}
+[Anikoto-2][2026-10-18T22:30:41.714Z] request.start {"requestId":1,"url":"https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping?tmdb_id=1363974&tmdbId=1363974&mediaType=movie&pending=1","method":"GET"}
+[Anikoto-2][2026-10-18T22:30:41.725Z] request.start {"requestId":2,"url":"https://api.themoviedb.org/3/movie/1363974?api_key=%5Bredacted%5D&language=en-US","method":"GET"}
+[Anikai][INFO]  2026-10-18T22:30:42.269Z getTitleFromTmdb() <- resolved title="That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" (original_name="劇場版 転生したらスライムだった件 蒼海の涙編")
+[Anikai][INFO]  2026-10-18T22:30:42.269Z getAnimekaiStreams() searching title="That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea"
+[Anikoto-2][2026-10-18T22:30:42.357Z] request.response {"requestId":2,"url":"https://api.themoviedb.org/3/movie/1363974?api_key=%5Bredacted%5D&language=en-US","status":200,"ok":true,"elapsedMs":631,"contentType":"application/json;charset=utf-8"}
+[Anikoto-2][2026-10-18T22:30:42.375Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":650}
+[AllWish-1][2026-10-18T22:30:42.379Z] tmdb.lookup.complete {"found":true,"mediaType":"movie","elapsedMs":698}
+[AllWish-1][2026-10-18T22:30:42.379Z] search.start {"mediaType":"movie","season":1,"episode":1}
+[AllWish] Searching That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (S1E1)
+[AllWish-1][2026-10-18T22:30:42.380Z] request.start {"requestId":1,"url":"https://all-wish.me/filter?keyword=That+Time+I+Got+Reincarnated+as+a+Slime+the+Movie%3A+Tears+of+the+Azure+Sea","method":"GET"}
+[Anikoto-2][2026-10-18T22:30:42.893Z] request.response {"requestId":1,"url":"https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping?tmdb_id=1363974&tmdbId=1363974&mediaType=movie&pending=1","status":400,"ok":false,"elapsedMs":1180,"contentType":"application/json"}
+[Anikoto-2][2026-10-18T22:30:42.894Z] provider.message {"message":"HTTP 400 https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping"}
+[Anikoto-2][2026-10-18T22:30:42.894Z] mapping.lookup.complete {"found":false,"mediaType":"movie"}
+[Anikoto-2][2026-10-18T22:30:42.894Z] extract.complete {"streams":0,"requests":2,"elapsedMs":1183}
+[Anikoto-2][2026-10-18T22:30:42.895Z] extract.end {"elapsedMs":1183}
+[registry] anikoto fetch duration 1184ms
+[Animekhor-3][2026-10-18T22:30:42.940Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[Animekhor-3][2026-10-18T22:30:42.941Z] request.start {"requestId":1,"url":"https://api.themoviedb.org/3/movie/1363974?api_key=%5Bredacted%5D","method":"GET"}
+[Animekhor-3][2026-10-18T22:30:43.210Z] request.response {"requestId":1,"url":"https://api.themoviedb.org/3/movie/1363974?api_key=%5Bredacted%5D","status":200,"ok":true,"elapsedMs":269,"contentType":"application/json;charset=utf-8"}
+[Animekhor-3][2026-10-18T22:30:43.213Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":272}
+[Animekhor-3][2026-10-18T22:30:43.214Z] tmdb.resolved {"title":"That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea","found":true}
+[Animekhor-3][2026-10-18T22:30:43.214Z] request.start {"requestId":2,"url":"https://animekhor.org/page/1/?s=That%20Time%20I%20Got%20Reincarnated%20as%20a%20Slime%20the%20Movie%3A%20Tears%20of%20the%20Azure%20Sea","method":"GET"}
+[Anikai][INFO]  2026-10-18T22:30:43.552Z getAnimekaiStreams() search response status=200 bytes=60145 took=1283ms
+[Anikai][INFO]  2026-10-18T22:30:43.593Z normalize() in="That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" out="that time i got reincarnated as a slime the movie tears of the azure sea"
+[Anikai][INFO]  2026-10-18T22:30:43.593Z normalize() in="That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (Dub)" out="that time i got reincarnated as a slime the movie tears of the azure sea dub"
+[Anikai][INFO]  2026-10-18T22:30:43.593Z normalize() in="That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" out="that time i got reincarnated as a slime the movie tears of the azure sea"
+[Anikai][INFO]  2026-10-18T22:30:43.593Z normalize() in="Black Clover Season 2" out="black clover season 2"
+[Anikai][INFO]  2026-10-18T22:30:43.593Z normalize() in="One Piece" out="one piece"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="My Girlfriend’s Friend" out="my girlfriend s friend"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="That Time I Got Reincarnated as a Slime" out="that time i got reincarnated as a slime"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="Tokyo Revengers: War of the Three Titan Arc (Dub)" out="tokyo revengers war of the three titan arc dub"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="One Piece (Dub)" out="one piece dub"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="Mushoku Tensei: Jobless Reincarnation Season 3" out="mushoku tensei jobless reincarnation season 3"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="The Apothecary Diaries Season 3" out="the apothecary diaries season 3"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="Bleach: Thousand-Year Blood War – The Calamity" out="bleach thousand year blood war the calamity"
+[Anikai][INFO]  2026-10-18T22:30:43.594Z normalize() in="Steel Ball Run: JoJo’s Bizarre Adventure" out="steel ball run jojo s bizarre adventure"
+[Anikai][INFO]  2026-10-18T22:30:43.595Z S1E1 -> part=unsplit episode=1
+[Anikai][INFO]  2026-10-18T22:30:43.595Z getAnimekaiStreams() found 12 search cards; 2 match the requested title/season
+[Anikai][INFO]  2026-10-18T22:30:43.595Z   [match 1] "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (Dub)" (movie)
+[Anikai][INFO]  2026-10-18T22:30:43.595Z   [match 2] "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" (movie)
+[4KHDHub] Matched title; detected 6 source links
+[Anikai][INFO]  2026-10-18T22:30:44.506Z AnimeKai result "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (Dub)" page status=200 bytes=95716 took=911ms
+[Anikai][INFO]  2026-10-18T22:30:44.509Z AnimeKai result "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" page status=200 bytes=95524 took=913ms
+[Anikai][INFO]  2026-10-18T22:30:44.693Z AnimeKai episode page for "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" status=200 bytes=95524 took=184ms
+[Anikai][INFO]  2026-10-18T22:30:44.723Z AnimeKai result "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" has 5 decoded server button(s)
+[Anikai][INFO]  2026-10-18T22:30:44.724Z resolveDirectM3u8() called | playerUrl=https://gogoanime.me.uk/newplayer.php?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.725Z resolveDirectM3u8() parsed host=gogoanime.me.uk
+[Anikai][INFO]  2026-10-18T22:30:44.725Z resolveDirectM3u8() -> GET https://gogoanime.me.uk/newplayer.php?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.726Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/sub
+[Anikai][INFO]  2026-10-18T22:30:44.726Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.726Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/sub
+[Anikai][INFO]  2026-10-18T22:30:44.728Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/videojs/stream/s-2/186829/sub
+[Anikai][INFO]  2026-10-18T22:30:44.728Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.728Z resolveDirectM3u8() -> GET https://megaplay.buzz/videojs/stream/s-2/186829/sub
+[Anikai][INFO]  2026-10-18T22:30:44.730Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.730Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.730Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.731Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.731Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.731Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/sub?[query redacted]
+[Animekhor-3][2026-10-18T22:30:44.736Z] request.response {"requestId":2,"url":"https://animekhor.org/page/1/?s=That%20Time%20I%20Got%20Reincarnated%20as%20a%20Slime%20the%20Movie%3A%20Tears%20of%20the%20Azure%20Sea","status":200,"ok":true,"elapsedMs":1521,"contentType":"text/html; charset=UTF-8"}
+[Animekhor-3][2026-10-18T22:30:44.740Z] response.parsed {"requestId":2,"parser":"text","characters":57037,"elapsedMs":1526}
+[Animekhor-3][2026-10-18T22:30:44.755Z] search.selected {"url":null,"found":false}
+[Animekhor-3][2026-10-18T22:30:44.755Z] stage.empty {"location":"animekhor:161"}
+[Animekhor-3][2026-10-18T22:30:44.755Z] candidates.found {"count":0}
+[Animekhor-3][2026-10-18T22:30:44.755Z] extract.complete {"streams":0,"requests":2,"elapsedMs":1816}
+[Animekhor-3][2026-10-18T22:30:44.755Z] extract.end {"elapsedMs":1816}
+[registry] animekhor fetch duration 1816ms
+[Anikai][INFO]  2026-10-18T22:30:44.767Z AnimeKai episode page for "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (Dub)" status=200 bytes=95716 took=261ms
+[Anikai][INFO]  2026-10-18T22:30:44.786Z AnimeKai result "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (Dub)" has 5 decoded server button(s)
+[Anikai][INFO]  2026-10-18T22:30:44.786Z resolveDirectM3u8() called | playerUrl=https://gogoanime.me.uk/newplayer.php?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.786Z resolveDirectM3u8() parsed host=gogoanime.me.uk
+[Anikai][INFO]  2026-10-18T22:30:44.787Z resolveDirectM3u8() -> GET https://gogoanime.me.uk/newplayer.php?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.788Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/dub
+[Anikai][INFO]  2026-10-18T22:30:44.789Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.789Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/dub
+[Anikai][INFO]  2026-10-18T22:30:44.790Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/videojs/stream/s-2/186829/dub
+[Anikai][INFO]  2026-10-18T22:30:44.790Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.790Z resolveDirectM3u8() -> GET https://megaplay.buzz/videojs/stream/s-2/186829/dub
+[Anikai][INFO]  2026-10-18T22:30:44.792Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.793Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.793Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.794Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-2/186829/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:44.794Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:44.795Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-2/186829/dub?[query redacted]
+[registry] animeonsen fetch duration 0ms
+[AnimeSalt-4][2026-10-18T22:30:44.815Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[AnimeSalt-4][2026-10-18T22:30:44.816Z] tmdb.lookup.complete {"found":true,"mediaType":"movie"}
+[AnimeSalt-4][2026-10-18T22:30:44.817Z] search.start {"mediaType":"movie","season":1,"episode":1}
+[AnimeSalt] Searching That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea (2026) for S1E1
+[AnimeSalt-4][2026-10-18T22:30:44.817Z] request.start {"requestId":1,"url":"https://animesalt.cx/?s=That+Time+I+Got+Reincarnated+as+a+Slime+the+Movie%3A+Tears+of+the+Azure+Sea","method":"GET"}
+[Anikai][INFO]  2026-10-18T22:30:45.046Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/sub | status=200 bytes=4702 took=319ms
+[Anikai][INFO]  2026-10-18T22:30:45.047Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.050Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.050Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[Anikai][INFO]  2026-10-18T22:30:45.056Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/sub?[query redacted] | status=200 bytes=4702 took=326ms
+[Anikai][INFO]  2026-10-18T22:30:45.056Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.058Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.058Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[Anikai][INFO]  2026-10-18T22:30:45.073Z resolveDirectM3u8() <- GET https://megaplay.buzz/videojs/stream/s-2/186829/sub | status=200 bytes=5119 took=345ms
+[Anikai][INFO]  2026-10-18T22:30:45.073Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.076Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.076Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[Anikai][INFO]  2026-10-18T22:30:45.078Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/dub?[query redacted] | status=200 bytes=4702 took=283ms
+[Anikai][INFO]  2026-10-18T22:30:45.078Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.079Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.079Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:45.081Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/sub?[query redacted] | status=200 bytes=4702 took=350ms
+[Anikai][INFO]  2026-10-18T22:30:45.081Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.082Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.083Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[Anikai][INFO]  2026-10-18T22:30:45.087Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/dub?[query redacted] | status=200 bytes=4702 took=294ms
+[Anikai][INFO]  2026-10-18T22:30:45.087Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.088Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.088Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:45.092Z resolveDirectM3u8() <- GET https://megaplay.buzz/videojs/stream/s-2/186829/dub | status=200 bytes=5119 took=302ms
+[Anikai][INFO]  2026-10-18T22:30:45.092Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.094Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.094Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:45.097Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-2/186829/dub | status=200 bytes=4702 took=308ms
+[Anikai][INFO]  2026-10-18T22:30:45.097Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.099Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.099Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:45.148Z resolveDirectM3u8() <- GET https://gogoanime.me.uk/newplayer.php?[query redacted] | status=200 bytes=1080 took=361ms
+[Anikai][INFO]  2026-10-18T22:30:45.149Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.151Z resolveDirectM3u8() following trusted player iframe | https://megaplay.buzz/stream/mal/59971/1/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.151Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/mal/59971/1/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.151Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:45.152Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/mal/59971/1/dub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.243Z resolveDirectM3u8() <- GET https://gogoanime.me.uk/newplayer.php?[query redacted] | status=200 bytes=1080 took=518ms
+[Anikai][INFO]  2026-10-18T22:30:45.243Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.245Z resolveDirectM3u8() following trusted player iframe | https://megaplay.buzz/stream/mal/59971/1/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.245Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/mal/59971/1/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.245Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:45.245Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/mal/59971/1/sub?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:45.275Z resolveDirectM3u8() <- GET getSources | status=200 took=225ms
+[Anikai][INFO]  2026-10-18T22:30:45.275Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.280Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.284Z resolveDirectM3u8() <- GET getSources | status=200 took=226ms
+[Anikai][INFO]  2026-10-18T22:30:45.284Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.285Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.289Z resolveDirectM3u8() <- GET getSources | status=200 took=206ms
+[Anikai][INFO]  2026-10-18T22:30:45.289Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.290Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.290Z resolveDirectM3u8() <- GET getSources | status=200 took=214ms
+[Anikai][INFO]  2026-10-18T22:30:45.290Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.291Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[AnimeSalt-4][2026-10-18T22:30:45.294Z] request.response {"requestId":1,"url":"https://animesalt.cx/?s=That+Time+I+Got+Reincarnated+as+a+Slime+the+Movie%3A+Tears+of+the+Azure+Sea","status":200,"ok":true,"elapsedMs":476,"contentType":"text/html; charset=UTF-8"}
+[Anikai][INFO]  2026-10-18T22:30:45.301Z resolveDirectM3u8() <- GET getSources | status=200 took=213ms
+[Anikai][INFO]  2026-10-18T22:30:45.301Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.302Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.303Z resolveDirectM3u8() <- GET getSources | status=200 took=209ms
+[Anikai][INFO]  2026-10-18T22:30:45.303Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.303Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.304Z resolveDirectM3u8() <- GET getSources | status=200 took=225ms
+[Anikai][INFO]  2026-10-18T22:30:45.304Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.304Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.305Z resolveDirectM3u8() <- GET getSources | status=200 took=206ms
+[Anikai][INFO]  2026-10-18T22:30:45.305Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.305Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[AnimeSalt-4][2026-10-18T22:30:45.347Z] response.parsed {"requestId":1,"parser":"text","characters":47377,"elapsedMs":530}
+[AnimeSalt-4][2026-10-18T22:30:45.356Z] search.complete {"results":0,"candidates":0,"mediaType":"movie"}
+[AnimeSalt] Search parsed 0 movie result(s); ranked 0 candidate(s)
+[AnimeSalt] No matching movie found for That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea
+[AnimeSalt-4][2026-10-18T22:30:45.357Z] extract.complete {"streams":0,"requests":1,"elapsedMs":542}
+[AnimeSalt-4][2026-10-18T22:30:45.357Z] extract.end {"elapsedMs":542}
+[registry] animesalt fetch duration 542ms
+[AniZone-5][2026-10-18T22:30:45.385Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[AniZone Lazy] REQUEST { tmdbId: '1363974', mediaType: 'movie', season: 0, episode: 1 }
+[AniZone Lazy] INVALID MOVIE TMDB ID 1363974
+[AniZone-5][2026-10-18T22:30:45.389Z] extract.complete {"streams":0,"requests":0,"elapsedMs":4}
+[AniZone-5][2026-10-18T22:30:45.389Z] extract.end {"elapsedMs":4}
+[registry] anizone fetch duration 4ms
+[Bowler-6][2026-10-18T22:30:45.414Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Bowler-6][2026-10-18T22:30:45.416Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Bowler-6][2026-10-18T22:30:45.416Z] source-list.request {"provider":"super_barbarian","url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=super_barbarian"}
+[Bowler-6][2026-10-18T22:30:45.417Z] request.start {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=super_barbarian","method":"GET"}
+[Anikai][INFO]  2026-10-18T22:30:45.429Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/mal/59971/1/dub?[query redacted] | status=200 bytes=4702 took=277ms
+[Anikai][INFO]  2026-10-18T22:30:45.429Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.430Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.431Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:45.550Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/mal/59971/1/sub?[query redacted] | status=200 bytes=4702 took=305ms
+[Anikai][INFO]  2026-10-18T22:30:45.550Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:45.552Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:45.552Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[Anikai][INFO]  2026-10-18T22:30:45.585Z resolveDirectM3u8() <- GET getSources | status=200 took=33ms
+[Anikai][INFO]  2026-10-18T22:30:45.585Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.585Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.632Z resolveDirectM3u8() <- GET getSources | status=200 took=201ms
+[Anikai][INFO]  2026-10-18T22:30:45.632Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:45.633Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[Anikai][INFO]  2026-10-18T22:30:45.633Z getAnimekaiStreams() END | matchingResults=2 streams=10
+[registry] animekai fetch duration 3949ms
+[Bowler-7][2026-10-18T22:30:45.660Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Bowler-7][2026-10-18T22:30:45.661Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Bowler-7][2026-10-18T22:30:45.661Z] source-list.request {"provider":"bowler","url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=bowler"}
+[Bowler-7][2026-10-18T22:30:45.661Z] request.start {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=bowler","method":"GET"}
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Pixeldrain page unavailable { status: 404, code: 'ERR_BAD_REQUEST' }
+[4KHDHub] Returning 0 streams
+[registry] 4khdhub fetch duration 5008ms
+[Byse] Resolved 1 stream(s) for TMDB 1622
+[registry] byse fetch duration 4278ms
+[subtitles] OpenSubtitles download failed (HTTP 403)
+[subtitles] OpenSubtitles found candidates but /download needs OPEN_SUBTITLES_TOKEN (a login token from opensubtitles.com). Skipping.
+[CastleTV] Fetching streams for TMDB ID: 1622, Type: tv
+[Bowler-7][2026-10-18T22:30:52.479Z] request.response {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=bowler","status":200,"ok":true,"elapsedMs":6818,"contentType":"application/json"}
+[Bowler-7][2026-10-18T22:30:52.479Z] source-list.response {"status":200,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=bowler"}
+[Bowler-7][2026-10-18T22:30:52.481Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":6820}
+[Bowler-7][2026-10-18T22:30:52.481Z] source-list.parsed {"success":true,"sources":2,"provider":"bowler"}
+[Bowler-7][2026-10-18T22:30:52.483Z] sources.normalized {"sources":2}
+[Bowler-7][2026-10-18T22:30:52.483Z] playlist.probe.start {"quality":"720p | English","url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2F4f24204bf363d899b0acaacbe2b9e810%2F720%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3Dze7lIdPsgb9o3lWYOQvlfaatTx_0pXy0dPStdtHXAXP69RZL_th0zPp9VIGH3Z6vNXL9fZEIK7cYcRnrEn4BCA%3D%3D"}
+[Bowler-7][2026-10-18T22:30:52.484Z] playlist.probe.start {"quality":"480p | English","url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2Ff1712f58cafc1e37e32c27e8a5623c59%2F480%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3DYB_MyvBQzAYdoLqdZSq2lapu8v0_x8cB9EOrsBbo1UCMpQfCXvAU5Nj8g_NGhKhsMlJsqVigiiaG-5WhrINSAA%3D%3D"}
+[Bowler-7][2026-10-18T22:30:52.484Z] request.start {"requestId":2,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2F4f24204bf363d899b0acaacbe2b9e810%2F720%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3Dze7lIdPsgb9o3lWYOQvlfaatTx_0pXy0dPStdtHXAXP69RZL_th0zPp9VIGH3Z6vNXL9fZEIK7cYcRnrEn4BCA%3D%3D","method":"GET"}
+[Bowler-7][2026-10-18T22:30:52.486Z] request.start {"requestId":3,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2Ff1712f58cafc1e37e32c27e8a5623c59%2F480%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3DYB_MyvBQzAYdoLqdZSq2lapu8v0_x8cB9EOrsBbo1UCMpQfCXvAU5Nj8g_NGhKhsMlJsqVigiiaG-5WhrINSAA%3D%3D","method":"GET"}
+[AllWish-1][2026-10-18T22:30:53.587Z] request.response {"requestId":1,"url":"https://all-wish.me/filter?keyword=That+Time+I+Got+Reincarnated+as+a+Slime+the+Movie%3A+Tears+of+the+Azure+Sea","status":200,"ok":true,"elapsedMs":11207,"contentType":"text/html; charset=UTF-8"}
+[AllWish-1][2026-10-18T22:30:53.713Z] response.parsed {"requestId":1,"parser":"text","characters":109512,"elapsedMs":11333}
+[AllWish-1][2026-10-18T22:30:53.747Z] search.complete {"candidates":1,"mediaType":"movie"}
+[AllWish-1][2026-10-18T22:30:53.747Z] title.selected {"part":null,"episode":1}
+[AllWish] S1E1 -> That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea; part=unsplit episode=1
+[AllWish-1][2026-10-18T22:30:53.747Z] request.start {"requestId":2,"url":"https://all-wish.me/watch/that-time-i-got-reincarnated-as-a-slime-the-movie-tears-of-the-azure-sea-td9pt/ep-1","method":"GET"}
+[Bowler-7][2026-10-18T22:30:53.962Z] request.response {"requestId":2,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2F4f24204bf363d899b0acaacbe2b9e810%2F720%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3Dze7lIdPsgb9o3lWYOQvlfaatTx_0pXy0dPStdtHXAXP69RZL_th0zPp9VIGH3Z6vNXL9fZEIK7cYcRnrEn4BCA%3D%3D","status":200,"ok":true,"elapsedMs":1478,"contentType":"application/vnd.apple.mpegurl"}
+[Bowler-7][2026-10-18T22:30:53.962Z] playlist.response {"status":200,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2F4f24204bf363d899b0acaacbe2b9e810%2F720%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3Dze7lIdPsgb9o3lWYOQvlfaatTx_0pXy0dPStdtHXAXP69RZL_th0zPp9VIGH3Z6vNXL9fZEIK7cYcRnrEn4BCA%3D%3D"}
+[Bowler-7][2026-10-18T22:30:53.967Z] response.parsed {"requestId":2,"parser":"text","characters":211309,"elapsedMs":1483}
+[Bowler-7][2026-10-18T22:30:53.970Z] playlist.empty {"action":"retain API source"}
+[AllWish-1][2026-10-18T22:30:53.996Z] request.response {"requestId":2,"url":"https://all-wish.me/watch/that-time-i-got-reincarnated-as-a-slime-the-movie-tears-of-the-azure-sea-td9pt/ep-1","status":200,"ok":true,"elapsedMs":249,"contentType":"text/html; charset=UTF-8"}
+[AllWish-1][2026-10-18T22:30:53.999Z] response.parsed {"requestId":2,"parser":"text","characters":63688,"elapsedMs":252}
+[AllWish-1][2026-10-18T22:30:54.010Z] request.start {"requestId":3,"url":"https://all-wish.me/ajax/episode/list/8872?vrf=%5Bredacted%5D","method":"GET"}
+[CastleTV] Got 2 stream(s) for "Supernatural"
+[registry] castletv fetch duration 1864ms
+[CineJoy-8][2026-10-18T22:30:54.196Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoy-8][2026-10-18T22:30:54.197Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Nebula","Scout","Solara"]}
+[CineJoy-8][2026-10-18T22:30:54.197Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoy-8][2026-10-18T22:30:54.198Z] request.start {"requestId":1,"url":"https://cinejoy.pk/","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.202Z] request.start {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[AllWish-1][2026-10-18T22:30:54.269Z] request.response {"requestId":3,"url":"https://all-wish.me/ajax/episode/list/8872?vrf=%5Bredacted%5D","status":200,"ok":true,"elapsedMs":259,"contentType":"application/json"}
+[AllWish-1][2026-10-18T22:30:54.271Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":261}
+[AllWish-1][2026-10-18T22:30:54.272Z] request.start {"requestId":4,"url":"https://all-wish.me/ajax/server/list?servers=akJSd1ZDaEpWTXBmdTd4TzJVT290NVZMcHV6blg3a0M5NDl2K2t0cXk3WElVZHI4cjlvMnhIRXR1TzZQVDhIcWxReDA5a1BTQUFqYkJGU3NHcytKVmQ0TTdjTytIV0c1NFNxa1BDSmNTOU8yY1dVeEwxSTBSbS9NSWxUZHBwZWZDT0ZwSGVKclV2d3JQcS9rWVpsNzF4a0hIajNydU9pdURkdUF2bWpKM0xXeXFxZUplRWVONm9FcGRrOG5wZTZZcHRSY25TUDZWTVVmN0RnS2ZaYjh0KzNteEZudVNJdncvUnJYYTAxMW5IM3VWNkVpMVdHb0ZldUJlalJ1UHBHTk1jc0JVTHhDNUtzZ2JsMXF4eWgvcmVFbDZmT0M5aHUxRXo0M2c0WjhpUUpTa280RUsrZHlMYk5EM1lISzRHWXowVkpickpzTm1XWDNmck92VEh5VFJPNStNUGJWQjhlOTBTSnFreW9wcitBPQ","method":"GET"}
+[Bowler-7][2026-10-18T22:30:54.631Z] request.response {"requestId":3,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2Ff1712f58cafc1e37e32c27e8a5623c59%2F480%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3DYB_MyvBQzAYdoLqdZSq2lapu8v0_x8cB9EOrsBbo1UCMpQfCXvAU5Nj8g_NGhKhsMlJsqVigiiaG-5WhrINSAA%3D%3D","status":200,"ok":true,"elapsedMs":2145,"contentType":"application/vnd.apple.mpegurl"}
+[Bowler-7][2026-10-18T22:30:54.632Z] playlist.response {"status":200,"url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.rivestream.app&ref=https%3A%2F%2Fwww.rivestream.app%2F&url=https%3A%2F%2Fimg1.hscow.com%2Fhls_mps%2Ff1712f58cafc1e37e32c27e8a5623c59%2F480%2Findex_287.m3u8%3FExpires%3D1792373446%26KeyName%3DSignature%26Signature%3DYB_MyvBQzAYdoLqdZSq2lapu8v0_x8cB9EOrsBbo1UCMpQfCXvAU5Nj8g_NGhKhsMlJsqVigiiaG-5WhrINSAA%3D%3D"}
+[Bowler-7][2026-10-18T22:30:54.637Z] response.parsed {"requestId":3,"parser":"text","characters":205943,"elapsedMs":2150}
+[Bowler-7][2026-10-18T22:30:54.638Z] playlist.empty {"action":"retain API source"}
+[Bowler-7][2026-10-18T22:30:54.638Z] lookup.complete {"streams":2}
+[Bowler-7][2026-10-18T22:30:54.638Z] extract.complete {"streams":2,"requests":3,"elapsedMs":8978}
+[Bowler-7][2026-10-18T22:30:54.638Z] extract.end {"elapsedMs":8978}
+[registry] bower fetch duration 8979ms
+[CineJoyTV-9][2026-10-18T22:30:54.661Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[CineJoyTV-9][2026-10-18T22:30:54.661Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1,"allowedServers":["Lisbon","Riga","Athens"]}
+[CineJoyTV-9][2026-10-18T22:30:54.661Z] resolver.selected {"resolver":"https://cinejoy-phi.vercel.app/"}
+[CineJoyTV-9][2026-10-18T22:30:54.661Z] request.start {"requestId":1,"url":"https://cinejoy.pk/","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:54.664Z] request.start {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.719Z] request.response {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":516,"contentType":"application/json;charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:54.721Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":519}
+[CineJoy-8][2026-10-18T22:30:54.939Z] request.response {"requestId":1,"url":"https://cinejoy.pk/","status":200,"ok":true,"elapsedMs":741,"contentType":"text/html"}
+[CineJoy-8][2026-10-18T22:30:54.939Z] request.start {"requestId":3,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.942Z] request.start {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.944Z] request.start {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.946Z] request.start {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:54.948Z] request.start {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:55.057Z] request.response {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":108,"contentType":"application/json; charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:55.059Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":111}
+[CineJoyTV-9][2026-10-18T22:30:55.119Z] request.response {"requestId":2,"url":"https://api.themoviedb.org/3/tv/1622?api_key=%5Bredacted%5D&append_to_response=external_ids","status":200,"ok":true,"elapsedMs":455,"contentType":"application/json;charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:55.127Z] response.parsed {"requestId":2,"parser":"json","elapsedMs":464}
+[CineJoy-8][2026-10-18T22:30:55.188Z] request.response {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":242,"contentType":"application/json; charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:55.190Z] request.response {"requestId":3,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":251,"contentType":"application/json; charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:55.191Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":252}
+[CineJoy-8][2026-10-18T22:30:55.221Z] request.response {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":279,"contentType":"application/json; charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:55.226Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":284}
+[CineJoy-8][2026-10-18T22:30:55.326Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":380}
+[CineJoy-8][2026-10-18T22:30:55.344Z] request.response {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":400,"contentType":"application/json; charset=utf-8"}
+[CineJoy-8][2026-10-18T22:30:55.345Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":401}
+[CineJoy-8][2026-10-18T22:30:55.347Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Nebula","Solara","Scout"],"subtitles":150}
+[CineJoy-8][2026-10-18T22:30:55.348Z] server.start {"server":"Nebula"}
+[CineJoy-8][2026-10-18T22:30:55.348Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Nebula&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:55.350Z] server.start {"server":"Solara"}
+[CineJoy-8][2026-10-18T22:30:55.350Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Solara&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:55.352Z] server.start {"server":"Scout"}
+[CineJoy-8][2026-10-18T22:30:55.352Z] request.start {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Scout&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.376Z] request.response {"requestId":1,"url":"https://cinejoy.pk/","status":200,"ok":true,"elapsedMs":715,"contentType":"text/html"}
+[CineJoyTV-9][2026-10-18T22:30:55.376Z] request.start {"requestId":3,"url":"https://api.wing.st/servers","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.377Z] request.start {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.377Z] request.start {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.378Z] request.start {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.378Z] request.start {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.397Z] request.response {"requestId":7,"url":"https://opensubtitles-v3.strem.io/subtitles/series/tt0460681:1:1.json","status":200,"ok":true,"elapsedMs":19,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:55.400Z] response.parsed {"requestId":7,"parser":"json","elapsedMs":22}
+[AllWish-1][2026-10-18T22:30:55.434Z] request.response {"requestId":4,"url":"https://all-wish.me/ajax/server/list?servers=akJSd1ZDaEpWTXBmdTd4TzJVT290NVZMcHV6blg3a0M5NDl2K2t0cXk3WElVZHI4cjlvMnhIRXR1TzZQVDhIcWxReDA5a1BTQUFqYkJGU3NHcytKVmQ0TTdjTytIV0c1NFNxa1BDSmNTOU8yY1dVeEwxSTBSbS9NSWxUZHBwZWZDT0ZwSGVKclV2d3JQcS9rWVpsNzF4a0hIajNydU9pdURkdUF2bWpKM0xXeXFxZUplRWVONm9FcGRrOG5wZTZZcHRSY25TUDZWTVVmN0RnS2ZaYjh0KzNteEZudVNJdncvUnJYYTAxMW5IM3VWNkVpMVdHb0ZldUJlalJ1UHBHTk1jc0JVTHhDNUtzZ2JsMXF4eWgvcmVFbDZmT0M5aHUxRXo0M2c0WjhpUUpTa280RUsrZHlMYk5EM1lISzRHWXowVkpickpzTm1XWDNmck92VEh5VFJPNStNUGJWQjhlOTBTSnFreW9wcitBPQ","status":200,"ok":true,"elapsedMs":1162,"contentType":"application/json"}
+[AllWish-1][2026-10-18T22:30:55.436Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":1164}
+[AllWish-1][2026-10-18T22:30:55.437Z] servers.parsed {"count":2,"mediaType":"movie"}
+[AllWish] That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea S1E1: 2 server(s)
+[AllWish-1][2026-10-18T22:30:55.438Z] server.resolve.start {"label":"Mega"}
+[AllWish-1][2026-10-18T22:30:55.438Z] request.start {"requestId":5,"url":"https://all-wish.me/ajax/server?get=MTF1dkFtaW9BRTZPbzJJRElFZUZrOWdjeldjOERLaWNMMXFNbVB3WUJqKzJ2SDFJYm5acFVrT2dreTZxY0dzeTRQMnlzRERZU1ZiSi9wUG1iV1d1Z20ya29xUUxYeXZFWUs4L2tmR0prYVIvcVJaUjZ4KzJEZmY2SFVGUk05dWo","method":"GET"}
+[AllWish-1][2026-10-18T22:30:55.439Z] server.resolve.start {"label":"Mega"}
+[AllWish-1][2026-10-18T22:30:55.439Z] request.start {"requestId":6,"url":"https://all-wish.me/ajax/server?get=MTF1dkFtaW9BRTZPbzJJRElFZUZrOWdjeldjOERLaWNMMXFNbVB3WUJqOXQrYmJnbzhGTDhhbFRTZWtlVE45ZjVwQmEvenpsTWl3eU8zWHA2b3dRVTVCU3JQbTV3cVZFZlNvMkh0amZsaS9kelRGUGF4Q1FjVWx3Z1AzcS8wbGI","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:55.540Z] request.response {"requestId":6,"url":"https://natsuki.hls.lol/subs?imdbId=tt0460681&season=1&episode=1","status":200,"ok":true,"elapsedMs":162,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:55.575Z] request.response {"requestId":3,"url":"https://api.wing.st/servers","status":200,"ok":true,"elapsedMs":199,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:55.591Z] request.response {"requestId":4,"url":"https://subs.wing.st/subtitles?type=tv&tmdb=1622&season=1&episode=1","status":200,"ok":true,"elapsedMs":214,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:55.593Z] response.parsed {"requestId":3,"parser":"json","elapsedMs":217}
+[CineJoyTV-9][2026-10-18T22:30:55.597Z] response.parsed {"requestId":4,"parser":"json","elapsedMs":220}
+[AllWish-1][2026-10-18T22:30:55.645Z] request.response {"requestId":5,"url":"https://all-wish.me/ajax/server?get=MTF1dkFtaW9BRTZPbzJJRElFZUZrOWdjeldjOERLaWNMMXFNbVB3WUJqKzJ2SDFJYm5acFVrT2dreTZxY0dzeTRQMnlzRERZU1ZiSi9wUG1iV1d1Z20ya29xUUxYeXZFWUs4L2tmR0prYVIvcVJaUjZ4KzJEZmY2SFVGUk05dWo","status":200,"ok":true,"elapsedMs":207,"contentType":"application/json"}
+[AllWish-1][2026-10-18T22:30:55.647Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":208}
+[AllWish-1][2026-10-18T22:30:55.647Z] server.player.discovered {"host":"megaplay.buzz","supportedPlayer":true}
+[Anikai][INFO]  2026-10-18T22:30:55.647Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-1/YmNBUlh3Qzc4TFVJM1RyYzcvNXEvdz09?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:55.647Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:55.647Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-1/YmNBUlh3Qzc4TFVJM1RyYzcvNXEvdz09?[query redacted]
+[CineJoyTV-9][2026-10-18T22:30:55.656Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":278}
+[Anikai][INFO]  2026-10-18T22:30:55.904Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-1/YmNBUlh3Qzc4TFVJM1RyYzcvNXEvdz09?[query redacted] | status=200 bytes=4702 took=257ms
+[Anikai][INFO]  2026-10-18T22:30:55.904Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:55.905Z resolveDirectM3u8() extracted fileId=177915 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:55.905Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=177915
+[AllWish-1][2026-10-18T22:30:55.918Z] request.response {"requestId":6,"url":"https://all-wish.me/ajax/server?get=MTF1dkFtaW9BRTZPbzJJRElFZUZrOWdjeldjOERLaWNMMXFNbVB3WUJqOXQrYmJnbzhGTDhhbFRTZWtlVE45ZjVwQmEvenpsTWl3eU8zWHA2b3dRVTVCU3JQbTV3cVZFZlNvMkh0amZsaS9kelRGUGF4Q1FjVWx3Z1AzcS8wbGI","status":200,"ok":true,"elapsedMs":478,"contentType":"application/json"}
+[AllWish-1][2026-10-18T22:30:55.919Z] response.parsed {"requestId":6,"parser":"json","elapsedMs":480}
+[AllWish-1][2026-10-18T22:30:55.919Z] server.player.discovered {"host":"megaplay.buzz","supportedPlayer":true}
+[Anikai][INFO]  2026-10-18T22:30:55.919Z resolveDirectM3u8() called | playerUrl=https://megaplay.buzz/stream/s-1/bTBVTWpmNGJRdEZHbjBRNzdQNnZzQT09?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:55.919Z resolveDirectM3u8() parsed host=megaplay.buzz
+[Anikai][INFO]  2026-10-18T22:30:55.919Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/s-1/bTBVTWpmNGJRdEZHbjBRNzdQNnZzQT09?[query redacted]
+[Anikai][INFO]  2026-10-18T22:30:55.936Z resolveDirectM3u8() <- GET getSources | status=200 took=31ms
+[Anikai][INFO]  2026-10-18T22:30:55.936Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:55.936Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[AllWish-1][2026-10-18T22:30:55.937Z] server.resolve.complete {"label":"Mega","mode":"extractor","elapsedMs":499}
+[Anikai][INFO]  2026-10-18T22:30:56.187Z resolveDirectM3u8() <- GET https://megaplay.buzz/stream/s-1/bTBVTWpmNGJRdEZHbjBRNzdQNnZzQT09?[query redacted] | status=200 bytes=4702 took=268ms
+[Anikai][INFO]  2026-10-18T22:30:56.187Z resolveDirectM3u8() no JWPlayer file field found; trying legacy file-ID extraction
+[Anikai][INFO]  2026-10-18T22:30:56.188Z resolveDirectM3u8() extracted fileId=178348 source=<title>File …
+[Anikai][INFO]  2026-10-18T22:30:56.188Z resolveDirectM3u8() -> GET https://megaplay.buzz/stream/getSources?id=178348
+[Anikai][INFO]  2026-10-18T22:30:56.221Z resolveDirectM3u8() <- GET getSources | status=200 took=33ms
+[Anikai][INFO]  2026-10-18T22:30:56.221Z resolveDirectM3u8() sourcesJson keys=tracks,t,intro,outro,server,image,enc
+[Anikai][INFO]  2026-10-18T22:30:56.221Z resolveDirectM3u8() decrypted MegaPlay source | https://fetch.nexabloom.top/anime/[REDACTED]/[REDACTED]/master.m3u8
+[AllWish-1][2026-10-18T22:30:56.222Z] server.resolve.complete {"label":"Mega","mode":"extractor","elapsedMs":782}
+[AllWish-1][2026-10-18T22:30:56.222Z] streams.assembled {"streams":2,"servers":2}
+[AllWish] Returning 2 stream(s) for S1E1
+[AllWish-1][2026-10-18T22:30:56.222Z] extract.complete {"streams":2,"requests":6,"elapsedMs":14542}
+[AllWish-1][2026-10-18T22:30:56.222Z] extract.end {"elapsedMs":14542}
+[registry] allwish fetch duration 14543ms
+[CineJoy-8][2026-10-18T22:30:56.224Z] request.response {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Scout&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":872,"contentType":"application/json"}
+[CineJoy-8][2026-10-18T22:30:56.225Z] resolver.response {"server":"Scout","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Scout&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoy-8][2026-10-18T22:30:56.226Z] response.parsed {"requestId":10,"parser":"json","elapsedMs":874}
+[CineJoy-8][2026-10-18T22:30:56.252Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineSrc] Fetching streams for TMDB ID: 1622, Type: tv
+[CineJoyTV-9][2026-10-18T22:30:56.288Z] request.response {"requestId":5,"url":"https://sub.vdrk.site/v1/tv/1622/1/1","status":200,"ok":true,"elapsedMs":911,"contentType":"application/json; charset=utf-8"}
+[CineJoyTV-9][2026-10-18T22:30:56.289Z] response.parsed {"requestId":5,"parser":"json","elapsedMs":912}
+[CineJoyTV-9][2026-10-18T22:30:56.290Z] sources.discovered {"domain":"https://cinejoy.pk/","apiHost":"https://api.wing.st/","servers":["Lisbon","Athens","Riga"],"subtitles":150}
+[CineJoyTV-9][2026-10-18T22:30:56.290Z] server.start {"server":"Lisbon"}
+[CineJoyTV-9][2026-10-18T22:30:56.290Z] request.start {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:56.290Z] server.start {"server":"Athens"}
+[CineJoyTV-9][2026-10-18T22:30:56.291Z] request.start {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoyTV-9][2026-10-18T22:30:56.291Z] server.start {"server":"Riga"}
+[CineJoyTV-9][2026-10-18T22:30:56.291Z] request.start {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","method":"GET"}
+[CineJoy-8][2026-10-18T22:30:56.425Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Nebula&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":1077,"contentType":"application/json"}
+[CineJoy-8][2026-10-18T22:30:56.425Z] resolver.response {"server":"Nebula","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Nebula&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoy-8][2026-10-18T22:30:56.428Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":1080}
+[CineJoy-8][2026-10-18T22:30:56.430Z] server.complete {"server":"Nebula","streams":3,"source":"resolver"}
+[CineJoy-8][2026-10-18T22:30:56.451Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":200,"contentType":"application/octet-stream"}
+[CineJoy-8][2026-10-18T22:30:56.452Z] gateway.response {"server":"Scout","status":200,"url":"https://api.wing.st/g"}
+[CineJoy-8][2026-10-18T22:30:56.462Z] server.complete {"server":"Scout","streams":0}
+[CineJoyTV-9][2026-10-18T22:30:56.738Z] request.response {"requestId":10,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":447,"contentType":"application/json"}
+[CineJoyTV-9][2026-10-18T22:30:56.738Z] resolver.response {"server":"Riga","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Riga&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-9][2026-10-18T22:30:56.740Z] response.parsed {"requestId":10,"parser":"json","elapsedMs":449}
+[CineJoyTV-9][2026-10-18T22:30:56.752Z] request.start {"requestId":11,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-9][2026-10-18T22:30:56.757Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":467,"contentType":"application/json"}
+[CineJoyTV-9][2026-10-18T22:30:56.758Z] resolver.response {"server":"Athens","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Athens&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-9][2026-10-18T22:30:56.761Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":471}
+[CineJoyTV-9][2026-10-18T22:30:56.771Z] request.start {"requestId":12,"url":"https://api.wing.st/g","method":"POST"}
+[CineJoyTV-9][2026-10-18T22:30:56.812Z] request.response {"requestId":8,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":522,"contentType":"application/json"}
+[CineJoyTV-9][2026-10-18T22:30:56.812Z] resolver.response {"server":"Lisbon","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Lisbon&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoyTV-9][2026-10-18T22:30:56.814Z] response.parsed {"requestId":8,"parser":"json","elapsedMs":524}
+[CineJoyTV-9][2026-10-18T22:30:56.815Z] server.complete {"server":"Lisbon","streams":4,"source":"resolver"}
+[CineJoyTV-9][2026-10-18T22:30:57.007Z] request.response {"requestId":11,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":255,"contentType":"application/octet-stream"}
+[CineJoyTV-9][2026-10-18T22:30:57.007Z] gateway.response {"server":"Riga","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-9][2026-10-18T22:30:57.010Z] server.complete {"server":"Riga","streams":0}
+[CineJoyTV-9][2026-10-18T22:30:57.011Z] request.response {"requestId":12,"url":"https://api.wing.st/g","status":200,"ok":true,"elapsedMs":239,"contentType":"application/octet-stream"}
+[CineJoyTV-9][2026-10-18T22:30:57.011Z] gateway.response {"server":"Athens","status":200,"url":"https://api.wing.st/g"}
+[CineJoyTV-9][2026-10-18T22:30:57.015Z] server.complete {"server":"Athens","streams":0}
+[CineJoyTV-9][2026-10-18T22:30:57.017Z] lookup.complete {"streams":4}
+[CineJoyTV-9][2026-10-18T22:30:57.017Z] extract.complete {"streams":4,"requests":12,"elapsedMs":2356}
+[CineJoyTV-9][2026-10-18T22:30:57.017Z] extract.end {"elapsedMs":2356}
+[registry] cinejoytv fetch duration 2356ms
+[CineSrc] cld: 4 new source(s)
+[CineStream] trace.start {"extractionId":1,"source":"catalog"}
+[CineStream] extraction.start {"extractionId":1,"source":"catalog","tmdbId":"1622","type":"tv","season":1,"episode":1}
+[CineStream] request.start {"extractionId":1,"source":"catalog","requestId":1,"origin":"https://api.themoviedb.org","method":"GET"}
+[CineStream] source.start {"extractionId":1,"source":"Vidfast"}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":2,"origin":"https://vidfast.vc","method":"GET"}
+[CineStream] source.start {"extractionId":1,"source":"Vidcore"}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":3,"origin":"https://vidcore.io","method":"GET"}
+[CineSrc] SPE: 0 new source(s)
+[CineSrc] Movip: 0 new source(s)
+[CineSrc] vipplay: 0 new source(s)
+[CineSrc] VidRock: 2 new source(s)
+[CineStream] request.response {"extractionId":1,"source":"catalog","requestId":1,"origin":"https://api.themoviedb.org","status":200,"server":"openresty","cfRay":null,"cfMitigated":null,"contentType":"application/json;charset=utf-8","elapsedMs":185}
+[CineStream] response.parsed {"extractionId":1,"source":"catalog","requestId":1,"parser":"json","elapsedMs":187}
+[CineStream] source.start {"extractionId":1,"source":"VegaMovies"}
+[CineStream] request.start {"extractionId":1,"source":"VegaMovies","requestId":4,"origin":"https://raw.githubusercontent.com","method":"GET"}
+[CineStream] source.start {"extractionId":1,"source":"4KHDHub"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":5,"origin":"https://raw.githubusercontent.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":3,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd8bfa65feed-MBA","cfMitigated":null,"contentType":"text/html; charset=utf-8","elapsedMs":406}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":3,"parser":"text","characters":51007,"elapsedMs":439}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":6,"origin":"https://enc-dec.app","method":"GET"}
+[CineSrc] Viz: 1 new source(s)
+[CineStream] request.response {"extractionId":1,"source":"VegaMovies","requestId":4,"origin":"https://raw.githubusercontent.com","status":200,"server":null,"cfRay":null,"cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":476}
+[CineStream] response.parsed {"extractionId":1,"source":"VegaMovies","requestId":4,"parser":"json","elapsedMs":477}
+[CineStream] request.start {"extractionId":1,"source":"VegaMovies","requestId":7,"origin":"https://1vegamovies.baby","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":5,"origin":"https://raw.githubusercontent.com","status":200,"server":null,"cfRay":null,"cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":480}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":5,"parser":"json","elapsedMs":481}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":8,"origin":"https://4khdhub.one","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":6,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd8ebfc67939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":235}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":6,"parser":"json","elapsedMs":258}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":9,"origin":"https://vidcore.io","method":"POST"}
+[CineSrc] Tet: 0 new source(s)
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":9,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd8fff15feed-MBA","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":245}
+[CineSrc] Mega: 0 new source(s)
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":9,"parser":"text","characters":406,"elapsedMs":249}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":10,"origin":"https://enc-dec.app","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":8,"origin":"https://4khdhub.one","status":200,"server":"cloudflare","cfRay":"a4cafd903c9f65e9-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":445}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":8,"parser":"text","characters":21240,"elapsedMs":448}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":11,"origin":"https://4khdhub.one","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":10,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd9189167939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":175}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":10,"parser":"json","elapsedMs":176}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":12,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":11,"origin":"https://4khdhub.one","status":200,"server":"cloudflare","cfRay":"a4cafd929fca65e9-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":77}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":11,"parser":"text","characters":999562,"elapsedMs":90}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":13,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":14,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":15,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":16,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":17,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":18,"origin":"https://greenmotors.club","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"VegaMovies","requestId":7,"origin":"https://1vegamovies.baby","status":404,"server":"cloudflare","cfRay":"a4cafd90693d7934-DAR","cfMitigated":null,"contentType":"text/html","elapsedMs":589}
+[CineStream] source.complete {"extractionId":1,"source":"VegaMovies","count":0,"elapsedMs":1068}
+[CineStream] source.empty {"extractionId":1,"source":"VegaMovies"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":12,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd9299ebfeed-MBA","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":257}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":16,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd941c9c65e4-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":169}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":15,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd942d0c65eb-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":181}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":12,"parser":"text","characters":1916,"elapsedMs":291}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":19,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":15,"parser":"text","characters":1481,"elapsedMs":219}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":16,"parser":"text","characters":1473,"elapsedMs":221}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":18,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd946edd65e8-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":224}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":18,"parser":"text","characters":1473,"elapsedMs":225}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":14,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd949b057934-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":265}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":14,"parser":"text","characters":1473,"elapsedMs":267}
+[CineSrc] prime: 0 new source(s)
+[CineSrc] Total streams: 7
+[registry] cinesrc fetch duration 2319ms
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":2,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd9089497934-DAR","cfMitigated":null,"contentType":"text/html; charset=utf-8","elapsedMs":1518}
+[DahmerMovies] Searching for tv 1622
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":2,"parser":"text","characters":56576,"elapsedMs":1554}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":20,"origin":"https://enc-dec.app","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":19,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd949ae87939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":194}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":19,"parser":"json","elapsedMs":196}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":21,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":22,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":23,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":24,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":25,"origin":"https://vidcore.io","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":21,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd95bd4ffeed-MBA","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":236}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":21,"parser":"text","characters":5384,"elapsedMs":237}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":26,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":22,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd95bd52feed-MBA","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":251}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":22,"parser":"text","characters":5364,"elapsedMs":252}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":27,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":23,"origin":"https://vidcore.io","status":200,"server":"cloudflare","cfRay":"a4cafd95bd58feed-MBA","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":361}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":23,"parser":"text","characters":932,"elapsedMs":362}
+[CineStream] request.start {"extractionId":1,"source":"Vidcore","requestId":28,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":13,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd948d4665e4-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":784}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":13,"parser":"text","characters":1481,"elapsedMs":785}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":20,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd954b487939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":455}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":20,"parser":"json","elapsedMs":457}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":29,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":26,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd973c4a7939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":180}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":26,"parser":"json","elapsedMs":182}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":17,"origin":"https://greenmotors.club","status":200,"server":"cloudflare","cfRay":"a4cafd943ad77934-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":908}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":17,"parser":"text","characters":1481,"elapsedMs":910}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":30,"origin":"https://hubdrive.pics","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":31,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":32,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":33,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":28,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd97fcaf7939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":172}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":28,"parser":"json","elapsedMs":173}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":25,"origin":"https://vidcore.io","status":404,"server":"cloudflare","cfRay":"a4cafd95bd5bfeed-MBA","cfMitigated":null,"contentType":null,"elapsedMs":608}
+[CineStream] stage.http_failed {"extractionId":1,"source":"Vidcore","stage":"Vidcore stream Horizon","status":404,"origin":"https://vidcore.io"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":24,"origin":"https://vidcore.io","status":404,"server":"cloudflare","cfRay":"a4cafd95bd59feed-MBA","cfMitigated":null,"contentType":null,"elapsedMs":609}
+[CineStream] stage.http_failed {"extractionId":1,"source":"Vidcore","stage":"Vidcore stream Premiere 4K","status":404,"origin":"https://vidcore.io"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":29,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd982cce7934-DAR","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":251}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":29,"parser":"text","characters":406,"elapsedMs":252}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":34,"origin":"https://enc-dec.app","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":30,"origin":"https://hubdrive.pics","status":200,"server":"cloudflare","cfRay":"a4cafd997c8565ea-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":132}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":30,"parser":"text","characters":21203,"elapsedMs":134}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":35,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidcore","requestId":27,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd974c5e7939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":471}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidcore","requestId":27,"parser":"json","elapsedMs":473}
+[CineStream] source.complete {"extractionId":1,"source":"Vidcore","count":3,"elapsedMs":2342}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":34,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd99bd967939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":176}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":34,"parser":"json","elapsedMs":178}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":36,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":32,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafd994b3f65e4-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":314}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":32,"parser":"text","characters":18772,"elapsedMs":318}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":37,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":33,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafd997c05feef-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":345}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":33,"parser":"text","characters":18800,"elapsedMs":347}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":38,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":35,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafd99cbf765e4-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":228}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":31,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafd997b9a65e4-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":360}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":35,"parser":"text","characters":18806,"elapsedMs":232}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":39,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":31,"parser":"text","characters":18806,"elapsedMs":365}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":40,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":36,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd9ade517934-DAR","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":257}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":36,"parser":"text","characters":2272,"elapsedMs":259}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":41,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":41,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd9c7efd7939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":172}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":41,"parser":"json","elapsedMs":174}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":42,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":43,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":44,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":45,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":46,"origin":"https://vidfast.vc","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":37,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafd9b4af665ec-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":664}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":37,"parser":"text","characters":16848,"elapsedMs":667}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":47,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":43,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd9d9fa47934-DAR","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":264}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":43,"parser":"text","characters":10812,"elapsedMs":267}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":48,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":38,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafd9b7ea87934-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":666}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":38,"parser":"text","characters":16890,"elapsedMs":670}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":49,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":40,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafd9b9949793a-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":665}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":39,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafd9b9e897939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":669}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":40,"parser":"text","characters":16567,"elapsedMs":669}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":50,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":39,"parser":"text","characters":16567,"elapsedMs":674}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":51,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":44,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd9d9fa67934-DAR","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":412}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":42,"origin":"https://vidfast.vc","status":200,"server":"cloudflare","cfRay":"a4cafd9d9fa37934-DAR","cfMitigated":null,"contentType":"text/plain; charset=utf-8","elapsedMs":417}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":44,"parser":"text","characters":932,"elapsedMs":416}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":52,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":48,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafd9f48227939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":202}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":42,"parser":"text","characters":5384,"elapsedMs":472}
+[CineStream] request.start {"extractionId":1,"source":"Vidfast","requestId":53,"origin":"https://enc-dec.app","method":"POST"}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":48,"parser":"json","elapsedMs":213}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":45,"origin":"https://vidfast.vc","status":404,"server":"cloudflare","cfRay":"a4cafd9d9fa77934-DAR","cfMitigated":null,"contentType":null,"elapsedMs":537}
+[CineStream] stage.http_failed {"extractionId":1,"source":"Vidfast","stage":"Vidfast stream Cine","status":404,"origin":"https://vidfast.vc"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":46,"origin":"https://vidfast.vc","status":404,"server":"cloudflare","cfRay":"a4cafd9d9fa97934-DAR","cfMitigated":null,"contentType":null,"elapsedMs":576}
+[CineStream] stage.http_failed {"extractionId":1,"source":"Vidfast","stage":"Vidfast stream Bravo","status":404,"origin":"https://vidfast.vc"}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":52,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafda058d07939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":200}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":52,"parser":"json","elapsedMs":201}
+[CineStream] request.response {"extractionId":1,"source":"Vidfast","requestId":53,"origin":"https://enc-dec.app","status":200,"server":"cloudflare","cfRay":"a4cafda088e77939-DAR","cfMitigated":null,"contentType":"application/json; charset=utf-8","elapsedMs":173}
+[CineStream] response.parsed {"extractionId":1,"source":"Vidfast","requestId":53,"parser":"json","elapsedMs":175}
+[CineStream] source.complete {"extractionId":1,"source":"Vidfast","count":3,"elapsedMs":3526}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":47,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafda87c797939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":1515}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":47,"parser":"text","characters":18496,"elapsedMs":1517}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":51,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafda8dcb77939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":1534}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":51,"parser":"text","characters":18496,"elapsedMs":1537}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":50,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafda8ccb47939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":1546}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":50,"parser":"text","characters":18496,"elapsedMs":1549}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":49,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafdb99d447939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":4241}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":49,"parser":"text","characters":18496,"elapsedMs":4244}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":54,"origin":"https://hubdrive.pics","method":"GET"}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":55,"origin":"https://hubdrive.pics","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":55,"origin":"https://hubdrive.pics","status":200,"server":"cloudflare","cfRay":"a4cafdba49c865e6-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":94}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":55,"parser":"text","characters":21197,"elapsedMs":95}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":56,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":54,"origin":"https://hubdrive.pics","status":200,"server":"cloudflare","cfRay":"a4cafdba3e8665ec-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":340}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":54,"parser":"text","characters":21169,"elapsedMs":342}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":57,"origin":"https://hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":56,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafdbadeaf793a-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":501}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":56,"parser":"text","characters":18800,"elapsedMs":504}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":58,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":57,"origin":"https://hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafdbc0f24793a-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":443}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":57,"parser":"text","characters":18772,"elapsedMs":445}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":59,"origin":"https://gamerxyt.com","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":58,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafdbdee9b65e9-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":658}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":58,"parser":"text","characters":16878,"elapsedMs":660}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":60,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":59,"origin":"https://gamerxyt.com","status":200,"server":"cloudflare","cfRay":"a4cafdbecf9d65e9-MBA","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":599}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":59,"parser":"text","characters":16848,"elapsedMs":602}
+[CineStream] request.start {"extractionId":1,"source":"4KHDHub","requestId":61,"origin":"https://pixel.hubcloud.ist","method":"GET"}
+[DahmerMovies] Total results found: 2
+[registry] dahmermovies fetch duration 7289ms
+[registry] animeonsen fetch duration 1ms
+[DesiFlix] Request: tmdb=1622 type=tv S1E1
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":60,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafdc40a677939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":395}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":60,"parser":"text","characters":18496,"elapsedMs":400}
+[CineStream] request.response {"extractionId":1,"source":"4KHDHub","requestId":61,"origin":"https://pixel.hubcloud.ist","status":200,"server":"cloudflare","cfRay":"a4cafdc43a7d7939-DAR","cfMitigated":null,"contentType":"text/html; charset=UTF-8","elapsedMs":302}
+[CineStream] response.parsed {"extractionId":1,"source":"4KHDHub","requestId":61,"parser":"text","characters":18496,"elapsedMs":305}
+[CineStream] source.complete {"extractionId":1,"source":"4KHDHub","count":12,"elapsedMs":8917}
+[CineStream] sources.merged {"extractionId":1,"source":"catalog","count":7,"duplicates":5}
+[CineStream] extraction.complete {"extractionId":1,"source":"catalog","count":7,"elapsedMs":9111}
+[CineStream] trace.end {"extractionId":1,"source":"catalog","requests":61,"elapsedMs":9112}
+[registry] cinestream fetch duration 9112ms
+[Flixcloud] Fetching movie streams for TMDB ID: 1363974
+[DesiFlix] TMDB: Supernatural (2005) IMDB: tt0460681
+[CineJoy-8][2026-10-18T22:31:08.579Z] request.response {"requestId":9,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Solara&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005","status":200,"ok":true,"elapsedMs":13228,"contentType":"application/json"}
+[CineJoy-8][2026-10-18T22:31:08.579Z] resolver.response {"server":"Solara","status":200,"url":"https://cinejoy-phi.vercel.app/api/stream?tmdb=1622&type=series&server=Solara&season=1&episode=1&imdb=tt0460681&title=Supernatural&year=2005"}
+[CineJoy-8][2026-10-18T22:31:08.581Z] response.parsed {"requestId":9,"parser":"json","elapsedMs":13231}
+[CineJoy-8][2026-10-18T22:31:08.581Z] server.complete {"server":"Solara","streams":1,"source":"resolver"}
+[CineJoy-8][2026-10-18T22:31:08.582Z] lookup.complete {"streams":4}
+[CineJoy-8][2026-10-18T22:31:08.582Z] extract.complete {"streams":4,"requests":11,"elapsedMs":14386}
+[CineJoy-8][2026-10-18T22:31:08.582Z] extract.end {"elapsedMs":14386}
+[registry] cinejoy fetch duration 14386ms
+[FrameXTV-10][2026-10-18T22:31:08.632Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[FrameXTV-10][2026-10-18T22:31:08.633Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[FrameXTV-10][2026-10-18T22:31:08.634Z] source-list.request {"provider":"headhunter","url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=headhunter"}
+[FrameXTV-10][2026-10-18T22:31:08.634Z] request.start {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=headhunter","method":"GET"}
+[DesiFlix] Path /stream/series/tt0460681:1:1.json failed: Empty streams (addon responded but no streams avai
+[Bowler-6][2026-10-18T22:31:09.945Z] request.response {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=super_barbarian","status":200,"ok":true,"elapsedMs":24528,"contentType":"application/json"}
+[Bowler-6][2026-10-18T22:31:09.946Z] source-list.response {"status":200,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=super_barbarian"}
+[Bowler-6][2026-10-18T22:31:09.947Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":24530}
+[Bowler-6][2026-10-18T22:31:09.948Z] source-list.parsed {"success":true,"sources":1,"provider":"super_barbarian"}
+[Bowler-6][2026-10-18T22:31:09.950Z] sources.normalized {"sources":1}
+[Bowler-6][2026-10-18T22:31:09.950Z] playlist.probe.start {"quality":"4K / 1080p","url":"https://lit.cheaptruckrepairs.cc/playlist/-LWVxGnZi4Srd7qZ-ImAOw.m3u8"}
+[Bowler-6][2026-10-18T22:31:09.951Z] request.start {"requestId":2,"url":"https://lit.cheaptruckrepairs.cc/playlist/-LWVxGnZi4Srd7qZ-ImAOw.m3u8","method":"GET"}
+[DesiFlix] Path /stream/series/tmdb:1622:1:1.json failed: Empty streams (addon responded but no streams avai
+[Bowler-6][2026-10-18T22:31:11.715Z] request.response {"requestId":2,"url":"https://lit.cheaptruckrepairs.cc/playlist/-LWVxGnZi4Srd7qZ-ImAOw.m3u8","status":200,"ok":true,"elapsedMs":1764,"contentType":"application/vnd.apple.mpegurl"}
+[Bowler-6][2026-10-18T22:31:11.716Z] playlist.response {"status":200,"url":"https://lit.cheaptruckrepairs.cc/playlist/-LWVxGnZi4Srd7qZ-ImAOw.m3u8"}
+[Bowler-6][2026-10-18T22:31:11.720Z] response.parsed {"requestId":2,"parser":"text","characters":1617,"elapsedMs":1769}
+[Bowler-6][2026-10-18T22:31:11.723Z] playlist.variants.parsed {"count":3,"qualities":["1080p","720p","360p"]}
+[Bowler-6][2026-10-18T22:31:11.723Z] playlist.expanded {"streams":1}
+[Bowler-6][2026-10-18T22:31:11.723Z] lookup.complete {"streams":1}
+[Bowler-6][2026-10-18T22:31:11.724Z] extract.complete {"streams":1,"requests":2,"elapsedMs":26310}
+[Bowler-6][2026-10-18T22:31:11.724Z] extract.end {"elapsedMs":26310}
+[registry] barbarian fetch duration 26310ms
+[HDMovie2] Series extraction is unsupported because pages are season-complete videos
+[registry] hdmovie2 fetch duration 0ms
+[HiAnime-11][2026-10-18T22:31:11.812Z] extract.start {"tmdbId":"1363974","mediaType":"movie","season":null,"episode":null}
+[HiAnime-11][2026-10-18T22:31:11.813Z] extract.complete {"streams":0,"requests":0,"elapsedMs":1}
+[HiAnime-11][2026-10-18T22:31:11.813Z] extract.end {"elapsedMs":1}
+[registry] hianime fetch duration 1ms
+[Flixcloud] Total streams: 2
+[registry] flixcloud fetch duration 5593ms
+[DesiFlix] Path /stream/series/1622:1:1.json failed: Empty streams (addon responded but no streams avai
+[DesiFlix] No streams found for this title (addon responded but no upstream provider has it)
+[registry] desiflix fetch duration 7277ms
+[FrameXTV-10][2026-10-18T22:31:13.441Z] request.response {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=headhunter","status":200,"ok":true,"elapsedMs":4807,"contentType":"application/json"}
+[FrameXTV-10][2026-10-18T22:31:13.441Z] source-list.response {"status":200,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=headhunter"}
+[FrameXTV-10][2026-10-18T22:31:13.442Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":4808}
+[FrameXTV-10][2026-10-18T22:31:13.443Z] source-list.parsed {"success":false,"sources":0}
+[FrameXTV-10][2026-10-18T22:31:13.443Z] sources.normalized {"sources":0}
+[FrameXTV-10][2026-10-18T22:31:13.443Z] lookup.complete {"streams":0}
+[FrameXTV-10][2026-10-18T22:31:13.443Z] extract.complete {"streams":0,"requests":1,"elapsedMs":4811}
+[FrameXTV-10][2026-10-18T22:31:13.443Z] extract.end {"elapsedMs":4811}
+[registry] framextv fetch duration 4811ms
+[Miner-12][2026-10-18T22:31:13.472Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Miner-12][2026-10-18T22:31:13.473Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Miner-12][2026-10-18T22:31:13.473Z] seed.request {"url":"https://api.wecollege.net/seed?mediaId=1622"}
+[Miner-12][2026-10-18T22:31:13.474Z] request.start {"requestId":1,"url":"https://api.wecollege.net/seed?mediaId=1622","method":"GET"}
+[MeowTV] Fetching 6 server(s); subtitles=122; introdb=no
+[registry] megaplay fetch duration 1245ms
+[MovieBox] Fetching tv streams for TMDB ID 1622
+[MovieBox] Fetching details from TMDB...
+[MovieBox] Searching for: "Supernatural"
+[MovieBox] Fetching anonymous token from: https://api3.aoneroom.com/wefeed-mobile-bff/tab/ranking-list?tabId=0&categoryType=4516404531735022304&page=1&perPage=1
+[Miner-12][2026-10-18T22:31:16.220Z] request.response {"requestId":1,"url":"https://api.wecollege.net/seed?mediaId=1622","status":200,"ok":true,"elapsedMs":2746,"contentType":"application/json; charset=utf-8"}
+[Miner-12][2026-10-18T22:31:16.220Z] seed.response {"status":200,"url":"https://api.wecollege.net/seed?mediaId=1622"}
+[Miner-12][2026-10-18T22:31:16.227Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":2753}
+[Miner-12][2026-10-18T22:31:16.227Z] seed.received {"available":true}
+[Miner-12][2026-10-18T22:31:16.228Z] city-sources.request {"city":"miami","url":"https://api.wecollege.net/miami/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.228Z] city-sources.request {"city":"atlanta","url":"https://api.wecollege.net/atlanta/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.228Z] city-sources.request {"city":"dallas","url":"https://api.wecollege.net/dallas/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.229Z] request.start {"requestId":2,"url":"https://api.wecollege.net/miami/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","method":"GET"}
+[Miner-12][2026-10-18T22:31:16.232Z] request.start {"requestId":3,"url":"https://api.wecollege.net/atlanta/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","method":"GET"}
+[Miner-12][2026-10-18T22:31:16.234Z] request.start {"requestId":4,"url":"https://api.wecollege.net/dallas/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","method":"GET"}
+[MovieBox] Successfully obtained bearer token
+[registry] kickassanime fetch duration 4511ms
+[MoviesDrive][INFO][BOOT]#1 module loaded {
+  mainUrl: 'https://new4.moviesdrive.christmas',
+  domainsUrl: 'https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json',
+  logLevel: 2
+}
+[MoviesDrive][INFO][getMoviesDriveStreams]#2 start { tmdbId: '1622', mediaType: 'tv', seasonNum: 1, episodeNum: 1 }
+[MoviesDrive][INFO][getMoviesDriveStreams]#3 tmdb.resolved { imdbId: 'tt0460681', title: 'Supernatural' }
+[MoviesDrive][INFO][getMainUrl]#4 start { cached: false }
+[MoviesDrive][DEBUG][getMainUrl]#5 fetch https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json
+[Miner-12][2026-10-18T22:31:16.575Z] request.response {"requestId":2,"url":"https://api.wecollege.net/miami/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","status":502,"ok":false,"elapsedMs":346,"contentType":"text/html; charset=UTF-8"}
+[Miner-12][2026-10-18T22:31:16.576Z] city-sources.response {"city":"miami","status":502,"url":"https://api.wecollege.net/miami/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.576Z] city-sources.failed {"city":"miami","errorType":"Error"}
+[Miner-12][2026-10-18T22:31:16.586Z] request.response {"requestId":3,"url":"https://api.wecollege.net/atlanta/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","status":502,"ok":false,"elapsedMs":355,"contentType":"text/html; charset=UTF-8"}
+[Miner-12][2026-10-18T22:31:16.586Z] city-sources.response {"city":"atlanta","status":502,"url":"https://api.wecollege.net/atlanta/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.586Z] city-sources.failed {"city":"atlanta","errorType":"Error"}
+[MovieBox] Search returned 19 result(s)
+[MovieBox] No exact title/year/type match for "Supernatural"
+[registry] moviebox fetch duration 1173ms
+[NetMirror] Fetching streams for TMDB ID: 1622, Type: tv
+[Miner-12][2026-10-18T22:31:16.798Z] request.response {"requestId":4,"url":"https://api.wecollege.net/dallas/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1","status":502,"ok":false,"elapsedMs":563,"contentType":"text/html; charset=UTF-8"}
+[Miner-12][2026-10-18T22:31:16.798Z] city-sources.response {"city":"dallas","status":502,"url":"https://api.wecollege.net/dallas/sources?mediaType=tv&tmdbId=1622&enc=2&seed=59745422.RE8sambih4scFl10b6gf8Z&seasonId=1&episodeId=1"}
+[Miner-12][2026-10-18T22:31:16.798Z] city-sources.failed {"city":"dallas","errorType":"Error"}
+[Miner-12][2026-10-18T22:31:16.799Z] client-lookup.failed {"errorType":"Error","fallback":"FrameXTV API"}
+[Miner-12][2026-10-18T22:31:16.800Z] fallback.request {"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=miner"}
+[Miner-12][2026-10-18T22:31:16.800Z] request.start {"requestId":5,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=miner","method":"GET"}
+[MoviesDrive][DEBUG][getMainUrl]#6 fetch.status 200 ok= true
+[MoviesDrive][INFO][getMainUrl]#7 resolved { url: 'https://new3.moviesdrive.beer', source: 'domains.json' }
+[MoviesDrive][DEBUG][getMainUrl]#8 elapsed_ms 486 (total)
+[MoviesDrive][INFO][getMoviesDriveStreams]#9 mainUrl https://new3.moviesdrive.beer
+[MoviesDrive][INFO][getMoviesDriveStreams]#10 search.strategy.imdb https://new3.moviesdrive.beer/search.php?q=tt0460681&page=1
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#11 search.imdb.status { status: 200, ok: true }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#12 search.imdb.hits {
+  count: 1,
+  sample: [
+    'No Place to Be Single (2026) WEB-DL [Hindi (DD5.1) + English] 480p | 720p | 1080p | 2160p 4K SDR Dual Audio [x264/ESubs] | Full Movie'
+  ]
+}
+[MoviesDrive][DEBUG][findMatch]#13 tv scan {
+  hits: 1,
+  found: false,
+  sample: [
+    'No Place to Be Single (2026) WEB-DL [Hindi (DD5.1) + English] 480p | 720p | 1080p | 2160p 4K SDR Dual Audio [x264/ESubs] | Full Movie'
+  ]
+}
+[MoviesDrive][INFO][getMoviesDriveStreams]#14 search.strategy.title-api https://new3.moviesdrive.beer/search.php?q=Supernatural&page=1
+[MeowTV] Server acme failed: Request failed with status code 502
+[MeowTV] Server dcloud failed: Request failed with status code 404
+[MeowTV] Server tik failed: Request failed with status code 404
+[MeowTV] Emitted 2 unique stream(s)
+[registry] meowtv fetch duration 4324ms
+[OneTouchTV] Fetching streams for TMDB ID: 1622, Type: tv
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#15 search.title-api.status { status: 200, ok: true }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#16 search.title-api.hits { count: 0, sample: [] }
+[MoviesDrive][DEBUG][findMatch]#17 no hits
+[MoviesDrive][INFO][getMoviesDriveStreams]#18 search.strategy.html https://new3.moviesdrive.beer/search.html?q=Supernatural
+[OneTouchTV] response {
+  path: '/vod/search',
+  status: 200,
+  contentType: 'text/html; charset=utf-8'
+}
+[Match:OneTouchTV] scored candidates {
+  provider: 'OneTouchTV',
+  query: 'Supernatural',
+  resultCount: 1,
+  candidates: [
+    {
+      title: 'My Supernatural Power',
+      year: 2020,
+      type: 'series',
+      score: 0.431,
+      matchedOn: 'title'
+    }
+  ]
+}
+[Match:OneTouchTV] rejected — no match above threshold {
+  provider: 'OneTouchTV',
+  query: 'Supernatural',
+  resultCount: 1,
+  selected: null,
+  score: 0.431,
+  threshold: 0.65,
+  breakdown: {
+    textScore: 0.209,
+    exact: 0,
+    normalized: 0,
+    fuzzy: 0.546,
+    wholeWord: 1,
+    startsWith: 0,
+    year: 0.05,
+    type: 1,
+    seasonEpisode: 1
+  },
+  reason: 'best candidate "My Supernatural Power" scored 0.431 which is below threshold 0.65 — rejected as a likely mismatch'
+}
+[OneTouchTV] "Supernatural" not found
+[registry] onetouchtv fetch duration 420ms
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#19 search.html.status { status: 200, ok: true }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#20 search.html.hits { count: 1, sample: [ 'Home' ] }
+[MoviesDrive][DEBUG][findMatch]#21 tv scan { hits: 1, found: false, sample: [ 'Home' ] }
+[MoviesDrive][INFO][getMoviesDriveStreams]#22 search.html.single-hit auto-pick { post_title: 'Home', permalink: '/' }
+[MoviesDrive][INFO][getMoviesDriveStreams]#23 post.url https://new3.moviesdrive.beer/
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#24 fetch.post https://new3.moviesdrive.beer/
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#25 fetch.post.status { status: 200, ok: true }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#26 fetch.post.bytes 72326
+[MoviesDrive][INFO][getMoviesDriveStreams]#27 mode.tv { seasonNum: 1, episodeNum: 1 }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#28 tv.seasonHeaderMatches { count: 0, stag: 'Season 1|S01' }
+[MoviesDrive][INFO][getMoviesDriveStreams]#29 done { totalStreams: 0, types: {}, formats: {}, mimeTypes: {} }
+[MoviesDrive][DEBUG][getMoviesDriveStreams]#30 elapsed_ms 2132 (total)
+[registry] moviesdrive1 fetch duration 2135ms
+[PlayIMDb] tv/1622: 3 stream(s), 0 subtitle track(s)
+[registry] playimdb fetch duration 359ms
+Current DISABLE_CACHE value: 'false' (Type: string)
+Using FebBox region setting: USA7
+Using cache directory: C:\Users\ADMINI~1\AppData\Local\Temp\tmdb-embed-showbox-cache
+[registry] Cookie random pick index=0 total=1
+Getting streams for TMDB tv/1622, Season 1, Episode 1
+  FILE SYSTEM CACHE HIT for: tmdb_api\tmdb-tv-1622.json
+  FILE SYSTEM CACHE HIT for: tmdb_api\tmdb-tv-1622-external_ids.json
+[PStream Primary] Attempting PStream API for IMDB ID: tt0460681
+[PStream] Making request to: https://fed-api.pstream.mov/tv/tt0460681/1/1
+[PStream CookieManager] Using user-provided JWT token as ui-token
+[PStream] Using ui-token for authentication
+[Reanime] Search for "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" found 18 candidates. Top: "That Time I Got Reincarnated as a Slime the Movie: Tears of the Azure Sea" (Score: 210, AL: 182206)
+[FlixCloud] Trying remote decryption priority...
+[FlixCloud] Trying remote decryption priority...
+[NetMirror] 1622 streams ready: 1
+[registry] netmirror fetch duration 4433ms
+[titan-13][2026-10-18T22:31:21.133Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[titan-13][2026-10-18T22:31:21.133Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[titan-13][2026-10-18T22:31:21.134Z] source-list.request {"provider":"titan","url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=titan"}
+[titan-13][2026-10-18T22:31:21.134Z] request.start {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=titan","method":"GET"}
+[FlixCloud] Trying remote decryption priority...
+[PStream] Error fetching streams: getaddrinfo ENOTFOUND fed-api.pstream.mov
+getStreamsFromPStreamAPI_tt0460681_tv_s1_e1: 3.064s
+[PStream Primary] No streams found from PStream API, falling back to FebBox
+[Fallback] Using FebBox/ShowBox method
+  FILE SYSTEM CACHE HIT for: showbox_final_url\v3_tv_1622.json
+  [Final URL Cache] HIT: Found cached ShowBox result for tv/1622.
+[Final URL Cache] Using cached FebBox links, skipping ShowBox request for https://www.showbox.media/tv/t-supernatural-2005
+Processing FebBox URL: https://www.febbox.com/share/KqwWmdmK (Supernatural)
+Processing TV Show: Supernatural, Season: 1, Episode: 1
+  FILE SYSTEM CACHE HIT for: febbox_page_html\8cab60d6ed22df509a03ec86cfd0ebd0.html
+Found 16 season folders: "season 1" (ID: 2624533, Extracted Season: 1), "season 10" (ID: 2624742, Extracted Season: 10), "season 11" (ID: 2624766, Extracted Season: 11), "season 12" (ID: 2624790, Extracted Season: 12), "season 13" (ID: 2624814, Extracted Season: 13), "season 14" (ID: 2624838, Extracted Season: 14), "season 15" (ID: 2624859, Extracted Season: 15), "season 2" (ID: 2624557, Extracted Season: 2), "season 3" (ID: 2624580, Extracted Season: 3), "season 4" (ID: 2624598, Extracted Season: 4), "season 5" (ID: 2624621, Extracted Season: 5), "season 6" (ID: 2624646, Extracted Season: 6), "season 7" (ID: 2624669, Extracted Season: 7), "season 8" (ID: 2624693, Extracted Season: 8), "season 9" (ID: 2624717, Extracted Season: 9), "Supernatural" (ID: 38171391, Extracted Season: None)
+Found exact season match: "season 1" with extracted season number 1
+Selected season folder: season 1 (ID: 2624533)
+  FILE SYSTEM CACHE HIT for: febbox_parsed_season_folders\share-KqwWmdmK_folder-2624533_parsed.json
+  CACHE HIT for parsed episode list: Season 1, Folder 2624533
+Found episode: Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv (FID: 2624534)
+[CookieManager] No region preference; defaulting to USA7
+[CookieManager] Applying region: USA7 to chosen base cookie.
+  Fetching fresh player data for video FID: 2624534 (Share: KqwWmdmK) directly to https://www.febbox.com/file/player
+[FlixCloud] Trying remote decryption priority...
+    Extracted 5 fresh video link(s) for FID 2624534
+processShowWithSeasonsEpisodes_fetchEpisodeSources_s1_e1: 809.349ms
+processShowWithSeasonsEpisodes_total_s1_e1_resolve: 905.472ms
+  FILE SYSTEM CACHE MISS for: stream_sizes\a8e1a8d349430d44d7524c2ffd2fa3f2.txt
+  FILE SYSTEM CACHE MISS for: stream_sizes\74c83536f6b2c00c0cd8cc1e12c5e4ec.txt
+  FILE SYSTEM CACHE MISS for: stream_sizes\b8335b77708817b13c05dd2a2bcb5c95.txt
+  FILE SYSTEM CACHE MISS for: stream_sizes\3b49ce481a996333c2714d981127370a.txt
+  FILE SYSTEM CACHE MISS for: stream_sizes\03498f761d7bcf3abc115ef8951c8089.txt
+[registry] reanime fetch duration 4653ms
+[Valkyrie-14][2026-10-18T22:31:23.326Z] extract.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Valkyrie-14][2026-10-18T22:31:23.327Z] lookup.start {"tmdbId":"1622","mediaType":"tv","season":1,"episode":1}
+[Valkyrie-14][2026-10-18T22:31:23.327Z] source-list.request {"provider":"valkyrie","url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=valkyrie"}
+[Valkyrie-14][2026-10-18T22:31:23.327Z] request.start {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=valkyrie","method":"GET"}
+getStreamsFromTmdbId_fetchStreamSizes_tv_1622: 740.44ms
+Found 5 streams (sorted and size-limited if applicable):
+  1. ORG (Playlist (size N/A)) [No codec info]: Supernatural - S1E1 - Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv - AUTO
+  2. ORG (2.86 GB) [No codec info]: Supernatural - S1E1 - Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv - ORG
+  3. 1080p (Playlist (size N/A)) [No codec info]: Supernatural - S1E1 - Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv - 1080p
+  4. 720p (Playlist (size N/A)) [No codec info]: Supernatural - S1E1 - Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv - 720p
+  5. 360p (Playlist (size N/A)) [No codec info]: Supernatural - S1E1 - Supernatural.S01E01.Pilot.1080p.BluRay.x264.AC3.5.1-LeRalouf.mkv - 360p
+getStreamsFromTmdbId_total_tv_1622_s1_e1: 4.731s
+[registry] showbox fetch duration 4732ms
+[VaPlayer] Fetching streams for TMDB ID: 1622, Type: tv
+[VaPlayer] Got 3 stream(s) for tt0460681
+[registry] vaplayer fetch duration 342ms
+[Vidbox] Fetching streams for TMDB ID: 1622, Type: tv
+[Vidbox] TMDB Title: "Supernatural" (2005) | Display: "Supernatural"
+[Vidbox] Guest token obtained successfully
+[Vidbox] Searching for: "Supernatural"
+[Vidbox] Search for "Supernatural" returned 20 item(s)
+[Vidbox] Found 2 matching search candidate(s).
+[Vidbox] Player domain: https://mzfi.me
+[Vidbox] Season 1 not found in "Supernatural". Available seasons: 0
+[Vidbox] Season 1 not found in "Supernatural". Available seasons: 0
+[Vidbox] Resolved 0 total stream(s) in parallel.
+[registry] vidbox fetch duration 1898ms
+[titan-13][2026-10-18T22:31:27.404Z] request.response {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=titan","status":200,"ok":true,"elapsedMs":6270,"contentType":"application/json"}
+[titan-13][2026-10-18T22:31:27.405Z] source-list.response {"status":200,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=titan"}
+[titan-13][2026-10-18T22:31:27.406Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":6272}
+[titan-13][2026-10-18T22:31:27.406Z] source-list.parsed {"success":true,"sources":1,"provider":"titan"}
+[titan-13][2026-10-18T22:31:27.407Z] sources.normalized {"sources":1}
+[titan-13][2026-10-18T22:31:27.407Z] source.kept {"type":"mp4","quality":"1080p","url":"https://frappe.hybrows.workers.dev/?origin=https%3A%2F%2Fwww.films365.org&ref=https%3A%2F%2Fwww.films365.org%2F&url=https%3A%2F%2Fxstreamx.films365.org%2Ftv%2F3ac96e43-2a1c-44b8-b57a-45a2dbe6504f%2FSupernatural+%282005%29"}
+[titan-13][2026-10-18T22:31:27.408Z] lookup.complete {"streams":1}
+[titan-13][2026-10-18T22:31:27.408Z] extract.complete {"streams":1,"requests":1,"elapsedMs":6275}
+[titan-13][2026-10-18T22:31:27.408Z] extract.end {"elapsedMs":6275}
+[registry] titan fetch duration 6276ms
+[Vidfast] Fetching StreamVault streams for TMDB ID: 1622, Type: tv
+[Vidfast] Total streams: 8
+[registry] vidfast fetch duration 6693ms
+[Vidlink] Fetching streams for TMDB:1622, Type:tv
+[Miner-12][2026-10-18T22:31:34.816Z] lookup.failed {"errorType":"Error"}
+[Miner-12][2026-10-18T22:31:34.816Z] extract.complete {"streams":0,"requests":5,"elapsedMs":21344}
+[Miner-12][2026-10-18T22:31:34.816Z] extract.end {"elapsedMs":21344}
+[registry] miner fetch duration 21344ms
+[Vidrock] Fetching TMDB 1622 (tv)
+[Miner-12][2026-10-18T22:31:34.858Z] request.response {"requestId":5,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=miner","status":200,"ok":true,"elapsedMs":18058,"contentType":"application/json"}
+[Vidlink] Requesting: https://vidlink.pro/api/b/tv/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAm7uwSA5FKp1EXSX1gQyxZsGFCsxNQFYZsxEDtg/1/1?multiLang=0
+[Vidrock] Processing 9 server(s)
+[Videasy] Server vegas failed: timeout of 8000ms exceeded
+[Videasy] Server austin failed: Request failed with status code 500
+[Videasy] Server dallas failed: timeout of 8000ms exceeded
+[Videasy] Server tampa failed: Request failed with status code 500
+[Videasy] Server munich failed: Request failed with status code 500
+[Videasy] Server berlin failed: Request failed with status code 500
+[Videasy] Server paris failed: timeout of 8000ms exceeded
+[Videasy] Server delhi failed: timeout of 8000ms exceeded
+[Videasy] Server cancun failed: timeout of 8000ms exceeded
+[Videasy] Total streams: 13
+[registry] videasy fetch duration 9594ms
+[Vidlink] Returning direct DASH with playlist headers
+[registry] vidlink fetch duration 1251ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[Valkyrie-14][2026-10-18T22:31:41.723Z] request.response {"requestId":1,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=valkyrie","status":200,"ok":true,"elapsedMs":18396,"contentType":"application/json"}
+[Valkyrie-14][2026-10-18T22:31:41.724Z] source-list.response {"status":200,"url":"https://api.framextv.tech/api/stream?type=tv&id=1622&season=1&episode=1&provider=valkyrie"}
+[Valkyrie-14][2026-10-18T22:31:41.726Z] response.parsed {"requestId":1,"parser":"json","elapsedMs":18399}
+[Valkyrie-14][2026-10-18T22:31:41.726Z] source-list.parsed {"success":false,"sources":0}
+[Valkyrie-14][2026-10-18T22:31:41.726Z] sources.normalized {"sources":0}
+[Valkyrie-14][2026-10-18T22:31:41.727Z] lookup.complete {"streams":0}
+[Valkyrie-14][2026-10-18T22:31:41.727Z] extract.complete {"streams":0,"requests":1,"elapsedMs":18401}
+[Valkyrie-14][2026-10-18T22:31:41.727Z] extract.end {"elapsedMs":18401}
+[registry] valkyrie fetch duration 18401ms
+[Vidrock] Emitted 2/2 playable unique stream(s)
+[registry] vidrock fetch duration 7533ms
+[AnimeOnsen] OAuth token refreshed
+[AnimeOnsen] Matched That Time I Got Reincarnated as a Slime -> 3LhVYILrTBviL7tU
+[registry] animeonsen fetch duration 3544ms
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive
+[diagnostic] heartbeat 60s elapsed, process alive

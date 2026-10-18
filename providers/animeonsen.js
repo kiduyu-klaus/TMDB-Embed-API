@@ -6,7 +6,7 @@ const API = "https://api.animeonsen.xyz/v4",
   MAPPING_URL =
     "https://anikoto-nuvio.netlify.app/.netlify/functions/anime-lazy-mapping",
   UA =
-    "Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro Build/AD1A.240418.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.54 Mobile Safari/537.36";
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36";
 const CLIENT_ID = "f296be26-28b5-4358-b5a1-6259575e23b7",
   CLIENT_SECRET =
     "349038c4157d0480784753841217270c3c5b35f4281eaee029de21cb04084235";
@@ -297,33 +297,116 @@ async function getStreams(
         log("Episode " + m.malEpisode + " not found for " + anime.name);
         return [];
       }
-      const n = ep.episodeNumber,
-        url =
-          CDN +
-          "/video/mp4-dash/" +
-          encodeURIComponent(anime.alias) +
-          "/" +
-          encodeURIComponent(n) +
-          "/manifest.mpd",
-        subtitle =
+      const n = ep.episodeNumber;
+      let streamUrl =
+        CDN +
+        "/video/mp4-dash/" +
+        encodeURIComponent(anime.alias) +
+        "/" +
+        encodeURIComponent(n) +
+        "/manifest.mpd";
+
+      const headers = {
+        Referer: SITE + "/",
+        Origin: SITE,
+        "User-Agent": UA,
+      };
+
+      const t = await getToken();
+      const subHeaders = {
+        Authorization: "Bearer " + t,
+        Referer: SITE + "/",
+        Origin: SITE,
+        "User-Agent": UA,
+      };
+
+      const subtitles = [];
+      let epMeta = null;
+      try {
+        const videoData = await api(
+          "/content/" +
+            encodeURIComponent(anime.alias) +
+            "/video/" +
+            encodeURIComponent(n),
+        );
+        if (videoData && videoData.uri && videoData.uri.stream) {
+          streamUrl = videoData.uri.stream;
+        }
+        if (videoData && videoData.uri && videoData.uri.subtitles) {
+          for (const [code, subUrl] of Object.entries(videoData.uri.subtitles)) {
+            const label =
+              (videoData.metadata &&
+                videoData.metadata.subtitles &&
+                videoData.metadata.subtitles[code]) ||
+              code;
+            const lang = code.split("-")[0].toLowerCase();
+            subtitles.push({
+              id: `animeonsen-${code}`,
+              url: subUrl,
+              lang,
+              language: lang,
+              label,
+              mimeType: "text/x-ssa",
+              format: "ass",
+              headers: subHeaders,
+            });
+          }
+        }
+        if (Array.isArray(videoData?.metadata?.episode)) {
+          epMeta = videoData.metadata.episode[1] || null;
+        }
+      } catch (err) {
+        log("video metadata fetch failed: " + err.message);
+      }
+
+      if (!subtitles.length) {
+        const defaultSubUrl =
           API +
           "/subtitles/" +
           encodeURIComponent(anime.alias) +
           "/en-US/" +
-          encodeURIComponent(n),
-        headers = { Referer: SITE + "/", "User-Agent": UA };
-      return [
-        {
-          name: "AnimeOnsen",
-          title: "AnimeOnsen [DASH]",
-          url,
-          quality: "single",
-          headers,
-          subtitle,
-          subtitleFormat: "ASS",
-          backup: false,
-        },
-      ];
+          encodeURIComponent(n);
+        subtitles.push({
+          id: "animeonsen-en-US",
+          url: defaultSubUrl,
+          lang: "en",
+          language: "en",
+          label: "English",
+          mimeType: "text/x-ssa",
+          format: "ass",
+          headers: subHeaders,
+        });
+      }
+
+      const stream = {
+        name: "AnimeOnsen - " + (anime.name || "Auto"),
+        title: (anime.name || "AnimeOnsen") + " - 720p [DASH]",
+        url: streamUrl,
+        quality: "720p",
+        type: "dash",
+        format: "dash",
+        mimeType: "application/dash+xml",
+        provider: "animeonsen",
+        headers,
+        subtitles,
+        subtitle: subtitles[0]?.url || "",
+        subtitleFormat: "ASS",
+        backup: false,
+      };
+
+      if (epMeta) {
+        const introStart = Number(epMeta.skipIntro_s);
+        const introEnd = Number(epMeta.skipIntro_e);
+        if (!isNaN(introStart) && !isNaN(introEnd) && introEnd > introStart) {
+          stream.intro = { start: introStart, end: introEnd };
+        }
+        const outroStart = Number(epMeta.nextEpisode_s);
+        if (!isNaN(outroStart) && outroStart > 0) {
+          stream.outro = { start: outroStart };
+        }
+      }
+
+      return [stream];
     })();
     _cacheSet(key, p, 1800000);
     try {
