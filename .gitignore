@@ -69,3 +69,7 @@ test-results/vid-providers/vidup-tv.json
 /tests
 tests/abyss.py
 .tmp-ua2.js
+/scripts
+*.zip
+/docs
+docs/resource-limits.md

@@ -808,6 +808,1460 @@
           "headers": {}
         }
       ]
+    },
+    "movie:1204680": {
+      "tmdbId": "1204680",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt1756855",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792377490181,
+      "subtitles": [
+        {
+          "url": "https://sub.wyzie.io/c/19d00c5c/id/1962584466?format=srt&encoding=UTF-8&id=tt1756855&tok=3.E_MSf_CVdshEEzwXlzROaGjdD1E3D4PA5rDSI-Ig_NgvmmejCL3NWSKTt0h8sA3X1-FGA6jyR-jChkV41lKtOjmC1kxJBhIroyjCZNyjOJGVXQCSBDj6lpTh8fW3ADJD",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "name": "English - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5a/id/1962584275?format=srt&encoding=UTF-8&id=tt1756855&tok=3.UG8IHvcFysWSWxZAFrEKHo9NZ3okRTMVcn37uYmHxh6vzZPf5XB68O3gPvJPUchU3plarJXIhdv8ulQh37Gqusoj8-Gr62dW7ywOKIEALO5SUzyXXDYW92IJyLOeC7TQ",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "name": "Turkish - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c53/id/1962592008?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Yww12Def4TrPvKVFddpiEe-r-Qd4NzVQefXjG53ELuAfAk1uE5RI_6vRJIY7BRoxIBdNQNosFoMGbKbrUlR7Yvu-Zr-Hbyjbp4yxUZrW6UhBdG_pWKjXs1-q7MI6VOIY",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "name": "English - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c4c/id/1962592010?format=srt&encoding=UTF-8&id=tt1756855&tok=3.v0-z0M9VZ1TkvztYWF3sovnPv-P4VBVmX3f3fvTa3rARUE6FcrmZJ5Fc0zltHSVY7VLgLopdMHNMx-3KDOr0ccw5oygSwco7-ovBTkJQn6N0zsrMnhy3_AhndHKt-QMC",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "name": "English (SDH) - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d30c61/id/1962634997?format=srt&encoding=UTF-8&id=tt1756855&tok=3.10f_aJAQcXftiHkiPWVyeCkolFctZuQ5YgqLLZWod8G1w4k5ih-XKF0kL5PL-JBOZeQ70nk_M9snto_PSbwEYHeDmS86Ccq9FJloirUT9BvlP2TqTwBOJoI_y1_fwfTV",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.Vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "name": "English - Coyote.Vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d50c63/id/1962634999?format=srt&encoding=UTF-8&id=tt1756855&tok=3.XmU2y3Li7GQvFbHi7oRcDxJ77ExjRLLGE5lFkoYMAiJdhi80Dyt-Jb_zhGlA_t07p4-ZqIrbvNWErKBYw6YhBL4Fbgk9fjV6U9Y7LwmAg5MV89qmxd_GBWasyNUU2nt-",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Coyote.Vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "name": "English (SDH) - Coyote.Vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c4e/id/1962635032?format=srt&encoding=UTF-8&id=tt1756855&tok=3.WNDcG-j4nCdijrWi_MuwxhccW_kRQXB9H-0M1_K9sxbNM8FY5Cyrrcudb0qPCOuJgz2_PbqI8mW1Fp5gaeODpJTxIWINtgH2bECtmKLKiWQjV4kvkVJHbaq_GUGOTZR7",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Coyote.Vs.Acme.2026.1080p.WEBRip.10bit.DDP5.1.X265-NeoNoir",
+          "name": "Arabic - Coyote.Vs.Acme.2026.1080p.WEBRip.10bit.DDP5.1.X265-NeoNoir",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19960c4d/id/1962602127?format=srt&encoding=UTF-8&id=tt1756855&tok=3.mBDKyL9o70RsYdJhwANp-EVCsu_JMcODbzCvCF55Xcjik_k18PpQ2dbehDZuQQkOJw7D4brw56y49KlniYM0h3S59o4o0H9igN7EZWmiYe0n8-huB71qOkHWjoJ0TJgz",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Coyote vs Acme 2026 1080p DCPRIP HEVC x265 RMTeam",
+          "name": "Portuguese - Coyote vs Acme 2026 1080p DCPRIP HEVC x265 RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c57/id/1962583255?format=srt&encoding=UTF-8&id=tt1756855&tok=3.gZho6BJdXz3FiyG1kAgo8mJ59ZPlNQN5aYgyaxTqIjr8uOVivFee6ayFHJn1pjRTb_wvUaDWA_YOdN2E3JURWLhTo9KFPFZlQignYjiCCORgu3E8I-nh8Ihtyp6B_56p",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Coyote.vs.Acme.2026.2160p.DCP.DD+5.1.HDR.H.265-AOC",
+          "name": "Romanian - Coyote.vs.Acme.2026.2160p.DCP.DD+5.1.HDR.H.265-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c60/id/1962597079?format=srt&encoding=UTF-8&id=tt1756855&tok=3.zcQdV04MXvc4HxlJETJqDddkJY0s2UoaMoAThhyMxPzLKfxDQfuNH-iOE3Iyn-goxpUSYk9At3h0QIquP8UCdnEKp3o4CYyEzctx0x-zNK1C0iBG7WC3OvAz1NdxTU3G",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "name": "Danish - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c50/id/1962636321?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Tv8fwpXQmogFtqFnHbX10BCv0lN2hYesfbUiPsTri-VlJpLsjLDV1ErAl3B9Ie3-WYCyJJfZHg-bEsTJiKrciz5BJqwtS_IisWHNyLVEm28QkTAdnp2j16C8F2HoBhsq",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - Coyote.vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "name": "Danish - Coyote.vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e80c5d/id/1962599902?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Fr1lpyVVp3Vmx-DZUGoVlvF9v6GAPMmYaDSYMEXd9rbRu2Na_yJyrzCbHlswRkwxjAYwcVfLkR4nee5_vuX5rlextfkdFs8IK_nWM-n239YpQ61R_Qg4NbG5wPrJtKrY",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "name": "Portuguese - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19990c4e/id/1962612109?format=srt&encoding=UTF-8&id=tt1756855&tok=3.bjJTkCBoytvpxNb7yp8ZicksZbMRvkLL0Jlz05lHZLrckcqtORG7xFWC7Fqq9Jp9iEF6An1MXRp1sLcABL5mfRKxfHfQkka7VrHtgkdHz85XNyB_76Aezd7gmigQisqn",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Coyote.vs.Acme.2026.Retail.DKsubs.2160p.DCP.WEBRip.x265.DDP5.1-ADDICTION",
+          "name": "Dutch - Coyote.vs.Acme.2026.Retail.DKsubs.2160p.DCP.WEBRip.x265.DDP5.1-ADDICTION",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ae0c52/id/1962625307?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Aw01duio2ujP7UndNUqMKNQJ3H3C3pKWYUr_liGkreDgTMyQTWRLUSUU1lw5eE7suic6gf56UXO6mD7JhsZctN4Hkac1MjChf65B9r89l0eYH5hR5FGHxgy9SLzPLRtI",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - 061_Coyote_vs_Acme_2026_en",
+          "name": "Albanian - 061_Coyote_vs_Acme_2026_en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c53/id/1962635181?format=srt&encoding=UTF-8&id=tt1756855&tok=3.omnJ_3VDgWmu1YugyiT8JDJihBXOusX0OUy3FmoHHa0DGkGa7O9BWMk_hm3ufu3ktWD2FDUIPh-WDI95lW_xNw07pmxGlfoWEpYIkI1SCRGYfsPJETFSZcXIwzTzh3hr",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "name": "Russian - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5e/id/1962635669?format=srt&encoding=UTF-8&id=tt1756855&tok=3.qqcbsvBttbOTult7jAyLm6io4z-rBp8OilwpXOOQa05vYjY9Ntc4Sggquf4huCk1-CPIH9KZXfZMPGzglfjH8WybrH0JORlnxua1GZ0-L6GNqSj1mbbFRtejvCBuZNQ3",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Coyote.vs.Acme.2026.WEB",
+          "name": "Persian - Coyote.vs.Acme.2026.WEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ad0c50/id/1962613812?format=srt&encoding=UTF-8&id=tt1756855&tok=3.tWJxCxQKeFJQLZ06zSKaWBNkWa_q8Mn9WDuhoctK2lBeF_AzTqBWxxYk4jnB4g_0lui1nuSNvLAqa_hic5ZmdzQf2ZPeN0EE2OM2s3lCJ3OCwII9Iw8FqI4YTh3LmJCJ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c55/id/1962653417?format=srt&encoding=UTF-8&id=tt1756855&tok=3.rj12qUmRqKIUKV8-OvvfSJzTKXEKeddydxf_-pz_k9xLlieLt-3FOs_HcQzzeSLooyP7cXBHMO23lE54WGN_6syxkeCIU1XCGyDG7H4Rpaa2LW8_4exyFojwua2zq1re",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Coyote.Vs.Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG-YTS.BZ",
+          "name": "Japanese - Coyote.Vs.Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG-YTS.BZ",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c60/id/1962588538?format=srt&encoding=UTF-8&id=tt1756855&tok=3.aPWWycqpSik9cOetOojUNKEBUqHL1n7xOZ-QUyH86KbqMmZajKxFZPgFD2OyXN95wLVrpNA51bwAc27LoY3VwFRAPryufl6ZaAlt99hSXY6mm4w6jt13JKwsAAKjZBCp",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Coyote vs. Acme 2026 1080p DCP DDP5.1 H264-AOC.",
+          "name": "Spanish - Coyote vs. Acme 2026 1080p DCP DDP5.1 H264-AOC.",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5a/id/1962582583?format=srt&encoding=UTF-8&id=tt1756855&tok=3.7D3gsIdPn_LIMnY2zmbJ0b_SA92fb29bMw9T4LaZKRXokYgPHiEiYagmiZfWCasjNwGzz37ix0HeZGAuxeQ4FdsACeghaN1yTl6uIn-egkfCLXuT0beSA0QRAGim48OC",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "French - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c59/id/1962581628?format=srt&encoding=UTF-8&id=tt1756855&tok=3.mLN0FgbjgRuwB6u0Uj2WtKbhdagabty7PlKSMSVN8rKey-SyhrkV7cMR7rvAMwStFzPddH7qBkPoU4DFhwXcGihzI8bCOuOfYzSLCKfKCm2qKI_VKs4fpzMsUBSuqJTR",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Coyote Vs Acme 2026 DCPRIP Multi x264-DKS",
+          "name": "Indonesian - Coyote Vs Acme 2026 DCPRIP Multi x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ad0c4f/id/1962635123?format=srt&encoding=UTF-8&id=tt1756855&tok=3.CFI-mETcwzKVjwG44IJcQnH63UrXJMnRugxLjoX2KTfWk8JRJ2hFmL6dEg5u3pxA2Bgx_4_8sjjMnE-xMg-_P8pwW4Oqdjv2dv4SLdmYp1tBUKKogSgEjGmzHmScKB7O",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA",
+          "name": "English - Coyote.vs.Acme.2026.1080p.10bit.WEBRip.6CH.x265.HEVC-PSA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c58/id/1962635096?format=srt&encoding=UTF-8&id=tt1756855&tok=3.B8W_rHPTkrJPBYV5C49XcUs01zkjivjhScJcgRwxTijO9CfrST7EULq2U1q8KnBLAr_yHlkjjkrUpmpPBD8GBTZ-OqZjBKsouqkvZGNzl1mhqYzpcSbA0CdFc3TfGGPy",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - Coyote vs. Acme 2026 1080p AMZN WEB-DL DDP5.1 Atmos H264-BYNDR",
+          "name": "Spanish (LA) - Coyote vs. Acme 2026 1080p AMZN WEB-DL DDP5.1 Atmos H264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a40c4a/id/1962635001?format=srt&encoding=UTF-8&id=tt1756855&tok=3._uhv2tbqU8oieIf6de0gNoyyLUKfgimxt8nq9JTSwvyNqYfkaqNYI7b1VhMvsc1s-Hg__gslP2eAjND1MQwjFM1n3OAnlsCa1bKTqzS7Ymx-uBJnhl-NiWmsvsMi8D0_",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BYNDR",
+          "name": "English - Coyote.vs.Acme.2026.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c5b/id/1962638087?format=srt&encoding=UTF-8&id=tt1756855&tok=3.GKP6W-z3QqHmLFft7zXE-UdBpB0xG749ij3NQp46lwAfnUle-mkbPDiE8k6OyDSs9ET6AioxHdhB_UMWX5g53YFUbYkK0DfhcLuPCUb5LJviBbA5TNxv2GgA-Qz-Tajf",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Coyote.VS.Acme.2026.2160p.iT.WEB-DL.DV.HDR10 .DDP5.1.Atmos.H265.MP4-BTM",
+          "name": "Spanish - Coyote.VS.Acme.2026.2160p.iT.WEB-DL.DV.HDR10 .DDP5.1.Atmos.H265.MP4-BTM",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c4e/id/1962635104?format=srt&encoding=UTF-8&id=tt1756855&tok=3.C05Faq3DX1LGJRwYUriAtzvpA_xGk5YLYVt4EjO2Z_RHI9qcz7JJT1glkHma38viOLKt7DdlaaS-MxSv1EUO65bwK1p_7THmo8U8A-UHZLk_ULt3Xf1uTMuN6WQhx1Cl",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - coyote.vs.acme.2026.web",
+          "name": "English - coyote.vs.acme.2026.web",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c49/id/1962635000?format=srt&encoding=UTF-8&id=tt1756855&tok=3.qhA2RGKtYE9eAmgxip8bgKEZ0nW0EMmxAtHlBYQdH7CGO_gpbR0A3uYL9zhLBByBWFFTPaRXvIYuBYMNNEIdeTK8xGlXphajg50nr-LROSeKE_bzvxvllzF3BI3Gx0tv",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Coyote.vs.Acme.2026.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BYNDR",
+          "name": "English (SDH) - Coyote.vs.Acme.2026.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.HDR.H.265-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c4e/id/1962635113?format=srt&encoding=UTF-8&id=tt1756855&tok=3.kXBv7rIuWavcQB_AiZZyGWoegqAHFBiz84CevjxYm0tzOi3mwh8sEHQSqdRIbGc3T2d-vHQ6j_gHISfEoUdBaIfhuN0lkjC64VVwfWI6ejUvV5RUQTfV6gJez21KDKIf",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Croatian - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e50c62/id/1962588576?format=srt&encoding=UTF-8&id=tt1756855&tok=3.IxndfqVL8bSCr9lEphOdzCZnAnYTjHOjrwwTd2Elw9FQDF_0WGWZ-vEO1Rxl7oVn8os8qzyTYSwAtyOewLXS5muyws5PMQMkKFOU6PVBzxsqPNtSapYK1ADbke72qkCV",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "Danish - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19af0c54/id/1962614527?format=srt&encoding=UTF-8&id=tt1756855&tok=3.RfCMLOpl6gD-85EjV5ryJeXKKt4OVCYg5wOs2QDyb9Df1HZosxx0TXg3jIwdKaqWAmmZzJ42HYz3XloObdwFNoaGRnGFDSJ4p0A4bWnMnq2MbArzS0u6NwKSDmC2MRb7",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Coyote vs. Acme 2026 WEB-DL.2160p.HDR",
+          "name": "Bulgarian - Coyote vs. Acme 2026 WEB-DL.2160p.HDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c62/id/1962637959?format=srt&encoding=UTF-8&id=tt1756855&tok=3.9rdyTGPNiqpTgt1LRvC3r5sn6Xru7xVE1Vp2UEKQCo2hnH6ni7afjlgcA4ED-d49_marcUS53agAHrEeLH8rfDqPRWxqvwu7o4iMuCOIsbRcB9SVhKi6opahNEB1aeTw",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Coyote vs Acme (2026) 1080p-720p WEBRip (CRETA STAR)",
+          "name": "Greek - Coyote vs Acme (2026) 1080p-720p WEBRip (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c58/id/1962661727?format=srt&encoding=UTF-8&id=tt1756855&tok=3.VOQZ5wxJK36T0RtV8vZDcmyR74PgVu3uKKocR69i5XulHIvBw3JhyzZv5adZSTUzezfD9lmUS9ngXdVIDjQ2H15iRWrIpCCMlUyY5rfrvALqNoKjY79qWJEycVoZKpeD",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Coyote.vs.Acme.2026.1080p.WEBRip.mora.25r",
+          "name": "Arabic - Coyote.vs.Acme.2026.1080p.WEBRip.mora.25r",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5a/id/1962638158?format=srt&encoding=UTF-8&id=tt1756855&tok=3.HCizL0M0qCVOtVF-pDqsCzHu2_IGpasZ_dHtDgIRGDxoXNZhaAtIbvCoXcU8vtVBYRc6t_vN5qGBsBm9mqJzFKeTrV4E7_4fWYb92D47iTgNsH2ZFbrsQMJbSI-OV5xH",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - Coyote vs Acme 2026 1080p AMZN WEB-DL DD 5 1 H 264-playWEB",
+          "name": "Vietnamese - Coyote vs Acme 2026 1080p AMZN WEB-DL DD 5 1 H 264-playWEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c59/id/1962635079?format=srt&encoding=UTF-8&id=tt1756855&tok=3.QM9HHPCxx_cLMxLFvZglHQIxqK0aA_MYiC6HMaIpFL5lPuT2WRJGA6aPdHqnPgCJZ8BT1nwucxDOB49udj-dUuxYoxuvhqQGl3tAZ7tEW8lWcJXDAXVgb8_l1rZzUGds",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Coyote.Vs..Acme.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Croatian - Coyote.Vs..Acme.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c58/id/1962635861?format=srt&encoding=UTF-8&id=tt1756855&tok=3.wTnXro_nfL8rDNANqz4kwH3X_UNLjxOnjnbnNaBY7YEMqwlrtFr_q8SFIZTi9y5hroPCqFUSIrdCJiY4fy-Ys3wR489UFnOI_SIBzjeDIbkB-g2ayrf0aObfcz8iia-S",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Coyote vs Acme 2026 WEB",
+          "name": "Indonesian - Coyote vs Acme 2026 WEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c61/id/1962646886?format=srt&encoding=UTF-8&id=tt1756855&tok=3.SFMQI5SnJk-QJB3nYTr7gJEHoerLz_ON491q34m_d1iqMQwYLbmUtLH2kmLHcLtoR728yUa4w7d2xFZP-i06L3x61Q4tkVLpnEYj0rf-ubAxEQooScilm6NDBJ1bbHRW",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Greek - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c55/id/1962641258?format=srt&encoding=UTF-8&id=tt1756855&tok=3.7uQW5LF6ZXfVe2LGBb5NT-jXTgFOV_UfrUFnHTagEW-E7UmR7by8dhFYs4e1gK6OaEWd3VrDPpDWzIf109dKBPgRWcqMbKAMngj7WfdA4-HXFBRVHV6l3gjBMKzV8p4W",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - 1080p.WEBRip.x264.AAC5.1-[YTS.MX]",
+          "name": "Croatian - 1080p.WEBRip.x264.AAC5.1-[YTS.MX]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ac0c4b/id/1962654100?format=srt&encoding=UTF-8&id=tt1756855&tok=3.rN9b8RFhayLVopngPAQ0rQSgAvGsojiEKqOQAgOqqo-uJUBvp5Ip__IkuWZK8VdZTGslCh1RdoLh83ThfjEqvaNPo5XYLscQ80mCxsoGlFs9nBM4KwmjvmAjtK4UFMkH",
+          "mimeType": "application/x-subrip",
+          "language": "sl",
+          "label": "Slovenian - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DD+5.1.H.264-playWEB",
+          "name": "Slovenian - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DD+5.1.H.264-playWEB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c55/id/1962637730?format=srt&encoding=UTF-8&id=tt1756855&tok=3.n3zjDEqUyWj9mRSSsb1AzmXgonQxPCbG0LwRby4FvRB8FYmiGQW1pcy85md6s9z3mvn5T5ycXlYn_zlCM3ZEYe8WFq_7TTxsuCLeSfyCIjv0ufYnvbuyIxIzvN8CXteT",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Coyote vs Acme 2026 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "name": "Bulgarian - Coyote vs Acme 2026 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5d/id/1962653659?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Eb5NjzLnsJUGu6fHMFhMgXQ1UdSMQ8dCqzxlvKJuIoACgKbxd-tB6O_J3mzvDRTZKzNCImzEhAPXPS9OuLDsihGW-w0O4ZJx1mWI8M2SpcuXaiwF2g7d2gu8YkUbIam8",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Coyote.vs.Acme.2026.AMZN.WEB.WEB.DigiMoviez.‫HosseinTL",
+          "name": "Persian - Coyote.vs.Acme.2026.AMZN.WEB.WEB.DigiMoviez.‫HosseinTL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c5c/id/1962653658?format=srt&encoding=UTF-8&id=tt1756855&tok=3.PNwZbl_EyhYJufUPdMePwJyWmrBqXdS4V1OWGmdFZPDMJ0scnEmcK-YWufv_v83pqcmyrqYIcDpQNMT3DGPtam1gGTTR-n0RIPilrhy_O65wTDusQSOPbNWqEgo6V6w3",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Coyote.vs.Acme.2026.AMZN.WEB.30nama.AmirH_Na",
+          "name": "Persian - Coyote.vs.Acme.2026.AMZN.WEB.30nama.AmirH_Na",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c55/id/1962670652?format=srt&encoding=UTF-8&id=tt1756855&tok=3.8jBURXGPLw50h_65Pb-_XmgSWRIQ7D0nD2ZqA69K4eFFOYAsnmv1L8dPDZpjzy1KLx7LNmqhgPa5gOXxnhNxgy3HeIoqBmRg0DsvJm1y6P6O72Km3NB1ApJ_fsUehHja",
+          "mimeType": "application/x-subrip",
+          "language": "bn",
+          "label": "Bengali - Coyote.vs.Acme.2026.1080p.WEB-Bangla Subtitle By ÂÂAbdullah Al Mahmud",
+          "name": "Bengali - Coyote.vs.Acme.2026.1080p.WEB-Bangla Subtitle By ÂÂAbdullah Al Mahmud",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d50c60/id/1962691399?format=srt&encoding=UTF-8&id=tt1756855&tok=3.SvbXiat7zcS0RWVLu90HcsZpAMsBx2k0H9cytyOjwJtuN4YteIkQP6qCAfvHlMqCqT7dyyVcqFx2Ps4Qhf6g3_td64YhGDRpi76Z_yIN1_VhzuApjcHW9h3-j97FU3lI",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Coyote.vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "name": "Dutch - Coyote.vs.Acme.2026.1080p.WEB.H264-NAISU",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dd0c5d/id/1962584980?format=srt&encoding=UTF-8&id=tt1756855&tok=3.ZRuPugMpTMJFZOSWVhT-VFwkXOsu1qgV6AEBsp-VqW8bxscyx23WYlyqZ7m3uHWDUNVgzAuwbIWxSRZe0FfC48AEiHxBrielkcU7qzxDYSJd1NbYfOsEGVhKvF-Ky32x",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC.es.sdh.srt",
+          "name": "Spanish - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC.es.sdh.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5a/id/1962582925?format=srt&encoding=UTF-8&id=tt1756855&tok=3.VbB3MzGLbijhlbhIhETHShPBkgH3yIPKr-jISuL0Dr4FoxYi2tjQ86whlLo0FpZ_Dre2oMRxkjH1j7jNiupQxsy7_BF0jPvnpIDoCgZOTeQh0JDVZ9Hps2Oea6nZ8t8w",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "Japanese - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ea0c63/id/1962597928?format=srt&encoding=UTF-8&id=tt1756855&tok=3.p-zVNhNukn0sAy7m_N4QWmH7fQVKD_4HejqWUQzqE2MT_o37cmIysvw4Z61XfHpiZD1m5YTYI6Y4FVlkxACd_W0xqgVvoxsUTvK_TU7vKtK6r6x4a7TI8ZrML-2caVLd",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "English - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c58/id/1962599006?format=srt&encoding=UTF-8&id=tt1756855&tok=3.pQDYrCGgjCI_eQAAaeIAsl95udMa9IfQEkk_1x1O9EbhJjyS_0rEFx0ADHsfL4FgkPU84DZpZlyTJgTYyduJ_ryVqI-I8UHKE-CRpq_3K2Hrv-a8cG6UGMCxNrPcXCrF",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.iNTERNAL.2160p.DCP.HEVC.PCM5.1+DDP5.1-UNiON",
+          "name": "English - Coyote.vs.Acme.2026.iNTERNAL.2160p.DCP.HEVC.PCM5.1+DDP5.1-UNiON",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f50c67/id/1962598967?format=srt&encoding=UTF-8&id=tt1756855&tok=3.VYBPFS20d4qOKIJPGuPxcM25cZMbYPvIN_PyaZrG5fa6Ygc5XMHzYRwF8UW5AtiWVIVaZUITiFDhMD4y7jDfca0IwyfWQZPLv2tRkJpUZeeMnQTNvXdWEatlrFQ8evUi",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - dcprip-DKS",
+          "name": "English - dcprip-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5a/id/1962599602?format=srt&encoding=UTF-8&id=tt1756855&tok=3.HAEZRXOpvj1YERQoaLRw5AOgEuFy0-U7pRmohB1JQrpZaYMGA36rOlisT9M9h806GVnL79AmWYsLD4-Ks_Z9FPyOy-E2f7a8UFeGRHx_JLszwnBAX-ZzLVyXvy5R0Aoc",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.Vs.Acme.2026.DCI.4K.Master.Rip.Lite.English.DD+7.1.Atmos-BOOB.mkv",
+          "name": "English - Coyote.Vs.Acme.2026.DCI.4K.Master.Rip.Lite.English.DD+7.1.Atmos-BOOB.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5d/id/1962589084?format=srt&encoding=UTF-8&id=tt1756855&tok=3.1I6gDRd27EPY_atWAKlBNSH1cYefj961Cbk_Gmt79oCCJABO9NwDqrHUYwBM75BujFBkVlNMQ8Pbbm5iAIkI7oly92et87qqsPLPjT0BZR72jrvaBhB82sjczTyN1NS8",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "Portuguese (BR) - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5f/id/1962638874?format=srt&encoding=UTF-8&id=tt1756855&tok=3.D4dKaQT4xPGGRMH_GRAIf5iX11lLc6AzcnXcpZO7G7APYC4znWi3046CP1wW3sO4DJrZIPtXdEAd4AmDp2mdzc7CWB139FY0wJSrhbOdy_TLemz3-_s0sWlebge6AxLI",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en",
+          "name": "English - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5b/id/1962635855?format=srt&encoding=UTF-8&id=tt1756855&tok=3.0AuCKWqsk8BzsvApNF3mPFEJj102iXofp1p-rsieTLYmvPOpwjyCWdSHnswkZw3nM33JGpT_Asr7MJqoDKEEgEEnhs95nrZBDgirSunBSiR5-IULprMP1w8aXn6HhFsf",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Portuguese (BR) - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c55/id/1962582290?format=srt&encoding=UTF-8&id=tt1756855&tok=3._dk1b0jf1Yml983lhXaQ4luUVaykv9voI0AmCHLXlEroKQsKc7lAdwAzlv-s8nj4koWll8udteEfR21zvANB7av_JmSySPmZpv-8jns_uJReXiGZVnrkv8jFtQqGeQcg",
+          "mimeType": "application/x-subrip",
+          "language": "et",
+          "label": "Estonian - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam-est",
+          "name": "Estonian - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam-est",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c53/id/1962603564?format=srt&encoding=UTF-8&id=tt1756855&tok=3.hNKPxKjWoQSm5tX-hAo2YXa1wEIflNNCDjG3hbli87s0lgW52Wn3ef3cSzK-K14QqWrGmJQD7UiNiugFS-eT8AF1SCRpUSxYBRSaxrMfqs1DYtt2MyxlTCnXCV56nNW6",
+          "mimeType": "application/x-subrip",
+          "language": "sr",
+          "label": "Serbian - Coyote.vs.Acme.2026.2160p.DCP.HDR.DAUL.AUDIO.H265-AOC",
+          "name": "Serbian - Coyote.vs.Acme.2026.2160p.DCP.HDR.DAUL.AUDIO.H265-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c5e/id/1962638873?format=srt&encoding=UTF-8&id=tt1756855&tok=3.wAotFUXlDTsw4hbccm5PeX-MpQ2VLcUKQx6Yq43IsrpXcxUm3Z99-NIUYUtB0JEA_7Bm0w0xWdfjalSAhQlF-VXXWGLplnHjvAmWzVSq9UZWZWkQnAGcTX1MUa1-Q3yh",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.SDH.en",
+          "name": "English (SDH) - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ].en.SDH.en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c52/id/1962591431?format=srt&encoding=UTF-8&id=tt1756855&tok=3.B2sFya9Js3rayNcIfma5i2GOgMint-a_kWeBg1H50PY1vd-gb_2viADff6mbuKCI8vFphX2YsfoNBaCMbd92krYNeKPqyXlsht1rrEF-BZZXFKejXBM8RrKkvBe-uRo5",
+          "mimeType": "application/x-subrip",
+          "language": "sk",
+          "label": "Slovak - Coyote.Vs.Acme.2026.1080p.DCPRIP.MULTi.x264-DKS",
+          "name": "Slovak - Coyote.Vs.Acme.2026.1080p.DCPRIP.MULTi.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c53/id/1962637170?format=srt&encoding=UTF-8&id=tt1756855&tok=3.vc0lULpfoz5pFa0GqnjjFNxry4qJME04gWznIkc8Bhot5iZoJB35qGBMvQwPXGdKZ6QOJnrASFn3S3Yr7yw9cGkYz7DpuWComgh-3c3wMwNTjqJG8vSkQ2A17KYMxMbe",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "French - Coyote.Vs..Acme.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5b/id/1962635558?format=srt&encoding=UTF-8&id=tt1756855&tok=3.QxYkVMIpUsg4suFgFla3wSIxaLakrtRp6bevTS0l4v698GXU0O44An4SpWEipCaZGUITtNWgH6xblGxzQ0WahWh72r3wZUTy677IOXaUXP_EOCExnNM0p1ojGJbVEm3L",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-BYNDR",
+          "name": "Turkish - Coyote.vs.Acme.2026.1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5c/id/1962619836?format=srt&encoding=UTF-8&id=tt1756855&tok=3.qLLOjw02iX_X__YiZjQn0KDQeN6CXmHK8yhaYH3k5xnfTWuwmgcSosepx0JWkZTo9mS1VUwvtecEdCM7b3sQMml-6d9UDaeLVCFDIFr3IPwenHxVEexxBExMITaV3KLP",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "Indonesian - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c56/id/1962612882?format=srt&encoding=UTF-8&id=tt1756855&tok=3.xD10BTZtBrI8W3MYflUmsV3aC8oPMUu5q1G06jnQhWTPd2QALmUDxaz8D8x9OGmNyHLtm8giOUXk7TdOSfsYxmCu3wKvXgqkjAJFd-4X3mbF_zqMYI7yQdSm8QkCOPLu",
+          "mimeType": "application/x-subrip",
+          "language": "sr",
+          "label": "Serbian - Coyote vs. Acme (2026) 2160p.DCP.HDR.DAUL.AUDIO.H265-AOC",
+          "name": "Serbian - Coyote vs. Acme (2026) 2160p.DCP.HDR.DAUL.AUDIO.H265-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c54/id/1962636505?format=srt&encoding=UTF-8&id=tt1756855&tok=3.VMmLe7-ELyOsJdE1ho8m-grBYYtearsXbWlFubOZwB5o_YhR7YpHWGT60akF6sW46DABeDnWIACUNDt76ZqjTk-E0CcJViMHfnWj-OEabhpFFngKl8xp63F7tPvU856t",
+          "mimeType": "application/x-subrip",
+          "language": "th",
+          "label": "Thai - Coyote.vs.Acme.2026.MULTI.VOSTFR.2160p.DCPRip.HDR10.EAC3.5.1.H265-0verflow",
+          "name": "Thai - Coyote.vs.Acme.2026.MULTI.VOSTFR.2160p.DCPRip.HDR10.EAC3.5.1.H265-0verflow",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c55/id/1962636506?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Y67k5vyyzjjACaHylcuIJtaq9M1J7fyUtmmsLhxGgIcndT1oGpkxjickjTdKfRtxisUz-VcPfNzDYId1qXcKGwUfwruwoelZ-is1VPmAtJOJBFRaqlhkfN3OoSE3TGF_",
+          "mimeType": "application/x-subrip",
+          "language": "mk",
+          "label": "Macedonian - 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "name": "Macedonian - 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d40c5d/id/1962595429?format=srt&encoding=UTF-8&id=tt1756855&tok=3.hFk05CG54pZpsiAK-pAd6hjFBVnVYkbr5LhSb8GLC_EuelNo_dpLv1yqESXgKnjiKqoom840ssKpJDBQ2p5My4OuM64Kc3icdSDMhbPEijtxv69HYIvy8fjSxe6SyOEK",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Coyote.Vs.Acme.2026.1080p.DCPRIP.MULTi.x264",
+          "name": "Turkish - Coyote.Vs.Acme.2026.1080p.DCPRIP.MULTi.x264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dc0c5f/id/1962585684?format=srt&encoding=UTF-8&id=tt1756855&tok=3.ZSM1uvHXLNiBepA8iJyyCIIWfM-GySWQdUkDM2YOz3s7sAQd_xM_lN5ay6EPnuaSim6yDkXfQQSMzTnTSSaitocLX_ra4Ri647E9QT4IHqDIqAxpaTt4VIORNdLq4KFJ",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "Arabic - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19db0c5e/id/1962585683?format=srt&encoding=UTF-8&id=tt1756855&tok=3.8qy1CzzNMsyqBvUkrBwUpHiFKPJQXo7U5H-RL0CB85UY2HVbv4vK_J_JSe_y0flzHXou3e3vh-IV2RpPM5FlYHz3UyeOZbAvYXzPAlUiuZgyYATIhNW5HDQmUcBBQNFP",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Coyote.vs.Acme.2026.2160p.DCP.HDR.DAUL.AUDIO.H265-3CooL",
+          "name": "Arabic - Coyote.vs.Acme.2026.2160p.DCP.HDR.DAUL.AUDIO.H265-3CooL",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c55/id/1962588032?format=srt&encoding=UTF-8&id=tt1756855&tok=3.p2eY3wuGXhinpQTO9JQHhHgxn4gQwGmlx7qMCoVgiZ8YDII2s23bpXbnOPEF1w_DTVdEvaSg--SeMe3wK14CQjsFluTWzsCZkTExfBd6hwg7Cw_KN7uSjeN6vfYgdAnh",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "name": "Greek - Coyote.vs.Acme.2026.1080p.Screener.H264-OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5f/id/1962588546?format=srt&encoding=UTF-8&id=tt1756855&tok=3.5O5p0vz1JmE_6Oa8iP5cpSi_6xI12TMf0mWu-ivo_CRe0qcGnBjkc4tO-TaRyOQbcRNOZPRVCeNJG4xK69SBlZVeF0AjjvMnjPZuVe4vRsHHT-bVd7DH14YoeQR11C3x",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Coyote.vs.Acme.2026.1080p.DCPRIP.HEVC.x265.RMTeam",
+          "name": "French - Coyote.vs.Acme.2026.1080p.DCPRIP.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c60/id/1962637885?format=srt&encoding=UTF-8&id=tt1756855&tok=3.iKTAfcMXGWDBwkuBtUqki7-i3D-sejcvjsIZ7mjNBcdBvnrmhx7J5FBgMLXhMeItwb8U9bkZ1CUAw8FdjROMz3X1h1f0GbrZyHfDr2zgs0mztA4RMTFyQB3nLci4Rq5w",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Coyote Vs. Acme (2026) [WEBRip] [YTS]",
+          "name": "Italian - Coyote Vs. Acme (2026) [WEBRip] [YTS]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c53/id/1962617163?format=srt&encoding=UTF-8&id=tt1756855&tok=3.we-580EPJCTD2ddJKCDw4flPTnmzI2o8r22DFYFmEo93qXS34HBCpoo2XRyRv35VgVVcbbLUIgjvDNMiQn5wf5sAZwW1WiE47yLvsSDdOkKVz7UcLUO6H1jF0Yq5DSmI",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Coyote.vs.Acme.2026.DCP.x265.WEB-DL.2160p.HDR",
+          "name": "Russian - Coyote.vs.Acme.2026.DCP.x265.WEB-DL.2160p.HDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5d/id/1962637774?format=srt&encoding=UTF-8&id=tt1756855&tok=3.QmZAoYhZG5S6JBL3nXeKTanRdYN-Yac4skcvIcDPjk-Bds78mDmxTmNqUJD94b9DYHZewtTQ6jxB3t4xIDE7HC2EF4xkjubTqTbpESMeoJ_R31zqJOG5MQWfHV6CeWl1",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Coyote.Vs.Acme.2026.2160p.AMZN.WEB.DL.DDP5.1.Atmos.H.265.BYNDR",
+          "name": "Turkish - Coyote.Vs.Acme.2026.2160p.AMZN.WEB.DL.DDP5.1.Atmos.H.265.BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5d/id/1962638629?format=srt&encoding=UTF-8&id=tt1756855&tok=3.vtg9d2i-tIP2A_SXqRWkcIN189LuqMwTZLJy-4LSGLG3eBbsofpfO_pYbhJcux5dXrQpt5Jxay1CNnU9P9t0VB1q7DL1-173si5lclqTJ2HZusnXar4Eq2WQc9Ry8Vpa",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - Coyote Vs. Acme (2026)",
+          "name": "Chinese (simplified) - Coyote Vs. Acme (2026)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c51/id/1962635161?format=srt&encoding=UTF-8&id=tt1756855&tok=3.2To4YceRt31fO1n0X4nQ8EI9a8MfEjLQpWOT9StLZGk5-G484yKun1g6muceCwQ3sapk-z6l1hgvAhN2tcOFCdt7dUGR-xORYAvMsRIs6KdC7D96IlQ2_ymyEy1ullJY",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Coyote vs Acme 2026 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "name": "Russian - Coyote vs Acme 2026 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19af0c54/id/1962633238?format=srt&encoding=UTF-8&id=tt1756855&tok=3.5BUhJqXYcDmL4f_MwjkWmuJ55pYJiAUvlOQ7NFcar6yAAO77Vp6a7Cvp1xoQLLfdkTYU9g-wgyEK4bjPaNZ554Q5sGHaEqBaPAG3f3LyaVekAtzQiR3qxeGTF-9xWNkF",
+          "mimeType": "application/x-subrip",
+          "language": "de",
+          "label": "German - Coyote vs Acme 2026 German LD DL 1080p DCPRip x264-PiKACHU",
+          "name": "German - Coyote vs Acme 2026 German LD DL 1080p DCPRip x264-PiKACHU",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c58/id/1962580970?format=srt&encoding=UTF-8&id=tt1756855&tok=3.HRR4bkFOQXBxpnj8anC1l0Kbivw9aIpMsmpjTPzpkfghn4i-qU9kEv1nnlSl5qMUlkndvV1Q9uqnQYFT7vFsfFjaHvzlc26qcuzqHNmsxzGcfWs542edt6OZo96nixY_",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "name": "Bulgarian - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c55/id/1962582083?format=srt&encoding=UTF-8&id=tt1756855&tok=3.emu8ocsCzxCCnEGDaSGZtwgfV1EzrFAnAVc0rJqkEKj6Ydo06gl4cJsrWnuNa7mO9DxvGYkkzyWRFgwWYI346NnIwNS33Wt_C7obcAo2GPSUORN_8ZeWCKEnskMklzS-",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "name": "Czech - Coyote.vs.Acme.1080p.DCPRIP.Multi.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c56/id/1962582426?format=srt&encoding=UTF-8&id=tt1756855&tok=3.X6eGj-RVO_S4g5UtX5HYuit-F3QPozgUcm4EMr-r1leYiubpt8dDpQtgkYgFSnkHoRpOkHvhjrgoOdjT7_45XizHfUEFqyC0G3vHi59UExvbSGFXX95uF02pZIQarZL3",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19db0c5f/id/1962583974?format=srt&encoding=UTF-8&id=tt1756855&tok=3.5nfRn13kdR1iQMY4QqVII3pR1OTUs-v-1WGpMD5UiqPRPW-Aceybr3VU9srRhlW48mq2uxxzgrPCtKhByx309iqzn6k2rCoKZ0njlSE6NuFoIOkw56FXyk4faFISZlae",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "English - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c52/id/1962584330?format=srt&encoding=UTF-8&id=tt1756855&tok=3.Bo15WFJCM_AGIp-oQXLfrWvfWMlmoJQGLD1TQBY1JVHYXT3CdkLbHjNcw54n4lnsS648e5rSkLNrRpdyuGOBBvonSlYNjaRQNo97XxUSy26MHqN4W3RNRmEc7bGqjQ4B",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "name": "Arabic - Coyote.vs.Acme.2026.1080p.DCP.DDP5.1.H264-AOC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a40c4e/id/1962610831?format=srt&encoding=UTF-8&id=tt1756855&tok=3.UABtAywu4y588fBvDZKR76QpOAT9DBTyR9ax0eojt7K0bvmad8MyKhNyrO49g2hph8X7127UM-LHd2vfldxuG7XJqWzx2xHpWIW0CVlknUgkTmX2CuGa1210guqIoLok",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Coyote.vs.Acme.2026.iNTERNAL.2160p.DCP.HEVC.PCM5.1+DDP5.1-UNiON",
+          "name": "Italian - Coyote.vs.Acme.2026.iNTERNAL.2160p.DCP.HEVC.PCM5.1+DDP5.1-UNiON",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5c/id/1962581685?format=srt&encoding=UTF-8&id=tt1756855&tok=3.-kL3-nXN4TERkEJ3OkJ8-khsE2xzMrH_OysTS4MmNPBCJXjBO1qIoi_tkHu7msl1SCvBxBCXFMC3--4MHf1chFnZJwLSfpdNK95QMAlFX60qymgBM0HBl34g87uNZipF",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "name": "Spanish (LA) - Coyote.vs.Acme.2026.1080p.HEVC.x265.RMTeam",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c52/id/1962590342?format=srt&encoding=UTF-8&id=tt1756855&tok=3.pW2HE4CMWr5iv8vZPWirbY9Thpal13ADHS6FfktxbtvtBSmxiR0Va4afAoR0EAzm7UXrzsrynLWOjkXP1WzMJh2b29eJbljtS660dksysfsj7hcZBpm4jDgVbUUXDS5q",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Coyote.vs.Acme.2026.WEB-DL.2160p.HDR.Master5",
+          "name": "Russian - Coyote.vs.Acme.2026.WEB-DL.2160p.HDR.Master5",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c50/id/1962643431?format=srt&encoding=UTF-8&id=tt1756855&tok=3.anq8BU69joZx7LU-mEJ2MiA6suVO842oPLjP06qc2XvLMefK5HI4fH3Wt7sxvEYV1DVxBq3sH0KkBOzQa_OaSmGsJw0ngyrPwSSxNB551AKYgYiLioqB_j_AgvcdYrdE",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Japanese - Coyote.Vs..Acme.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c5a/id/1962635368?format=srt&encoding=UTF-8&id=tt1756855&tok=3.TnMRCfPM_i-SY9IkqyfbhgOu58qM-iQhazgyDwfyxiCPVfRtKFS5WXU16M7oFEsTAV0V4CNXUYYRcgsnmsokI4Nqra18b1LXDd_0Cx_Hv7oNx7IypwErqMePfzE6o060",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - e.g.: MCoyote.Vs.Acme.2026.1080p.WEBRip.10bit.DDP5.1.x265-NeoNoirovieName.1970.720p.x264.YIFY",
+          "name": "French - e.g.: MCoyote.Vs.Acme.2026.1080p.WEBRip.10bit.DDP5.1.x265-NeoNoirovieName.1970.720p.x264.YIFY",
+          "format": "srt",
+          "headers": {}
+        }
+      ]
+    },
+    "movie:1368337": {
+      "tmdbId": "1368337",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt33764258",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792377654116,
+      "subtitles": [
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5a/id/1962494464?format=srt&encoding=UTF-8&id=tt33764258&tok=3.SS25kro5uCkmDYYZJ426Dgabo_W_oVi3XuMOYVA3uhm0kC3ZGf-KuHWis55SsX6IiH0Q39sNlf2mpLRgQKB2I0mzjsF2RCMlyoIpsKzqLXNOHjbw2my8U70Fckb0Zw4L",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - The Odyssey (2026) 1080p HQ HDTS x265 AAC",
+          "name": "Turkish - The Odyssey (2026) 1080p HQ HDTS x265 AAC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c57/id/1962526555?format=srt&encoding=UTF-8&id=tt33764258&tok=3.NTA3jGJU4Foz3bQJ4yFq87haekH-hjL2vq9OxO5wxGCR9fYerOaTdH8uWIcoIBJJYbmZb7CPq6HT2PNkCWzqwkFwIGsBUCeriIkeVUgrNOhsVDKLyJM-vQqQwzH7lA_e",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH",
+          "name": "Romanian - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5d/id/1962635857?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Um14yu8KoIjDaXOERue7UqF8_EoFNo68loOTC--PBZFxXii4_-9cGQOQ4PNZc6oBDnB0xLU8_anwe5tMk2DjqT45GGUCpd2afZfpmX27GyoLzijAtbwXNvvekqye85VH",
+          "mimeType": "application/x-subrip",
+          "language": "et",
+          "label": "Estonian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Estonian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c59/id/1962506289?format=srt&encoding=UTF-8&id=tt33764258&tok=3.knYSn4Ij2leY8wItjUUu6VWMJOgg4Bc_SIiA9VTG2BZROX_Ot50BKrQAfAzlf9AwY8fS1HtPZSQ88FbGyhxuCFrdeceIuvw7EAR3MIBGWEkAoIPuCHjDkSHVxQ5ubpKF",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.pt",
+          "name": "Portuguese - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.pt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c57/id/1962496450?format=srt&encoding=UTF-8&id=tt33764258&tok=3.YHKWZRNr36WzO-8Dz3XHmhtbiyoYud-_wWfXg63nF677opGSR_1znIhOZpcF0IExO66aWSocg7MTszulsTexsuFf0EDtF5_kU-vZpccyPnZOq_rD28Ey9R-0yjNJpzpH",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - The Odyssey (2026) 1080p HQ HDTS x265 AAC",
+          "name": "Albanian - The Odyssey (2026) 1080p HQ HDTS x265 AAC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a40c4c/id/1962536003?format=srt&encoding=UTF-8&id=tt33764258&tok=3.zFsdzt7nZ7Dgqe8yCqH9KJwkRJ7Vifc4M1ajBwYJkm-CIcCDtYQXLt_5RIPl6TDgTGm7jQ1M9sc2ChKS9BZSjXmauihUNhYksCbuCexdhq0yOKn6vc4GC3tUdVONlbay",
+          "mimeType": "application/x-subrip",
+          "language": "uk",
+          "label": "Ukrainian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE.UKR_SviySUB",
+          "name": "Ukrainian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE.UKR_SviySUB",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c59/id/1962617259?format=srt&encoding=UTF-8&id=tt33764258&tok=3.mX9YbfO8W9SNdH4QJWzgS_6kMCF29giyoNSZTuLJwJwzsOoNas8uJaOG_WBLsaRvqM0WVT0xWjc-bm8oy0WdKDSRJfBW-fg23LSOAvOC6Zi1XixuRW5f31l64vEL2bDy",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - The.Odyssey.2026",
+          "name": "Albanian - The.Odyssey.2026",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c4f/id/1962625304?format=srt&encoding=UTF-8&id=tt33764258&tok=3.i7lo-Q28yGWmEPd3cAkjYBNgpIuRITMfvK5jSrx60gaT4Vpa0VcPt0bLAJV7yJ6bU9lY02SKM2xJvh3gk98MCmbK4u760QklCojk3-FEGHWBnAv1wewuO0G6iuleMqt-",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - 069_The_Odyssey_2026_en",
+          "name": "Albanian - 069_The_Odyssey_2026_en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c55/id/1962680246?format=srt&encoding=UTF-8&id=tt33764258&tok=3.715_1v_03FIQC9zNCqcnAD733-ZnAgWkVSdNff-5IXxNMQ4SHzm1jiEV8rpIseHEGTAl8vrcKeWzLrNFq6-emGSLiszJpVBidtIjIvPpDH92knF--Ekf4Mw48dzNNzZJ",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian (SDH) - The.Asylums.The.Odyssey.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264 (SDH).UniVerseHub.[shqip]",
+          "name": "Albanian (SDH) - The.Asylums.The.Odyssey.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264 (SDH).UniVerseHub.[shqip]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c59/id/1962475086?format=srt&encoding=UTF-8&id=tt33764258&tok=3.iidGwWBAjMrE7wF-D3XpFL0qP8YJyVgLqBjztH3dVU2U4rUOp4WjK84YhnYbQhOHKfunepWLd8NEBIooHHnvip7Qq-hkXtpV00MtvjoJ8tEg6uzv0d--P91gUtRzdyvz",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.ar1",
+          "name": "Arabic - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.ar1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c5d/id/1962472669?format=srt&encoding=UTF-8&id=tt33764258&tok=3.kAxN15SnVCr2Un_DtZ_G8O8IvcLJYwDz8Gq6zuqBBi_l69GZff-zVnHhmwv8QLouIO006dcRO6TAftxtyP-z65XRlRXJVtKTijfOkAvHv3y5bEpsIq0NaNkDcDN1g23M",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The Odyssey (2026) 1080p-720p CAMRip (CRETA STAR)",
+          "name": "Greek - The Odyssey (2026) 1080p-720p CAMRip (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ae0c52/id/1962517415?format=srt&encoding=UTF-8&id=tt33764258&tok=3.gw4FHhRvz6o210bWByaQ3L2DQL4yMqkoUd68XbFz93EEayQsvV1xxMapRO-u0iRDyvL73AFt7ag14mwmW7HCFiNwdhICI29jvYzhxMecywBG4Efms4zT1T6d-V38G98O",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The Odyssey 2026 1080p TELESYNC HEVC AAC2 0-SPLiCE",
+          "name": "Greek - The Odyssey 2026 1080p TELESYNC HEVC AAC2 0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c56/id/1962488241?format=srt&encoding=UTF-8&id=tt33764258&tok=3.po7sQhSOaAntPxu0IoE9WhTfz_rwRyHr5_HjULUvcLl-274zp58J-JOjlmTrN4cKOpI0in0EzuEGxSOIPnqiqijrSxmpz6qYvaCoevj-iHZ4y85sQ1VOHEHGPlrv640O",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Greek - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c5c/id/1962474468?format=srt&encoding=UTF-8&id=tt33764258&tok=3.admYMpEwQpXyqdGibgEwn8Am-3vtTNf4oXXguZ_VKVRBwvLKtWQPk_M2XL0Phj2NpfG1KSRoYtmrhLfAnUGkAt3GxS_n4WzvcogWE3bdvwgMJW6_q7OsAjsw3YLsKg7C",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - The.Oddessey.2026.1080p.CAM.x264.Onlyflix",
+          "name": "Indonesian - The.Oddessey.2026.1080p.CAM.x264.Onlyflix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a50c52/id/1962511907?format=srt&encoding=UTF-8&id=tt33764258&tok=3.dfjIDO3LvfIA9ie8d349crCqQVuorXwyjC4TTkSF2o5umO8n9nEMVXnSGQgI7ZXjpaGCbJxhQQWcAZ8c9E9Zb18-l9Xz00YU_eLa4uYUfY4RFhG3HoQN1wgiszO2j0f9",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH",
+          "name": "Spanish - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c5e/id/1962473876?format=srt&encoding=UTF-8&id=tt33764258&tok=3.xMj9b8ZLYEvztccPJKzWn96LeVuVzjZcEyfFgdAfBxc9c2KuTDgouuFSmb0mK4j71I527-1oHRsdBUgfRJIjTyCUJnjCtUAUPKTbyTe80fMbCRI8PO-quNS7xyYFevpC",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The.Odyssey.2026.CAM-Rip- 360p.720p.1080p OnlyFlix",
+          "name": "Greek - The.Odyssey.2026.CAM-Rip- 360p.720p.1080p OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c5c/id/1962472686?format=srt&encoding=UTF-8&id=tt33764258&tok=3.a0DB94r_sZIoav1Pqb7Hss6T_YjDWzfmLnBqZwAt_-fPIMsyPKiLnISE89FuGSY653NEc_Jmwa4AXGv2ovOmTHfunz98lro-gEzYnM2WoP_mvhhDjq9QbnQjFnBvrHBH",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Odyssey.2026.1080p.CAM.x264-NESTED",
+          "name": "Persian - The.Odyssey.2026.1080p.CAM.x264-NESTED",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c54/id/1962550564?format=srt&encoding=UTF-8&id=tt33764258&tok=3.pxaei1U0GHlrGrSALUddweiL6DV0cUtqESiUPQDuTXT27Bdf3PobQm5bUPfN4aB4WXM0l1osOOfL_BNguyUfVfzKuAsNMGoZkElEK-pPuQ01y1KgU3iI0GEQIE-6u9av",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - The.Odyssey.2026.1080p.TELESYNC.XviD-SPLiCE",
+          "name": "Croatian - The.Odyssey.2026.1080p.TELESYNC.XviD-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c4f/id/1962480530?format=srt&encoding=UTF-8&id=tt33764258&tok=3.tOzi0Dzp7JiYXMk2GOYdWQ8hLtdTZi7zypx4rEUE2CDbThN4Ahg8BTZdZKuXkLIgIrjvCE0w9wHku95a2bp1l-CE1S4IaA9d_vt4oF46BTuIiY9BcZaJ_TWb3DAsd7M5",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "name": "Vietnamese - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dc0c60/id/1962478594?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Bo5AoiAAbkLMy5ekoTFO1I55ogVJg6mujEBjcclcX_t_SCQnriTI5WIRzrwC1AE1m2-9H7eIse5L5AuAN9mbYpxixXmPgVoyWUjjCUM8Ui9fHilwGF6wkfDFGdnADh0r",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Odyssey.The.Making.Of.An.Epic.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "name": "Czech - The.Odyssey.The.Making.Of.An.Epic.2026.720p.WEBRip.x264.AAC-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c57/id/1962485470?format=srt&encoding=UTF-8&id=tt33764258&tok=3._Qs5HchvWOpkNJ2SMyQbw6xYYCeOk4f6x_T67hEF_Y20KjQKQKzfvKGRXy5196Lub0Y8TXGUXOWMee1oqxZy1dGrFaBFjJ-wF2aR9FoJw-zxvJOiCYXnPmgv47lOPZEr",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Albanian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c50/id/1962506154?format=srt&encoding=UTF-8&id=tt33764258&tok=3.5RrN0hdP3dB9tp6IST5Mi2u3GdbcB8ilwgUD0ZZTUGpqj4o40nOwHx57hOo_nJqg9HAjziiTIaLhUmXgOgvxcifby4X49GHbND6kVYnmaUpbbhthV0iVZVDG_pLmoe63",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Bulgarian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198e0c47/id/1962502230?format=srt&encoding=UTF-8&id=tt33764258&tok=3.KegC1fP2X2mPL0ZWaNOrIX_As8erS-oWGJE5cwWHGoM1IJhWBpXOnMATyu-DfxYTMvHFF-Rowwv116xDCBlNCYyaXh9y_ApYTssjkjs0BcogOopxieksqE19FsoVA3s4",
+          "mimeType": "application/x-subrip",
+          "language": "mn",
+          "label": "Mongolian - The Odyssey (2026) MAZE [machine]",
+          "name": "Mongolian - The Odyssey (2026) MAZE [machine]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c51/id/1962475042?format=srt&encoding=UTF-8&id=tt33764258&tok=3.ye3gu65jKeL7chIzuIhwg5q2IzrLU5OSZEIbVHftAahSEY7Yfq9UGg5eEiF1d3K0j95-_BHHHXaATYqDQaFWe8FNFBxMYKwbzxrgSvvaprdl9FWcN49FsFtkJZvvCkmA",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The Odyssey (2026) The Making Of (1080p-720p) WEBRip (CRETA STAR)",
+          "name": "Greek - The Odyssey (2026) The Making Of (1080p-720p) WEBRip (CRETA STAR)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ad0c54/id/1962508075?format=srt&encoding=UTF-8&id=tt33764258&tok=3.VCvbNdT6mSCwy-aF4xOcBMySqCT9aJ6HQm0cVNAcvicbJ2e2oZZ5fladC5NHX8p7v8PwH0kkAFFUTw9w3yopqg0RpfeGbMd-ZWbTobDgtfbuULFHEocyxUulkzrVl8OZ",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Odyssey.2026.1080p.HQ.HDTS.x265.AAC-NESTED",
+          "name": "Persian - The.Odyssey.2026.1080p.HQ.HDTS.x265.AAC-NESTED",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c55/id/1962532943?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Sq_GEu2CZo72JpdXHpMBlkGDAK6Y5KmdHstjG4uyaIwL3btPo8xpl2UXmzRpgvTdEYsk_IpS8qfjx6T-qEO3THE9Lgcn6kbittE-nS-vUzJ8QwcwbMOmkMlCl3vyHhEe",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The Odyssey 2026 1080p TELESYNC HEVC 10bit AAC2 0-SLH [Hardsub-Removed]",
+          "name": "Greek - The Odyssey 2026 1080p TELESYNC HEVC 10bit AAC2 0-SLH [Hardsub-Removed]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c5d/id/1962564766?format=srt&encoding=UTF-8&id=tt33764258&tok=3.4eEHZYoUzkq_C-u4j6gEz7DqytK3Gtul8MYBMb_jP3arMq1ei0TbLdN1Aau8CpdfH8rWv64i8NyHWIq9isfo-k9ljn0Xa4qPCMI4FeEIyjFQVV26MhjO1EaKtWYePkci",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - Odyssey.2026",
+          "name": "Persian - Odyssey.2026",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e00c62/id/1962676659?format=srt&encoding=UTF-8&id=tt33764258&tok=3.7uN3ugKI6WvBf-TBspESAapMzDUj9_CJbYi0Gc05LNlcg9MWRT7gm7LuC4JcRfnxwlqdALSHLCexrx2OB6SZuBckPJHveK4CDCh47dM4SQqayGGCnOBPcPDQAMTH5kc1",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - The.Odyssey.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Bulgarian - The.Odyssey.2026.1080p.WEBRip.x265.10bit.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c55/id/1962498131?format=srt&encoding=UTF-8&id=tt33764258&tok=3.UlTJ-FeeYMpkwGbLTbIeyimxxZRDOgh_cK441bollcW0RCjEx6eVNp5w8TIaWTLeoQ-S3oEFz9DPT_IK4RWcOz8VuN54Cm0SlAUdMWt_ysABaEDYK3NjqG-a1ffmLElK",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Turkish - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5b/id/1962536882?format=srt&encoding=UTF-8&id=tt33764258&tok=3.cjr22nkIwV-6FccsJQntCSl99yddKRXxgjVunyBy_ENx4W8lr0yJ91_TW7UEcb2KZFQ-MOMFmojMaODUWZ_0G8nhdvXgkBgWdLS_aO-B_Hm6CGJCrCvanWifxPJiDIJH",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese (SDH) - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH.mkv",
+          "name": "Japanese (SDH) - The.Odyssey.2026.1080p.TELESYNC.HEVC.10bit.AAC2.0-SLH.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b40c52/id/1962472433?format=srt&encoding=UTF-8&id=tt33764258&tok=3._F66wx3SGEOemtoNbC8kbxHHaSBOFxZTIDTU_QmCD-b2aJSf56zHsUlRwt7He8dklMEdBcz07ayqNsTBl4LPC3MmfA-IkCHHDnDSHix_XNr5OcF45qYg7U7Bd0oIfzHU",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix",
+          "name": "Bulgarian - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c57/id/1962491428?format=srt&encoding=UTF-8&id=tt33764258&tok=3.vGW8VhOrWd1KDw96NNCxfcxGPeahoZxOo7qQOjJ3H_88OeIX8wCWv_qR4LCE8L_GfYVWQe7zm-LYxQlxYYHRFQ7tOq9XGF7_5UiuZUuUDMz7-6oG7KhG2X_cf4toRYyi",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.en1",
+          "name": "French - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.en1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5d/id/1962477637?format=srt&encoding=UTF-8&id=tt33764258&tok=3.LV81PonIFZVVdEaFdiseIZ3BGShTn9DiFGvJCV7vFC_L3uIgvoSBqU5KZfTiqBajDkKepmrbcS7O2LPkVZcoTHI8T8Gi3yrkkoBilnA38H80vMFpkJvSr14iPcsztX_X",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Odyssey.2026.CAM-Rip-OnlyFlix.720p",
+          "name": "Arabic - The.Odyssey.2026.CAM-Rip-OnlyFlix.720p",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c56/id/1962491652?format=srt&encoding=UTF-8&id=tt33764258&tok=3.NL2G7dm-cPereSIEdlq04XI48vm-fY1vtF9QTu8xHPtzjr1xdfknp92tQfr5nABmjBgdhfSnlDnymWYS21_UQS5nHn2kZyYBiktxHxke3TB9wW7Udxd9hGQWZ0vcq2ue",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Arabic - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c57/id/1962497071?format=srt&encoding=UTF-8&id=tt33764258&tok=3.68dzLinv9x6Axop5stbGzt5wQO5Id5fIrgov0LnBP4Db-k8TcQ3ICDV5h5Qm-KHYWtfsv7RgaOsQCGAs7oITnqVMERoYTVeOBHkFOHV3NCjlFEc-y6mfgY1UGSEti05w",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Portuguese (BR) - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ee0c64/id/1962489983?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Y9wNcrTuG5Ubqt4Zdu2niJbv4PQZCQ1K0H7sWEm0cNSrukc_9FYEWY02BOfX17Q4g1KnNvHkTGBO5WG9rmNdwFb13iaT3MWnTCaNhMIy-Iq2NA2BQ5fWbO1UokRS9kOn",
+          "mimeType": "application/x-subrip",
+          "language": "sk",
+          "label": "Slovak - The Odyssey (2026) [1080p - HQ HDTS - x265 - AAC - [Tam+Hin+Tel+Eng] - HC-Sub] - MAZE",
+          "name": "Slovak - The Odyssey (2026) [1080p - HQ HDTS - x265 - AAC - [Tam+Hin+Tel+Eng] - HC-Sub] - MAZE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c57/id/1962493246?format=srt&encoding=UTF-8&id=tt33764258&tok=3.if8vl3dRDOx3aS4Ik32zlz9sG1DcC7KHKT0W-VQGOypbGSbnLArpvSeMH7dztelGqAgnLd1Td1SM6wTIUB6yCHrxjGND-2zukgNvw1L1SjUdbRrNtjjfc-fpD3fpS7Ri",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "French - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199d0c4b/id/1962502900?format=srt&encoding=UTF-8&id=tt33764258&tok=3.WB6_U4-Bz-fnfak088T7-SyDrdpw2qpv2Z299dY-HeiVpI_RMVGsiPPlFiZPLabazdXKD95X9PYhylsTNaHEzx1TfZGoXXd9bzBHCfZ2zINauGIQzi5f-5fysGnfekm-",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - Odyssey-lime",
+          "name": "Japanese - Odyssey-lime",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c59/id/1962478344?format=srt&encoding=UTF-8&id=tt33764258&tok=3.-nKddViDyhiVUvvK1dAFztayq6d5nJ38a7h1iHgm2wuDUE-wkVWTaUAgFioKkC-2a9UUh9de0f-Pa8_Jv5Qv7FSV5ft7Y7nsN0WX-aDbO5Z4F2FddjWRNPja72JhxX5v",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - Odyssey 2026 SubShqip",
+          "name": "Albanian - Odyssey 2026 SubShqip",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c52/id/1962494600?format=srt&encoding=UTF-8&id=tt33764258&tok=3.9hmcESO9YNNS-1MrkEFE-0XVJEsgVn_fti5V_4_7cwM2UuCOOsu1eMfqsE9FV3yLAc476hah0-Crw5qVslXGDI9ZRCGH2G5n9Yvpi2D_vQUGQgFK0BIKkuD6zqItMyJc",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Bulgarian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c56/id/1962531675?format=srt&encoding=UTF-8&id=tt33764258&tok=3.heCHP3TctrW_Xv_5Pgl4tpz7_b88A8Dj69tBBIReClwLdZgJ9nCIhcO-AJoDlAGUgZ4ONC1C66J8zG30L3w8YZm_BIrClrDr_7wGLqcYWvk5H-6H9hPTPCm7bFMsBdR9",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Vietnamese - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a10c50/id/1962501924?format=srt&encoding=UTF-8&id=tt33764258&tok=3.JdLXQAfs0KrrbnCKYxQ_NOERObV9lnfiokqnmDoSYEV1AgteT0eDlfrOCqs0NBspY6ZBjs-f9kGDdYYeDBz9wsOKB6E0VjdZ-vVxm2G8WO61CVwEbGvq-tB3wHsyUk37",
+          "mimeType": "application/x-subrip",
+          "language": "sq",
+          "label": "Albanian - The.Odyssey.2026.1080p.V3-iMAX.HDTC.Hindi-Multi.Line.HC-ESub.x264-HDHub4u.Ms",
+          "name": "Albanian - The.Odyssey.2026.1080p.V3-iMAX.HDTC.Hindi-Multi.Line.HC-ESub.x264-HDHub4u.Ms",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c4b/id/1962609010?format=srt&encoding=UTF-8&id=tt33764258&tok=3.aXF4zgWh2ad_cF0f0FdQJj8bBuSIi9d71rvcxir55GZG9alQTNYj9FjnIbKzDwia0NqZ4Kc9bVR395Z1tK4Bz1C2giaVXPUhec89SfQh2auFi82Qe_tQMF5a-eL2zLPM",
+          "mimeType": "application/x-subrip",
+          "language": "ms",
+          "label": "Malay - The Odyssey 2026 1080p AMZN WEB-DL DDP5 1 H 264",
+          "name": "Malay - The Odyssey 2026 1080p AMZN WEB-DL DDP5 1 H 264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5a/id/1962588226?format=srt&encoding=UTF-8&id=tt33764258&tok=3.oLQZtSN2Fo-tAUb3euSbUyMalguZ32kGWSrCkZ9C_L9P52rjQzr3JjnBGR8DI0yzyDP_zXbOuiWQfHVkl0gq_w8lnlZsa4UxyRKtJoB9efLm94ORK4Q5jK8Ai2zxM3eK",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - The.Odyssey.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "name": "Indonesian - The.Odyssey.2026.1080p.WEBRip.x264.AAC5.1-[YTS.GG - YTS.BZ]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19af0c54/id/1962560176?format=srt&encoding=UTF-8&id=tt33764258&tok=3.dhF04hYb8auw0C2tSU_jqDN2jUbLHmrizXash1BI0Z9fp5i1P_FSqidx-HwgT8OwqzXHMFoQPykpwV_gwbT3fwVeIPBRLWyEgLz7vq_man-ovIQvBRNIUZOXtW3QJ6J2",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Turkish - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e40c60/id/1962594982?format=srt&encoding=UTF-8&id=tt33764258&tok=3.M5dAur-WMUS5rEPek7XeQAaGQs0h_fpg8zuWreYNxuYkQknU77f6CcTobloCEn6m_zncn9XhtXoyQGddXRH5E4Nb-am8Uj3InwCeQYk4w3lgnEuo5yftZ1lz_EUZwXLs",
+          "mimeType": "application/x-subrip",
+          "language": "vi",
+          "label": "Vietnamese - Odyssey.2026.1080p.TELESYNC.x264-DKS.vie",
+          "name": "Vietnamese - Odyssey.2026.1080p.TELESYNC.x264-DKS.vie",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5f/id/1962484983?format=srt&encoding=UTF-8&id=tt33764258&tok=3.u9GqYhBSpuLdTfvvAeZHgwo7aRwxT6iMR0e3AxZ-uxyJXrO0rXvgJZt_S7KtIN9bQmmXcr45XRtPMBCWYsF9nfVU8hKkI1xGpFEpiVnc8ZkyW_zHylsYocPFqERqjrUJ",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Arabic - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d40c5d/id/1962577447?format=srt&encoding=UTF-8&id=tt33764258&tok=3.JtT_-66bsrZzYC9jZZJ1PwjWEeeHRbpUyICifj14omKKj3iH8Jd1hVdTFHk3N9ILJS6avh3jNen7OIboteSIeFr-opbOoa51_TGI4dkRMZ0NaUI8fiYINAroOMkt_98A",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The.Odyssey.2026.1080p.WEBRip.x264.AAC5.1-LAMA",
+          "name": "Portuguese - The.Odyssey.2026.1080p.WEBRip.x264.AAC5.1-LAMA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c5a/id/1962591295?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Gc4oBoEfWmhsZGnxIgCT1qCgEvoMUo70ViqVJZTpe90e-1wkrXzfpBbhW5r0kcc35-Th6bFgP4NSeGfeX_Bi0w-bEhORwSUH_9PSQJsVHaqXd3TWBo_0JVXWs8Hxjpac",
+          "mimeType": "application/x-subrip",
+          "language": "ja",
+          "label": "Japanese - The Odyssey",
+          "name": "Japanese - The Odyssey",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c56/id/1962491157?format=srt&encoding=UTF-8&id=tt33764258&tok=3.d2l-vpNK94zEvOW1MbWrZKtixFlM3XsdTIk1PWjr9hI2OaGNYA4VwESL-e7X0sGdVGM7aYVXvF3mLRVJMlS1bCSJwxI3cIole2G4tL3leSz2oMaHoVd5j5dmXSc0dNrA",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The Odyssey (2026) [1080p - HQ HDTS - x265 - AAC - [Tam+Hin+Tel+Eng] - HC-Sub] - MAZE",
+          "name": "Arabic - The Odyssey (2026) [1080p - HQ HDTS - x265 - AAC - [Tam+Hin+Tel+Eng] - HC-Sub] - MAZE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5d/id/1962498193?format=srt&encoding=UTF-8&id=tt33764258&tok=3.IFIaIkDJzkLYMrYWFCEwarpjHodTvh1cNj7LTZFPzF46W3QqXVu3WamzcMKg2zNuJom_95nNxM9-HFW8l4tdBHeUiLi8cVEFrQg_QW9xxFFDp5QSghGDHGTQXDtC5KzG",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Indonesian - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c57/id/1962479422?format=srt&encoding=UTF-8&id=tt33764258&tok=3.0mLGQ0WSvwEgVJPbRnEom8-HG-mi2yzh9vrGbsI9WpACOb3Rys_ffMX4bxl8wr1uBqjeiw2l5AzQprYnT2Zc-w9IvwLv6TIF7sTWvtHiZ4y--na53MjaEnDnIgDQ0SOh",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "name": "Bulgarian - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5c/id/1962493296?format=srt&encoding=UTF-8&id=tt33764258&tok=3.9DATvn8rHLdaTnjaSZrFQSMRhds0El8cwFWjQ_Obh54PXh86u4ZxRG_Sa-RBDMIi62ru8XwlNWZSYr_JMZWc0ZlxMI3DX51zJRjTJgTn-0Wu0dmLNZ2GvoCdSahzJDS6",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - The.Asylums.The.Odyssey.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264 (SDH)-zh-CN",
+          "name": "Chinese (simplified) - The.Asylums.The.Odyssey.2026.1080p.AMZN.WEB-DL.DDP5.1.H.264 (SDH)-zh-CN",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e60c65/id/1962479859?format=srt&encoding=UTF-8&id=tt33764258&tok=3.ZRHVS-2QPZ2K--TMuf0_RbBMTsB7AhPOVU8a6eDSb8EOjQ23YDjWr1RWtgcH3ijkzL2ftwxnh7-puOB_97DFHqK0HQj8kl2txQkNCz3ZQe0JfDgb8PjI5LoxiA64Zx22",
+          "mimeType": "application/x-subrip",
+          "language": "sk",
+          "label": "Slovak - The Odyssey CAM LQ OnlyFlix",
+          "name": "Slovak - The Odyssey CAM LQ OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c4e/id/1962511921?format=srt&encoding=UTF-8&id=tt33764258&tok=3.6NNASNWSiEManuVwD7J_WIpkAPrJxwsEUEtJfZqFnPUoi1kaxNdldait6Hu7s6vnvd2WUhRjyVRxev0wSoc92E3eQvX4fGSt4rDqsPGnijqbTAm8BAusnodkQQrWh9LN",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Portuguese - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c55/id/1962520892?format=srt&encoding=UTF-8&id=tt33764258&tok=3.p7RFkxPHUvYsW2zffJFPmLLtPnAnTlno6dkA2-x0XDq8MK7pHngBJw2nulTPRXL5vZA6qSPRabojdbfkvjrlrUVGyTB9-c2Xyy-aaeMFxfOZkB1dLSfBzfXSXBQmeDdC",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "French - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5f/id/1962566784?format=srt&encoding=UTF-8&id=tt33764258&tok=3.GffC8W1cWBA3m5HPlxngrj2fQg3x1TMtcUlfW6RdI9H5CuKHfG1QaEGu58G7LgPZlN4o-XGScSCohJZt6mq9MMVwos3-k2ij-cjU_0m0JKIrQ5jKgWXp6XNpVnIdu9or",
+          "mimeType": "application/x-subrip",
+          "language": "ko",
+          "label": "Korean - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "name": "Korean - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c56/id/1962608445?format=srt&encoding=UTF-8&id=tt33764258&tok=3.RtNaY7SKjWltSI27Lx_VOG93xr8sxwPtfVofuKQ82y1SRxmn9WPQiUAzY7CMV-jsiFa_-pZmG2BLK4IKGKKZL0t7MtEHsiSglaqfs42CTbIK38BNX-APN34brqP-yezV",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - The Odyssey",
+          "name": "Bulgarian - The Odyssey",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c59/id/1962483519?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Z6YjBQqfcJgO7PUewD0KhufSElQ-BByhYIwJz9RZxvM8bvFHj-JkrTCyprWwXRXrciSDxAyQfbRVLg9rKklB6_6a91A6Hns5gafUy-b6t8nqaX2Gk2OUpQKUGFeKIz-S",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Czech - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c56/id/1962485190?format=srt&encoding=UTF-8&id=tt33764258&tok=3.SdgsuENVTuWakeiFmw4zmjwi6i2PLwi3iC-_TNGbhKnP3pRHqo7xKwzCeDeY4E8r-LPYRCQwy-FKxxQOWJx6zsP_MS4omtwvYNVL6B6Ee9Kgb23YGA0sGNfZif1918bN",
+          "mimeType": "application/x-subrip",
+          "language": "sk",
+          "label": "Slovak - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "name": "Slovak - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b60c52/id/1962617441?format=srt&encoding=UTF-8&id=tt33764258&tok=3.cyjb_4JY6Ccg8IGtwTXxvDyXfdY4dTnCsYFftnNxG1wBOJiMz5k30PvBCaKzp4m0ST76qFGfpfvH5Y530mLmjxiaAiXf9T1Z-XSBzPeLIlaWK_4ZJDcFZ4ck95lD9Kfu",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "name": "English - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c59/id/1962479505?format=srt&encoding=UTF-8&id=tt33764258&tok=3.0oZgmL9HLqH6y05q1CI8KSECjm0I_NvhM0L17hyTV6aiYZz3k1eMNnC6asBq82it3YO0vN0J4FC_4UpFB2muwoq98F-RV6s_AXNPSPxbBQ8W7g2Tk9a3q7ZYlkCqKXlL",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - La Odisea 2026 - The.Odyssey.2026.1080p.x264-ehaguirre.ES3.srt",
+          "name": "Spanish (LA) - La Odisea 2026 - The.Odyssey.2026.1080p.x264-ehaguirre.ES3.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c60/id/1962475489?format=srt&encoding=UTF-8&id=tt33764258&tok=3.s0LH1pk_saudlTSe_orMdPQPV2FKUIqaRHnLh60p_56a8UXzCZvQ9U9AyTsbmhfS9EW2trVRHC6ZaKpyidbb3-ha7ON4aa_WoUxQciO8e-OJd_mLQKWIYG5tZkUQMJal",
+          "mimeType": "application/x-subrip",
+          "language": "de",
+          "label": "German - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix",
+          "name": "German - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c5a/id/1962493276?format=srt&encoding=UTF-8&id=tt33764258&tok=3.HrWySYy3tcGg0nlceTcEivtI_AyJmZHvVLfpdpPy19S9kIAdeVUnjPDnt4utDta_7BMoIL16LObzYm8kEb078wnLXFw9-yiNsqTQPEHpms0oG8rNeiI9f7wXo0ctvgXI",
+          "mimeType": "application/x-subrip",
+          "language": "sp",
+          "label": "Spanish (EU) - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE-2",
+          "name": "Spanish (EU) - The.Odyssey.2026.1080p.TELESYNC.HEVC.AAC2.0-SPLiCE-2",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c58/id/1962479504?format=srt&encoding=UTF-8&id=tt33764258&tok=3.TfYnB4GwbrU0dDz6NW_f7iKaMP9IFWO2-lAUg59dAtzo9E8rBRCltWkhZGPj7VY4qu1FbCJcwmP6AbogpY7hnZIyEtCrVY_yoWaMgxZ73hy592TPvH3QaPtAeocC2vGp",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - La Odisea - The.Odyssey.2026.1080p.x264-ehaguirre.ES3.srt",
+          "name": "Spanish (LA) - La Odisea - The.Odyssey.2026.1080p.x264-ehaguirre.ES3.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c5e/id/1962497591?format=srt&encoding=UTF-8&id=tt33764258&tok=3.BzuiRsmS2i7S47-2kEIqhVfbQiffsif0IuxTRJk9NZsRDD1rrlWIwE0QJfwFj-gsdg-uZ2oINTI_aTCUyFCJvIfEy2-E35S-6h9tCCsI8AiW09hfCZ5XLAuWy8G84YVD",
+          "mimeType": "application/x-subrip",
+          "language": "zt",
+          "label": "Chinese (traditional) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-TW",
+          "name": "Chinese (traditional) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-TW",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c57/id/1962479503?format=srt&encoding=UTF-8&id=tt33764258&tok=3.vYmRYwUXkqsBomsiroihntAiBBo6YQcSeSM9exIqZ6mKaESYhq2XvGfhDhfB2iSxWIUsygjUoHHF9avrO0uIM4cYmHF7-30FctleZWog5PfcEm0eI4I5ymP8zfCetqnx",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix-eh.a.es2.srt",
+          "name": "Spanish (LA) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix-eh.a.es2.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e20c5b/id/1962599621?format=srt&encoding=UTF-8&id=tt33764258&tok=3.LLVFHuicq1TY5DU-MLrxRZ6goiHoxx_3ZWo_mmQos0VkdwORZR4DLkT6MIBkCPBixzFdE1SKtvjiqZ2BdLiQHci50yhFjpyNdCz17aK8JpEMrRDW00l8FQrbcIWsfCWp",
+          "mimeType": "application/x-subrip",
+          "language": "lv",
+          "label": "Latvian - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "name": "Latvian - Odyssey.2026.1080p.TELESYNC.x264-DKS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e10c60/id/1962497593?format=srt&encoding=UTF-8&id=tt33764258&tok=3.L02wj4TQxmGe4h6r1xzHx8wbzH8xbK6y3-Xr9Xv3yQgTn5MQWOb9I7ep2SFpqOvSewN89mTBhuaJXcqweK2YYDv9hkz2aGorldGloO3Hkar4ehCUZogyzRudyJWM0hhv",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-CN",
+          "name": "Chinese (simplified) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-CN",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c54/id/1962486025?format=srt&encoding=UTF-8&id=tt33764258&tok=3.Ghfmw-ULY7EdfGEDa5wFCjIdIhLZQUTNUYkjQCqee0AUqPOKEZZZPaAag7UGmRMh82iwiAdSFRt4mskNf6oy0f3KV_k5zvOcf_2zNhYWa6J9fxfyNHtmgdCx3x7oviQk",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-CN",
+          "name": "Chinese (simplified) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-CN",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c56/id/1962486027?format=srt&encoding=UTF-8&id=tt33764258&tok=3.zAwYaiSX9EQZRWxA2XILnUWHRJ9kp5X7ETWw2X2TpSxRcb38Z0OgfqcSr0qqxgJPAxm5fja3kClfZlC7yjNDci86QWaJ4vdI8FB6Gs1kGSjGFEpEoHqbPUAkuPKMueLx",
+          "mimeType": "application/x-subrip",
+          "language": "zt",
+          "label": "Chinese (traditional) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-TW",
+          "name": "Chinese (traditional) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix.zh-TW",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c55/id/1962479501?format=srt&encoding=UTF-8&id=tt33764258&tok=3.wtyTCpEHl9Y5lVPuUl7NOeiOTKjHN1-2tgKgFqPfUgt7zw10HQtVfMoRZyZzpuJagUk6U9T5RwXhXSHVCpc0VTw0BuNrwo5VDf3mLdGeEjpXtUtErAR-5vFyMAYTGAeh",
+          "mimeType": "application/x-subrip",
+          "language": "ea",
+          "label": "Spanish (LA) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix-eh.a.es1",
+          "name": "Spanish (LA) - The.Odyssey.2026.1080p.CAM.x264-OnlyFlix-eh.a.es1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c56/id/1962497070?format=srt&encoding=UTF-8&id=tt33764258&tok=3.qV1jaxxHxIIwxHakEFaeaBu_pznLlVRIEu5GjQh91RKrQEq1XjjsqUrQ64TPVAdfXnM1ACtCmoyd6cr7RdAl-7hLskH6FLNJilCDOj8bWM9eQU3tuE11fO4y2MPYFLws",
+          "mimeType": "application/x-subrip",
+          "language": "zh",
+          "label": "Chinese (simplified) - Odyssey_简体中文版",
+          "name": "Chinese (simplified) - Odyssey_简体中文版",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c4e/id/1962582031?format=srt&encoding=UTF-8&id=tt33764258&tok=3.GlSygSE_A4nonKC3whaxmS8hgsPCEKodcYqRvClpHux0UAG_HopeQeIK_E1Cl1JMn7NdVRngpj-lhEat83TTcpuhCflIMc9iaAq8MJzULURACmG50HzapKIWU4XmCBs6",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic (SDH) - Khalid X: @KMFHabib",
+          "name": "Arabic (SDH) - Khalid X: @KMFHabib",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d30c5a/id/1962583780?format=srt&encoding=UTF-8&id=tt33764258&tok=3.0YDCcW1cqT0Rdz-rcDjrBjB4OahsKDJJy6_-EyuNy17sywbuo7THhHU-5_FsagD5G1sRQOxgZXnD2iHA-zto_6uQnpS19n4GdqWHeSZ_o8aDGBG9EzpSj5ZraHMO8pZA",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian (SDH) - The_Odyssey__Indonesia-_HDTS_-_x265_-_AAC.MAZE",
+          "name": "Indonesian (SDH) - The_Odyssey__Indonesia-_HDTS_-_x265_-_AAC.MAZE",
+          "format": "srt",
+          "headers": {}
+        }
+      ]
+    },
+    "movie:1153576": {
+      "tmdbId": "1153576",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt27419420",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792386909220,
+      "subtitles": []
     }
   }
 }
