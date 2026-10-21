@@ -888,6 +888,17 @@ function getMoviesDriveStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1)
         var servers = extractedByLink.reduce(function (all, extracted) {
           return all.concat(extracted);
         }, []);
+        // Different quality links can resolve to the same HubCloud page. Avoid
+        // repeating its multi-hop extraction for duplicate server URLs.
+        var seenServers = new Set();
+        servers = servers.filter(function (entry) {
+          if (seenServers.has(entry.server)) {
+            __mdLog("getMoviesDriveStreams", "debug", context + ".server.duplicate-skip", entry.server);
+            return false;
+          }
+          seenServers.add(entry.server);
+          return true;
+        });
         var streamsByServer = await __mdMapLimit(servers, 4, async function (entry) {
           var streams = await loadExtractor(entry.server, referer);
           __mdLog("getMoviesDriveStreams", "debug", context + ".link.loaded", {
