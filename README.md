@@ -33,7 +33,7 @@
 ---
 
 ## ✨ Features
-- **18 Built-in Providers** – 15 MoviesTv sources plus AnimeKai, AllWish, and AnimeSalt for Anime, with per-provider enable toggles + default selection.
+- **54 Built-in Providers** – MoviesTv + Anime sources with per-provider enable toggles + default selection.
 - **Multi-TMDB Key Rotation** – Supply multiple API keys; one is chosen randomly per request.
 - **🔥 Plugin System** – Drop new provider files in `providers/` and add its exported function to the registry map (`providers/registry.js` → `providerFunctionMap`). No core file edits required.
 - **Dynamic Filtering** – Minimum quality presets, custom JSON quality map, codec exclusion rules (presets + JSON).
@@ -163,6 +163,7 @@ If both `TMDB_API_KEY` and `TMDB_API_KEYS` are provided, rotation uses the array
 | `FEBBOX_COOKIES` | FebBox JWT cookie(s) | Comma-separated; required for Showbox |
 | `ENABLE_<PROVIDER>_PROVIDER` | Per-provider enable flags | e.g. `ENABLE_4KHDHUB_PROVIDER=true` |
 | `DISABLE_CACHE` | Disable internal caches | `true`/`false` |
+| `PROVIDER_LOG_REDACT` | Force URL redaction back on | `1` re-redacts the unredacted providers below |
 | `ENABLE_PSTREAM_API` | PStream API flag | Default `true` |
 | `DISABLE_URL_VALIDATION` | Skip general URL checks | Default `false` |
 | `DISABLE_4KHDHUB_URL_VALIDATION` | Skip 4khdhub URL checks | Default `false` |
@@ -263,8 +264,28 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `allwish` - AllWish anime streams (Anime category; season/episode-aware)
 - `animesalt` - AnimeSalt anime streams (Anime category; season/episode-aware)
 - `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
+- `anv` - Anv anime streams (Anime category; season/episode-aware, needs a TMDB key)
+- `watchanimeworld` - WatchAnimeWorld anime streams (Anime category; needs a TMDB key)
+- `wcoflix` - WcoFlix anime streams (Anime category; needs a TMDB key)
+- `vegamovies` - VegaMovies movie and TV streams (direct file links; needs a TMDB key)
+- `vidbolt` - VidBolt movie and TV streams (multi-server resolver)
 
-Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`) require at least one TMDB API key configured.
+Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `anv`, `watchanimeworld`, `wcoflix`, `vegamovies`) require at least one TMDB API key configured.
+
+### Verbose Provider Logging
+
+`anv`, `watchanimeworld`, `wcoflix`, `vegamovies`, and `vidbolt` are instrumented with the project's
+`utils/providerTrace` diagnostics, so every request they make is logged with the **complete,
+unredacted URL** (method, status, content-type, elapsed time), plus step-level events such as
+`tmdb.resolved`, `search.results`, `match.selected`, `catalog.loaded`, `resolve.done`, and
+`streams.resolved` with the final playable URLs.
+
+Logs go to stdout and to the in-memory buffer served by `GET /api/logs` (admin session required).
+
+> **Note:** unredacted logging means TMDB API keys, signed CDN URLs (`X-Amz-Signature`,
+> `X-Amz-Credential`), and provider session tokens appear verbatim in the logs. Set
+> `PROVIDER_LOG_REDACT=1` to force redaction back on, or flip `{ redact: false }` to
+> `{ redact: true }` in the provider's `createProviderTrace(...)` call to re-redact it permanently.
 
 ### Adding a New Provider
 The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidrock`, and `moviesdrive1`. HDMovie2 currently handles movies only; TV requests return no streams. MoviesDrive uses the configured TMDB API key. Superstream includes the Vidnest decoding helper.

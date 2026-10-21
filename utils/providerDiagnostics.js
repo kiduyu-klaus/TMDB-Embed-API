@@ -24,13 +24,19 @@ function safeText(value) {
         /^https?:\/\//i.test(match) ? safeUrl(match) : '[redacted]');
 }
 
-function createDiagnosticLogger(scope) {
+// `redact: false` disables every redaction pass (URL credentials, sensitive
+// query params, JWTs and secret-named fields). It exists for providers that
+// are explicitly instrumented for local debugging, where the complete
+// request URL is the whole point of the log line.
+function createDiagnosticLogger(scope, { redact = true } = {}) {
     const id = `${scope}-${++sequence}`;
     return (event, fields = {}) => {
-        const safeFields = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key,
-            /^(?:token|cookie|authorization|password|body|headers)$/i.test(key) ? '[redacted]'
-                : typeof value === 'string' ? safeText(value) : value
-        ]));
+        const safeFields = redact
+            ? Object.fromEntries(Object.entries(fields).map(([key, value]) => [key,
+                /^(?:token|cookie|authorization|password|body|headers)$/i.test(key) ? '[redacted]'
+                    : typeof value === 'string' ? safeText(value) : value
+            ]))
+            : fields;
         console.log(`[${id}][${new Date().toISOString()}] ${event} ${JSON.stringify(safeFields)}`);
     };
 }

@@ -97,6 +97,11 @@ const providerFunctionMap = {
   'titan.js': 'getStreams',
   'Barbarian.js': 'getStreams',
   'vidsrc.js': 'getVidsrcStreams',
+  'anv.js': 'getStreams',
+  'watchanimeworld.js': 'getStreams',
+  'WcoFlix.js': 'getStreams',
+  'vegamovies.js': 'getStreams',
+  'vidbolt.js': 'getStreams',
 
 };
 
@@ -154,6 +159,11 @@ const providerCategoryMap = {
   'titan.js': 'MoviesTv',
   'Barbarian.js': 'MoviesTv',
   'vidsrc.js': 'MoviesTv',
+  'anv.js': 'Anime',
+  'watchanimeworld.js': 'Anime',
+  'WcoFlix.js': 'Anime',
+  'vegamovies.js': 'MoviesTv',
+  'vidbolt.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint

@@ -1,11 +1,14 @@
 const { AsyncLocalStorage } = require('node:async_hooks');
 const { createDiagnosticLogger } = require('./providerDiagnostics');
 
-function createProviderTrace(name) {
+function createProviderTrace(name, options = {}) {
     const context = new AsyncLocalStorage();
+    // Providers default to redacted output. Passing { redact: false } opts into
+    // complete, unredacted URLs; PROVIDER_LOG_REDACT=1 forces redaction back on.
+    const redact = process.env.PROVIDER_LOG_REDACT === '1' ? true : options.redact !== false;
     const log = (event, fields = {}) => context.getStore()?.log(event, fields);
     async function run(fn, args) {
-        const state = { log: createDiagnosticLogger(name), requests: 0 };
+        const state = { log: createDiagnosticLogger(name, { redact }), requests: 0 };
         return context.run(state, async () => {
             const started = Date.now();
             log('extract.start', { tmdbId: args[0], mediaType: args[1], season: args[2], episode: args[3] });

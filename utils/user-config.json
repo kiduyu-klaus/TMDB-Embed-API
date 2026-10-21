@@ -25,7 +25,7 @@
   "enableNotorrentProvider": false,
   "enableDahmermoviesProvider": true,
   "port": 8787,
-  "providerCheckTmdbId": "385687",
+  "providerCheckTmdbId": "550",
   "enableVaplayerProvider": true,
   "enableNetmirrorProvider": true,
   "enableCastletvProvider": true,
