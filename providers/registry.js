@@ -96,6 +96,7 @@ const providerFunctionMap = {
   'valkyrie.js': 'getStreams',
   'titan.js': 'getStreams',
   'Barbarian.js': 'getStreams',
+  'vidsrc.js': 'getVidsrcStreams',
 
 };
 
@@ -152,6 +153,7 @@ const providerCategoryMap = {
   'valkyrie.js': 'MoviesTv',
   'titan.js': 'MoviesTv',
   'Barbarian.js': 'MoviesTv',
+  'vidsrc.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
