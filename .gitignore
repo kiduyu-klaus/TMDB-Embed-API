@@ -73,3 +73,4 @@ tests/abyss.py
 *.zip
 /docs
 docs/resource-limits.md
+outputs/moviesjoy-reacher-s02e03-trace.json
