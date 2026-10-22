@@ -62,7 +62,7 @@ const getCookieForRequest = async (regionPreference = null, userCookie = null) =
         try {
             const array = Array.isArray(global.currentRequestConfig.cookies) ? global.currentRequestConfig.cookies.filter(Boolean) : [];
             if (array.length > 0) {
-                // Strip 'ui=' prefix if present — callers always prepend 'ui=' themselves
+                // Strip 'ui=' prefix if present â€” callers always prepend 'ui=' themselves
                 const raw = array[0];
                 baseCookieToUse = raw.startsWith('ui=') ? raw.slice(3) : raw;
             }
@@ -153,6 +153,14 @@ const fetchStreamSize = async (url) => {
 
 const FEBBOX_PLAYER_URL = "https://www.febbox.com/file/player";
 const FEBBOX_FILE_SHARE_LIST_URL = "https://www.febbox.com/file/file_share_list";
+const videoHeaders = {
+    Accept: '*/*',
+    'Accept-Language': 'en-US,en;q=0.8',
+    Connection: 'keep-alive',
+    Range: 'bytes=0-',
+    Referer: 'https://www.febbox.com/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+};
 // MODIFICATION: Remove SCRAPER_API_URL
 // const SCRAPER_API_URL = 'https://api.scraperapi.com/';
 // TMDB key now sourced from config/env; no hardcoded public key
@@ -1994,7 +2002,7 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
                             quality: parseQualityFromLabel(source.label),
                             language: inferShowboxStreamLanguage(streamTitle, source.url),
                             provider: 'Febbox Direct',
-                            headers: {}
+                            headers: { ...videoHeaders }
                         });
                     }
                     // If direct sources are found, original code used 'continue', 
@@ -2024,7 +2032,7 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
                                 quality: parseQualityFromLabel(source.label),
                                 language: inferShowboxStreamLanguage(streamTitle, source.url),
                                 provider: 'Febbox FID',
-                                headers: {}
+                                headers: { ...videoHeaders }
                             });
                         }
                     }
@@ -2215,7 +2223,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                     quality: parseQualityFromLabel(source.label),
                     language: inferShowboxStreamLanguage(streamTitle, source.url),
                     provider: 'Febbox Direct',
-                    headers: {}
+                    headers: { ...videoHeaders }
                 });
             }
             console.timeEnd(processTimerLabel);
@@ -2238,7 +2246,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                         quality: parseQualityFromLabel(source.label),
                         language: inferShowboxStreamLanguage(streamTitle, source.url),
                         provider: 'Febbox FID',
-                        headers: {}
+                        headers: { ...videoHeaders }
                     });
                 }
             }
@@ -2525,7 +2533,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                         quality: parseQualityFromLabel(source.label),
                         language: inferShowboxStreamLanguage(streamTitle, source.url),
                         provider: 'Febbox FID',
-                        headers: {}
+                        headers: { ...videoHeaders }
                     });
                 }
             } else {
@@ -2887,7 +2895,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         language: inferShowboxStreamLanguage(streamTitle, url),
                         subtitles: [],
                         provider: 'PStream',
-                        headers: {}
+                        headers: { ...videoHeaders }
                     });
                 }
             }
@@ -2915,7 +2923,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                     language: inferShowboxStreamLanguage(streamTitle, source.url),
                     subtitles: [],
                     provider: 'PStream',
-                    headers: {}
+                    headers: { ...videoHeaders }
                 });
             }
 
@@ -2938,7 +2946,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         language: inferShowboxStreamLanguage(streamTitle, item.url || item.file),
                         subtitles: [],
                         provider: 'PStream',
-                        headers: {}
+                        headers: { ...videoHeaders }
                     });
                 }
             }
