@@ -224,7 +224,11 @@ async function getSubtitles(episodeId, defaultHeaders) {
     }
 }
 
-async function getKisskhStreams(tmdbId, mediaType = 'movie', season = null, episode = null) {
+async function getKisskhStreams(...args) {
+    return diagnostics.run(() => getKisskhStreamsImpl(...args), args);
+}
+
+async function getKisskhStreamsImpl(tmdbId, mediaType = 'movie', season = null, episode = null) {
     const started = Date.now();
     diagnostics.log('streams.start', { tmdbId, mediaType, season, episode, endpoint: endpointName(KISSKH_API) });
     try {
