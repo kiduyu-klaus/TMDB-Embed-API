@@ -1,0 +1,20 @@
+{
+  "provider": "kisskh",
+  "tmdbId": "129",
+  "streams": [
+    {
+      "name": "KissKH",
+      "title": "Spirited Away",
+      "language": "Original",
+      "quality": "Auto",
+      "format": "hls",
+      "provider": "KissKH",
+      "host": "hls10.cdnvideo11.shop",
+      "headerNames": [
+        "Referer",
+        "User-Agent"
+      ],
+      "subtitleCount": 0
+    }
+  ]
+}

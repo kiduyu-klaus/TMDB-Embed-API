@@ -109,6 +109,7 @@ async function fetchSources(slug, episode, provider, lang) {
                     title: `AniKage \u2022 ${providerLabel} \u2022 ${langLabel}`,
                     url: `${BKY_BASE}${isHls ? "/m3u8/" : "/stream/"}${s.url}`,
                     quality: "1080p",
+                    language: langLabel,
                     headers: S_HEADERS,
                     subtitles: subtitles,
                 };

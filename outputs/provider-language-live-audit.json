@@ -1,0 +1,1102 @@
+{
+  "generatedAt": "2026-10-22T06:55:31.867Z",
+  "totalStreams": 361,
+  "providers": [
+    {
+      "provider": "4khdhub",
+      "streams": 1,
+      "missing": 0,
+      "languages": [
+        " Hindi . English"
+      ],
+      "examples": [
+        {
+          "language": " Hindi . English",
+          "quality": "2160p",
+          "title": "4KHDHub - 2160p - Hindi . English Fight Club (2160p BluRay HDR HEVC) 41.84 GB Hindi, English BluRay Fight Club (1999) 2160p UHD BluRay HDR 10bit HEVC [Hindi DDP 2.0 + English DTS-H"
+        }
+      ]
+    },
+    {
+      "provider": "allwish",
+      "streams": 4,
+      "missing": 4,
+      "languages": [
+        "MISSING"
+      ],
+      "examples": [
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AllWish SUB - Mega"
+        },
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AllWish DUB - Mega"
+        },
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AllWish SUB - Mega"
+        }
+      ]
+    },
+    {
+      "provider": "anikage",
+      "streams": 8,
+      "missing": 8,
+      "languages": [
+        "MISSING"
+      ],
+      "examples": [
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AniKage • Koto • Japanese"
+        },
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AniKage • Koto • English"
+        },
+        {
+          "language": "MISSING",
+          "quality": "1080p",
+          "title": "AniKage • Wave • Japanese"
+        }
+      ]
+    },
+    {
+      "provider": "anikoto",
+      "streams": 8,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "multi-quality",
+          "title": "Anikoto SUB - Vidstream-1"
+        },
+        {
+          "language": "Original",
+          "quality": "multi-quality",
+          "title": "Anikoto SUB - Vidstream-2"
+        },
+        {
+          "language": "Original",
+          "quality": "multi-quality",
+          "title": "Anikoto SUB - HD-1"
+        }
+      ]
+    },
+    {
+      "provider": "animekai",
+      "streams": 15,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - Server -1 - Sub"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - Vidstream-2 - Sub"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - Vidstream-1 beta - Sub"
+        }
+      ]
+    },
+    {
+      "provider": "animeonsen",
+      "streams": 1,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "That Time I Got Reincarnated as a Slime - 720p [DASH]"
+        }
+      ]
+    },
+    {
+      "provider": "animesalt",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Spirited Away - AnimeSalt Movie - SERVER 1 MyStream"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "That Time I Got Reincarnated as a Slime - AnimeSalt S1E1 - SERVER 1 MyStream"
+        }
+      ]
+    },
+    {
+      "provider": "anizone",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "AniZone • Varyg"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "AniZone • Varyg"
+        }
+      ]
+    },
+    {
+      "provider": "anv",
+      "streams": 12,
+      "missing": 0,
+      "languages": [
+        "Japanese",
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "Japanese",
+          "quality": "1080p",
+          "title": "Anv • Japanese • Orange"
+        },
+        {
+          "language": "Japanese",
+          "quality": "1080p",
+          "title": "Anv • Japanese • Pear"
+        },
+        {
+          "language": "Japanese",
+          "quality": "1080p",
+          "title": "Anv • Japanese • Banana"
+        }
+      ]
+    },
+    {
+      "provider": "barbarian",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "English",
+          "quality": "4K / 1080p",
+          "title": "FrameXTV | Super Barbarian (Lisbon) | 4K / 1080p | English | API source"
+        },
+        {
+          "language": "English",
+          "quality": "Auto",
+          "title": "FrameXTV | Super Barbarian (Lisbon) | Auto | English | 4K PQ / 1080p / 720p / 360p"
+        }
+      ]
+    },
+    {
+      "provider": "bingebang",
+      "streams": 21,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​​﻿​BingeBang • Rigel"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​​﻿​BingeBang • Vega"
+        },
+        {
+          "language": "Original",
+          "quality": "2160p",
+          "title": "​​​​​​​​​​​​​​​​​​​﻿BingeBang • Yildun"
+        }
+      ]
+    },
+    {
+      "provider": "bower",
+      "streams": 10,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "English",
+        "Hindi"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Unknown",
+          "title": "Bowler - Unknown"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Bowler - Auto"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Bowler - 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "byse",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Byse - 1080p - Original"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Byse - 1080p - Original"
+        }
+      ]
+    },
+    {
+      "provider": "cinejoy",
+      "streams": 6,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Cinejoy Nebula - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Cinejoy Nebula - 720p"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Cinejoy Nebula - Auto"
+        }
+      ]
+    },
+    {
+      "provider": "cinejoytv",
+      "streams": 10,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "4K",
+          "title": "Cinejoy-TV - Lisbon - 4K (2160p)"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Cinejoy-TV - Lisbon - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Cinejoy-TV - Lisbon - 720p"
+        }
+      ]
+    },
+    {
+      "provider": "cinesrc",
+      "streams": 16,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "VIP 1",
+          "title": "CineSrc - cld - VIP 1"
+        },
+        {
+          "language": "Original",
+          "quality": "TIK 2",
+          "title": "CineSrc - cld - TIK 2"
+        },
+        {
+          "language": "English",
+          "quality": "English",
+          "title": "CineSrc - VidRock - English"
+        }
+      ]
+    },
+    {
+      "provider": "cinestream",
+      "streams": 16,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "Hindi . English",
+        "Hindi . Tamil . Telugu . Kannada . English"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VidFast [vRapid]"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VidFast [vBlaze]"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VidFast [Cobra]"
+        }
+      ]
+    },
+    {
+      "provider": "dahmermovies",
+      "streams": 8,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "English",
+        "English . Hindi"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "2160p",
+          "title": "2160p | Original | 6.2 GB | MKV | Fight Club 1999 2160p UHD BluRay x265 HDR DD5 1 Pahe in"
+        },
+        {
+          "language": "English",
+          "quality": "2160p",
+          "title": "2160p | English | 104.9 GB | MKV | Fight Club 1999 UHD Re Grade 6000nit 2160p HEVC HDR IVA RUS UKR ENG ExKinoRay"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "1080p | Original | 7.6 GB | MKV | 010 Fight Club 1999 BluRay 1080p x265 10bit 2Audio MNHD FRDS"
+        }
+      ]
+    },
+    {
+      "provider": "desiflix",
+      "streams": 7,
+      "missing": 0,
+      "languages": [
+        "Multi Audio"
+      ],
+      "examples": [
+        {
+          "language": "Multi Audio",
+          "quality": "1080p",
+          "title": "Fight Club (1999) [DesiFlix 1080p Multi-Audio]"
+        },
+        {
+          "language": "Multi Audio",
+          "quality": "1080p",
+          "title": "Fight Club (1999) [DesiFlix 1080p Multi-Audio]"
+        },
+        {
+          "language": "Multi Audio",
+          "quality": "720p",
+          "title": "Fight Club (1999) [DesiFlix 720p Multi-Audio]"
+        }
+      ]
+    },
+    {
+      "provider": "dexter",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "2160p",
+          "title": "​​​​​​​​​​​​​​​​​​​​Dexter • 2160p • HLS"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​​​﻿Dexter • 1080p • HLS"
+        }
+      ]
+    },
+    {
+      "provider": "flixcloud",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Spirited Away - HD-2 SUB"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - HD-2 SUB"
+        }
+      ]
+    },
+    {
+      "provider": "hianime",
+      "streams": 3,
+      "missing": 0,
+      "languages": [
+        "Japanese",
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "Japanese",
+          "quality": "auto",
+          "title": "h!anime • Japanese"
+        },
+        {
+          "language": "Japanese",
+          "quality": "1080p",
+          "title": "h!anime • Japanese"
+        },
+        {
+          "language": "English",
+          "quality": "auto",
+          "title": "h!anime • English"
+        }
+      ]
+    },
+    {
+      "provider": "kickassanime",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "KickassAnime VidStreaming"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "KickassAnime VidStreaming"
+        }
+      ]
+    },
+    {
+      "provider": "megaplay",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - Server 4 - Sub"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "That Time I Got Reincarnated as a Slime - Server 4 - Dub"
+        }
+      ]
+    },
+    {
+      "provider": "meowtv",
+      "streams": 10,
+      "missing": 0,
+      "languages": [
+        "Hindi",
+        "Original",
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "Hindi",
+          "quality": "Auto",
+          "title": "MeowTV - Acme Hindi - Auto"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "MeowTV - Dcloud - Auto"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "MeowTV - TCloud - Auto"
+        }
+      ]
+    },
+    {
+      "provider": "miner",
+      "streams": 19,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Miner - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Miner - 720p"
+        },
+        {
+          "language": "Original",
+          "quality": "480p",
+          "title": "Miner - 480p"
+        }
+      ]
+    },
+    {
+      "provider": "moviebox",
+      "streams": 10,
+      "missing": 0,
+      "languages": [
+        "English",
+        "Original",
+        "Hindi"
+      ],
+      "examples": [
+        {
+          "language": "English",
+          "quality": "1080p • MP4",
+          "title": "​​​​​​​​​​​​​​​​​​​​MovieBox • English Audio • 1080p"
+        },
+        {
+          "language": "English",
+          "quality": "720p • MP4",
+          "title": "​​​​​​​​​​​​​​​​​​​﻿MovieBox • English Audio • 720p"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p • MP4",
+          "title": "​​​​​​​​​​​​​​​​​​​​MovieBox • Original Audio • 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "moviesdrive1",
+      "streams": 3,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "2160p",
+          "title": "​​​​​​​​​​​​​​​​​​​​MoviesDrive • FSL"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​​​﻿MoviesDrive • FSL"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​​​﻿MoviesDrive • FSL"
+        }
+      ]
+    },
+    {
+      "provider": "movieshunt",
+      "streams": 1,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080P",
+          "title": "​​​​​​​​​​​​​​​​​​﻿​MoviesHunt • 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "moviesjoy",
+      "streams": 4,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "MoviesJoy - VidUp"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "MoviesJoy - VidUp"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "MoviesJoy - VidUp"
+        }
+      ]
+    },
+    {
+      "provider": "netmirror",
+      "streams": 4,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Fight Club\n720p"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Fight Club\nAuto"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Game of Thrones\n720p"
+        }
+      ]
+    },
+    {
+      "provider": "playimdb",
+      "streams": 6,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Fight Club (1999) · Server 1"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Fight Club (1999) · Server 2"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Fight Club (1999) · Server 3"
+        }
+      ]
+    },
+    {
+      "provider": "showbox",
+      "streams": 11,
+      "missing": 11,
+      "languages": [
+        "MISSING"
+      ],
+      "examples": [
+        {
+          "language": "MISSING",
+          "quality": "ORG",
+          "title": "Fight Club (1999) - AUTO"
+        },
+        {
+          "language": "MISSING",
+          "quality": "ORG",
+          "title": "Fight Club (1999) - AUTO"
+        },
+        {
+          "language": "MISSING",
+          "quality": "ORG",
+          "title": "Fight Club (1999) - ORG"
+        }
+      ]
+    },
+    {
+      "provider": "streamflix",
+      "streams": 1,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "StreamFlix | Fight Club"
+        }
+      ]
+    },
+    {
+      "provider": "titan",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "FrameXTV | Titan VII - Direct MP4 | 1080p | API source"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "FrameXTV | Titan VII - S01E01 Direct MP4 | 1080p | API source"
+        }
+      ]
+    },
+    {
+      "provider": "uhdmovies",
+      "streams": 8,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "UHDMovies - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "2160p",
+          "title": "UHDMovies - 2160p"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "UHDMovies - 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "vaplayer",
+      "streams": 6,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VaPlayer · HLS 1"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VaPlayer · HLS 2"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "VaPlayer · HLS 3"
+        }
+      ]
+    },
+    {
+      "provider": "vegamovies",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "English • Hindi"
+      ],
+      "examples": [
+        {
+          "language": "English • Hindi",
+          "quality": "1080p • English • Hindi • 3.4GB\nBlu-ray • AAC • H.264",
+          "title": "​​​​​​​​​​​​​​​​​​﻿​VegaMovies • 1080P • HubCloud"
+        },
+        {
+          "language": "English • Hindi",
+          "quality": "1080p • English • Hindi\nBlu-ray • DDP5.1 • H.264",
+          "title": "​​​​​​​​​​​​​​​​​​﻿​VegaMovies • 1080P • HubCloud"
+        }
+      ]
+    },
+    {
+      "provider": "vidbolt",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​﻿​​VidBolt • Orion • 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "​​​​​​​​​​​​​​​​​﻿​​VidBolt • Orion • 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "vidbox",
+      "streams": 7,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "360p",
+          "title": "Fight Club - Sub/Original (360p)"
+        },
+        {
+          "language": "Original",
+          "quality": "480p",
+          "title": "Fight Club - Sub/Original (480p)"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Fight Club - Sub/Original (720p)"
+        }
+      ]
+    },
+    {
+      "provider": "videasy",
+      "streams": 43,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "German",
+        "French",
+        "Hindi"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Videasy Miami - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Videasy Miami - 720p"
+        },
+        {
+          "language": "Original",
+          "quality": "480p",
+          "title": "Videasy Miami - 480p"
+        }
+      ]
+    },
+    {
+      "provider": "vidfast",
+      "streams": 21,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Vidfast - Server - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Vidfast - Server - Auto"
+        },
+        {
+          "language": "Original",
+          "quality": "Auto",
+          "title": "Vidfast - Server - Auto"
+        }
+      ]
+    },
+    {
+      "provider": "vidlink",
+      "streams": 3,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "720p",
+          "title": "Fight Club (1999)"
+        },
+        {
+          "language": "Original",
+          "quality": "480p",
+          "title": "Fight Club (1999)"
+        },
+        {
+          "language": "Original",
+          "quality": "360p",
+          "title": "Fight Club (1999)"
+        }
+      ]
+    },
+    {
+      "provider": "vidrock",
+      "streams": 7,
+      "missing": 0,
+      "languages": [
+        "English"
+      ],
+      "examples": [
+        {
+          "language": "English",
+          "quality": "Auto",
+          "title": "Vidrock Nova (English) - Auto"
+        },
+        {
+          "language": "English",
+          "quality": "Auto",
+          "title": "Vidrock Atlas (English) - Auto"
+        },
+        {
+          "language": "English",
+          "quality": "Auto",
+          "title": "Vidrock Orion (English) - Auto"
+        }
+      ]
+    },
+    {
+      "provider": "vidsrc",
+      "streams": 6,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "800p",
+          "title": "Vidsrc nectarandnectary.space - 800p"
+        },
+        {
+          "language": "Original",
+          "quality": "800p",
+          "title": "Vidsrc nectarandnectary.space - 800p"
+        },
+        {
+          "language": "Original",
+          "quality": "800p",
+          "title": "Vidsrc nectarandnectary.space - 800p"
+        }
+      ]
+    },
+    {
+      "provider": "vixsrc",
+      "streams": 2,
+      "missing": 0,
+      "languages": [
+        "Original"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Vixsrc - 1080p"
+        },
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "Vixsrc - 1080p"
+        }
+      ]
+    },
+    {
+      "provider": "watchanimeworld",
+      "streams": 21,
+      "missing": 0,
+      "languages": [
+        "Original",
+        "Hindi",
+        "English",
+        "Japanese",
+        "Tamil",
+        "Telugu"
+      ],
+      "examples": [
+        {
+          "language": "Original",
+          "quality": "1080p",
+          "title": "AnimeWorld • Multi-Dub"
+        },
+        {
+          "language": "Hindi",
+          "quality": "1080p",
+          "title": "AnimeWorld • Hindi"
+        },
+        {
+          "language": "Hindi",
+          "quality": "1080p",
+          "title": "AnimeWorld • Hindi"
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 // Normalize provider output without fetching URLs or changing upstream headers.
+const { inferStreamLanguage } = require('./streamLanguage');
 const MIME_TYPES = {
   hls: 'application/vnd.apple.mpegurl', dash: 'application/dash+xml',
   mp4: 'video/mp4', mkv: 'video/x-matroska', webm: 'video/webm',
@@ -70,6 +71,7 @@ function normalizeStreams(streams, providerName = 'unknown') {
       title: s.title || s.name || provider,
       url: s.url,
       quality: s.quality == null ? 'Auto' : String(s.quality),
+      language: s.language || inferStreamLanguage(s),
       provider,
       headers,
       format,

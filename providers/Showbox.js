@@ -157,12 +157,14 @@ const FEBBOX_FILE_SHARE_LIST_URL = "https://www.febbox.com/file/file_share_list"
 // const SCRAPER_API_URL = 'https://api.scraperapi.com/';
 // TMDB key now sourced from config/env; no hardcoded public key
 const { getTmdbApiKey } = require('../utils/tmdbKey');
+const { inferStreamLanguage } = require('../utils/streamLanguage');
 function obtainTmdbKey() {
     const k = getTmdbApiKey();
     if (!k) console.warn('[Showbox] No TMDB API key available (multi-key set empty).');
     return k;
 }
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const inferShowboxStreamLanguage = (title, url) => inferStreamLanguage({ title, file: url });
 // Determine cache directory based on environment
 // Use /tmp/.cache when running on Vercel, otherwise use local .cache directory
 // Allow external override to keep cache writes out of watched tree during dev
@@ -1990,6 +1992,7 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
                             title: streamTitle,
                             url: source.url,
                             quality: parseQualityFromLabel(source.label),
+                            language: inferShowboxStreamLanguage(streamTitle, source.url),
                             provider: 'Febbox Direct',
                             headers: {}
                         });
@@ -2019,6 +2022,7 @@ const getStreamsFromTmdbId = async (tmdbType, tmdbId, seasonNum = null, episodeN
                                 title: streamTitle,
                                 url: source.url,
                                 quality: parseQualityFromLabel(source.label),
+                                language: inferShowboxStreamLanguage(streamTitle, source.url),
                                 provider: 'Febbox FID',
                                 headers: {}
                             });
@@ -2209,6 +2213,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                     title: streamTitle,
                     url: source.url,
                     quality: parseQualityFromLabel(source.label),
+                    language: inferShowboxStreamLanguage(streamTitle, source.url),
                     provider: 'Febbox Direct',
                     headers: {}
                 });
@@ -2231,6 +2236,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                         title: streamTitle,
                         url: source.url,
                         quality: parseQualityFromLabel(source.label),
+                        language: inferShowboxStreamLanguage(streamTitle, source.url),
                         provider: 'Febbox FID',
                         headers: {}
                     });
@@ -2517,6 +2523,7 @@ const processShowWithSeasonsEpisodes = async (febboxUrl, showboxTitle, seasonNum
                         title: streamTitle,
                         url: source.url,
                         quality: parseQualityFromLabel(source.label),
+                        language: inferShowboxStreamLanguage(streamTitle, source.url),
                         provider: 'Febbox FID',
                         headers: {}
                     });
@@ -2877,6 +2884,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         title: streamTitle,
                         url: url,
                         quality: parseQualityFromLabel(quality),
+                        language: inferShowboxStreamLanguage(streamTitle, url),
                         subtitles: [],
                         provider: 'PStream',
                         headers: {}
@@ -2904,6 +2912,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                     title: streamTitle,
                     url: source.url,
                     quality: parseQualityFromLabel(source.quality),
+                    language: inferShowboxStreamLanguage(streamTitle, source.url),
                     subtitles: [],
                     provider: 'PStream',
                     headers: {}
@@ -2926,6 +2935,7 @@ const processPStreamResponse = (apiResponse, tmdbType, seasonNum, episodeNum) =>
                         title: streamTitle,
                         url: item.url || item.file,
                         quality: parseQualityFromLabel(item.quality || item.label),
+                        language: inferShowboxStreamLanguage(streamTitle, item.url || item.file),
                         subtitles: [],
                         provider: 'PStream',
                         headers: {}

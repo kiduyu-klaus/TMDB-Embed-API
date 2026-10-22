@@ -1,0 +1,429 @@
+[
+  {
+    "provider": "4khdhub",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 14
+  },
+  {
+    "provider": "Barbarian",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "MoviesHunt",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 15
+  },
+  {
+    "provider": "Showbox",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 21
+  },
+  {
+    "provider": "WcoFlix",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 13
+  },
+  {
+    "provider": "allwish",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 14
+  },
+  {
+    "provider": "anikage",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "anikoto",
+    "explicitLanguageFields": 2,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 19
+  },
+  {
+    "provider": "anime-dekho",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "animekai",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "animekhor",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "animeonsen",
+    "explicitLanguageFields": 2,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 10
+  },
+  {
+    "provider": "animesalt",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 12
+  },
+  {
+    "provider": "anizone",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 13
+  },
+  {
+    "provider": "anv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 11
+  },
+  {
+    "provider": "bingebang",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 4
+  },
+  {
+    "provider": "bower",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "byse",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "castletv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 12
+  },
+  {
+    "provider": "cinejoy",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 0
+  },
+  {
+    "provider": "cinejoytv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 0
+  },
+  {
+    "provider": "cinesrc",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 21
+  },
+  {
+    "provider": "cinestream",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 44
+  },
+  {
+    "provider": "dahmermovies",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "desiflix",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "dexter",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 7
+  },
+  {
+    "provider": "flixcloud",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 13
+  },
+  {
+    "provider": "framextv",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "hdghartv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 10
+  },
+  {
+    "provider": "hdmovie2",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "hianime",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 15
+  },
+  {
+    "provider": "kickassanime",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "mapple",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 11
+  },
+  {
+    "provider": "megaplay",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 15
+  },
+  {
+    "provider": "meowtv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "miner",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "moviebox",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 13
+  },
+  {
+    "provider": "moviesdrive1",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 16
+  },
+  {
+    "provider": "moviesjoy",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "netmirror",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 14
+  },
+  {
+    "provider": "onetouchtv",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 10
+  },
+  {
+    "provider": "playimdb",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "reanime",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 15
+  },
+  {
+    "provider": "streamflix",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "superstream",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 4
+  },
+  {
+    "provider": "titan",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "uhdmovies",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "valkyrie",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 5
+  },
+  {
+    "provider": "vaplayer",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 3
+  },
+  {
+    "provider": "vegamovies",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 35
+  },
+  {
+    "provider": "vidbolt",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 3
+  },
+  {
+    "provider": "vidbox",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "videasy",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 9
+  },
+  {
+    "provider": "vidfast",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 10
+  },
+  {
+    "provider": "vidlink",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": true,
+    "streamConstructionSites": 14
+  },
+  {
+    "provider": "vidlove",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 7
+  },
+  {
+    "provider": "vidrock",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": true,
+    "titleLanguage": false,
+    "streamConstructionSites": 10
+  },
+  {
+    "provider": "vidsrc",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 1
+  },
+  {
+    "provider": "vixsrc",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 6
+  },
+  {
+    "provider": "watchanimeworld",
+    "explicitLanguageFields": 1,
+    "sourceLanguage": true,
+    "titleLanguage": true,
+    "streamConstructionSites": 17
+  },
+  {
+    "provider": "zxcstreams",
+    "explicitLanguageFields": 0,
+    "sourceLanguage": false,
+    "titleLanguage": false,
+    "streamConstructionSites": 9
+  }
+]

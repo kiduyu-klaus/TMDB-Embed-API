@@ -130,6 +130,7 @@ function createStream(source, server, playerUrl) {
         title: `AllWish ${audioType} - ${serverName}`,
         url: source.url,
         quality: '1080p',
+        language: audioType === 'DUB' ? 'English' : 'Japanese',
         headers: {
             Referer: source.referer || playerUrl,
             'User-Agent': REQUEST_HEADERS['User-Agent']
