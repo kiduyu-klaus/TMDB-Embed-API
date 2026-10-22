@@ -18,7 +18,7 @@
   "disable4khdhubUrlValidation": false,
   "excludeCodecsRaw": "{\"excludeDV\":false,\"excludeHDR\":false}",
   "minQualitiesRaw": "all",
-  "enableUhdmoviesProvider": false,
+  "enableUhdmoviesProvider": true,
   "enableVidlinkProvider": true,
   "enableVideasyProvider": true,
   "enableLordflixProvider": false,

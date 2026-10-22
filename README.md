@@ -263,7 +263,7 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `animekai` - AnimeKai anime streams (Anime category)
 - `allwish` - AllWish anime streams (Anime category; season/episode-aware)
 - `animesalt` - AnimeSalt anime streams (Anime category; season/episode-aware)
-- `moviebox` - MovieBox movie and TV streams (requires a TMDB API key)
+- `moviebox` - MovieBox movie and TV streams (requires a TMDB API key; original + dub audio tracks, per-track subtitles)
 - `anv` - Anv anime streams (Anime category; season/episode-aware, needs a TMDB key)
 - `watchanimeworld` - WatchAnimeWorld anime streams (Anime category; needs a TMDB key)
 - `wcoflix` - WcoFlix anime streams (Anime category; needs a TMDB key)
@@ -272,9 +272,16 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 
 Providers that rely on title resolution against TMDB (`castletv`, `hdghartv`, `onetouchtv`, `zxcstreams`, `vaplayer`, `netmirror`, `moviebox`, `allwish`, `animesalt`, `anv`, `watchanimeworld`, `wcoflix`, `vegamovies`) require at least one TMDB API key configured.
 
+> **MovieBox resolution gate:** the upstream provider ships Stremio-style per-resolution toggles
+> (`res_2160p`, `res_1080p`, `res_720p`) that are read from `SCRAPER_SETTINGS`, which this API never
+> populates. Left on the upstream defaults the gate would pin MovieBox to 2160p/1080p and silently
+> drop the many titles whose best copy is 720p — including most original-audio tracks. MovieBox
+> therefore follows the project's own `MIN_QUALITIES` setting instead (720p floor by default), and
+> still honours `SCRAPER_SETTINGS` when an external host does populate it.
+
 ### Verbose Provider Logging
 
-`anv`, `watchanimeworld`, `wcoflix`, `vegamovies`, and `vidbolt` are instrumented with the project's
+`anv`, `watchanimeworld`, `wcoflix`, `vegamovies`, `vidbolt`, and `moviebox` are instrumented with the project's
 `utils/providerTrace` diagnostics, so every request they make is logged with the **complete,
 unredacted URL** (method, status, content-type, elapsed time), plus step-level events such as
 `tmdb.resolved`, `search.results`, `match.selected`, `catalog.loaded`, `resolve.done`, and
@@ -309,7 +316,7 @@ The MoviesTv category also includes `superstream`, `hdmovie2`, `vidbox`, `vidroc
      'netmirror.js': 'getNetmirrorStreams',
      'onetouchtv.js': 'getOnetouchtvStreams',
      'zxcstreams.js': 'getZxcstreamsStreams',
-     'moviebox.js': 'getMovieboxStreams',
+     'moviebox.js': 'getStreams',
      'yourprovider.js': 'getYourproviderStreams'
    };
    ```

@@ -30,6 +30,989 @@
       "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
       "expires": 1792697238921,
       "subtitles": []
+    },
+    "tv:1396:1:1": {
+      "tmdbId": "1396",
+      "type": "tv",
+      "season": 1,
+      "episode": 1,
+      "imdbId": "tt0903747",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1792714659278,
+      "subtitles": [
+        {
+          "url": "https://sub.wyzie.io/c/19880c51/id/1952100886?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.qXubMGdNVEtMfvaeSMZKCaypiXy6lyiKLAkjqKHmw-_KmpNu4I3dpEWhDc-dCKrDoS3ATXLLRUiq0SbQrWQrNesU4HOgDerpNeaM9pJfh9bx4dSjQ6qK8D7UZXAKaDVB",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Breaking.Bad.S01.DVDRip.XviD-ORPHEUS",
+          "name": "Portuguese - Breaking.Bad.S01.DVDRip.XviD-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5c/id/1951845855?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.R4JsBYYlWhfU_pMowsgq9mkya9DUsCWrRkf_C6yRZQ5U-XaFQESgvn_XNo0Crc6h6T_7JTeiuthJeoEbLu6HHYzG56n_vvYlGHht3Q4pZXWQhTtw_8_2OrevmOPkg4N8",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Breaking.Bad.s01e01.dsr.xvid-0tv",
+          "name": "Portuguese - Breaking.Bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19de0c63/id/1951877389?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.5BK9kU-doDclJMvC_p52FatYvzzh_VI8qw1t_cYNlSKrEUI6n6qMoGxkU4tiQx6wR0Se8ObAC1YC-WL9WcxcFmrXZuieI1aaMar4xcTSlhvv2YwyDaJJorg7VVdBDFcI",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Breaking.Bad.S01E01.DSR.XviD-0TV.avi",
+          "name": "French - Breaking.Bad.S01E01.DSR.XviD-0TV.avi",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f10c64/id/1952898719?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.enJAmDjhxS5YHJAa6NwQu7x4YRSmt5p8AIU8Ef5APIGCCq-ZRNsb-NtSywY5U2046RYUaip2_DptdZCcnqE6xqkM9FbtQMsbLkIHAqfAQ5--wTAwCSMCH_m3lKD5xT6N",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking.Bad.S01E01.Pilot.720p.BluRay.X264-REWARD",
+          "name": "Spanish - Breaking.Bad.S01E01.Pilot.720p.BluRay.X264-REWARD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199b0c51/id/1952160592?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.ygS6AWD_92QKPfj_7Lf9-4YzAtIZZBaSt9I9aIVwBUE6rZh-c5uzQBeXkWVSB7gs50YVjTEGB5yzW571eE4yptD-ASAQhx-6XPGmBpSQWSQm9aJP3QJeUncUQdfTPD2N",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.S01.dvdrip.xvid-ORPHEUS",
+          "name": "English - Breaking.Bad.S01.dvdrip.xvid-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c53/id/1952971152?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.opNr4bQ5iXw59FN-eS2JaD2jTA6cZyf_ObH1x1Sqs1VKcn1fj6cTFv09Cd9bMWaNLyW2oYWZX7t4lUC6LfkaVfAEe301IPKw899Gy-Y2WaXjQA1xWQCTdxh9ilhUPbRv",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "name": "English - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c55/id/1952468027?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.YrNFZzbMEJ7CPW0qxFdKs6cHQx0HGEZJ2Cz2U5nfVmgufpgFu-VYTL3_0zmHxsQ-lhbLG_Yw1a7Hbxp2ydWXE4rlXewqr-ue5QYIx52cgHjGWGnH-r1l_Ac69LYYHYZz",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Breaking Bad S01E01 Pilot DVDRip XviD ORPHEUS",
+          "name": "Dutch - Breaking Bad S01E01 Pilot DVDRip XviD ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c54/id/1952078209?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.AWSYofW19ER7hLVJ5M7ZMLje3_WVEYL8s6jl9ySHMKfE-87Ux6qJ1HhBa7tBzWHgk_SGrvhd_5xW-TvtYPEwlgkd0uxiFVo4p_kV6pRExvx6rM-ZXq9ViusCj5K1Abv9",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking Bad",
+          "name": "Spanish - Breaking Bad",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5a/id/1951736854?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.NVFQRXFoRccpqqYuWlDmU1c-N6ACtLmRGOgrke3BRRJKV498jcP_Kdl640qlc0ewkrbOfbbz2XjELd3fFlxK3c-bCiY3f5j_Tx9TomfVVlOKpKDVcZsF1hMcLMn2qyGz",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.101.0TV",
+          "name": "English - Breaking.Bad.101.0TV",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5e/id/1951737884?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.DLNqsXEkmwnpttPcYqfWoDlCFhedcI13QZGtT2M2aIuqEA8NHRYet5KLPUloWAhmaPKs3W4FSG21-wX-LwHP2YtjYI7VB7zIyJd8_OSf7OxOTS43tsMooIB2TZ0AguHV",
+          "mimeType": "application/x-subrip",
+          "language": "de",
+          "label": "German - breaking.bad.s01e01.dsr.xvid-0tv",
+          "name": "German - breaking.bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c5d/id/1952568394?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.plGDw5Zh6zhk4iYQkf9jBb5REEniww1ihBLUSoNcNzng2syg608h3EujZCn0vjTHfvk5GzqH6c2p10gHR_xyer7xYzvhSgGIPy58dzHjHZYudBVNxSxRWxF0ObqSalqb",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Breaking Bad 1x01 (Pilot) - Pilot",
+          "name": "Greek - Breaking Bad 1x01 (Pilot) - Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c56/id/1951736553?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.JHQeyOB-9kttJPyHdKTyDvFrcpw3k_KUJ0aKUlZ5HrBWcgBzBahIQxEOCr659Sz7g42NtH3zako7HUvMW5EesqNaQgCPK4pF3wWY4e_mDjW2LplrTicPr89q1PdPKHp0",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - [www.subsfactory.it] S01E01",
+          "name": "Italian - [www.subsfactory.it] S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c5b/id/1952409884?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.PeGzcuLZrTscD9dCxEtni66NWY6MzXumetHtsKpqzKC9Q145PdrAXBXgluHSbx-n4f9mbvPP2T3xydNuOKkBXmgR9A5tLvS9pe3KBhjJt2_9H-7KIXYyh93Ir-GDbxEw",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Breaking.Bad.S01E01.Pilot.DVDRip.XviD",
+          "name": "Turkish - Breaking.Bad.S01E01.Pilot.DVDRip.XviD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a90c55/id/1952193086?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.wvEonzjJfKcGDx7Sz6zbDZAGjRm3QoN8h8-yM6w-9bmkd3xS2KHGfPBcdQrqwloDYpiHrXmeJuGhOWPikI0wAOmCY7LhMnPpMc9QbWxSTkzwOmbC-EPjpCnnG5CZeAkz",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "name": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c56/id/1951840890?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.dZjTx96pB8IXS67KLb3w7sVBAmIA5EJHvG_D2Oj6aRRCAu46_wlLMexEUNuBPUBPca0GRfI9Tdg8qIg0MOOGUOYHXN2cQ4lGW2Z6lYSwdsNy5aAxsjX7MAizNi-zxf65",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - breaking.bad.s01e01.dsr.xvid-0tv",
+          "name": "Polish - breaking.bad.s01e01.dsr.xvid-0tv",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c56/id/1952457480?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.2YWkfKynDc39vjacX3AdCNQxRlJFbwUqFe--pZFPOweXyO8Yv8cheUngbweld_X0uoEzUD1WGR46LawiSPproSsIqHANvzH0Ur_nkBlAvOQzGSDrqItOVPp8kFs3gm-N",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Breaking Bad - 1x01 - Pilot.gr",
+          "name": "Greek - Breaking Bad - 1x01 - Pilot.gr",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ae0c57/id/1952155693?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.IKA08zuRkITCWC9ZTsWNoc1D-L-Z3PfAreXyLQMMhsnWeekt7wwxyRQOX5LK0gIcGA_yrAyTqYU-NqHNYx_mfq5cjW-r2G81JeLNCNU7-o_9VtI01dWAiKrA-iezSefL",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking.Bad.S01.DVDRip.XviD-ORPHEUS",
+          "name": "Spanish - Breaking.Bad.S01.DVDRip.XviD-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a10c51/id/1953153625?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Bd0L4jYZJVqJY2EyoKygzStdADDbeYuB2f87IUwwmUlWKJkeHTcvasrJO_rpPxcCTekvX8_Km4gOeCS4UKHoHb3dMFely4Z7bxlER2P8skeUR70WpQ6eZUwNIJKx8BYr",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Breaking.Bad.S01E01.DVDRip.XviD-ORPHEUS",
+          "name": "Dutch - Breaking.Bad.S01E01.DVDRip.XviD-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c5c/id/1953167757?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.vTa9hYEl3sCS0RgzzaStqpDjsHI4DtvnwcFXPg4__8c_dBYCtd_qt8lF5wcqTI_qaYt8tPf5bEixy6jnhmGtO7_AUkPRxObA4AAJZru0lxezHMifEz8s0qF0K6Uo_BRs",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - Breaking Bad - 1x01 - Pilot.DVDRip.gr",
+          "name": "Greek - Breaking Bad - 1x01 - Pilot.DVDRip.gr",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c58/id/1952549840?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.fgR3q4ChLZHxshMo-L7UUncR4jrgFGsd1QtzTAhy5oSSFQc4b79dVLGEJVkDhUmIm0HNmNUWpHx4eLpuWgfwgZAE3Kg7n7t7zUQLbFT0IEohFWgS06CmIpbnDRJOZS5Z",
+          "mimeType": "application/x-subrip",
+          "language": "de",
+          "label": "German - Breaking Bad Pilot",
+          "name": "German - Breaking Bad Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c54/id/1952349091?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.1TZ8LoW11e0Qvqj_KdNFrEcRyiqLnzresX7twP8CAyhsNWHmosl_r_5mkXnoUpGXV6MRXh46CJ58Zsgu6nxH8il6wdDNXDZn6b5OXNybviO1AFNn4GWrj2lDYNZxkGWC",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking Bad - season 1",
+          "name": "English - Breaking Bad - season 1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c54/id/1954156561?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.0mkYOgELV49-dZ8a8YIbfFbl1XjsAj7qCjNm41nJrCLBqhjco7H-TrZZuvSD_j7HLXoqQSVUA5skq5Ylh5zRGXj3QPpilCqZ5lF2LOSdOnwEN3xIIbVO8oYRwLJuKiDJ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking Bad Season 1 Episode 01 - Pilot",
+          "name": "English - Breaking Bad Season 1 Episode 01 - Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c50/id/1952452272?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.pZ1fd60-_xxDPHB-wbJb_xuPx9S1ehiFLw5WI30-aKBmhrSBJSqsfB2dCqiStt4Qp0GwNZPoGQcMXbrtyPdNDI-Ug5oZ-E0LKs7JdNxxl8oL7028OTJpObk9MCZzqymZ",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - s01e01--\"Breaking Bad\" Pilot",
+          "name": "Portuguese (BR) - s01e01--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198f0c4c/id/1952116703?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.QiPnO53R_OIJ9PRVqcpNrVwyVMAknsM7lHlS7HhS0lB9gvmRqwi0ME9ecrFzYLUw9hvNlS3i93M731o7VOYfD_GxuPWCbEpIEjeSZUYlcVBXWaKG5wW0THX1Q1EpSJa5",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - breaking_bad_s1e01_Pilot",
+          "name": "Portuguese (BR) - breaking_bad_s1e01_Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c59/id/1952156973?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.7Ot4QrNiCvzjiGg_bUWQMcIpd-98INMut3vlw-hbAVlmezkQby6ZwkStSjm8u9T8MTjPuHUCaEANk3oapd_QdjCKCKJTe1vRRADD043nxzPMBHLGnboC8h3-MpOAhWQR",
+          "mimeType": "application/x-subrip",
+          "language": "he",
+          "label": "Hebrew - breaking.bad.s01e01",
+          "name": "Hebrew - breaking.bad.s01e01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c53/id/1951738431?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.nzfEfQhKhvLfGt3gsEKKjLfgq9hmid2eyhjPVdbwVgUxfGXCNE49DzlteFC7DJnJwK9YORJFgDKaiJ_eTaSqkfJ5ZpmJC08cmzC2RZRuKPtsfAYqAM26tj0ONrOBFvJk",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking Bad",
+          "name": "Spanish - Breaking Bad",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d40c5d/id/1951876456?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.vwkPz8fPudUY9MJpESTNOjeU7PIjVKYJD2RwLN77T2O34NytJ1BW0V7VbQloNYtoMUajeeOEMU3INxzL9nDBxp-nIDa2-ei30xVnbilaoeP7cTgtWD_kHcv2eSBPVh-A",
+          "mimeType": "application/x-subrip",
+          "language": "sv",
+          "label": "Swedish - breaking.bad.s01e01.dsr.xvid-0tv",
+          "name": "Swedish - breaking.bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199a0c54/id/1952500759?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.CWXBGlFqAoRpUfCmlOqvllj5rJlRNAXIbwnbUeIAnvW0u0w4Pa90FhG-CFD68REdj90dstK_22AZPMO4B8X8WjdF2svEQ9L47bKD8Tn_nPhyqImXhIejVt_mohFnLgU7",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Breaking Bad - 1x01 - Pilot.DVDRip",
+          "name": "French - Breaking Bad - 1x01 - Pilot.DVDRip",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c53/id/1951845810?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.N6BKTylI_cQiDbKHADfH1sYs3Si7blZfMuz6yIg52f_LmTb5GNortxGJI_a0IT517Erdz2CmV2x904gJFkMceKgih3KHB2IiuNKdkSALpTwotlJey7JQkGYO5g3THXKY",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Breaking.Bad.s01e01.dsr.xvid-0tv",
+          "name": "Portuguese - Breaking.Bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a50c4e/id/1952453602?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.HWcqlsrrR_1iPJCK2NT8E4MBXiETVaqOlukPF1-VzNdHFbQSKdjSxMxEuA-oPmrgZIud4qRO8Gg4V9iO89T-NqUas9NIVSI1QwUcmQE3Wv-buiuXqcPf1p0pNKvFC05y",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "name": "Spanish - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198d0c4a/id/1952116701?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.YI4HGjMHflunG-nr81mkuvq0qBLZbZbHoBQ09IdppSNF7prHORmbtx-yzRv6NbTbVBxMsY5DnCTDC532n66z43_MIIlhwM_Sv_9jDSU7-LyxLjx-5lnlekb5jr_dAfix",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - breaking_bad_s1e01_Pilot",
+          "name": "Portuguese (BR) - breaking_bad_s1e01_Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199f0c4f/id/1952352533?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.zZimbzgw5sP_W1JPseaaCD6I6ddh2WdUaKsvKjwxby6dnfISMDkFlFXDgRpHcyJYrsKtL3ZGOLmZJ9fZGnMPOae3IbhA5on4SAzen4P3MvGEroM4dfAAJNynbP3bbzLa",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking Bad S01E01",
+          "name": "Spanish - Breaking Bad S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198a0c48/id/1952170231?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.RaCQUoBiYLsU4i8VxmIo5BP3xnm65QPeyTRWa2-uANHaLpB2mRkQ9AgSQAvuyFiQWlugfppmoIEUyR5J3O7o8MT-vzR833TsdLZ590GhFVTSRNCfbN7ldCBX2AtEHjoL",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - Breaking.Bad.S01E01",
+          "name": "Czech - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/196a0c44/id/1953001035?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.X5oYPDzkwImGHO1vSRa139O0NJlBpSXVwRdBb_g_dawGI-TZ5IGwAlEhZoxC2TOIE8o-3hATEudVOyY4H2McABo0CdXJyEapHjt-kjQXR3pI-jPdmKpaKsDwj1eJo4LH",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "name": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c52/id/1952682431?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.2tgzXEAb0RAPAwouTJj3y6HDl9c4FCfChWmfCJA93s2f78njB6k2Saayv_mQmZtKbMOKSZSBaVDGwX1YgaJeryCca2x1L1bzp8lKOkr_Bh-CEqbgb9ZsiC2GpaGyafPO",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "name": "English - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198b0c4f/id/1952400548?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.OyGxSOIRR1Ncxa-c2TLGHzkhyxPMbdrnV8S2QPkxLqKujrYluLWQizaskZbloavnYk5RwNmQuNuXPNoi93vCCNRQZGVi8LC-quKj9z8zzEwhDtpI-Ehflf6t8-y4cHM5",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - S1E01 - Pilot",
+          "name": "Arabic - S1E01 - Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198f0c50/id/1952305239?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.QE6qSeEQgm0nxC2Ry7itPIiNpGMJxzaHD_Cm6weVu-6LfFYtVokB5mmlRdnvC9eFfnuqws763fTCuj_jRDRPI-3z8r0Z-h62o6Amy71FEQDOZAY9I8zsZxj7OtjLWuIG",
+          "mimeType": "text/plain",
+          "language": "fi",
+          "label": "Finnish - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "name": "Finnish - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c53/id/1953185208?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.TO_EC5IdPTjHpXa9-1dY9_Rn7G83f6GLCF41mwnpqHl3ssUU5hf63GKmEEGHmIVO33WtuuNYm7VT5kHYXMw8hCM2XyUTZsi1FPEt-nG-J2XCyFYJ7wqBwRn4ajDK3lQz",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - breaking.bad.s01e01.720p.brrip.x264-visionx",
+          "name": "English - breaking.bad.s01e01.720p.brrip.x264-visionx",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e30c65/id/1952578797?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.JXp9n7_5-HYpqxgLs0dkPR79DuwNYsrFp45HD8MXMcyxY07prkbtOztvWwrpLE9TAWRaEiCTM0OCk_j4_4gUzN58isGbPp04kWp8ZXQ1BWvysWk1ATJ0OgPfv2vDQBlF",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Breaking.Bad.s01e01.sub.itasa",
+          "name": "Italian - Breaking.Bad.s01e01.sub.itasa",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e60c5d/id/1954794481?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.EHEG_m5Sp2p0tjxRZELDZRfmHF-g-dGc_oxP_y5FDA2m2hu-7tdCnyP2eCVVLPB5nQstW0LGsduRKh0Fj8w2YOqhW7xXehA-5dulkqz7q_UM2-lI6umzPGOJxSclVSXM",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - Breaking Bad s01e01 720p.BRrip.Sujaidr",
+          "name": "Arabic - Breaking Bad s01e01 720p.BRrip.Sujaidr",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/197e0c4b/id/1953200338?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.7izqctwPp9zBKfDTmaKV1y31eFHCf2CZyK7LczSoPkY-ILxscoOgUUsVqUNHCD4v5iw2QDi3GJueVA5Gyu8rQqu27NCsTIsmbCGQtMj6bfF7COFGaGP07kE-uKQ_exLX",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Breaking.Bad.S01E01",
+          "name": "Portuguese (BR) - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c52/id/1952873033?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.mIdDbQVNWd67HXMzovHpvxtXTNgzAqOSDP2pV4YYd_6CvNw0rfQ-EL6KRlrzkVWd6k9QSffHJ84Ax2ftYlMnFrMurH0ZQJw_3d7R6XKC9B8lCNC8aSSxWf7422tC2RYI",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.S01.720p.BluRay.X264-REWARD",
+          "name": "English - Breaking.Bad.S01.720p.BluRay.X264-REWARD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ec0c64/id/1952987369?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.mWWJC2tsJ13bai4voRuiXzm7Ni_xtVksISIpGEHtdIcHDyRLJaLjuEgdC4LebkrT1hs1Q8rshfq8VtOlR_bSY8X-dA4JS0nqk0N5PdLiMeGOkjaZQooe5hlkXKeT6ZzP",
+          "mimeType": "application/x-subrip",
+          "language": "et",
+          "label": "Estonian - Breaking.Bad.S01E01.720p.BluRay.X264-REWARD",
+          "name": "Estonian - Breaking.Bad.S01E01.720p.BluRay.X264-REWARD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199f0c50/id/1952713056?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.fQ3NlvQVzwjr9Lpe3gCibi_tK3cA84fUBSrQ2oCo0E3eB6rTKC5JpkK4dl78IyFsjw0HMQFDvMGFtYf3fiBwpWc75NB5fve7DiVX7QYPOe0pq0QfeuYSfb9qNulSpDhP",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Breaking Bad - S01E01 (Pilot)",
+          "name": "French - Breaking Bad - S01E01 (Pilot)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b70c5b/id/1952425796?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.0SDoNyIZ-6ddAeDG3J9AUcaJ7tkiFaCLzuaPe7FM0KTCYsaXuVCa99seY9bLRDkYE_p8thDUDCGZ_WehOGV33j5BOBt7yIFXYHEZ_6o1sXevTEdcRj-pTW5gdSvAtnPR",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Breaking.Bad.s01e01.720p.sub.itasa",
+          "name": "Italian - Breaking.Bad.s01e01.720p.sub.itasa",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a00c50/id/1953238026?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.a_D8M1kH6wSOPpqTAja8TjWmJlzSopnOJEKa8WYxNThmP-SDbpc5kT42LaR4-QAg39i5DbqShYpx7XykF_8SCnVocVwg-hSvFi6BbcOi0jSePJKWq3UdZjrwj0IPEhlc",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - Breaking.Bad.S01E01",
+          "name": "Italian - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c55/id/1952494073?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.WszcOOZCJKthqqJRuqCeWKak1YAv5IRJrbQiNb4mCyE-CgzKgb-mPivsYkUAP5g2G55kpND970ehUii3rrZwpyUz12NfQe_U60X5fsElWVO05EGw-aYcq1yqMCVcaByD",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Breaking Bad.101.DVDRip-ORPHEUS",
+          "name": "Croatian - Breaking Bad.101.DVDRip-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a40c54/id/1953048166?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.OoLIrVDru3jWKIACPIzr9904zrnwSidZPcBFOp3YYWdyMupbpz75p70OWLHkl7tirqZjYW_nIgB49BKOjh6o9uwBfwYqyiV6hL04qtjhqL5PPbkIHNaN8ynKw0eNspZD",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - 1.srt",
+          "name": "Arabic - 1.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c59/id/1952383746?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.AWnbV5aEyG5K4P6CYQmUZaV6raOL0LRII9OVMelYIGCpCxlqHxosEpceBvpiV0cDAf_HWHPwRoTM7B15xHeyhoJmQom5WRuWZRU7ywUWHBz9wUEqLGO1Ftgpi4sg0_3M",
+          "mimeType": "application/x-subrip",
+          "language": "bg",
+          "label": "Bulgarian - breaking.bad.s01e01.dsr.xvid-0tv",
+          "name": "Bulgarian - breaking.bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a50c55/id/1953218267?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.c78oWCqitGuQYB245vp7GZAwlovdEtBd1_WT5_tXD0zhzyNlc3vSfNNXNgz9zSzr3GJpfb6uKiEQnEfKBNCZEwXHkn6Xauq3_c3jNwZMIWzzk1GobFrYSRxEdrCjvPTA",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - S01 E01",
+          "name": "Persian - S01 E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c5f/id/1952667684?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.mjTDudhOIftD12DcwpnHacSx87-xXai2nB582RfRXGsRiwuYzopl0evtfysCX5auBp1CojjYQRRjhr0ZtKOVfG2SZaHTzmlW7k7ayTmcY4HvK7g2MFL-p9Z5uprOGxkv",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Breaking.Bad.S01E01.DVDRip.XviD-ORPHEUS",
+          "name": "Hungarian - Breaking.Bad.S01E01.DVDRip.XviD-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c5c/id/1952573199?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.KA_QFznowyrnF06uSFde6acqFSTdAuhg5HySLK7gZfDFC6yjPjzDnfW_b1tj_TICmViBCm2gZue-BZUSU2Q_GhFUpPxe1eW1VdX1haixsEM9Hsi-h_ZSFSiQT0h1f7AC",
+          "mimeType": "application/x-subrip",
+          "language": "sl",
+          "label": "Slovenian - Breaking.Bad.S01E01.HDTV.XviD-BiA",
+          "name": "Slovenian - Breaking.Bad.S01E01.HDTV.XviD-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ac0c58/id/1952415758?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.LUNCwdiGoPHplegFH1GOdCKKsxcP98QWKks6BjILZRCxs7ei8pkS36Bw-_ha403xOK1aJTyeGN1NGklEkYLZCIW41b2zVcWQM3zYQNYqDeZSg_Hs-u7TWgWjlBvrkbKh",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - 1x01 - Pilot",
+          "name": "Czech - 1x01 - Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c57/id/1953184735?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.4hGxdiaDu6NlHXC-OKbi_ZJ76ffp9B32hO2gcqAOyTU-YNOd7Xbcgvi0_sMbb0wQtx_GXLaS-iZqcHyByFNvrug5kC60lfZ9vxZ2RNTzm8hpYfGgQJ_7v3E4H9VA1ADH",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Breaking Bad 1x01",
+          "name": "Portuguese (BR) - Breaking Bad 1x01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c54/id/1952367019?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.M_HAO8bfbn5dN9EZqePGc2G45IyNQDYeBLzjh7H3NkjBjo7sNzB9OYC99JKf7aaxVutP2C5hqc8IfdAK33gO3VU3iMba1zIMP9g9LhotwQCReBsCFIR_pZqvFYyHztDF",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - breaking.bad.s01e01.dsr.xvid-0tv",
+          "name": "Croatian - breaking.bad.s01e01.dsr.xvid-0tv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f10c63/id/1952996818?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.T0L5xq3k4iVvSgnT-ytKeumClw3sTS-hxzgM1v2lnAxcpC3zKaq2I8Buj8xtfJlJR8VC_tQKlxl5J4WjcMADQSKCYcwtyQRGhW1oLBno7QPLH9USavDNgd626oSQpwAF",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking.Bad.S01E01",
+          "name": "Spanish - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5c/id/1952568519?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.NdLFKjhbOASKetGFIok8_fGcpZZ8D-2IpYK09xLcMBP0wgQ9etskp6r5aXICLd8PnEwZky870SRHE26nluuOsvnmEwsombC9w38Lfr73godCOiaALR8XtU5ttZdfWF9O",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - breaking.bad.s01e01.720p.bluray.x264-reward",
+          "name": "Croatian - breaking.bad.s01e01.720p.bluray.x264-reward",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199c0c54/id/1953053197?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.ZeLUYcYZuG9k8YE2fRPu9wBCrc6-l0sBfiBdRvCl4pyNrWCac8vT0gRMfLVGDHAOSVZODUXmVgqjHjPQqEP9VihgeR--6cy7impyLISItIh3gsdw_p86eSf9qYuuMHch",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Breaking.Bad.S01E01",
+          "name": "French - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b40c57/id/1952187418?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.EqgPHb5CuiFTdsf-8yHdWT516J0SOakkFfnW5KDEOgyvY7cJ4sjSPRtQ7IdczUkUVjw1Pq30WaNic5kp4XBUtNQncqSCrAJPiedf3jDyLGLGUer5D2Vqi2vWt4xwwxrJ",
+          "mimeType": "application/x-subrip",
+          "language": "he",
+          "label": "Hebrew - breaking bad s01e01720p hdtv x264 bia",
+          "name": "Hebrew - breaking bad s01e01720p hdtv x264 bia",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c58/id/1952597018?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.0AhPFRSNlYwkrFQrzO3C_NoxqEe2Cn-x0Q4U6kBacHFcmU67sm_lOag5-zgH-d7X-CM_T_P72iI3sQOFM0pqJcybtCdvstV8_FgJa-Nirggnoz4ku5We8xiE84fGxtZv",
+          "mimeType": "application/x-subrip",
+          "language": "fr",
+          "label": "French - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "name": "French - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c53/id/1952581173?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.hWapKwePRUmioKgfPUvLhsn2sInhhdBKeBORoAmqWsSoK2J71uuFGIb6qD7PGmocqH7YK9mIvTSp30iiaP0jhfvoDqQb609DDR2nyeHPB6XorfnJip257uZkGTdej_pX",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "name": "Croatian - Breaking.Bad.S01E01.720p.HDTV.x264-BiA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ae0c59/id/1952345379?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.-Ur9mAOE-1sN6_YOx7s5ITaRVf1Ih7idRXC0vP3gIGb3jdJxnnr1Xph_aEXXTsqii5FSsnCbzBs3TOHeqO_w70Yw7Svh3sfrezGQw_cughS1SCk_y1VeAfftg1hAf9cc",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Breaking_Bad_S01E01",
+          "name": "Turkish - Breaking_Bad_S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c56/id/1952507925?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.rwX1tiab_xtrdIjZ48tUdy49F60QMgvSRyFLUWkLOp6j15BmdXhR4NKqTnzeQcmEZ3ZF_EAaMDNS_7gmeRRCeBN7ko2MMY00qUkkxt6-KN2M_4CyiGcCfMVPfu8-MQmg",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - 01E01--\"Breaking Bad\" Pilot",
+          "name": "Spanish - 01E01--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19930c51/id/1953213439?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Wr0zTlos7uRgKoD85tkThYdlJMJnGOBFSEJ6hYCZP3-r5QWu9u6WvlL1HF6rf-JLx9rFuYlfvMaa1y96zldomo6-7mhsb9P5rXAVwQfF8BQNtUJL2uYgQwxMlWoa_ps-",
+          "mimeType": "application/x-subrip",
+          "language": "mk",
+          "label": "Macedonian - 1.srt",
+          "name": "Macedonian - 1.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c60/id/1952598259?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Nv3FFxl9FRkatQdk-R9BegzxXTIhf667JGwG-RhR_JdL3ZsB9UiaLVh0x0FRbsxV_4ddWvSrI5cnmGmQaekS8q1v5g2xVChcmIIwlczhjajd40hXDj9_QHIr0ftq0n8X",
+          "mimeType": "application/x-subrip",
+          "language": "et",
+          "label": "Estonian - Breaking.Bad.S01E01.DSR.Xvid-0TV",
+          "name": "Estonian - Breaking.Bad.S01E01.DSR.Xvid-0TV",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c4f/id/1952583131?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Mgc61d3JOD1cizV-rZMmpOD8ZYmRBjaAcFIHVdbezSpKlRnV2IyUrssTaY2EYice171S7S_bb6qO-FaDy9HK1vptAQbySZRiLj78ttRnUs9PmTupdrI-J8UFpTdpV76Y",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Breaking Bad S01E01 Pilot 720p h264-CtrlHD",
+          "name": "Romanian - Breaking Bad S01E01 Pilot 720p h264-CtrlHD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c58/id/1952276690?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.b8HIUAJjzktrymjiGy-PHwjyagzDjltUTeHzSzCzE2P7XicNkNPuNRB3oTSQIXHzasfhqC0V76gx_kX0io8u6LWFhzo07exXUTWuwXZFWAuRocDRN23A57Zm-_aL-f5W",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "name": "Hungarian - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19920c51/id/1953015628?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.mSpRolLVALAr2cMc7XTc1RxTrctUMAz1Q483Q766Mbjunq5cjiwYNarm51tP7a9XgZkU1VH1VPULyJhQQoVaHfVO6ZZlqtG9dMslWr0sN4B44IY9hrwltAWo5HQy5PoW",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - 1X01--\"Breaking Bad\" Pilot",
+          "name": "Spanish - 1X01--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d60c63/id/1953088996?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.hrZKLxw5f5eG5kK7Hxs_F6N9VM5UfomRDFBJe64ouwC9NaVMm23AZ60w6SfgW4aRs57_HuLOdWYVg9qrTDg1yoCGhoBBIcjTivDbF4bdFVqnI41FfmqlHDzfQ4TV9Skn",
+          "mimeType": "application/x-subrip",
+          "language": "he",
+          "label": "Hebrew - breaking bad s01e01",
+          "name": "Hebrew - breaking bad s01e01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c52/id/1952934611?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.KwibzKsUoOa4lMD_0F4AN9PgBrzkp1ibKej4SNcTbR1MeiNaxg6ChlI34RViN0tJUGlCLUODJd2ghRxN7BnT0K1kF6rU36Wyb0UmewvxOhVKbP1HU2LWEkQp59Otp0AT",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01.480p.BDRip.XviD.AC3-ELiTE",
+          "name": "Polish - Breaking.Bad.S01E01.480p.BDRip.XviD.AC3-ELiTE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a10c4b/id/1952553220?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.JH8xEPkOtaExOXbYP9kcPxL3w7E35gCoGa6bVjgnKGWDj9KePFB4kGjVFM6rKVqH0w2jdxy0lAiYZ0oqCG_yUS2Po6L9lDZfSMcljezdxtwXFux9JLfPJ1DPoMOKZ--x",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - www_RegieLive_ro_BREAKING_BAD_S01E01_DVDRIP_XVID_ORPHEUS_1CD_#82",
+          "name": "Romanian - www_RegieLive_ro_BREAKING_BAD_S01E01_DVDRIP_XVID_ORPHEUS_1CD_#82",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19920c4f/id/1952502266?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Uz2REKYCoRCZKyuYjoDNXmuu2cPC6lfueT7yYulFuZewJsY1K-L9JznXeQVVUjobDKFof6cne4y5H26ipIb1-dIJi47kgV7O8UeMVGI5rwSRiTIyhruIgVOQJENQHkBH",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - breaking.bad.s01e01.720p.hdtv.x264.bia",
+          "name": "Turkish - breaking.bad.s01e01.720p.hdtv.x264.bia",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19880c4f/id/1953012476?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Tlpo_gy3Uxm5bBNqjjW6H0OsEFxiDG79lVQYGJiFwpUEAsTgA6IqdmX5xSGgfhyw_zERtgh5vrRwVz33tlH3PjN3pO57aMJb5eEwvV4kCvpxhPe2WU-4SEhvKFlNdPx0",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Breaking Bad S01B01",
+          "name": "Turkish - Breaking Bad S01B01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c58/id/1952745176?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.82gZ9SxvOpRwnHXTTms739caA9W0mNI1qNooNU9GV4FojuI7jZH9wzmBlIjw2kdNmiuZpUV-Yjq_ISeyBvPlbBF10fS11M_Hjg1LFfk6eKtcVWaVj28mcjSmL57cn_z3",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Breaking.Bad.S01E01.Pilot.DVDRip.XviD-ORPHEUS",
+          "name": "Spanish - Breaking.Bad.S01E01.Pilot.DVDRip.XviD-ORPHEUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c4e/id/1956281203?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.bAUnVsmqxy0NUhBIY0oEZVy40MpDPsg_BfB9blytxa1-Tm-kyTuqykJhdjZ0RXqjqO9Nn7WziyiVlGqMloBJK_wd-xaWhLu9lj-J93CIbqayGU_eRy8vZ6guAP8bUnSF",
+          "mimeType": "application/x-subrip",
+          "language": "ko",
+          "label": "Korean - Breaking.Bad.S01E01.1080p.H264.BluRay.10bit.x265-HazMatt",
+          "name": "Korean - Breaking.Bad.S01E01.1080p.H264.BluRay.10bit.x265-HazMatt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198f0c4e/id/1953126109?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.VWNFoQvlOsSz2M3qt_SAnxtCE6xyY4ucLVDeVLmewaA7EirK1maIkCxf63iZuH6oGCMpfKuhHSQfqvMamlr2WbRbK4Fr1AaxlDXXc29ZSfL27ndPYPFMkG1yBRIvxH4m",
+          "mimeType": "application/x-subrip",
+          "language": "he",
+          "label": "Hebrew - S01E01--\"Breaking Bad\" Pilot",
+          "name": "Hebrew - S01E01--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c60/id/1953079885?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.UsyWe4sPRwGPEjJTnQu6SnUpNPS6VNv9ecI7FSKw-ZmYnsDpXfaNJjClO9KNw8PtXv_5vS6gx5NS8UByUz1O2HWfEkQnKC1yLq5Py-ggdoxtejaY34rkhfWh0qtENsBT",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Avatar The Legend of Korra S01E01",
+          "name": "Spanish - Avatar The Legend of Korra S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c59/id/1952718744?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.UwwkAyj4DnTEXFTNXZ5BNe7nTrhePXYxle8b-AFmDD3DUqRAVRB68n2P0f-OhHuZzRCQ60gYJ8CsQlQW-D05zFSpYHLszDVmfEQqDEN5lOOuQmDsJP-TDBy_31wO6BlK",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - Breaking-Bad-S01E01(0000128885)",
+          "name": "Czech - Breaking-Bad-S01E01(0000128885)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c56/id/1952746353?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.H8vZv-_ij51WICsu0kJvZmC-CVjjIoCKElwZsJKwaAW-2FfSDZJwcXjWBx5QhB_OoABefMt9vegyNojq5flza52wumalyHFkGfwHnu2oIa2rwzEZXydr_Dk9BEyE77DS",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - www_RegieLive_ro_BREAKING_BAD_S01E01_720P_HDTV_X264_BIA_1CD_#148.htm",
+          "name": "Romanian - www_RegieLive_ro_BREAKING_BAD_S01E01_720P_HDTV_X264_BIA_1CD_#148.htm",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d60c59/id/1952958261?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.b6qs8ODE4sWNJ67lxsIwDSFHYjJG-T6Yx1ZQWgZmK9M0nnDm6fHUohB4xQuq5eOIZUmMp-o5TFlaJznTjPVRun_48AJsPryChgmFw8vw8kVcYFuj08Reg2l4ri_9b6uz",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "name": "Polish - Breaking.Bad.S01E01.DSR.XviD-0TV",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19740c44/id/1953001611?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.1f-RSSvO65zIGWbye5L2lnD_VlZAvKhx84u2Co5N52yG4iHOYJz0ZPfUkalCClevHGsgZnroMCMuPOb2rj9MkNxGEKOZM7HvXT5eZT91WUrrqJqLEWgySdVQx96oe6sk",
+          "mimeType": "application/x-subrip",
+          "language": "et",
+          "label": "Estonian - Breaking Bad S01 E01",
+          "name": "Estonian - Breaking Bad S01 E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c57/id/1952975206?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.CPDrtfjJbnJkgMElexU6ezl-AMmqscbnU_uEwd3orDJ9zlckzQzx0851eI-Ox4OyTPWYhnT3krIvM8dfVT0MHH0dk5wx1tYQgO0tN7EMPXik0Cp6a3eAqc4UpKnHkS3_",
+          "mimeType": "application/x-subrip",
+          "language": "he",
+          "label": "Hebrew - Breaking.Bad.S01E01",
+          "name": "Hebrew - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c58/id/1953175745?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.KFTx53cSmQ_Cus49NKJ0WznB2-pTvVcvt9zgTeRY6nOA_cCJSVocxW-j6fdLNhwv1WB98qmv7ECeDTwLi_EQQsmekRcu-ZZvfJPd8YkBEe2eUYdYYRRpP6W8F_Gmv0H_",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Breaking Bad s01e01",
+          "name": "Croatian - Breaking Bad s01e01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c52/id/1952277440?format=mpl&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.jdyaGcg2YLUtAG7ei4k8ukdyLuxh_x2XdpCjVVFBvh5Ro64eVRNJv6tbiNd_YmhY7MRN0W85PZxdvOFxVcKau3bYqWUFX6_-xk-JwGN1YxvteRecr1rrUo0xbEFSjL90",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - breaking.bad.s01e01.720p.hdtv.x264-bia",
+          "name": "Polish - breaking.bad.s01e01.720p.hdtv.x264-bia",
+          "format": "mpl",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d60c5d/id/1952970784?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.1113hTc5PG44y7lvbnHuObspuSPhr52t5BGuPzy-pcov8tdnlOLGLBrRlyeNGnx0hRav30bJ-sBKLjdaw1aoepGN3kqr9oGNJlPYE18yZCPirxgxs2D_tgU8I1VCdEoX",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Breaking.Bad.S01E01",
+          "name": "Croatian - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c52/id/1953137822?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.oxCz34b6CNbD2afGTErev4PPZm8jLki40bWYp45PyQJz1U3pRTDOUkIM5xGXmb9cKDnmvmoPLIzCkNcC0mx4KrglSXpyxpyTH48-o-vVRspTnGh9M2XeSwa1foKC8xTs",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "name": "Romanian - 101--\"Breaking Bad\" Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c56/id/1953216567?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.nmLXEdPP3-cYRrhVjNWJoWNF7Qc2tuQG2SJj9I5B-lzxua8WsWBU9Si04BpvxiXkWWG7lH33yCZniAixuvRSuMB7oCWstyj-d_wkWydT1Adeu71lqjzDziZjPLVT2T6s",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - Breaking bad S01E01",
+          "name": "Croatian - Breaking bad S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c52/id/1953090563?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.X2FhmG6TgiRWfMznRtofkznBctPg-JGjZva9KCKnroQk4kTjpXJXG05RV2Rb3ZL3iNKb-YJwJo7RLPowRv34iPKboYDFMZyL_72uJsWMZ2neAzurf733x72YUOjtn9dV",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Breaking BadE01",
+          "name": "Romanian - Breaking BadE01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199e0c51/id/1953173119?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.qkOiNqxoGU8sHkhcM0bhw25CDRWsqhNAXeqd4swII6laxxpuNOk6t2IZZlAiEsTVnO6O_acx9VbkW5WHrNe9jYmde8nmrxEiv8dW4R6gY733HVTLpNanw_RBWqyWCl4p",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01.E01",
+          "name": "Polish - Breaking.Bad.S01.E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19dc0c64/id/1953198959?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Fi06CPmzdDyzcx9Df5GE1wCkZk7pGzslLfJkyCOjx13-QeIeM941aenGMPlPPBCFabetboHZ93wUgm6Q42Rw4YWHqu7G5eVNUgsN1jMb9zQE_cgfS1SxjXKXH7c7uqA-",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - S01E01",
+          "name": "Polish - S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a70c54/id/1953173176?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.ePOK3f3X3kh8nYwimQgwNGpEQIf6ylIgtne4sBsPhnOm1Bo1LxBeBE4i_ALPbW5AIs4CDruwETFMn1bDo5evT5d4nr9L9KabWMP4r0VTiVLbqAJtKNVzBZT6XI98VDD8",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01",
+          "name": "Polish - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a20c54/id/1953131983?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.r3vqvRX4Qg-unEc9hlHv6AuZoh0Zp7OVQF3VcetCJdbBjLKDU4PMB2w5gspcfmfiRUtQH75zlNVhsyQXw9RspJrpQ6RpcEMXPWuU8nimJqQtA324Ho8ldxyugzBV8nV4",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01",
+          "name": "Polish - Breaking.Bad.S01E01",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198b0c4c/id/1953204335?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.V5ofx5UuTXLShct7-dP15auxCFA8_mhIklZ6PFtIKxOId2GxUoYtkz3pcNz71HJqNVDCQEuIY2LJvviMZ7Hn65EsisipHeUXCJkGsEAwe0cXA2xD_xNwDiDWgTQezwiD",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - breaking.bad.s01e01.720p.brrip.x264-visionx",
+          "name": "Polish - breaking.bad.s01e01.720p.brrip.x264-visionx",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d40c5f/id/1952658819?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.oT9aNe-K9BaE3DNGnj3AucwxD1ld9rzwC2QBhWfy76AKCbLtVlNfVi3LmjN1iIW3FsBd-M3BnqgaGu1rjQgI1osndNNPiuY2ZdnxpAtjXun16_ILiL8Pa1TOShjtt-oh",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Breaking Bad - [1x01] - Pilot",
+          "name": "Polish - Breaking Bad - [1x01] - Pilot",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e30c64/id/1952866679?format=mpl&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.16zHjBzWPph3aZ9uBEOVTksvuIFZmAVuI9c1tT0jdMWr5ZjM2CyuNIkQTRwHcTTBAylocr8AqZlPXF981seulmQY3YCmJAkR-jFXu0tiZciRsT0OIKfBnUoGE7lEbdiW",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - breaking.bad.s01e01.720p.bluray.x264-reward",
+          "name": "Polish - breaking.bad.s01e01.720p.bluray.x264-reward",
+          "format": "mpl",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c53/id/1952917161?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.TZO2g57xQ8U4nUKVHD8dL6xSQJWEf5D1thEYztMWGmtuMU6rr4Dsdgkz1tc-7BNwBsiOo9minIl6r-bsp8djYZgnrf30lHs10dk7w6t8Ue65DVgRxezhVJd0YHYVTrld",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01.PL.SUB.480p.BDRip.XviD-TVM4iN",
+          "name": "Polish - Breaking.Bad.S01E01.PL.SUB.480p.BDRip.XviD-TVM4iN",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c59/id/1952960646?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.8P3PJ2RJq9xsxC74io3oM4y1J1IkSpMLpmYC8r6UWqg2cujQHSmKv9bMWqpBGTQkLdJBQlZXE0-ublD-fbMYT0YxdeWGmSk4KIaNnzDmQ0O9ddtFdZO3fdo-9fR-ldxS",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Episode 1 - Pilot",
+          "name": "Polish - Episode 1 - Pilot",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c56/id/1952852454?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.uQMYh4z2PLRT3LemncFYZTJMPEpK5m6A00fY9ZGhwOdfDtiBoFo-YMN09cXAqQD-cSRnDqUrvTOO0Z04a6YwTl2VqlH2EyauZUffF0VUBaQOiVyKIRPrtm4Q5jgvXsMh",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01.SUB.PL.480p.BDRip.XviD-TVM4iN",
+          "name": "Polish - Breaking.Bad.S01E01.SUB.PL.480p.BDRip.XviD-TVM4iN",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a20c53/id/1953118545?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.5t-hx-mh6aLYVuBkIJTNlmrBUpDU39TzxDJWOcq2IHzRcTlpbXgH8lBHGow-k-bcCMLOfOwebKsqRmGDyXO8pquAmW1pJKcQWUfrguzN1CWZ6oaUxKp0yRbCuOVVplHo",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Breaking.Bad.S01E01",
+          "name": "Polish - Breaking.Bad.S01E01",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19970c51/id/1953141709?format=sub&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.kASS_BAGtLvuLhNng0GSMdP9HLnGpUm8yiiXLGqShbF-u1UFdIOiY4IuU9lJ8vMh09459TJ0WjbHnXGHM1dZZfktKheg7iUtqazIK6YyU5yesh4LuC-6whFVmImLHvJJ",
+          "mimeType": "text/plain",
+          "language": "sl",
+          "label": "Slovenian - Breaking.Bad.S01E01",
+          "name": "Slovenian - Breaking.Bad.S01E01",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19eb0c62/id/1957466838?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.4RjPmHZ7JiHwbaqCdMTdpwfGJDmMQ6JoEMyON0t3-1olsPXhu0L3u5ONEnSBKb_-YbuoJwrAhXhsXj76V6t0WkWZXSrqQqH3FX3jvvogBOYOnrjICDoqaGBfVYphLtfq",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Breaking Bad S01E01 Pilot.DVDRip.HI.cc.en.SNY",
+          "name": "English (SDH) - Breaking Bad S01E01 Pilot.DVDRip.HI.cc.en.SNY",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ea0c60/id/1957466845?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.rEDp9E9e_cVRkO91tattziHe_NtmJCnCHIpyaIc4GZbFjsnxOsk5j4_sOwmMZPeVQz8iEqA5wwf2YZkLk6p7oUfiE-o4iEYjdm3mhSt7nhxye1xnohg-xtKjAfmPQrno",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking Bad S01E01 Pilot.DVDRip.NonHI.cc.en.SNY",
+          "name": "English - Breaking Bad S01E01 Pilot.DVDRip.NonHI.cc.en.SNY",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19df0c61/id/1962694559?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.x0oATgRmyNyRiWODaJPg_NoojjG9r3nZToCr0k1E-lPFumGl0kqT7JZHNUkJShA6Cojwspm_bepmfmSgVO7VFBY0z4nI1xtPVOA4BwC5VFPj_8TKLSmlVzqrTFbGVn5O",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Breaking Bad S01E01-E04.BrRip.HI.Japon.en",
+          "name": "English (SDH) - Breaking Bad S01E01-E04.BrRip.HI.Japon.en",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ea0c5c/id/1959564615?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.Vjsmp8uhNfvDj7R1JilMLDYj7ABCLLoC6H-0MvbicIpyzsfwrFVFJqpC2YflhNHYk9Zch1RwIBk21GGiZcRkMJ8XBc1qmiP6baTMgHf6B8G0Y34NF3QFbAUoEHvmUYJn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking Bad  S01E01  Pilot",
+          "name": "English - Breaking Bad  S01E01  Pilot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c56/id/1953690255?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.tJJFyicyxENhL5ooxOMkpxy1V_-NvLZKrMmWU2w5XHtJISjzrIBFyw98vuXaS6aR2Ix8Al4vs_6fdIQ95HtI1SIG3I3vJFrUo_FQUGci0ehVFB7kNXGezD9emaRGQqDR",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking.Bad.S01E01.BDRIP.x264.Hun.Eng-Krissz",
+          "name": "English - Breaking.Bad.S01E01.BDRIP.x264.Hun.Eng-Krissz",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198b0c4c/id/1954042037?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.ePyrBLQgf6eacmMn6LvLAgDFiRtuJwvD39UV7kM0czJXGTVsgTZ-0xIQN_fo3WyFbg5lBkghEBJECcmOmvK_e3J3z-L14-EcCYAc6yvmOkoQRLxZXGd3M43ma7AiF89j",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Breaking Bad 1x01 Piloto [DVDrip][Spanish-English][by Elsa][grupoTS.net]",
+          "name": "English - Breaking Bad 1x01 Piloto [DVDrip][Spanish-English][by Elsa][grupoTS.net]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e40c5d/id/1954877407?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.eeUQL50tmiyJxDBGRI6V7VqycWhQVVF5eKAmK4oNBK0SaXmA7xvwsOknyiQS3KKoSqQxNP3Ha1ZyspSrzrMRYTBnrmFJ1xo5mOQuwyiTveC8QaKHhZ7ylA2wedUKPkwv",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - breaking.bad.101.xvid-bsgtv",
+          "name": "English - breaking.bad.101.xvid-bsgtv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c58/id/1956156707?format=srt&encoding=UTF-8&season=1&episode=1&id=tt0903747&tok=3.cgbtq_Xp-vh2KyYQssNSoNIHIbQHDAhYpc0emaJ37kp8qg3nNnTvU1-GVSA-kP2KZZSv1TmAyRgZ2m2ekECWeFzVFJ9rECQpWs1pgHQrRa0738znhe-eKoCLkOQg-D57",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Watch Breaking Bad- 1x1 on 123Movies",
+          "name": "English - Watch Breaking Bad- 1x1 on 123Movies",
+          "format": "srt",
+          "headers": {}
+        }
+      ]
     }
   }
 }

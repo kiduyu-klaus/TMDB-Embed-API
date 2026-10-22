@@ -102,6 +102,11 @@ const providerFunctionMap = {
   'WcoFlix.js': 'getStreams',
   'vegamovies.js': 'getStreams',
   'vidbolt.js': 'getStreams',
+  'anikage.js': 'getStreams',
+  'MoviesHunt.js': 'getStreams',
+  'mapple.js': 'getStreams',
+  'bingebang.js': 'getStreams',
+  'uhdmovies.js': 'getStreams',
 
 };
 
@@ -164,6 +169,11 @@ const providerCategoryMap = {
   'WcoFlix.js': 'Anime',
   'vegamovies.js': 'MoviesTv',
   'vidbolt.js': 'MoviesTv',
+  'anikage.js': 'Anime',
+  'MoviesHunt.js': 'MoviesTv',
+  'mapple.js': 'MoviesTv',
+  'bingebang.js': 'MoviesTv',
+  'uhdmovies.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
