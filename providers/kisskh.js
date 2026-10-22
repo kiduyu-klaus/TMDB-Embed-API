@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { getTmdbApiKey } = require('../utils/tmdbKey');
 const { inferSubtitleMimeType } = require('../utils/subtitles');
-const { inferStreamLanguage } = require('../utils/streamLanguage');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('Kisskh');
 
 const KISSKH_API = (process.env.KISSKH_API_URL || 'https://kisskh.do/api').replace(/\/+$/, '');
 const ENC_DEC_API = (process.env.KISSKH_ENC_DEC_API || 'https://enc-dec.app/api').replace(/\/+$/, '');
@@ -13,6 +13,41 @@ const HEADERS = {
     Accept: 'application/json, text/plain, */*',
     'User-Agent': USER_AGENT,
 };
+
+function endpointName(url) {
+    try {
+        const parsed = new URL(url);
+        return `${parsed.origin}${parsed.pathname}`;
+    } catch {
+        return String(url || '').split('?')[0];
+    }
+}
+
+async function tracedGet(url, config = {}) {
+    const started = Date.now();
+    diagnostics.log('request.start', { endpoint: endpointName(url) });
+    try {
+        const response = await axios.get(url, config);
+        diagnostics.log('request.complete', {
+            endpoint: endpointName(url),
+            status: response.status,
+            elapsedMs: Date.now() - started,
+            payloadType: Array.isArray(response.data) ? 'array' : typeof response.data,
+        });
+        return response;
+    } catch (error) {
+        diagnostics.log('request.failed', {
+            endpoint: endpointName(url),
+            elapsedMs: Date.now() - started,
+            error: error.message,
+        });
+        throw error;
+    }
+}
+
+function isAnimeEndpoint(...values) {
+    return values.some(value => /\banime\b/i.test(String(value || '')));
+}
 
 function requestConfig(extra = {}) {
     return {
@@ -70,7 +105,7 @@ function bestMatch(items, title, year, season) {
 
 async function tmdbDetails(tmdbId, mediaType, apiKey) {
     const kind = mediaType === 'movie' ? 'movie' : 'tv';
-    const response = await axios.get(`${TMDB_API}/${kind}/${encodeURIComponent(String(tmdbId))}`, {
+    const response = await tracedGet(`${TMDB_API}/${kind}/${encodeURIComponent(String(tmdbId))}`, {
         params: { api_key: apiKey },
         timeout: REQUEST_TIMEOUT_MS,
     });
@@ -88,12 +123,13 @@ async function findEpisode(tmdbId, mediaType, season, episode) {
     const year = date ? String(date).slice(0, 4) : null;
     if (!title) throw new Error(`TMDB returned no title for ${kind} ${tmdbId}`);
 
-    const searchResponse = await axios.get(`${KISSKH_API}/DramaList/Search`, requestConfig({
+    const searchResponse = await tracedGet(`${KISSKH_API}/DramaList/Search`, requestConfig({
         params: { q: title, type: 0 },
     }));
     const match = bestMatch(extractList(searchResponse.data), title, year, kind === 'tv' ? season : null);
+    diagnostics.log('catalog.match', { title, matchTitle: match.title || match.name || title, matchId: match.id });
 
-    const dramaResponse = await axios.get(
+    const dramaResponse = await tracedGet(
         `${KISSKH_API}/DramaList/Drama/${encodeURIComponent(String(match.id))}`,
         requestConfig({ params: { isq: 'true' } }),
     );
@@ -109,11 +145,13 @@ async function findEpisode(tmdbId, mediaType, season, episode) {
     }
     const episodeId = selected.id ?? selected.episodeId;
     if (episodeId == null) throw new Error('KissKH episode has no ID');
-    return { episodeId: String(episodeId), title, matchTitle: match.title || match.name || title };
+    const resolved = { episodeId: String(episodeId), title, matchTitle: match.title || match.name || title };
+    diagnostics.log('episode.selected', { episodeId: resolved.episodeId, targetEpisode, matchTitle: resolved.matchTitle });
+    return resolved;
 }
 
 async function getEncryptedKey(episodeId, type) {
-    const response = await axios.get(`${ENC_DEC_API}/enc-kisskh`, {
+    const response = await tracedGet(`${ENC_DEC_API}/enc-kisskh`, {
         params: { text: episodeId, type },
         timeout: REQUEST_TIMEOUT_MS,
     });
@@ -153,7 +191,7 @@ function normalizeSubtitle(item, index, defaultHeaders) {
 async function getSubtitles(episodeId, defaultHeaders) {
     try {
         const key = await getEncryptedKey(episodeId, 'sub');
-        const response = await axios.get(`${KISSKH_API}/Sub/${encodeURIComponent(episodeId)}`, requestConfig({
+        const response = await tracedGet(`${KISSKH_API}/Sub/${encodeURIComponent(episodeId)}`, requestConfig({
             params: { kkey: key },
         }));
         const entries = Array.isArray(response.data) ? response.data : extractList(response.data, ['subtitles', 'Subtitles', 'data']);
@@ -163,7 +201,7 @@ async function getSubtitles(episodeId, defaultHeaders) {
             const rawUrl = item && (item.src || item.url || item.file);
             if (!rawUrl) continue;
             try {
-                const decrypted = await axios.get(`${ENC_DEC_API}/dec-kisskh`, {
+                const decrypted = await tracedGet(`${ENC_DEC_API}/dec-kisskh`, {
                     params: { url: rawUrl },
                     timeout: REQUEST_TIMEOUT_MS,
                     responseType: 'text',
@@ -178,6 +216,7 @@ async function getSubtitles(episodeId, defaultHeaders) {
                 if (subtitle) output.push(subtitle);
             }
         }
+        diagnostics.log('subtitles.complete', { episodeId, count: output.length });
         return output;
     } catch (error) {
         console.warn(`[KissKH] Subtitle lookup failed: ${error.message}`);
@@ -186,11 +225,17 @@ async function getSubtitles(episodeId, defaultHeaders) {
 }
 
 async function getKisskhStreams(tmdbId, mediaType = 'movie', season = null, episode = null) {
+    const started = Date.now();
+    diagnostics.log('streams.start', { tmdbId, mediaType, season, episode, endpoint: endpointName(KISSKH_API) });
     try {
         const kind = mediaType === 'movie' ? 'movie' : 'tv';
-        if (kind === 'tv' && (season == null || episode == null)) return [];
+        if (kind === 'tv' && (season == null || episode == null)) {
+            diagnostics.log('streams.rejected', { reason: 'missing-season-or-episode' });
+            return [];
+        }
         const resolved = await findEpisode(tmdbId, kind, season, episode);
         const episodeId = resolved.episodeId;
+        diagnostics.log('episode.resolved', { episodeId, title: resolved.title, matchTitle: resolved.matchTitle });
         const referer = `${KISSKH_API}/`;
         const headers = { Referer: referer, 'User-Agent': USER_AGENT };
 
@@ -198,20 +243,23 @@ async function getKisskhStreams(tmdbId, mediaType = 'movie', season = null, epis
             getEncryptedKey(episodeId, 'vid'),
             getSubtitles(episodeId, headers),
         ]);
-        const videoResponse = await axios.get(
+        const videoResponse = await tracedGet(
             `${KISSKH_API}/DramaList/Episode/${encodeURIComponent(episodeId)}.png`,
             requestConfig({ params: { err: 'false', ts: '', time: '', kkey: videoKey } }),
         );
         const video = parseVideoPayload(videoResponse.data);
-        if (!video || !video.url) return [];
+        if (!video || !video.url) {
+            diagnostics.log('video.missing', { episodeId });
+            return [];
+        }
 
         const url = video.url;
         const streamTitle = `${resolved.title}${kind === 'tv' ? `\nS${String(season).padStart(2, '0')}E${String(episode).padStart(2, '0')}` : ''}`;
-        const language = video.language || video.lang || video.audioLanguage
-            || inferStreamLanguage({ title: streamTitle, file: video.filename || video.fileName || url });
+        const anime = isAnimeEndpoint(mediaType, KISSKH_API, url);
+        const language = anime ? 'Original' : 'English';
         const mimeType = video.mimeType || (/\.m3u8(?:\?|$)/i.test(url) ? 'application/vnd.apple.mpegurl' : 'video/mp4');
         const format = video.format || (mimeType.includes('mpegurl') ? 'm3u8' : 'mp4');
-        return [{
+        const stream = {
             name: 'KissKH',
             title: streamTitle,
             url,
@@ -222,8 +270,19 @@ async function getKisskhStreams(tmdbId, mediaType = 'movie', season = null, epis
             provider: 'KissKH',
             headers,
             subtitles,
-        }];
+        };
+        diagnostics.log('streams.complete', {
+            tmdbId,
+            mediaType,
+            anime,
+            language,
+            format,
+            subtitleCount: subtitles.length,
+            elapsedMs: Date.now() - started,
+        });
+        return [stream];
     } catch (error) {
+        diagnostics.log('streams.failed', { tmdbId, mediaType, season, episode, elapsedMs: Date.now() - started, error: error.message });
         console.error(`[KissKH] ${error.message}`);
         return [];
     }
