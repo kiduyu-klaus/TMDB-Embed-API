@@ -190,13 +190,57 @@ document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='
 
 // --- Stream API token ---
 const REDACTED_TOKEN = '(set — admin session required)';
-function currentStreamTokenHash(){
-	const display = document.getElementById('streamTokenDisplay');
-	const value = (display && display.value || '').trim();
-	// The server redacts the hash for non-admins; never treat the redaction marker as a real token
-	return /^[0-9a-f]{64}$/.test(value) ? value : null;
-}
-function renderStreamToken(hash){
+	function currentStreamTokenHash(){
+		const display = document.getElementById('streamTokenDisplay');
+		const value = (display && display.value || '').trim();
+		// The server redacts the hash for non-admins; never treat the redaction marker as a real token
+		return /^[0-9a-f]{64}$/.test(value) ? value : null;
+	}
+	let providerTestName = '';
+	let providerTestCategory = 'MoviesTv';
+	function closeProviderTestDialog(){
+		const modal = document.getElementById('providerTestModal');
+		if(modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+		providerTestName = '';
+		providerTestCategory = 'MoviesTv';
+	}
+	function openProviderTestDialog(providerName, category){
+		const modal = document.getElementById('providerTestModal');
+		const title = document.getElementById('providerTestTitle');
+		const movieBtn = document.getElementById('testProviderMovieBtn');
+		const tvBtn = document.getElementById('testProviderTvBtn');
+		if(!modal) return;
+		providerTestName = providerName;
+		providerTestCategory = category === 'Anime' ? 'Anime' : 'MoviesTv';
+		if(title) title.textContent = `Test ${providerName}`;
+		if(movieBtn) movieBtn.textContent = providerTestCategory === 'Anime' ? 'Anime movie · TMDB 372058' : 'Movie · TMDB 550';
+		if(tvBtn) tvBtn.textContent = providerTestCategory === 'Anime' ? 'Anime TV · TMDB 1429 S01E04' : 'TV · TMDB 1622 S01E04';
+		modal.classList.add('show');
+		modal.setAttribute('aria-hidden','false');
+	}
+	function openProviderTestUrl(mediaType){
+		if(!providerTestName) return;
+		const isAnime = providerTestCategory === 'Anime';
+		const path = isAnime
+			? (mediaType === 'tv'
+				? `/api/streams/${encodeURIComponent(providerTestName)}/anime/1429?season=1&episode=4`
+				: `/api/streams/${encodeURIComponent(providerTestName)}/anime/372058`)
+			: (mediaType === 'tv'
+				? `/api/streams/${encodeURIComponent(providerTestName)}/series/1622?season=1&episode=4`
+				: `/api/streams/${encodeURIComponent(providerTestName)}/movie/550`);
+		const url = new URL(U(path), window.location.origin);
+		const token = currentStreamTokenHash();
+		if(token) url.searchParams.set('token', token);
+		closeProviderTestDialog();
+		window.open(url.href, '_blank', 'noopener,noreferrer');
+	}
+	document.addEventListener('click',(e)=>{
+		if(e.target.closest('#testProviderMovieBtn')) openProviderTestUrl('movie');
+		if(e.target.closest('#testProviderTvBtn')) openProviderTestUrl('tv');
+		if(e.target.closest('#cancelProviderTestBtn') || e.target.closest('#providerTestModal .modal-backdrop')) closeProviderTestDialog();
+	});
+	document.addEventListener('keydown',(e)=>{ if(e.key === 'Escape') closeProviderTestDialog(); });
+	function renderStreamToken(hash){
 	const display = document.getElementById('streamTokenDisplay');
 	const example = document.getElementById('streamTokenExample');
 	const state = document.getElementById('streamTokenState');
@@ -945,32 +989,37 @@ async function renderProviderMatrix(merged){
 			const providersData = await providersResponse.json();
 			availableProviders = providersData.providers || [];
 		}
-	} catch (e) {
-		console.warn('Failed to fetch providers list:', e.message);
-	}
-	
-	// Create provider list with enable flags
-	const providers = availableProviders.map(p => {
-		const flag = `enable${p.name.charAt(0).toUpperCase() + p.name.slice(1)}Provider`;
-		return [p.name, flag];
-	});
-	
-	container.innerHTML = providers.map(([name,flag])=>{
-		const enabled = merged[flag] !== false;
-		const isDefault = defaults.includes(name);
-		return `<div class="col"><div class=\"pm-item\" data-prov=\"${name}\" data-flag=\"${flag}\" data-enabled=\"${enabled}\" data-default=\"${isDefault}\">`
-			+`<button type="button" class="pm-enable btn ${enabled ? 'btn-outline-success' : 'btn-outline-danger'}" title="${enabled ? 'Disable' : 'Enable'} ${name}" aria-label="${enabled ? 'Disable' : 'Enable'} ${name}" aria-pressed="${enabled}" data-action="toggle-enable"><i class="bi ${enabled ? 'bi-check' : 'bi-x'}" aria-hidden="true"></i></button>`
-			+`<span class=\"pm-name\">${name}</span>`
-			+`<button type=\"button\" class=\"pm-default\" title=\"Toggle Default\" data-action=\"toggle-default\">${isDefault? '★':'☆'}</button>`
-			+`</div></div>`;
+		} catch (e) {
+			console.warn('Failed to fetch providers list:', e.message);
+		}
+
+		// Create provider list with enable flags
+		const providers = availableProviders.map(p => {
+			const flag = `enable${p.name.charAt(0).toUpperCase() + p.name.slice(1)}Provider`;
+			return [p.name, flag, p.category || 'MoviesTv'];
+		});
+
+		container.innerHTML = providers.map(([name,flag,category])=>{
+			const enabled = merged[flag] !== false;
+			const isDefault = defaults.includes(name);
+			return `<div class="col"><div class=\"pm-item\" data-prov=\"${name}\" data-category=\"${category}\" data-flag=\"${flag}\" data-enabled=\"${enabled}\" data-default=\"${isDefault}\">`
+				+`<button type=\"button\" class=\"pm-enable btn ${enabled ? 'btn-outline-success' : 'btn-outline-danger'}\" title=\"${enabled ? 'Disable' : 'Enable'} ${name}\" aria-label=\"${enabled ? 'Disable' : 'Enable'} ${name}\" aria-pressed=\"${enabled}\" data-action=\"toggle-enable\"><i class=\"bi ${enabled ? 'bi-check' : 'bi-x'}\" aria-hidden=\"true\"></i></button>`
+				+`<span class=\"pm-name\">${name}</span>`
+				+`<button type=\"button\" class=\"pm-default\" title=\"Toggle Default\" data-action=\"toggle-default\">${isDefault? '★':'☆'}</button>`
+				+`<button type=\"button\" class=\"pm-test btn btn-outline-primary\" title=\"Test ${name}\" aria-label=\"Test ${name}\" data-action=\"test-provider\"><i class=\"bi bi-play-circle\" aria-hidden=\"true\"></i></button>`
+				+`</div></div>`;
 	}).join('');
 	const hidden = document.querySelector('input[name="defaultProviders"]'); if(hidden) hidden.value = defaults.join(',');
 	if(!container._bound){
 		container.addEventListener('click', async (e)=>{
 			const btn = e.target.closest('button[data-action]'); if(!btn) return;
-			const item = btn.closest('.pm-item'); if(!item) return;
-			const prov = item.dataset.prov; const flag = item.dataset.flag;
-			let data; try { data = await fetchConfig(); } catch(err){ setStatus('Provider fetch failed',true); return; }
+				const item = btn.closest('.pm-item'); if(!item) return;
+				const prov = item.dataset.prov; const flag = item.dataset.flag;
+				if(btn.dataset.action==='test-provider'){
+					openProviderTestDialog(prov, item.dataset.category);
+					return;
+				}
+				let data; try { data = await fetchConfig(); } catch(err){ setStatus('Provider fetch failed',true); return; }
 			const mergedNow = data.merged||{};
 			let defaultsNow = (mergedNow.defaultProviders||[]).slice();
 			const patch = {};

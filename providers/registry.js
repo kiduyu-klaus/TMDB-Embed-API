@@ -83,7 +83,7 @@ const providerFunctionMap = {
   'reanime.js': 'getStreams',
   'allwish.js': 'getStreams',
   'animesalt.js': 'getStreams',
-  'moviebox.js': 'getMovieboxStreams',
+  'moviebox.js': 'getStreams',
   'desiflix.js': 'getStreams',
   'anime-dekho.js': 'getStreams',
   'animekhor.js': 'getStreams',

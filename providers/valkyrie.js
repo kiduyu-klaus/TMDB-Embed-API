@@ -196,7 +196,7 @@
       const master = parseMaster(response.text, response.base);
       // Drop confirmed HTML error pages. Retain API URLs when a probe fails.
       if (!master) {
-        const isErrorPage = /^\s*(?:<!doctype|<html|[\[{])/i.test(response.text);
+        const isErrorPage = /^\s*(?:<!doctype|<html|[[{])/i.test(response.text);
         diagnostics.log('playlist.invalid', {
           characters: response.text.length,
           isErrorPage: isErrorPage,

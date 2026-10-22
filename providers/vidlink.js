@@ -65,6 +65,22 @@ function normalizeHeaders(headers) {
     );
 }
 
+function mergeHeaders(...headerSets) {
+    const merged = {};
+    for (const headerSet of headerSets) {
+        for (const [name, value] of Object.entries(normalizeHeaders(headerSet))) {
+            const previous = Object.keys(merged).find(key => key.toLowerCase() === name.toLowerCase());
+            if (previous) delete merged[previous];
+            merged[name] = value;
+        }
+    }
+    return merged;
+}
+
+function getPlaybackHeaders(stream) {
+    return mergeHeaders(VIDLINK_HEADERS, stream?.headers, stream?.playlistHeaders);
+}
+
 async function makeRequest(url, options = {}) {
     const defaultHeaders = {
         'User-Agent': VIDLINK_HEADERS['User-Agent'],
@@ -220,36 +236,37 @@ function parseM3U8(content, baseUrl) {
     return streams;
 }
 
-function collapsePlaylistVariants(parsed, masterUrl) {
+function collapsePlaylistVariants(parsed, masterUrl, headers) {
     const distinct = new Set(
         parsed.map(item => item.quality).filter(item => item && item !== 'Auto' && item !== 'Unknown')
     );
     if (distinct.size <= 1) {
-        return [{ name: 'Vidlink - Auto', title: parsed[0] && parsed[0].title, url: masterUrl, quality: 'Auto' }];
+        return [{ name: 'Vidlink - Auto', title: parsed[0] && parsed[0].title, url: masterUrl, quality: 'Auto', headers }];
     }
     return parsed;
 }
 
-async function fetchAndParseM3U8(playlistUrl, title) {
+async function fetchAndParseM3U8(playlistUrl, title, headers) {
     try {
-        const response = await makeRequest(playlistUrl, { headers: VIDLINK_HEADERS });
+        const response = await makeRequest(playlistUrl, { headers });
         const content = await response.text();
         const parsed = parseM3U8(content, playlistUrl);
         if (parsed.length === 0) {
-            return [{ name: 'Vidlink - Auto', title, url: playlistUrl, quality: 'Auto' }];
+            return [{ name: 'Vidlink - Auto', title, url: playlistUrl, quality: 'Auto', headers }];
         }
         return parsed.map(stream => ({
             name: `Vidlink - ${getQualityFromResolution(stream.resolution)}`,
             title,
             url: stream.url,
-            quality: getQualityFromResolution(stream.resolution)
+            quality: getQualityFromResolution(stream.resolution),
+            headers
         }));
     } catch (_error) {
-        return [{ name: 'Vidlink - Auto', title, url: playlistUrl, quality: 'Auto' }];
+        return [{ name: 'Vidlink - Auto', title, url: playlistUrl, quality: 'Auto', headers }];
     }
 }
 
-function processVidlinkResponse(data, title) {
+function processVidlinkResponse(data, title, playbackHeaders = {}) {
     const streams = [];
     try {
         if (data && data.stream && data.stream.qualities) {
@@ -259,15 +276,16 @@ function processVidlinkResponse(data, title) {
                         name: `Vidlink - ${extractQuality({ quality: qualityKey })}`,
                         title,
                         url: qualityData.url,
-                        quality: extractQuality({ quality: qualityKey })
+                        quality: extractQuality({ quality: qualityKey }),
+                        headers: mergeHeaders(playbackHeaders, qualityData.headers)
                     });
                 }
             });
-            if (data.stream.playlist) streams.push({ _isPlaylist: true, url: data.stream.playlist });
+            if (data.stream.playlist) streams.push({ _isPlaylist: true, url: data.stream.playlist, headers: playbackHeaders });
         } else if (data && data.stream && data.stream.playlist) {
-            streams.push({ _isPlaylist: true, url: data.stream.playlist });
+            streams.push({ _isPlaylist: true, url: data.stream.playlist, headers: playbackHeaders });
         } else if (data && data.url) {
-            streams.push({ name: `Vidlink - ${extractQuality(data)}`, title, url: data.url, quality: extractQuality(data) });
+            streams.push({ name: `Vidlink - ${extractQuality(data)}`, title, url: data.url, quality: extractQuality(data), headers: playbackHeaders });
         } else if (typeof data === 'object') {
             const findUrls = (obj) => {
                 for (const [key, value] of Object.entries(obj)) {
@@ -277,7 +295,8 @@ function processVidlinkResponse(data, title) {
                             name: `Vidlink ${key} - ${extractQuality({ [key]: value })}`,
                             title,
                             url: value,
-                            quality: extractQuality({ [key]: value })
+                            quality: extractQuality({ [key]: value }),
+                            headers: playbackHeaders
                         });
                     } else if (value && typeof value === 'object' && !key.toLowerCase().includes('caption') && !key.toLowerCase().includes('subtitle')) {
                         findUrls(value);
@@ -310,17 +329,12 @@ class VidlinkScraper {
             console.log(`[Vidlink] Requesting: ${vidlinkUrl}`);
             const response = await makeRequest(vidlinkUrl, { headers: VIDLINK_HEADERS });
             const data = await response.json();
+            const playbackHeaders = getPlaybackHeaders(data?.stream);
 
             const playlist = data?.stream?.playlist;
             if (isHttpUrl(playlist) && (data.stream.requiresProxy === true || /\.mpd(?:[?#]|$)/i.test(playlist))) {
                 // The relay rewrites the MPD in a way mpv cannot reliably read.
                 // Native players can use the original CDN with its signed cookies.
-                const playbackHeaders = { ...VIDLINK_HEADERS };
-                for (const [name, value] of Object.entries(normalizeHeaders(data.stream.playlistHeaders))) {
-                    const previous = Object.keys(playbackHeaders).find(key => key.toLowerCase() === name.toLowerCase());
-                    if (previous) delete playbackHeaders[previous];
-                    playbackHeaders[name] = value;
-                }
                 console.log('[Vidlink] Returning direct DASH with playlist headers');
                 return [{
                     name: 'Vidlink - Auto',
@@ -337,7 +351,7 @@ class VidlinkScraper {
                 }];
             }
 
-            const rawStreams = processVidlinkResponse(data, streamTitle);
+            const rawStreams = processVidlinkResponse(data, streamTitle, playbackHeaders);
             if (rawStreams.length === 0) return [];
 
             const playlistStreams = rawStreams.filter(stream => stream._isPlaylist);
@@ -345,10 +359,10 @@ class VidlinkScraper {
 
             if (playlistStreams.length > 0) {
                 const parsedArrays = await Promise.all(
-                    playlistStreams.map(stream => fetchAndParseM3U8(stream.url, streamTitle))
+                    playlistStreams.map(stream => fetchAndParseM3U8(stream.url, streamTitle, stream.headers || playbackHeaders))
                 );
                 const collapsed = playlistStreams.map((stream, index) =>
-                    collapsePlaylistVariants(parsedArrays[index] || [], stream.url)
+                    collapsePlaylistVariants(parsedArrays[index] || [], stream.url, stream.headers || playbackHeaders)
                 );
                 const seen = new Set();
                 const all = [...directStreams, ...collapsed.flat()].filter(item => {

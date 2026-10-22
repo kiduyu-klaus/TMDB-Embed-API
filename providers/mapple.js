@@ -193,7 +193,7 @@ function createCookieJar() {
                     const header = response.headers.get("set-cookie");
                     if (header) rawCookies = [header];
                 }
-            } catch (e) { }
+            } catch (e) { /* ignore upstream failure */ }
             rawCookies.forEach(function (cookie) {
                 const pair = cookie.split(";")[0].split("=");
                 if (pair.length >= 2) cookies[pair[0].trim()] = pair.slice(1).join("=").trim();
@@ -268,7 +268,7 @@ function resolvePlaylistUrl(entry, playlistUrl) {
     if (/^https?:\/\//i.test(entry)) return entry;
     const cleanUrl = playlistUrl.split("#")[0].split("?")[0];
     if (entry.charAt(0) === "/") {
-        const origin = cleanUrl.match(/^(https?:\/\/[^\/]+)/i);
+        const origin = cleanUrl.match(/^(https?:\/\/[^/]+)/i);
         return `${origin ? origin[1] : ""}${entry}`;
     }
     return `${cleanUrl.slice(0, cleanUrl.lastIndexOf("/") + 1)}${entry}`;

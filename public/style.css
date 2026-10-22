@@ -290,12 +290,12 @@ input.invalid, textarea.invalid { border-color: var(--danger)!important; animati
 .provider-matrix { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
 .pm-item { background: var(--bg-alt); border:1px solid var(--border); border-radius: var(--radius-sm); padding:6px 10px; display:flex; align-items:center; gap:8px; font-size:.65rem; letter-spacing:.5px; text-transform:uppercase; box-shadow: var(--shadow); }
 .pm-item[data-enabled='false'] { opacity:.45; filter:saturate(.5); }
-.pm-item .pm-enable, .pm-item .pm-default { background: var(--bg-accent); border:1px solid var(--border); padding:4px 8px; font-size:.7rem; cursor:pointer; border-radius: var(--radius-sm); line-height:1; display:flex; align-items:center; justify-content:center; }
+.pm-item .pm-enable, .pm-item .pm-default, .pm-item .pm-test { background: var(--bg-accent); border:1px solid var(--border); padding:4px 8px; font-size:.7rem; cursor:pointer; border-radius: var(--radius-sm); line-height:1; display:flex; align-items:center; justify-content:center; }
 .pm-item .pm-enable { color: var(--primary); }
 .pm-item[data-enabled='false'] .pm-enable { color: var(--danger); }
 .pm-item .pm-default { color: gold; }
 .pm-item[data-default='false'] .pm-default { opacity:.5; color: var(--text-dim); }
-.pm-item .pm-enable:hover, .pm-item .pm-default:hover { border-color: var(--primary); }
+.pm-item .pm-enable:hover, .pm-item .pm-default:hover, .pm-item .pm-test:hover { border-color: var(--primary); }
 .pm-name { min-width:70px; }
 
 /* FebBox Cookie Manager */

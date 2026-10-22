@@ -41,5 +41,6 @@
   "providerCheckType": "series",
   "providerCheckSeriesTmdbId": "1622",
   "providerCheckSeason": 1,
-  "providerCheckEpisode": 1
+  "providerCheckEpisode": 1,
+  "enableWcoflixProvider": false
 }

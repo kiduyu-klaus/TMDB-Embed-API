@@ -60,7 +60,7 @@ async function httpWithCookies(path) {
         if (!res.ok) return { text: "", cookies: "", ok: false };
         const text = await res.text();
         let cookies = "";
-        try { cookies = res.headers.get("set-cookie") || ""; } catch { }
+        try { cookies = res.headers.get("set-cookie") || ""; } catch { /* ignore upstream failure */ }
         return { text, cookies, ok: true };
     } catch {
         return { text: "", cookies: "", ok: false };
@@ -205,7 +205,7 @@ function extractAnimeCards(html, $) {
                 }
                 if (results.length > 0) return results;
             }
-        } catch { }
+        } catch { /* ignore upstream failure */ }
     }
 
     const results = [];
@@ -220,7 +220,7 @@ function extractAnimeCards(html, $) {
         if (xm) {
             try {
                 Object.values(parseEmbedded(xm[1])).forEach(t => { if (t) titleSet.add(t); });
-            } catch { }
+            } catch { /* ignore upstream failure */ }
         }
         results.push({ slug: animeSlug, titles: Array.from(titleSet) });
     });
@@ -304,7 +304,7 @@ function extractVidstack(html, $) {
                 .map(s => ({ url: s.file ? s.file.replace(/\\/g, "") : "", name: s.title || s.language || "English", language: s.language || "en" }))
                 .filter(s => s.url);
             if (src) return { src, tracks };
-        } catch { }
+        } catch { /* ignore upstream failure */ }
     }
 
     let src = $("media-player").attr("src");
@@ -499,7 +499,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
                                 }
                             }
                         }
-                    } catch { }
+                    } catch { /* ignore upstream failure */ }
                 }
             }
         }

@@ -47,7 +47,7 @@ async function fetchText(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.text();
-    } catch { }
+    } catch { /* upstream failure - fall through to null */ }
     return null;
 }
 
@@ -55,7 +55,7 @@ async function fetchJson(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.json();
-    } catch { }
+    } catch { /* upstream failure - fall through to null */ }
     return null;
 }
 
@@ -83,6 +83,14 @@ function firstSuccess(promises, isEmpty) {
 
 async function searchSite(query, ua) {
     const queries = [query.replace(/'/g, '').trim()];
+    const collected = [];
+    const addResults = items => {
+        if (!Array.isArray(items)) return;
+        collected.push(...items.map(item => ({
+            title: (item.title?.rendered || item.title || item.name || '').replace(/<[^>]+>/g, '').trim(),
+            url: item.link || item.url || item.slug || null,
+        })).filter(result => result.title.length > 5 && result.url));
+    };
     const cleaned = query.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     if (cleaned !== queries[0]) queries.push(cleaned);
     const noYear = cleaned.replace(/\s*\d{4}\s*/g, ' ').trim();
@@ -111,23 +119,104 @@ async function searchSite(query, ua) {
             { headers: hdrs(ua) }
         );
         if (data && data.length) {
-            return data.map(post => ({
-                title: (post.title && post.title.rendered ? post.title.rendered : '').replace(/<[^>]+>/g, '').trim(),
-                url: post.link,
-            })).filter(r => r.title.length > 5 && r.url);
+            addResults(data);
+            continue;
         }
         const lookup = await fetchJson(
             `${BASE_URL}/lookup.php?q=${encodeURIComponent(q)}&page=1&per_page=30`,
             { headers: hdrs(ua) }
         );
-        if (lookup && lookup.length) {
-            return lookup.map(item => ({
-                title: (item.title || item.name || '').replace(/<[^>]+>/g, '').trim(),
-                url: item.url || item.link || (item.slug ? `${BASE_URL}/${item.slug}/` : null),
-            })).filter(r => r.title.length > 5 && r.url);
+        if (lookup && lookup.length) addResults(lookup);
+    }
+    const seen = new Set();
+    return collected.filter(result => {
+        if (seen.has(result.url)) return false;
+        seen.add(result.url);
+        return true;
+    });
+}
+
+const STOP_WORDS = new Set(['and', '&', 'the', 'a', 'an']);
+const STOP_WORDS_RE = /\b(and|&|the|a|an)\b/g;
+
+function normalizeTitleText(text) {
+    return String(text || '')
+        .toLowerCase()
+        .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
+}
+
+function tokenizeTitle(text) {
+    return String(text || '')
+        .split(/[^a-z0-9']+/i)
+        .map(word => word.toLowerCase())
+        .filter(Boolean);
+}
+
+// "Marvel's The Punisher" -> "The Punisher"; sites usually drop the franchise prefix.
+function buildTitleVariants(title) {
+    const variants = [];
+    const push = value => {
+        const trimmed = String(value || '').trim();
+        if (!trimmed) return;
+        if (!variants.some(existing => existing.toLowerCase() === trimmed.toLowerCase())) {
+            variants.push(trimmed);
+        }
+    };
+    push(title);
+    const possessive = String(title || '').match(/^[\w'’.-]+['’][\w'’.-]*\s+(.+)$/);
+    if (possessive) push(possessive[1]);
+    return variants;
+}
+
+// Word-boundary aware containment so short titles do not match inside unrelated words.
+function containsPhrase(haystack, needle) {
+    if (!needle) return false;
+    if (haystack === needle) return true;
+    let from = 0;
+    for (;;) {
+        const idx = haystack.indexOf(needle, from);
+        if (idx === -1) return false;
+        const before = idx === 0 ? ' ' : haystack[idx - 1];
+        const end = idx + needle.length;
+        const after = end >= haystack.length ? ' ' : haystack[end];
+        if (!/[a-z0-9]/.test(before) && !/[a-z0-9]/.test(after)) return true;
+        from = idx + 1;
+    }
+}
+
+function extractYears(text) {
+    const years = [];
+    const yearRegex = /\b(19|20)\d{2}\b/g;
+    let match;
+    while ((match = yearRegex.exec(String(text || ''))) !== null) years.push(match[0]);
+    return years;
+}
+
+function scoreAgainstVariant(resultLower, resultTokens, variantLower) {
+    if (resultLower === variantLower) return 100;
+    if (containsPhrase(resultLower, variantLower)) return 50;
+    if (variantLower.includes(resultLower)) return 50;
+
+    const resultNoStops = resultLower.replace(STOP_WORDS_RE, '').replace(/\s+/g, ' ').trim();
+    const variantNoStops = variantLower.replace(STOP_WORDS_RE, '').replace(/\s+/g, ' ').trim();
+    if (variantNoStops && (resultNoStops.includes(variantNoStops) || variantNoStops.includes(resultNoStops))) {
+        return 50;
+    }
+    const normalizedResult = resultNoStops.replace(/[^a-z0-9\s]/g, '').trim();
+    const normalizedVariant = variantNoStops.replace(/[^a-z0-9\s]/g, '').trim();
+    if (normalizedVariant && normalizedResult === normalizedVariant) return 60;
+
+    // Fall back to distinctive (non stop-word) token overlap.
+    const distinctive = tokenizeTitle(variantLower).filter(word => word.length > 1 && !STOP_WORDS.has(word));
+    if (!distinctive.length) return 0;
+    const needed = Math.min(distinctive.length, 3);
+    let hits = 0;
+    for (const word of distinctive) {
+        for (const resultWord of resultTokens) {
+            if (resultWord === word || (word.length >= 5 && resultWord.startsWith(word))) { hits++; break; }
         }
     }
-    return [];
+    return hits >= needed ? 50 : 0;
 }
 
 function matchHits(results, tmdbInfo, isSeries) {
@@ -136,10 +225,8 @@ function matchHits(results, tmdbInfo, isSeries) {
         ? (tmdbInfo.first_air_date || '').split('-')[0]
         : (tmdbInfo.release_date || '').split('-')[0];
 
-    const titleLower = tmdbTitle.toLowerCase().replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
-    const stopWords = /\b(and|&|the|a|an)\b/g;
-    const titleNoStops = titleLower.replace(stopWords, '').replace(/\s+/g, ' ').trim();
-    const titleWords = titleLower.split(/\s+/).filter(w => w.length > 1);
+    const variants = buildTitleVariants(tmdbTitle);
+    diagnostics.log('match.variants', { title: tmdbTitle, variants });
 
     const scored = [];
     const seen = {};
@@ -150,42 +237,51 @@ function matchHits(results, tmdbInfo, isSeries) {
         if (seen[resultUrl]) continue;
         seen[resultUrl] = true;
 
-        const resultLower = resultTitle.toLowerCase().replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
+        const looksLikeMovie = /\b(?:full\s+movie|movie|bluray)\b/i.test(resultTitle)
+            && !/\b(?:season|web\s+series|tv\s+series|series)\b/i.test(resultTitle);
+        if (isSeries && looksLikeMovie) {
+            diagnostics.log('match.rejected', { title: resultTitle, url: resultUrl, reason: 'looks-like-movie' });
+            continue;
+        }
+
+        const resultLower = normalizeTitleText(resultTitle);
+        const resultTokens = tokenizeTitle(resultTitle);
         let score = 0;
-
-        if (resultLower === titleLower) {
-            score += 100;
-        } else if (resultLower.includes(titleLower) || titleLower.includes(resultLower)) {
-            score += 50;
-        } else {
-            const resultNoStops = resultLower.replace(stopWords, '').replace(/\s+/g, ' ').trim();
-            if (resultNoStops.includes(titleNoStops) || titleNoStops.includes(resultNoStops)) {
-                score += 50;
-            } else if (
-                resultNoStops.replace(/[^a-z0-9\s]/g, '').trim() ===
-                titleNoStops.replace(/[^a-z0-9\s]/g, '').trim()
-            ) {
-                score += 60;
+        let bestVariant = '';
+        for (const variant of variants) {
+            const variantScore = scoreAgainstVariant(resultLower, resultTokens, normalizeTitleText(variant));
+            if (variantScore > score) {
+                score = variantScore;
+                bestVariant = variant;
             }
         }
 
-        if (score === 0 && titleWords.length > 1) {
-            const resultWords = resultLower.split(/\s+/).filter(w => w.length > 1);
-            let matches = 0;
-            for (const tw of titleWords) {
-                for (const rw of resultWords) {
-                    if (tw === rw || rw.startsWith(tw) || tw.startsWith(rw)) { matches++; break; }
-                }
+        const resultYears = extractYears(resultTitle);
+        let yearPenalty = 0;
+        if (tmdbYear && resultYears.length) {
+            const yearMatches = resultYears.some(year => Math.abs(parseInt(year, 10) - parseInt(tmdbYear, 10)) <= 1);
+            if (yearMatches) score += 10;
+            else {
+                score -= 60;
+                yearPenalty = -60;
             }
-            if (matches >= Math.min(titleWords.length, 3)) score += 50;
         }
 
-        if (score >= 50 && tmdbYear && resultTitle.includes(tmdbYear)) score += 10;
-        if (score >= 50) scored.push({ doc: result, score });
+        diagnostics.log('match.candidate', {
+            title: resultTitle,
+            url: resultUrl,
+            score,
+            variant: bestVariant,
+            tmdbYear: tmdbYear || '',
+            resultYears: resultYears.join(','),
+            yearPenalty,
+        });
+
+        if (score >= 50) scored.push({ doc: result, score, year: resultYears[0] || '' });
     }
 
     scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, 5).map(s => s.doc);
+    return scored.slice(0, 5).map(s => Object.assign({}, s.doc, { year: s.year }));
 }
 
 function extractAbhilinksUrl(html) {
@@ -386,7 +482,6 @@ async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
 
             for (const ep of filtered) {
                 for (const link of ep.links) {
-                    const epNum = ep.number;
                     const epSize = ep.size;
                     tasks.push(async () => {
                         let r2Links = null;
@@ -530,7 +625,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
             });
             return streams;
         } catch (error) {
-            diagnostics.log('resolve.failed', { tmdbId, title, error: error.message });
+            diagnostics.log('resolve.failed', { tmdbId, title, error: error?.message || String(error || 'unknown error') });
             return [];
         }
     } catch (error) {

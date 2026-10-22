@@ -24,9 +24,9 @@ var __spreadValues = (a, b) => {
     if (__hasOwnProp.call(b, prop))
       __defNormalProp(a, prop, b[prop]);
   if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
+    for (var symbolProp of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, symbolProp))
+        __defNormalProp(a, symbolProp, b[symbolProp]);
     }
   return a;
 };
@@ -133,6 +133,7 @@ function bypassHrefli(url) {
         if (Array.isArray(allCookies))
           setCookie = allCookies.join("\n");
       } catch (_) {
+        /* set-cookie header unavailable - continue without cookies */
       }
       if (!setCookie)
         setCookie = response.headers.get("set-cookie") || "";
@@ -203,7 +204,7 @@ function bypassHrefli(url) {
       }
       const $ = import_cheerio_without_node_native.load(html);
       let redirectUrl = $("meta[http-equiv='refresh']").attr("content") || "";
-      redirectUrl = ((_a = redirectUrl.match(/url\s*=\s*['\"]?([^'\";]+)/i)) == null ? void 0 : _a[1]) || "";
+      redirectUrl = ((_a = redirectUrl.match(/url\s*=\s*['"]?([^'";]+)/i)) == null ? void 0 : _a[1]) || "";
       if (!redirectUrl) {
         const goMatch = html.match(/[?&]go=([^"'&\s]+)/i);
         if (goMatch) {
@@ -215,18 +216,18 @@ function bypassHrefli(url) {
           html = yield response.text();
           const $go = import_cheerio_without_node_native.load(html);
           redirectUrl = $go("meta[http-equiv='refresh']").attr("content") || "";
-          redirectUrl = ((_b = redirectUrl.match(/url\s*=\s*['\"]?([^'\";]+)/i)) == null ? void 0 : _b[1]) || "";
+          redirectUrl = ((_b = redirectUrl.match(/url\s*=\s*['"]?([^'";]+)/i)) == null ? void 0 : _b[1]) || "";
         }
       }
       if (!redirectUrl) {
-        redirectUrl = ((_c = html.match(/(?:location(?:\.href)?\s*=|replace\()\s*['\"]([^'\"]+)['\"]/i)) == null ? void 0 : _c[1]) || "";
+        redirectUrl = ((_c = html.match(/(?:location(?:\.href)?\s*=|replace\()\s*['"]([^'"]+)['"]/i)) == null ? void 0 : _c[1]) || "";
       }
       if (!redirectUrl)
         return null;
       const driveUrl = new URL(redirectUrl.trim(), response.url || currentUrl).toString();
       const driveRes = yield request(driveUrl);
       const driveHtml = yield driveRes.text();
-      const path = (_d = driveHtml.match(/replace\(\s*['\"]([^'\"]+)['\"]\s*\)/i)) == null ? void 0 : _d[1];
+      const path = (_d = driveHtml.match(/replace\(\s*['"]([^'"]+)['"]\s*\)/i)) == null ? void 0 : _d[1];
       if (!path || path === "/404")
         return null;
       return new URL(path, driveRes.url || driveUrl).toString();
@@ -338,6 +339,7 @@ function extractDriveseedPage(url) {
         }
       }
     } catch (e) {
+      /* upstream failure - keep the streams collected so far */
     }
     return streams;
   });
@@ -346,6 +348,24 @@ function extractDriveseedPage(url) {
 // src/uhdmovies/index.js
 function normalizeTitle(value) {
   return String(value || "").toLowerCase().replace(/\[[^\]]*\]|\([^)]*\)/g, " ").replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+// The site indexes a post under the bare title ("The Punisher Season 01-02 ...") while TMDB
+// carries the franchise prefix ("Marvel's The Punisher"). Searching the full TMDB title
+// returns zero results - the apostrophe breaks the WordPress search - so try the bare title too.
+function buildSearchTitles(value) {
+  const titles = [];
+  const push = (candidate) => {
+    const trimmed = String(candidate || "").trim();
+    if (trimmed && !titles.some((existing) => existing.toLowerCase() === trimmed.toLowerCase())) {
+      titles.push(trimmed);
+    }
+  };
+  push(value);
+  const possessive = String(value || "").match(/^([A-Za-z0-9]+['’][A-Za-z0-9]+)\s+(.+)$/);
+  if (possessive)
+    push(possessive[2]);
+  push(String(value || "").replace(/['’]/g, ""));
+  return titles;
 }
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   const args = [tmdbId, mediaType, seasonNum, episodeNum];
@@ -364,21 +384,24 @@ function getStreamsImpl(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
     diagnostics.log('domain.resolved', { mainUrl });
     try {
       let targetUrl = "";
-      const searchTitles = [...new Set([details.title, details.originalTitle].filter(Boolean))];
+      const searchTitles = [...new Set([...buildSearchTitles(details.title), ...buildSearchTitles(details.originalTitle)].filter(Boolean))];
+      const normalizedSearchTitles = searchTitles.map((candidate) => normalizeTitle(candidate)).filter(Boolean);
       for (const query of searchTitles) {
         const searchUrl = `${mainUrl}/?s=${encodeURIComponent(query)}`;
         const searchRes = yield tracedFetch(searchUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }) });
         if (!searchRes.ok)
           continue;
         const $search = import_cheerio_without_node_native2.load(yield searchRes.text());
-        const normalizedSearchTitle = normalizeTitle(query);
         $search("article.gridlove-post, article.latestPost").each((i, el) => {
           const title = $search(el).find("h1.sanket, h2.title a").text() || $search(el).find("a").attr("title") || "";
           const href = $search(el).find("div.entry-image > a, h2.title a, a").first().attr("href");
           const normalizedResultTitle = normalizeTitle(title);
-          const titleMatches = normalizedResultTitle && normalizedSearchTitle && (normalizedResultTitle === normalizedSearchTitle || normalizedResultTitle.includes(normalizedSearchTitle) || normalizedSearchTitle.includes(normalizedResultTitle));
-          const imdbMatches = details.imdbId && title.includes(details.imdbId);
-          if (href && (titleMatches || imdbMatches)) {
+          const titleMatches = normalizedResultTitle && normalizedSearchTitles.some((candidate) => normalizedResultTitle === candidate || normalizedResultTitle.includes(candidate) || (candidate.length >= 8 && candidate.includes(normalizedResultTitle)));
+          const imdbMatches = details.imdbId && (title.includes(details.imdbId) || (href || "").includes(details.imdbId));
+          const resultYears = (title.match(/\b(19|20)\d{2}\b/g) || []).map(Number);
+          const yearMismatch = Boolean(details.year) && resultYears.length > 0 && !resultYears.some((year) => Math.abs(year - Number(details.year)) <= 1);
+          diagnostics.log("search.candidate", { query, title, href, titleMatches: Boolean(titleMatches), imdbMatches: Boolean(imdbMatches), yearMismatch });
+          if (href && (titleMatches || imdbMatches) && !yearMismatch) {
             targetUrl = href;
             return false;
           }
@@ -411,33 +434,45 @@ function getStreamsImpl(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       } else {
         const episodesMap = {};
         let currentSeason = seasonNum;
-        $("pre, p, a, h3").each((i, el) => {
+        let currentQuality = "";
+        $("h2, h3, h4, p, pre, a").each((i, el) => {
+          const tag = el.tagName ? el.tagName.toLowerCase() : "";
           const text = $(el).text().trim();
-          const seasonMatch = text.match(/(?:season\s*|S)(\d+)/i);
-          if (seasonMatch && text.length < 20) {
-            currentSeason = parseInt(seasonMatch[1]);
-          }
-          if (($(el).is("a") || $(el).find("a").length > 0) && text.toLowerCase().includes("episode")) {
-            if (text.toLowerCase().includes("zip"))
-              return;
-            const epMatch = text.match(/Episode\s*(\d+)/i);
-            if (epMatch) {
-              const realEp = parseInt(epMatch[1]);
-              const epUrl = $(el).is("a") ? $(el).attr("href") : $(el).find("a").attr("href");
-              if (epUrl) {
-                const key = `${currentSeason}-${realEp}`;
-                if (!episodesMap[key])
-                  episodesMap[key] = [];
-                episodesMap[key].push(epUrl);
-              }
+          if (tag !== "a") {
+            // Season headings ("The Punisher Season 01 ...") and the per-quality labels
+            // ("... Season 1 S01 (1080p NF WEB-DL ...)") drive the episode grouping.
+            const seasonMatch = text.match(/\bseason\s*(\d{1,2})\b/i);
+            const isSeasonRange = /\bseason\s*\d{1,2}\s*-\s*\d{1,2}\b/i.test(text);
+            if (seasonMatch && !isSeasonRange && (tag === "h2" || tag === "h3" || tag === "h4" || text.length <= 160)) {
+              currentSeason = parseInt(seasonMatch[1], 10);
             }
+            const labelQuality = getIndexQuality(text);
+            if (labelQuality !== "Unknown")
+              currentQuality = labelQuality;
+            return;
           }
+          if (!text.toLowerCase().includes("episode"))
+            return;
+          if (text.toLowerCase().includes("zip"))
+            return;
+          const epMatch = text.match(/Episode\s*(\d+)/i);
+          if (!epMatch)
+            return;
+          const realEp = parseInt(epMatch[1]);
+          const epUrl = $(el).attr("href");
+          if (!epUrl)
+            return;
+          const key = `${currentSeason}-${realEp}`;
+          if (!episodesMap[key])
+            episodesMap[key] = [];
+          episodesMap[key].push({ url: epUrl, quality: currentQuality || "Unknown" });
         });
         const targetKey = `${seasonNum}-${episodeNum}`;
         const urls = episodesMap[targetKey] || [];
-        urls.forEach((url) => {
-          allStreams.push({ url, quality: "Unknown" });
+        urls.forEach((entry) => {
+          allStreams.push({ url: entry.url, quality: entry.quality });
         });
+        diagnostics.log("episodes.resolved", { seasonNum, episodeNum, targetKey, found: urls.length, keys: Object.keys(episodesMap), qualities: urls.map((entry) => entry.quality) });
       }
       const finalResults = [];
       for (const item of allStreams) {
@@ -467,7 +502,7 @@ function getStreamsImpl(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
             }
           } else {
             finalResults.push({
-              name: "UHDMovies",
+              name: `UHDMovies - ${item.quality}`,
               title: `UHDMovies - ${item.quality}`,
               url: finalLink,
               quality: item.quality,
