@@ -245,9 +245,12 @@
         <h1>Console Logs</h1>
         <div class="console-log-toolbar">
           <p id="consoleLogStatus" class="hint" aria-live="polite">Loading console logs...</p>
-          <button class="btn btn-outline-primary" id="refreshConsoleLogsBtn" type="button">Refresh now</button>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <button class="btn btn-outline-primary" id="refreshConsoleLogsBtn" type="button">Refresh now</button>
+            <button class="btn btn-outline-primary" id="saveConsoleLogsBtn" type="button">Save as log file</button>
+          </div>
         </div>
-        <p class="hint">All captured console levels are shown. This view refreshes every 5 seconds while open; older entries may roll off the server's bounded history.</p>
+        <p class="hint">All captured console levels are shown. This view refreshes every 5 seconds while open; older entries may roll off the server's bounded history. "Save as log file" downloads the full retained history from the server, not just the lines currently on screen.</p>
         <pre id="consoleLogOutput" class="console-log-output" aria-label="Captured console output" aria-live="off">Waiting for logs...</pre>
       </section>
     </form>

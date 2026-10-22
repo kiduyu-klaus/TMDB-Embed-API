@@ -12,6 +12,9 @@ let consoleLogCursor = 0;
 let consoleLogsTimer = null;
 let consoleLogsLoading = false;
 let consoleLogsLoaded = false;
+function formatConsoleLogEntry(entry){
+	return `[${entry.timestamp}] [${String(entry.level || 'log').toUpperCase()}] ${entry.message}`;
+}
 async function refreshConsoleLogs(){
 	const output = document.getElementById('consoleLogOutput');
 	const status = document.getElementById('consoleLogStatus');
@@ -27,7 +30,8 @@ async function refreshConsoleLogs(){
 			additions.push(`[${new Date().toISOString()}] [warning] ${data.missedCount} earlier log entr${data.missedCount === 1 ? 'y was' : 'ies were'} dropped from server memory.`);
 		}
 		for(const entry of data.entries || []){
-			additions.push(`[${entry.timestamp}] [${String(entry.level || 'log').toUpperCase()}] ${entry.message}`);
+			if(!entry || entry.message === undefined || entry.message === null) continue;
+			additions.push(formatConsoleLogEntry(entry));
 		}
 		if(output.textContent === 'Waiting for logs...' || (additions.length && output.textContent === 'No console output captured yet.')) output.textContent = '';
 		if(additions.length) output.append(document.createTextNode(`${additions.join('\n')}\n`));
@@ -56,6 +60,53 @@ function startConsoleLogPolling(){
 }
 function stopConsoleLogPolling(){
 	if(consoleLogsTimer){ clearInterval(consoleLogsTimer); consoleLogsTimer = null; }
+}
+// Downloads the console history as a .log file. Uses since=0 so the file holds
+// the full retained server history rather than only the lines on screen.
+async function saveConsoleLogsAsFile(){
+	const status = document.getElementById('consoleLogStatus');
+	const button = document.getElementById('saveConsoleLogsBtn');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Collecting console logs…';
+	try {
+		const response = await fetch(U('/api/logs?since=0'), { cache:'no-store' });
+		if(response.status === 401){ location.replace(U('/?expired=1')); return; }
+		if(!response.ok) throw new Error(`HTTP ${response.status}`);
+		const data = await response.json();
+		const lines = [];
+		if(data.missedCount > 0){
+			lines.push(`[${new Date().toISOString()}] [WARNING] ${data.missedCount} earlier log entr${data.missedCount === 1 ? 'y was' : 'ies were'} dropped from server memory.`);
+		}
+		for(const entry of data.entries || []){
+			if(!entry || entry.message === undefined || entry.message === null) continue;
+			lines.push(formatConsoleLogEntry(entry));
+		}
+		const captured = Number(data.totalEntries || 0).toLocaleString();
+		const retained = Number(data.retainedEntries || 0).toLocaleString();
+		const dropped = Number(data.droppedEntries || 0).toLocaleString();
+		const header = [
+			'# tmdb-embed-api console logs',
+			`# exported: ${new Date().toISOString()}`,
+			`# entries: ${lines.length.toLocaleString()} of ${captured} captured (${retained} retained, ${dropped} dropped)`,
+			''
+		].join('\n');
+		const body = lines.length ? `${lines.join('\n')}\n` : '# no console output captured yet.\n';
+		const blob = new Blob([header + body], { type:'text/plain;charset=utf-8' });
+		const url = URL.createObjectURL(blob);
+		const filename = `tmdb-embed-api-logs-${new Date().toISOString().replace(/[:.]/g, '-')}.log`;
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+		setTimeout(()=>URL.revokeObjectURL(url), 1000);
+		if(status) status.textContent = `Saved ${lines.length.toLocaleString()} log entr${lines.length === 1 ? 'y' : 'ies'} to ${filename}.`;
+	} catch(error){
+		if(status) status.textContent = `Log save failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
 }
 async function fetchConfig(){
 	const r = await fetch(U('/api/config'));
@@ -825,6 +876,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
 		if(rsb) rsb.addEventListener('click', loadServerStatus);
 		const rlb = document.getElementById('refreshConsoleLogsBtn');
 		if(rlb) rlb.addEventListener('click', refreshConsoleLogs);
+		const slb = document.getElementById('saveConsoleLogsBtn');
+		if(slb) slb.addEventListener('click', saveConsoleLogsAsFile);
 		const rpc = document.getElementById('runProviderChecksBtn');
 	if(rpc) rpc.addEventListener('click', runProviderFunctionalChecks);
 	const spc = document.getElementById('saveProviderCheckTmdbBtn');
