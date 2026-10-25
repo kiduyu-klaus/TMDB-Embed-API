@@ -919,8 +919,22 @@ function _hubResolveGofile(url, langLabel, source) {
   }, function () { return []; });
 }
 
+/* Normalize provider URLs at the final source boundary. URL preserves query
+ * parameters and existing percent-encoding while escaping spaces in paths. */
+function _normalizeStreamUrl(url) {
+  var raw = String(url || '').trim();
+  if (!raw) return '';
+  try {
+    return new URL(raw).toString();
+  } catch (e) {
+    // Keep malformed-but-otherwise-usable provider URLs fail-soft.
+    return raw.replace(/ /g, '%20');
+  }
+}
+
 function _makeHubSource(source, langLabel, url, qualityText, server, referer) {
-  if (!url || url.indexOf('http') !== 0) return null;
+  var normalizedUrl = _normalizeStreamUrl(url);
+  if (!normalizedUrl || !/^https?:/i.test(normalizedUrl)) return null;
   var q = _parseQuality(qualityText || '');
   var lang = _detectLang((langLabel || '') + ' ' + (qualityText || ''));
   var parts = [];
@@ -928,11 +942,11 @@ function _makeHubSource(source, langLabel, url, qualityText, server, referer) {
   if (lang) parts.push(lang);
   if (q) parts.push(q);
   return {
-    url: url,
-    container: /\.m3u8(\?|$)/i.test(url) ? 'hls' : 'mp4',
+    url: normalizedUrl,
+    container: /\.m3u8(\?|$)/i.test(normalizedUrl) ? 'hls' : 'mp4',
     quality: q || undefined,
     label: source + (parts.length ? ' [' + parts.join(' ') + ']' : ''),
-    headers: { 'User-Agent': _UA, 'Referer': referer || (_getBaseUrl(url) + '/') }
+    headers: { 'User-Agent': _UA, 'Referer': referer || (_getBaseUrl(normalizedUrl) + '/') }
   };
 }
 

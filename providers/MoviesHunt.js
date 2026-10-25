@@ -47,7 +47,7 @@ async function fetchText(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.text();
-    } catch { /* upstream failure - fall through to null */ }
+    } catch { }
     return null;
 }
 
@@ -55,7 +55,7 @@ async function fetchJson(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.json();
-    } catch { /* upstream failure - fall through to null */ }
+    } catch { }
     return null;
 }
 
@@ -482,6 +482,7 @@ async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
 
             for (const ep of filtered) {
                 for (const link of ep.links) {
+                    const epNum = ep.number;
                     const epSize = ep.size;
                     tasks.push(async () => {
                         let r2Links = null;
@@ -625,7 +626,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
             });
             return streams;
         } catch (error) {
-            diagnostics.log('resolve.failed', { tmdbId, title, error: error?.message || String(error || 'unknown error') });
+	            diagnostics.log('resolve.failed', { tmdbId, title, error: error?.message || String(error || 'unknown error') });
             return [];
         }
     } catch (error) {

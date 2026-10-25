@@ -1,875 +1,758 @@
 /**
- * MovieBox — api3.aoneroom.com mobile BFF (HMAC-SHA256 request signing + Bearer auth)
- *
- * Rewritten from the new1 source. Adapted to this project:
- *  - CommonJS module with the project's `getStreams` provider contract
- *  - TMDB key resolved through utils/tmdbKey (multi-key rotation) instead of a
- *    hardcoded constant
- *  - CryptoJS / random device id imported explicitly instead of relying on globals
- *  - Settings read from globalThis.SCRAPER_SETTINGS (this app never sets it, so
- *    the documented defaults apply)
- *  - Every outbound request is traced with complete, unredacted URLs
+ * moviebox - Built from src/moviebox/
+ * Generated: 2026-09-29T14:51:11.980Z
  */
-const CryptoJS = require('crypto-js');
-const { randomBytes } = require('node:crypto');
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
-const { getTmdbApiKey } = require('../utils/tmdbKey');
-const { config } = require('../utils/config');
+// src/moviebox/constants.js
+var API_BASE = "https://api3.aoneroom.com";
+var PLAYER_BASE = "https://moviebox.ph";
+var PLAYER_USER_AGENT = "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36";
+var HOST_POOL = [
+  "https://api6.aoneroom.com",
+  "https://api5.aoneroom.com",
+  "https://api4.aoneroom.com",
+  "https://api4sg.aoneroom.com",
+  "https://api3.aoneroom.com"
+];
+var KEY_B64_DEFAULT = "NzZpUmwwN3MweFNOOWpxbUVXQXQ3OUVCSlp1bElRSXNWNjRGWnIyTw==";
+var KEY_B64_ALT = "WHFuMm5uTzQxL0w5Mm8xaXVYaFNMSFRiWHZZNFo1Wlo2Mm04bVNMQQ==";
+var TMDB_API_KEY = (typeof process !== "undefined" && process.env && process.env.TMDB_API_KEY) || "9de3de623b579f6e127c6ec603b9f74d";
+var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+var BRAND_MODELS = {
+  "Samsung": ["SM-S918B", "SM-A528B", "SM-M336B"],
+  "Xiaomi": ["2201117TI", "M2012K11AI", "Redmi Note 11"],
+  "OnePlus": ["LE2111", "CPH2449", "IN2023"],
+  "Google": ["Pixel 6", "Pixel 7", "Pixel 8"],
+  "Realme": ["RMX3085", "RMX3360", "RMX3551"]
+};
+var TOKEN_URL = "https://apig.inmoviebox.com/wefeed-mobile-bff/tab/ranking-list?tabId=0&categoryType=4516404531735022304&page=1&perPage=1";
+var PACKAGE_INFO = {
+  package_name: "com.community.mbox.in",
+  version_name: "4.0.03.0920.03",
+  version_code: 50020130
+};
 
-// Detailed request logging with complete, unredacted URLs (local debugging).
-// Set PROVIDER_LOG_REDACT=1 to force redaction back on.
-const diagnostics = require('../utils/providerTrace').createProviderTrace('MovieBox', { redact: false });
+// src/moviebox/utils.js
+var import_crypto_js = __toESM(require("crypto-js"));
+const diagnostics = require("../utils/providerTrace").createProviderTrace("MovieBox", { redact: false });
 const tracedFetch = diagnostics.fetch;
-
-const PROVIDER = "MovieBox";
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const MOBILE_API_BASE = "https://api3.aoneroom.com";
-const TOKEN_URL = "https://apig.inmoviebox.com/wefeed-mobile-bff/tab/ranking-list?tabId=0&categoryType=4516404531735022304&page=1&perPage=1";
-const WEB_USER_AGENT =
-    "Mozilla/5.0 (Linux; Android 16; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36";
-const MOBILE_USER_AGENT =
-    "com.community.mbox.in/50020130 (Linux; B; Android 16; en_IN; Pixel 9; Build/UD1A.230803.041; Cronet/145.0.7582.0)";
-const AUDIO_TRACK_LABELS = [
-    "Original",
-    "Arabic Dub", "Bengali Dub", "English Dub", "Español [Latino]", "French Dub",
-    "German Dub", "Hindi Dub", "Indonesian Dub", "Italian Dub", "Japanese Dub",
-    "Kannada Dub", "Korean Dub", "Malay Dub", "Malayalam Dub", "Português",
-    "Português [Brasil]", "Punjabi Dub", "Russian Dub", "Español", "Tagalog Dub",
-    "Tamil Dub", "Telugu Dub", "Thai Dub", "Turkish Dub", "Urdu Dub",
-];
-const ALWAYS_ENABLED_TRACKS = ["Original", "English Dub"];
-const DEFAULT_ENABLED_TRACKS = ["Hindi Dub"];
-const REGIONAL_AUDIO_LABELS = {
-    esla: "Español [Latino]",
-    ptbr: "Português [Brasil]",
-    es: "Español",
-    spanish: "Español",
-    pt: "Português",
-    portuguese: "Português",
-};
-const LANGUAGE_NAMES = {
-    en: "English", hi: "Hindi", ta: "Tamil", te: "Telugu", ml: "Malayalam",
-    kn: "Kannada", bn: "Bengali", pa: "Punjabi", mr: "Marathi", gu: "Gujarati",
-    ur: "Urdu", ar: "Arabic", es: "Spanish", pt: "Portuguese", fr: "French",
-    de: "German", it: "Italian", ru: "Russian", ja: "Japanese", ko: "Korean",
-    zh: "Chinese", th: "Thai", id: "Indonesian", in: "Indonesian", ms: "Malay",
-    tl: "Tagalog", fil: "Filipino", tr: "Turkish", vi: "Vietnamese", nl: "Dutch",
-    pl: "Polish", sv: "Swedish", fa: "Persian", he: "Hebrew", el: "Greek",
-    ro: "Romanian", hu: "Hungarian", cs: "Czech", uk: "Ukrainian", da: "Danish",
-    fi: "Finnish", no: "Norwegian", bg: "Bulgarian", hr: "Croatian", sr: "Serbian",
-    sk: "Slovak", si: "Sinhala", ne: "Nepali", my: "Burmese", km: "Khmer",
-};
-
-const RESOLUTION_OPTIONS = [
-    { settingKey: "res_2160p", resolution: "2160p", enabledByDefault: true },
-    { settingKey: "res_1080p", resolution: "1080p", enabledByDefault: true },
-    { settingKey: "res_720p", resolution: "720p", enabledByDefault: false },
-];
-const KNOWN_RESOLUTIONS = ["2160", "1440", "1080", "720", "480", "360", "240"];
-const RESOLUTION_RANK = { "2160p": 5, "1440p": 4, "1080p": 3, "720p": 2, "480p": 1 };
-
-const DEVICE_ID = randomBytes(16).toString("hex");
-
-const CLIENT_INFO = JSON.stringify({
-    package_name: "com.community.mbox.in",
-    version_name: "4.0.03.0920.03",
-    version_code: 50020130,
-    os: "android",
-    os_version: "14",
-    device_id: DEVICE_ID,
-    install_store: "official",
-    brand: "Google",
-    model: "Pixel 8",
-    system_language: "en",
-    net: "NETWORK_WIFI",
-    region: "IN",
-    timezone: "Asia/Calcutta",
-    sp_code: "",
-});
-
-// This app does not set SCRAPER_SETTINGS; an external host may. Read defensively so
-// a missing global can never throw inside a provider.
-const SCRAPER_SETTINGS = (typeof globalThis !== "undefined" && globalThis.SCRAPER_SETTINGS) || {};
-
-function readToggle(key, fallback) {
-    const value = SCRAPER_SETTINGS[key];
-    if (value == null || value === "") return fallback;
-    return !(value === false || value === "false");
-}
-
-// The source ships Stremio-style per-resolution toggles, but this API never
-// populates SCRAPER_SETTINGS. Left on the source defaults the gate pins MovieBox
-// to 2160p/1080p and silently drops the (very common) 720p-only catalogue rows —
-// including most titles' original-audio track. So: keep the source's toggle
-// channel when a host actually populates it, and otherwise drive the gate from
-// the project's own minQualities setting.
-const MIN_ALLOWED_RESOLUTION = 720;
-
-function resolutionFromSetting(value) {
-    const text = String(value || "").toLowerCase();
-    if (!text || text === "all") return 0;
-    if (text.includes("4k") || text.includes("2160")) return 2160;
-    if (text.includes("1440")) return 1440;
-    if (text.includes("1080")) return 1080;
-    if (text.includes("720")) return 720;
-    if (text.includes("576")) return 576;
-    if (text.includes("480")) return 480;
-    if (text.includes("360")) return 360;
-    if (text.includes("240")) return 240;
+var SECRET_KEY_DEFAULT = import_crypto_js.default.enc.Base64.parse(
+  import_crypto_js.default.enc.Base64.parse(KEY_B64_DEFAULT).toString(import_crypto_js.default.enc.Utf8)
+);
+var SECRET_KEY_ALT = import_crypto_js.default.enc.Base64.parse(
+  import_crypto_js.default.enc.Base64.parse(KEY_B64_ALT).toString(import_crypto_js.default.enc.Utf8)
+);
+var deviceId = "";
+var selectedBrand = "";
+var selectedModel = "";
+var bearerToken = null;
+function decodeJwtExpiry(token) {
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2)
+      return 0;
+    let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+    const parsed = import_crypto_js.default.enc.Base64.parse(base64).toString(import_crypto_js.default.enc.Utf8);
+    const json = JSON.parse(parsed);
+    return json.exp || 0;
+  } catch (e) {
     return 0;
+  }
 }
-
-function projectMinResolution() {
-    const minQualities = config && config.minQualities;
-    const setting = minQualities && typeof minQualities === "object" ? minQualities.default : minQualities;
-    if (!setting || String(setting).toLowerCase() === "all") return MIN_ALLOWED_RESOLUTION;
-    return resolutionFromSetting(setting) || MIN_ALLOWED_RESOLUTION;
+function isTokenValid(token) {
+  if (!token)
+    return false;
+  const exp = decodeJwtExpiry(token);
+  return exp > Date.now() / 1e3 + 3600;
 }
-
-function hasExplicitResolutionToggles() {
-    return RESOLUTION_OPTIONS.some((option) => SCRAPER_SETTINGS[option.settingKey] != null);
-}
-
-function isResolutionEnabled(resolution) {
-    if (resolution === "Unknown") return true;
-    if (hasExplicitResolutionToggles()) {
-        const option = RESOLUTION_OPTIONS.find((entry) => entry.resolution === resolution);
-        return option ? readToggle(option.settingKey, option.enabledByDefault) : false;
+function getCachedToken() {
+  return __async(this, null, function* () {
+    if (isTokenValid(bearerToken))
+      return bearerToken;
+    console.log("[MovieBox] Fetching fresh anonymous token...");
+    const url = TOKEN_URL;
+    const res = yield movieBoxRequest("GET", url, null, {}, true);
+    if (res && res.headers) {
+      const xUser = res.headers.get("x-user");
+      if (xUser) {
+        try {
+          const xUserJson = JSON.parse(xUser);
+          const token = xUserJson.token;
+          if (token && isTokenValid(token)) {
+            bearerToken = token;
+            return token;
+          }
+        } catch (e) {
+          console.error("[MovieBox] Failed to parse x-user header for token", e);
+        }
+      }
     }
-    const numeric = parseInt(resolution, 10);
-    if (!Number.isFinite(numeric)) return false;
-    return numeric >= projectMinResolution();
+    return bearerToken || "";
+  });
 }
-
-function audioTrackSettingKey(label) {
-    return "dub_" + label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-}
-
-function capitalize(text) {
-    return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
-}
-
-function extractLanguageBase(rawName) {
-    return String(rawName || "").split(/\sdub/i)[0].split(/\ssub/i)[0].trim();
-}
-
-function toAudioTrackLabel(rawName) {
-    const raw = String(rawName || "");
-    if (/original/i.test(raw)) return "Original";
-    const isHardsub = /\ssub/i.test(raw);
-    const base = extractLanguageBase(raw);
-    if (!base) return capitalize(raw.trim());
-    const regionalLabel = REGIONAL_AUDIO_LABELS[base.toLowerCase()];
-    if (regionalLabel) return isHardsub ? `${regionalLabel} Hardsub` : regionalLabel;
-    return `${capitalize(base)}${isHardsub ? " Hardsub" : " Dub"}`;
-}
-
-function toAudioDisplayName(rawName) {
-    return REGIONAL_AUDIO_LABELS[extractLanguageBase(rawName).toLowerCase()] || String(rawName).replace(/dub/g, "Audio");
-}
-
-function toLanguageName(rawLanguage) {
-    const raw = String(rawLanguage || "").trim();
-    const code = raw.toLowerCase();
-    return LANGUAGE_NAMES[code] || LANGUAGE_NAMES[code.split("-")[0]] || raw;
-}
-
-function isArabicLanguage(rawLanguage, languageName) {
-    return /^(ar|ara|arabic)\b/i.test(String(rawLanguage || "").trim()) || languageName === "Arabic";
-}
-
-function isTrackEnabled(track) {
-    const label = toAudioTrackLabel(track.language);
-    if (label === "Arabic Hardsub") return false;
-    return ALWAYS_ENABLED_TRACKS.includes(label) || readToggle(audioTrackSettingKey(label), DEFAULT_ENABLED_TRACKS.includes(label));
-}
-
-function md5Hex(text) {
-    return CryptoJS.MD5(text).toString();
-}
-
-function buildClientToken(timestamp) {
-    const value = String(timestamp);
-    return `${value},${md5Hex(value.split("").reverse().join(""))}`;
-}
-
-function buildCanonicalString({ method, accept, contentType, url, body, timestamp }) {
-    const match = /^[a-z][a-z0-9+.-]*:\/\/[^/?#]*([^?#]*)(?:\?([^#]*))?/i.exec(url);
-    const path = match ? match[1] || "" : "";
-    const rawQuery = match && match[2] ? match[2] : "";
-    let canonicalUrl = path;
-    if (rawQuery) {
-        const sortedQuery = rawQuery
-            .split("&")
-            .map((part, index) => {
-                const [key, value = ""] = part.split("=");
-                return { key, value, index };
-            })
-            .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : a.index - b.index))
-            .map(({ key, value }) => `${key}=${value}`)
-            .join("&");
-        canonicalUrl = `${path}?${sortedQuery}`;
+function initializeSession() {
+  if (!deviceId) {
+    let chars = "0123456789abcdef";
+    for (let i = 0; i < 32; i++) {
+      deviceId += chars[Math.floor(Math.random() * 16)];
     }
-    const bodyHash = body != null ? md5Hex(body) : "";
-    const bodyLength = body != null ? String(new TextEncoder().encode(body).length) : "";
-    return `${method.toUpperCase()}\n${accept}\n${contentType}\n${bodyLength}\n${timestamp}\n${bodyHash}\n${canonicalUrl}`;
+    const brands = Object.keys(BRAND_MODELS);
+    selectedBrand = brands[Math.floor(Math.random() * brands.length)];
+    const models = BRAND_MODELS[selectedBrand];
+    selectedModel = models[Math.floor(Math.random() * models.length)];
+  }
 }
-
-function buildRequestSignature(request) {
-    const signingKey = CryptoJS.enc.Base64.parse(atob("NzZpUmwwN3MweFNOOWpxbUVXQXQ3OUVCSlp1bElRSXNWNjRGWnIyTw=="));
-    const signature = CryptoJS.HmacMD5(buildCanonicalString(request), signingKey).toString(CryptoJS.enc.Base64);
-    return `${request.timestamp}|2|${signature}`;
+function md5(input) {
+  return import_crypto_js.default.MD5(input).toString(import_crypto_js.default.enc.Hex);
 }
-
-let authToken = "";
-let pendingTokenRequest = null;
-
-function parseTokenHeader(headerValue) {
-    if (!headerValue) return "";
-    try {
-        const token = JSON.parse(headerValue).token;
-        return typeof token === "string" && token.split(".").length === 3 ? token : "";
-    } catch (error) {
-        return "";
+function hmacMd5(key, data) {
+  return import_crypto_js.default.HmacMD5(data, key).toString(import_crypto_js.default.enc.Base64);
+}
+function generateXClientToken(timestamp) {
+  const ts = (timestamp || Date.now()).toString();
+  const reversed = ts.split("").reverse().join("");
+  const hash = md5(reversed);
+  return `${ts},${hash}`;
+}
+function buildCanonicalString(method, accept, contentType, url, body, timestamp) {
+  let path = "";
+  let query = "";
+  try {
+    const urlObj = new URL(url);
+    path = urlObj.pathname;
+    const params = Array.from(urlObj.searchParams.keys()).sort();
+    if (params.length > 0) {
+      query = params.map((key) => {
+        const values = urlObj.searchParams.getAll(key);
+        return values.map((val) => `${key}=${val}`).join("&");
+      }).join("&");
     }
+  } catch (e) {
+    if (url.includes("?")) {
+      const parts = url.split("?");
+      path = parts[0].replace(/https?:\/\/[^\/]+/, "");
+      const qParts = parts[1].split("&").sort();
+      query = qParts.join("&");
+    } else {
+      path = url.replace(/https?:\/\/[^\/]+/, "");
+    }
+  }
+  const canonicalUrl = query ? `${path}?${query}` : path;
+  let bodyHash = "";
+  let bodyLength = "";
+  if (body) {
+    const bodyWords = import_crypto_js.default.enc.Utf8.parse(body);
+    const totalBytes = bodyWords.sigBytes;
+    bodyHash = md5(bodyWords);
+    bodyLength = totalBytes.toString();
+  }
+  return `${method.toUpperCase()}
+${accept || ""}
+${contentType || ""}
+${bodyLength}
+${timestamp}
+${bodyHash}
+` + canonicalUrl;
 }
-
-async function sendSignedRequest(method, url, body, withAuth) {
+function generateXTrSignature(method, accept, contentType, url, body, useAltKey = false, customTimestamp = null) {
+  const timestamp = customTimestamp || Date.now();
+  const canonical = buildCanonicalString(method, accept, contentType, url, body, timestamp);
+  const secret = useAltKey ? SECRET_KEY_ALT : SECRET_KEY_DEFAULT;
+  const signatureB64 = hmacMd5(secret, canonical);
+  return `${timestamp}|2|${signatureB64}`;
+}
+function movieBoxRequest(_0, _1) {
+  return __async(this, arguments, function* (method, url, body = null, customHeaders = {}, isTokenFetch = false) {
+    initializeSession();
     const timestamp = Date.now();
-    const accept = "application/json";
-    const contentType = method === "POST" ? "application/json; charset=utf-8" : "application/json";
-    const headers = {
-        "User-Agent": MOBILE_USER_AGENT,
-        "Accept": accept,
-        "Content-Type": contentType,
-        "x-client-token": buildClientToken(timestamp),
-        "x-tr-signature": buildRequestSignature({ method, accept, contentType, url, body, timestamp }),
-        "x-client-info": CLIENT_INFO,
-        "x-client-status": "0",
+    const xClientToken = generateXClientToken(timestamp);
+    const headerContentType = customHeaders["Content-Type"] || (body ? "application/json; charset=utf-8" : "application/json");
+    const accept = customHeaders["Accept"] || "application/json";
+    const xTrSignature = generateXTrSignature(method, accept, headerContentType, url, body, false, timestamp);
+    const xClientInfo = JSON.stringify(__spreadProps(__spreadValues({}, PACKAGE_INFO), {
+      os: "android",
+      os_version: "14",
+      device_id: deviceId,
+      install_store: "official",
+      gaid: "1b2212c1-dadf-43c3-a0c8-bd6ce48ae22d",
+      brand: selectedBrand.toLowerCase(),
+      model: selectedModel,
+      system_language: "en",
+      net: "NETWORK_WIFI",
+      region: "IN",
+      timezone: "Asia/Calcutta",
+      sp_code: ""
+    }));
+    const headers = __spreadValues({
+      "Accept": accept,
+      "Content-Type": headerContentType,
+      "x-client-token": xClientToken,
+      "x-tr-signature": xTrSignature,
+      "User-Agent": `${PACKAGE_INFO.package_name}/${PACKAGE_INFO.version_code} (Linux; U; Android 14; en_IN; ${selectedModel}; Build/UD1A.230803.041; Cronet/145.0.7582.0)`,
+      "x-client-info": xClientInfo,
+      "x-client-status": "0"
+    }, customHeaders);
+    if (!isTokenFetch) {
+      const token = yield getCachedToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+    const options = {
+      method,
+      headers
     };
-    if (withAuth) {
-        const token = await ensureToken(false);
-        if (token) headers["Authorization"] = `Bearer ${token}`;
+    if (body) {
+      options.body = body;
     }
-    const options = { method, headers };
-    if (body != null) options.body = body;
-    const response = await tracedFetch(url, options);
-    const refreshedToken = parseTokenHeader(response.headers.get("x-user"));
-    if (refreshedToken) {
-        authToken = refreshedToken;
-        pendingTokenRequest = Promise.resolve(refreshedToken);
-    }
-    return response;
-}
-
-async function requestToken() {
+    let originalUrl;
     try {
-        const response = await sendSignedRequest("GET", TOKEN_URL, null, false);
-        const token = parseTokenHeader(response.headers.get("x-user"));
-        if (token) authToken = token;
-    } catch (error) {
-        diagnostics.log('token.failed', { error: error.message });
+      originalUrl = new URL(url);
+    } catch (_) {
+      return null;
     }
-    return authToken;
-}
-
-function ensureToken(forceRefresh) {
-    if (forceRefresh || !pendingTokenRequest) pendingTokenRequest = requestToken();
-    return pendingTokenRequest;
-}
-
-async function callMobileApi(method, pathAndQuery, body) {
-    try {
-        const url = `${MOBILE_API_BASE}${pathAndQuery}`;
-        const tokenBefore = authToken;
-        let response = await sendSignedRequest(method, url, body, true);
-        if ([401, 441].includes(response.status)) {
-            if (!authToken || authToken === tokenBefore) await ensureToken(true);
-            response = await sendSignedRequest(method, url, body, true);
+    const apiHosts = new Set(HOST_POOL.map((host) => new URL(host).host));
+    const hosts = apiHosts.has(originalUrl.host) ? [originalUrl.host, ...HOST_POOL.map((host) => new URL(host).host).filter((host) => host !== originalUrl.host)] : [originalUrl.host];
+    const maxAttempts = Math.min(3, hosts.length);
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        const requestUrl = new URL(originalUrl.toString());
+        requestUrl.host = hosts[attempt];
+        const res = yield tracedFetch(requestUrl.toString(), options);
+        if (!res.ok) {
+          if ((res.status === 403 || res.status === 429 || res.status >= 500) && attempt + 1 < maxAttempts) {
+            continue;
+          }
+          return null;
         }
-        return response.status > 0 && response.status < 500 ? response : null;
-    } catch (error) {
-        diagnostics.log('api.failed', { method, pathAndQuery, error: error.message });
-        return null;
-    }
-}
-
-async function fetchMobileJson(method, pathAndQuery, payload) {
-    const response = await callMobileApi(method, pathAndQuery, payload ? JSON.stringify(payload) : null);
-    if (!response || response.status !== 200) return null;
-    return await response.json();
-}
-
-async function fetchSubjectDetail(subjectId) {
-    const json = await fetchMobileJson("GET", `/wefeed-mobile-bff/subject-api/get?subjectId=${subjectId}`, null);
-    return json && json.data ? json.data : null;
-}
-
-async function fetchTmdbMetadata(tmdbId, mediaType) {
-    const tmdbApiKey = getTmdbApiKey();
-    if (!tmdbApiKey) {
-        diagnostics.log('tmdb.no_key', { tmdbId, mediaType });
-        return null;
-    }
-    const isTv = mediaType === "tv";
-    let details;
-    try {
-        const response = await tracedFetch(`${TMDB_BASE_URL}/${isTv ? "tv" : "movie"}/${encodeURIComponent(tmdbId)}?api_key=${tmdbApiKey}`);
-        if (!response.ok) return null;
-        details = await response.json();
-    } catch (error) {
-        diagnostics.log('tmdb.failed', { tmdbId, mediaType, error: error.message });
-        return null;
-    }
-    if (!details) return null;
-
-    const titles = [];
-    [details.title, details.name, details.original_title, details.original_name].forEach((candidate) => {
-        const title = candidate ? String(candidate).trim() : "";
-        if (title && !titles.includes(title)) titles.push(title);
-    });
-    if (!titles.length) return null;
-
-    const year = parseInt(String(details.release_date || details.first_air_date || "").slice(0, 4), 10);
-    const metadata = {
-        titles,
-        year: isNaN(year) ? null : year,
-        rating: typeof details.vote_average === "number" && details.vote_average > 0 ? details.vote_average : null,
-        isTv,
-    };
-    diagnostics.log('tmdb.resolved', { tmdbId, mediaType, ...metadata });
-    return metadata;
-}
-
-function normalizeTitle(text) {
-    return String(text || "")
-        .toLowerCase()
-        .replace(/[\u2018\u2019\u201b\u2032]/g, "'")
-        .replace(/[^a-z0-9\u00c0-\uffff ]/g, " ")
-        .replace(/[\u2000-\u206f\u3000-\u303f\uff00-\uff0f\uff1a-\uff20]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function stripTitleNoise(text) {
-    return String(text || "")
-        .replace(/\[.*?\]/g, " ")
-        .replace(/\(.*?\)/g, " ")
-        .replace(/\b(dub|dubbed|hd|4k|hindi|tamil|telugu|dual audio)\b/gi, " ");
-}
-
-function titlesOverlap(a, b) {
-    const tokensA = new Set(a.split(" ").filter(Boolean));
-    const tokensB = new Set(b.split(" ").filter(Boolean));
-    if (!tokensA.size || !tokensB.size) return false;
-    let shared = 0;
-    tokensA.forEach((token) => {
-        if (tokensB.has(token)) shared++;
-    });
-    return shared >= Math.max(1, Math.floor((Math.min(tokensA.size, tokensB.size) * 3) / 4));
-}
-
-function scoreTitleMatch(rawTitle, expectedTitles) {
-    const variants = [
-        normalizeTitle(rawTitle.split("[")[0].replace(/\(.*?\)/g, " ")),
-        normalizeTitle(stripTitleNoise(rawTitle)),
-    ];
-    let score = 0;
-    for (const expected of expectedTitles) {
-        const normalizedExpected = normalizeTitle(expected);
-        if (!normalizedExpected) continue;
-        for (const variant of variants) {
-            if (!variant) continue;
-            if (titlesOverlap(normalizedExpected, variant)) return 50;
-            if (normalizedExpected.includes(variant) || variant.includes(normalizedExpected)) score = Math.max(score, 20);
+        const text = yield res.text();
+        let parsed = null;
+        try {
+          parsed = JSON.parse(text);
+        } catch (e) {
+          parsed = text;
         }
-    }
-    return score;
-}
-
-function scoreYearMatch(expectedYear, releaseDate) {
-    const foundYear = parseInt(String(releaseDate || "").slice(0, 4), 10);
-    if (expectedYear == null || isNaN(foundYear)) return 0;
-    const difference = Math.abs(foundYear - expectedYear);
-    if (difference === 0) return 40;
-    if (difference === 1) return 20;
-    if (difference >= 4) return -40;
-    if (difference >= 2) return -15;
-    return 0;
-}
-
-function scoreRatingMatch(expectedRating, ratingValue) {
-    const foundRating = parseFloat(ratingValue);
-    if (expectedRating == null || isNaN(foundRating)) return 0;
-    const difference = Math.abs(foundRating - expectedRating);
-    if (difference <= 0.5) return 10;
-    if (difference <= 1.0) return 5;
-    return 0;
-}
-
-function scoreSearchResult(result, metadata) {
-    const rawTitle = String(result.title || "");
-    const subjectType = parseInt(result.subjectType, 10);
-    const resultIsTv = subjectType === 2 || subjectType === 7;
-    return (
-        scoreTitleMatch(rawTitle, metadata.titles) +
-        scoreYearMatch(metadata.year, result.releaseDate) +
-        scoreRatingMatch(metadata.rating, result.imdbRatingValue) +
-        (metadata.isTv === resultIsTv ? 15 : -30) +
-        (rawTitle.includes("[") ? 0 : 2)
-    );
-}
-
-async function searchCatalog(keyword) {
-    const json = await fetchMobileJson("POST", "/wefeed-mobile-bff/subject-api/search/v2", {
-        page: 1,
-        perPage: 20,
-        keyword,
-        restrictKid: 0,
-    });
-    const groups = json && json.data && json.data.results;
-    if (!Array.isArray(groups)) return [];
-    const subjects = [];
-    groups.forEach((group) => {
-        if (!group || !Array.isArray(group.subjects)) return;
-        group.subjects.forEach((subject) => {
-            if (subject && subject.subjectId != null && subject.title) subjects.push(subject);
-        });
-    });
-    diagnostics.log('search.results', { keyword, count: subjects.length });
-    return subjects;
-}
-
-async function findMatchingSubjectId(metadata) {
-    const queries = [metadata.titles[0]];
-    if (metadata.titles[1] && normalizeTitle(metadata.titles[1]) !== normalizeTitle(metadata.titles[0])) {
-        queries.push(metadata.titles[1]);
-    }
-    for (const query of queries) {
-        const results = await searchCatalog(query);
-        let bestResult = null;
-        let bestScore = -Infinity;
-        for (const result of results) {
-            const score = scoreSearchResult(result, metadata);
-            if (score > bestScore) {
-                bestScore = score;
-                bestResult = result;
+        if (res.headers) {
+          const xUser = res.headers.get("x-user");
+          if (xUser) {
+            try {
+              const xUserJson = JSON.parse(xUser);
+              const token = xUserJson.token;
+              if (token && isTokenValid(token)) {
+                bearerToken = token;
+              }
+            } catch (e) {
             }
+          }
         }
-        diagnostics.log('search.scored', {
-            query,
-            bestScore: bestScore === -Infinity ? null : bestScore,
-            subjectId: bestResult ? String(bestResult.subjectId) : null,
-            title: bestResult ? bestResult.title : null
-        });
-        if (bestResult && bestScore >= 40) return String(bestResult.subjectId);
+        return {
+          data: parsed,
+          headers: res.headers
+        };
+      } catch (err) {
+        if (attempt + 1 === maxAttempts) {
+          console.error("[MovieBox Request Error]", err.message);
+          return null;
+        }
+      }
     }
     return null;
+  });
 }
-
-function parseResolution(text) {
-    const haystack = String(text || "").toLowerCase();
-    const match = KNOWN_RESOLUTIONS.find((resolution) => haystack.includes(resolution));
-    return match ? `${match}p` : "Unknown";
-}
-
-function resolutionRank(resolution) {
-    return RESOLUTION_RANK[resolution] || 0;
-}
-
-function buildSortPrefix(position) {
-    return position
-        .toString(2)
-        .padStart(20, "0")
-        .replace(/1/g, "\uFEFF")
-        .replace(/0/g, "\u200B");
-}
-
-function decodeBase64(value) {
-    let padded = String(value).replace(/\s/g, "");
-    const remainder = padded.length % 4;
-    if (remainder > 0) padded += "=".repeat(4 - remainder);
-    return atob(padded);
-}
-
-function extractManifestUrlFromCookie(signCookie) {
-    if (!signCookie) return null;
-
-    const edgeMatch = /Edge-Cache-Cookie=urlprefix=([^:;\s]+)/.exec(signCookie);
-    if (edgeMatch) {
-        try {
-            const prefix = decodeBase64(edgeMatch[1].replace(/_/g, "/").replace(/-/g, "+"));
-            return `${prefix.replace(/\/+$/, "")}/index.mpd`;
-        } catch (error) {
-            return null;
+function fetchTmdbDetails(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    var _a;
+    try {
+      const url = `${TMDB_BASE_URL}/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+      const res = yield tracedFetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "Accept": "application/json",
+          "Connection": "keep-alive"
         }
+      });
+      const data = yield res.json();
+      return {
+        title: mediaType === "movie" ? data.title || data.original_title : data.name || data.original_name,
+        year: (data.release_date || data.first_air_date || "").substring(0, 4),
+        imdbId: (_a = data.external_ids) == null ? void 0 : _a.imdb_id,
+        originalTitle: data.original_title || data.original_name
+      };
+    } catch (e) {
+      console.error("[MovieBox TMDB Error]", e.message);
+      return null;
     }
-
-    const policyMatch = /CloudFront-Policy=([^;]+)/.exec(signCookie);
-    if (!policyMatch) return null;
-    const encodedPolicy = policyMatch[1];
-    const decodingAttempts = [
-        encodedPolicy.replace(/-/g, "+").replace(/~/g, "/").replace(/_/g, "="),
-        encodedPolicy.replace(/-/g, "+").replace(/_/g, "/"),
-    ];
-    for (const attempt of decodingAttempts) {
-        try {
-            const policy = JSON.parse(decodeBase64(attempt));
-            const resource = policy && policy.Statement && policy.Statement[0] && policy.Statement[0].Resource;
-            if (resource) {
-                const trimmed = String(resource).replace(/[*/]+$/, "");
-                return /\.mpd$/i.test(trimmed) ? trimmed : `${trimmed}/index.mpd`;
-            }
-        } catch (error) { /* try the next decoding */ }
-    }
-    return null;
+  });
 }
-
-// Catalogue placeholders (short trailers) live under /other/<year>/<month>/.
-// The upstream source hardcoded a single month, which silently stopped matching
-// as soon as the catalogue rolled over — match any /other/ bucket instead.
-function isPlaceholderStream(resolvedUrl, originalUrl) {
-    return (
-        resolvedUrl.includes("b164fbfb4347792950bdfbfb563d39d9") ||
-        (resolvedUrl === originalUrl && /\/other\/\d{4}\/\d{2}\//.test(originalUrl))
-    );
+function normalizeTitle(s) {
+  if (!s)
+    return "";
+  return String(s).replace(/\[[^\]]*\]/g, " ").replace(/\([^)]*\)/g, " ").replace(/\b(dub|dubbed|hd|4k|hindi|tamil|telugu|dual audio)\b/gi, " ").trim().toLowerCase().replace(/:/g, " ").replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
 }
-
-function detectStreamFormat(declaredFormat, url) {
-    const format = String(declaredFormat || "").toUpperCase();
-    if (format === "DASH" || url.includes(".mpd")) return "DASH";
-    if (format === "HLS" || url.includes(".m3u8")) return "HLS";
+function parseQualityNumber(value) {
+  const match = String(value || "").match(/(\d{3,4})/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+function getFormatType(url) {
+  const u = String(url || "").toLowerCase();
+  if (u.includes(".mpd"))
+    return "DASH";
+  if (u.includes(".m3u8"))
+    return "HLS";
+  if (u.includes(".mp4"))
     return "MP4";
+  if (u.includes(".mkv"))
+    return "MKV";
+  return "VIDEO";
 }
-
-function parseDetailUrl(detailUrl) {
-    const match = /^(https?):\/\/([^/?#:@]+)(?::\d+)?/i.exec(String(detailUrl || ""));
-    if (!match) return null;
-    const cleaned = String(detailUrl).replace(/\/+$/, "").split("?")[0];
-    return { origin: `${match[1]}://${match[2]}`, path: cleaned.substring(cleaned.lastIndexOf("/") + 1) };
-}
-
-function buildSiteHeaders(origin, path, subjectId) {
-    const siteOrigin = origin || "https://themoviebox.xyz";
-    return {
-        "Origin": siteOrigin,
-        "Referer": path
-            ? `${siteOrigin}/movies/${path}?id=${subjectId}&type=/movie/detail&detailSe=&detailEp=&lang=en`
-            : `${siteOrigin}/`,
-        "User-Agent": WEB_USER_AGENT,
-        "Accept": "*/*",
-    };
-}
-
-function buildStreamCandidate(stream, baseHeaders, declaredFormat, playback) {
-    const originalUrl = stream && stream.url ? String(stream.url) : "";
-    if (!originalUrl) return null;
-
-    const signCookie = stream.signCookie ? String(stream.signCookie) : "";
-    const resolvedUrl = extractManifestUrlFromCookie(signCookie) || originalUrl;
-    if (isPlaceholderStream(resolvedUrl, originalUrl)) return null;
-
-    const headers = { ...baseHeaders };
-    if (signCookie) {
-        headers[stream.signHeaderKey ? String(stream.signHeaderKey) : "X-MB-Token"] = signCookie;
-        headers["Cookie"] = signCookie;
+function extractPolicyResource(signCookie) {
+  var _a, _b;
+  if (!signCookie || typeof signCookie !== "string")
+    return null;
+  const edgeMatch = signCookie.match(/Edge-Cache-Cookie=urlprefix=([^:;\s]+)/);
+  if (edgeMatch) {
+    try {
+      let std = edgeMatch[1].replace(/_/g, "/").replace(/-/g, "+");
+      const rem = (4 - std.length % 4) % 4;
+      if (rem > 0)
+        std += "=".repeat(rem);
+      const decoded = import_crypto_js.default.enc.Base64.parse(std).toString(import_crypto_js.default.enc.Utf8).replace(/\/+$/, "");
+      if (decoded)
+        return `${decoded}/index.mpd`;
+    } catch (_) {
     }
-    return {
-        url: resolvedUrl,
-        format: detectStreamFormat(declaredFormat, resolvedUrl),
-        // MovieBox reports the resolution under `resolutions`, but some rows use
-        // `resolution` or `quality` instead — check all three.
-        resolution: parseResolution(stream.resolutions || stream.resolution || stream.quality),
-        headers,
-        streamId: stream.id != null ? String(stream.id) : `${playback.subjectId}|${playback.season}|${playback.episode}`,
-    };
+  }
+  const cfMatch = signCookie.match(/CloudFront-Policy=([^;]+)/);
+  if (cfMatch) {
+    try {
+      const policyRaw = cfMatch[1];
+      let cfB64 = policyRaw.replace(/-/g, "+").replace(/~/g, "/").replace(/_/g, "=");
+      const rem = cfB64.length % 4;
+      if (rem > 0)
+        cfB64 += "=".repeat(rem);
+      let decodedJson = null;
+      try {
+        decodedJson = import_crypto_js.default.enc.Base64.parse(cfB64).toString(import_crypto_js.default.enc.Utf8);
+      } catch (_) {
+        let stdB64 = policyRaw.replace(/-/g, "+").replace(/_/g, "/");
+        const rem2 = stdB64.length % 4;
+        if (rem2 > 0)
+          stdB64 += "=".repeat(rem2);
+        decodedJson = import_crypto_js.default.enc.Base64.parse(stdB64).toString(import_crypto_js.default.enc.Utf8);
+      }
+      if (decodedJson) {
+        const root = JSON.parse(decodedJson);
+        const resource = (_b = (_a = root == null ? void 0 : root.Statement) == null ? void 0 : _a[0]) == null ? void 0 : _b.Resource;
+        if (resource && typeof resource === "string") {
+          const trimmed = resource.replace(/[\*\/]+$/, "");
+          return trimmed.toLowerCase().endsWith(".mpd") ? trimmed : `${trimmed}/index.mpd`;
+        }
+      }
+    } catch (_) {
+    }
+  }
+  return null;
 }
 
-async function fetchSubtitles(streamId, trackLanguage, subjectId) {
-    const encodedStreamId = encodeURIComponent(streamId);
-    const endpoints = [
-        `/wefeed-mobile-bff/subject-api/get-stream-captions?subjectId=${subjectId}&streamId=${encodedStreamId}`,
-        `/wefeed-mobile-bff/subject-api/get-ext-captions?subjectId=${subjectId}&resourceId=${encodedStreamId}&episode=0`,
-    ];
-    const responses = await Promise.all(endpoints.map((endpoint) => fetchMobileJson("GET", endpoint, null).catch(() => null)));
-    const audioName = toAudioDisplayName(trackLanguage);
-    const seenUrls = new Set();
+// src/moviebox/index.js
+function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
+  return __async(this, null, function* () {
+    console.log(`[MovieBox] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
+    const details = yield fetchTmdbDetails(tmdbId, mediaType);
+    if (!details)
+      return [];
+    let subjects = yield searchMovieBox(details.title);
+    let bestMatch = findBestMatch(subjects, details.title, details.year, mediaType);
+    if (!bestMatch && details.originalTitle && details.originalTitle !== details.title) {
+      subjects = yield searchMovieBox(details.originalTitle);
+      bestMatch = findBestMatch(subjects, details.originalTitle, details.year, mediaType);
+    }
+    if (bestMatch) {
+      const s = mediaType === "tv" ? seasonNum : 0;
+      const e = mediaType === "tv" ? episodeNum : 0;
+      return yield getStreamLinks(bestMatch.subjectId, s, e, details.title, mediaType);
+    }
+    console.log(`[MovieBox] No matching content found for: ${details.title}`);
+    return [];
+  });
+}
+function searchMovieBox(query) {
+  return __async(this, null, function* () {
+    const url = `${API_BASE}/wefeed-mobile-bff/subject-api/search/v2`;
+    const body = JSON.stringify({ page: 1, perPage: 20, keyword: query, restrictKid: 1 });
+    const response = yield movieBoxRequest("POST", url, body);
+    if (response && response.data && response.data.data && response.data.data.results) {
+      let allSubjects = [];
+      response.data.data.results.forEach((group) => {
+        if (group.subjects) {
+          allSubjects = allSubjects.concat(group.subjects);
+        }
+      });
+      return allSubjects;
+    }
+    return [];
+  });
+}
+function findBestMatch(subjects, tmdbTitle, tmdbYear, mediaType) {
+  const normTmdbTitle = normalizeTitle(tmdbTitle);
+  const targetType = mediaType === "movie" ? 1 : 2;
+  let bestMatch = null;
+  let bestScore = 0;
+  for (const subject of subjects) {
+    if (subject.subjectType !== targetType)
+      continue;
+    const title = subject.title;
+    const normTitle = normalizeTitle(title);
+    const year = subject.year || (subject.releaseDate ? subject.releaseDate.substring(0, 4) : null);
+    let score = 0;
+    if (normTitle === normTmdbTitle)
+      score += 50;
+    else if (normTitle.includes(normTmdbTitle) || normTmdbTitle.includes(normTitle))
+      score += 15;
+    if (tmdbYear && year && tmdbYear == year)
+      score += 35;
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = subject;
+    }
+  }
+  if (bestScore >= 40)
+    return bestMatch;
+  return null;
+}
+function getPlaybackPage(subjectData, subjectId) {
+  const candidates = [subjectData.detailPath, subjectData.detail_path, subjectData.path, subjectData.slug];
+  let detailPath = candidates.find((value) => typeof value === "string" && value.trim());
+  let webBase = PLAYER_BASE;
+  for (const value of [subjectData.detailDomain, subjectData.webDomain, subjectData.webUrl, subjectData.detailUrl, subjectData.shareUrl]) {
+    if (typeof value !== "string")
+      continue;
+    try {
+      const parsed = new URL(value.startsWith("http") ? value : `https://${value}`);
+      if (!parsed.hostname.endsWith("aoneroom.com"))
+        webBase = parsed.origin;
+      if (!detailPath && parsed.pathname && parsed.pathname !== "/")
+        detailPath = parsed.pathname;
+      break;
+    } catch (e) {
+    }
+  }
+  if (!detailPath)
+    return { webBase, referer: `${webBase}/` };
+  detailPath = detailPath.replace(/^\/+/, "").replace(/^movies\//, "");
+  const pageUrl = new URL(`/movies/${detailPath}`, `${webBase}/`);
+  pageUrl.searchParams.set("id", subjectId);
+  pageUrl.searchParams.set("type", "/movie/detail");
+  pageUrl.searchParams.set("detailSe", "");
+  pageUrl.searchParams.set("detailEp", "");
+  pageUrl.searchParams.set("lang", "en");
+  return { webBase, detailPath, referer: pageUrl.toString() };
+}
+function collectStreams(playData) {
+  var _a, _b;
+  const streams = Array.isArray(playData == null ? void 0 : playData.streams) ? [...playData.streams] : [];
+  for (const [key, format] of [["netDash", "DASH"], ["netHls", "HLS"]]) {
+    const value = (_b = playData == null ? void 0 : playData[key]) != null ? _b : (_a = playData == null ? void 0 : playData.data) == null ? void 0 : _a[key];
+    const values = Array.isArray(value) ? value : value ? [value] : [];
+    for (const item of values) {
+      if (typeof item === "string")
+        streams.push({ url: item, format });
+      else if (item && typeof item === "object") {
+        if (item.url || item.playUrl || item.resourceLink || item.streamUrl)
+          streams.push(__spreadProps(__spreadValues({}, item), { format: item.format || format }));
+        else
+          for (const [resolution, url] of Object.entries(item)) {
+            if (typeof url === "string" && /^https?:\/\//i.test(url))
+              streams.push({ url, resolution, format });
+            else if (url && typeof url === "object")
+              streams.push(__spreadProps(__spreadValues({}, url), { resolution: url.resolution || resolution, format: url.format || format }));
+          }
+      }
+    }
+  }
+  const seen = /* @__PURE__ */ new Set();
+  return streams.filter((stream) => {
+    const key = (stream == null ? void 0 : stream.url) || (stream == null ? void 0 : stream.playUrl) || (stream == null ? void 0 : stream.resourceLink) || (stream == null ? void 0 : stream.streamUrl);
+    if (!key || seen.has(key))
+      return false;
+    seen.add(key);
+    return true;
+  });
+}
+function getAudioLabel(stream, fallbackLanguage) {
+  var _a, _b;
+  const rawLanguage = [stream.languageName, stream.lanName, stream.language, stream.lan, fallbackLanguage].find((value) => typeof value === "string" && value.trim()) || "Unknown";
+  let language = rawLanguage.replace(/\bdub\b/gi, " ").replace(/\baudio\b/gi, " ").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  const languageNames = {
+    ar: "Arabic",
+    bn: "Bengali",
+    de: "German",
+    en: "English",
+    es: "Spanish",
+    fr: "French",
+    hi: "Hindi",
+    id: "Indonesian",
+    it: "Italian",
+    ja: "Japanese",
+    ko: "Korean",
+    ml: "Malayalam",
+    mr: "Marathi",
+    pt: "Portuguese",
+    ru: "Russian",
+    ta: "Tamil",
+    te: "Telugu",
+    th: "Thai",
+    tr: "Turkish",
+    ur: "Urdu",
+    vi: "Vietnamese",
+    zh: "Chinese"
+  };
+  const languageCode = (_b = (_a = language.match(/^([a-z]{2,3})(?:\s|$)/i)) == null ? void 0 : _a[1]) == null ? void 0 : _b.toLowerCase();
+  if (languageCode && languageNames[languageCode]) {
+    language = languageNames[languageCode];
+  } else if (language) {
+    language = language.charAt(0).toUpperCase() + language.slice(1);
+  } else {
+    language = "Unknown";
+  }
+  return `${language} Audio`;
+}
+function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", mediaType = "movie") {
+  return __async(this, null, function* () {
+    const subjectUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get?subjectId=${subjectId}`;
+    const detailRes = yield movieBoxRequest("GET", subjectUrl);
+    if (!detailRes || !detailRes.data || !detailRes.data.data)
+      return [];
+    const subjectData = detailRes.data.data;
+    const playbackPage = getPlaybackPage(subjectData, subjectId);
+    const subjectIds = [];
+    let originalLang = "Original";
+    const dubs = subjectData.dubs;
+    if (Array.isArray(dubs)) {
+      dubs.forEach((dub) => {
+        if (dub.subjectId == subjectId) {
+          originalLang = dub.lanName || "Original";
+        } else {
+          subjectIds.push({ id: dub.subjectId, lang: dub.lanName });
+        }
+      });
+    }
+    subjectIds.unshift({ id: subjectId, lang: originalLang });
+    const allStreams = [];
+    const playbackHeaders = {
+      "Origin": playbackPage.webBase,
+      "Referer": playbackPage.referer,
+      "User-Agent": PLAYER_USER_AGENT,
+      "x-request-lang": "en",
+      "x-vip-restrict": "0",
+      "x-no-high-risk-restrict": "0"
+    };
+    for (const item of subjectIds) {
+      try {
+        const playParams = new URLSearchParams({ subjectId: item.id, se: season, ep: episode, streamSignType: "1" });
+        if (playbackPage.detailPath)
+          playParams.set("detailPath", playbackPage.detailPath);
+        playParams.set("supportCodecs[hevc]", "1");
+        playParams.set("supportCodecs[h264]", "1");
+        const playUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/play-info?${playParams.toString()}`;
+        const playRes = yield movieBoxRequest("GET", playUrl, null, playbackHeaders);
+        let hasValidStream = false;
+        if (playRes && playRes.data && playRes.data.data) {
+          const playData = playRes.data.data;
+          const streamsList = collectStreams(playData);
+          if (Array.isArray(streamsList) && streamsList.length > 0) {
+            for (const stream of streamsList) {
+              const rawStreamUrl = stream.url || stream.playUrl || stream.resourceLink || stream.streamUrl || "";
+              const signCookie = stream.signCookie || null;
+              const policyUrl = extractPolicyResource(signCookie);
+              const finalStreamUrl = policyUrl || rawStreamUrl;
+              if (!finalStreamUrl)
+                continue;
+              if (finalStreamUrl.includes("b164fbfb4347792950bdfbfb563d39d9"))
+                continue;
+              if (finalStreamUrl === rawStreamUrl && rawStreamUrl.includes("/other/2026/09/"))
+                continue;
+              let formatType = getFormatType(finalStreamUrl);
+              if (stream.format) {
+                const declaredFormat = String(stream.format).toUpperCase();
+                formatType = ["DASH", "HLS", "MP4", "MKV"].includes(declaredFormat) ? declaredFormat : getFormatType(finalStreamUrl);
+              }
+              const qualLabel = stream.resolutions || stream.resolution || stream.quality || "Auto";
+              const qualNum = parseQualityNumber(qualLabel);
+              const quality = qualNum ? `${qualNum}p` : "Auto";
+              const audioLabel = getAudioLabel(stream, item.lang);
+              const streamId = stream.id || `${item.id}|${season}|${episode}`;
+              const subtitles = yield fetchSubtitles(item.id, streamId, item.lang);
+              const signHeaderKey = stream.signHeaderKey || stream.sign_header_key || "Cookie";
+              allStreams.push({
+                name: "MovieBox",
+                title: `${mediaTitle}${season > 0 ? ` S${season}E${episode}` : ""} - ${quality} (${audioLabel}) [${formatType}]`,
+                url: finalStreamUrl,
+                quality,
+                headers: __spreadValues(__spreadValues({}, playbackHeaders), signCookie ? { [signHeaderKey]: signCookie } : {}),
+                subtitles,
+                provider: "moviebox"
+              });
+              hasValidStream = true;
+            }
+          }
+          if (!hasValidStream) {
+            let detectors = playData.resourceDetectors;
+            if (!Array.isArray(detectors)) {
+              detectors = subjectData.resourceDetectors;
+            }
+            if (Array.isArray(detectors)) {
+              for (const detector of detectors) {
+                if (Array.isArray(detector.resolutionList)) {
+                  for (const video of detector.resolutionList) {
+                    if (!video.resourceLink)
+                      continue;
+                    const se = video.se != null ? video.se : 0;
+                    const ep = video.ep != null ? video.ep : 0;
+                    if ((season > 0 || episode > 0) && (se !== season || ep !== episode)) {
+                      continue;
+                    }
+                    const quality = video.resolution ? `${video.resolution}p` : "Auto";
+                    const audioLabel = getAudioLabel({}, item.lang);
+                    allStreams.push({
+                      name: "MovieBox",
+                      title: `${mediaTitle}${season > 0 ? ` S${season}E${episode}` : ""} - ${quality} (${audioLabel}) [Fallback]`,
+                      url: video.resourceLink,
+                      quality,
+                      headers: __spreadValues({}, playbackHeaders),
+                      provider: "moviebox"
+                    });
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`[MovieBox Stream Fetch Error] ID: ${item.id}`, err.message);
+      }
+    }
+    const qualityRank = {
+      "2160p": 2160,
+      "4k": 2160,
+      "1440p": 1440,
+      "1080p": 1080,
+      "720p": 720,
+      "480p": 480,
+      "360p": 360,
+      "240p": 240,
+      "auto": 1
+    };
+    allStreams.sort((a, b) => {
+      var _a, _b;
+      const qa = qualityRank[(_a = a.quality) == null ? void 0 : _a.toLowerCase()] || 0;
+      const qb = qualityRank[(_b = b.quality) == null ? void 0 : _b.toLowerCase()] || 0;
+      return qb - qa;
+    });
+    return allStreams;
+  });
+}
+function fetchSubtitles(subjectId, streamId, langLabel) {
+  return __async(this, null, function* () {
     const subtitles = [];
-    responses.forEach((json) => {
-        const captions = json && json.data && json.data.extCaptions;
-        if (!Array.isArray(captions)) return;
-        captions.forEach((caption) => {
-            const url = caption && caption.url;
-            if (!url || seenUrls.has(url)) return;
-            seenUrls.add(url);
-            const rawLanguage = caption.lanName || caption.language || caption.lan || "Unknown";
-            const language = toLanguageName(rawLanguage);
-            if (isArabicLanguage(rawLanguage, language)) return;
-            subtitles.push({ url, language, name: `${language} (${audioName})` });
+    try {
+      const streamCapUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get-stream-captions?subjectId=${subjectId}&streamId=${streamId}`;
+      const capRes = yield movieBoxRequest("GET", streamCapUrl, null);
+      if (capRes && capRes.data && capRes.data.data && Array.isArray(capRes.data.data.extCaptions)) {
+        capRes.data.data.extCaptions.forEach((cap) => {
+          if (cap.url) {
+            subtitles.push({
+              url: cap.url,
+              language: cap.language || cap.lanName || cap.lan || "en",
+              name: `${cap.lanName || cap.language || "Subtitle"} (${langLabel})`,
+              headers: { "Referer": API_BASE }
+            });
+          }
         });
-    });
+      }
+    } catch (e) {
+    }
+    try {
+      const extCapUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get-ext-captions?subjectId=${subjectId}&resourceId=${streamId}&episode=0`;
+      const extRes = yield movieBoxRequest("GET", extCapUrl, null);
+      if (extRes && extRes.data && extRes.data.data && Array.isArray(extRes.data.data.extCaptions)) {
+        extRes.data.data.extCaptions.forEach((cap) => {
+          if (cap.url) {
+            subtitles.push({
+              url: cap.url,
+              language: cap.lan || cap.lanName || cap.language || "en",
+              name: `${cap.lanName || cap.lan || "Subtitle"} (${langLabel})`,
+              headers: { "Referer": API_BASE }
+            });
+          }
+        });
+      }
+    } catch (e) {
+    }
     return subtitles;
+  });
 }
-
-async function fetchMobileStreams(playback, site) {
-    const json = await fetchMobileJson(
-        "GET",
-        `/wefeed-mobile-bff/subject-api/play-info?subjectId=${playback.subjectId}&se=${playback.season}&ep=${playback.episode}`,
-        null
-    );
-    const streams = json && json.data && json.data.streams;
-    if (!Array.isArray(streams)) return [];
-
-    const baseHeaders = buildSiteHeaders(site.origin, site.path, playback.subjectId);
-    const isDash = (stream) => String(stream.format || "").toUpperCase() === "DASH" || String(stream.url || "").includes(".mpd");
-    const dashFirst = streams.filter(isDash).concat(streams.filter((stream) => !isDash(stream)));
-
-    const candidates = [];
-    for (const stream of dashFirst) {
-        const candidate = buildStreamCandidate(stream, baseHeaders, stream.format, playback);
-        if (candidate && candidate.format !== "MP4") candidates.push(candidate);
-    }
-    return candidates;
-}
-
-async function fetchWebStreamsFromOrigin(origin, path, playback) {
-    try {
-        const headers = {
-            "User-Agent": WEB_USER_AGENT,
-            "Referer": buildSiteHeaders(origin, path, playback.subjectId).Referer,
-            "Accept": "application/json",
-            "x-client-info": JSON.stringify({ timezone: "Asia/Calcutta" }),
-            "x-request-lang": "en",
-            "x-vip-restrict": "0",
-            "x-no-high-risk-restrict": "0",
-            "x-source": "",
-        };
-        const token = authToken || (await ensureToken(false));
-        if (token) headers["Authorization"] = `Bearer ${token}`;
-
-        const response = await tracedFetch(
-            `${origin}/wefeed-h5api-bff/subject/play?subjectId=${playback.subjectId}&se=${playback.season}&ep=${playback.episode}&detailPath=${path}&streamSignType=1&supportCodecs%5Bhevc%5D=1&supportCodecs%5Bh264%5D=1`,
-            { headers }
-        );
-        if (response.status !== 200) return null;
-        const json = await response.json();
-        const streams = json && json.data && json.data.streams;
-        return Array.isArray(streams) && streams.length ? { origin, streams } : null;
-    } catch (error) {
-        diagnostics.log('web.failed', { origin, path, error: error.message });
-        return null;
-    }
-}
-
-async function fetchWebStreams(origins, path, playback) {
-    const responses = await Promise.all(origins.map((origin) => fetchWebStreamsFromOrigin(origin, path, playback)));
-    const firstHit = responses.find(Boolean);
-    if (!firstHit) return [];
-    const baseHeaders = buildSiteHeaders(firstHit.origin, path, playback.subjectId);
-    return firstHit.streams
-        .map((stream) => buildStreamCandidate(stream, baseHeaders, "MP4", playback))
-        .filter(Boolean);
-}
-
-function resolveMainSite(subject) {
-    const parsed = subject.detailUrl ? parseDetailUrl(subject.detailUrl) : null;
-    return {
-        origin: parsed ? parsed.origin : null,
-        path: (parsed && parsed.path) || subject.detailPath || null,
-    };
-}
-
-async function resolveTrackSite(context, track) {
-    if (track.subjectId === context.originalSubjectId) return context.mainSite;
-
-    let detailUrl = track.detailUrl;
-    let detailPath = null;
-    if (!detailUrl) {
-        const detail = await fetchSubjectDetail(track.subjectId);
-        if (detail) {
-            detailUrl = detail.detailUrl || null;
-            if (!detailUrl) detailPath = detail.detailPath || null;
-        }
-    }
-    const parsed = detailUrl ? parseDetailUrl(detailUrl) : null;
-    if (parsed) return parsed;
-    if (detailPath) return { origin: context.mainSite.origin, path: detailPath };
-    return context.mainSite;
-}
-
-function extractAudioTracks(subject, subjectId) {
-    let originalLanguage = "Original";
-    const seenIds = new Set();
-    const tracks = [];
-    (Array.isArray(subject.dubs) ? subject.dubs : []).forEach((dub) => {
-        const dubSubjectId = dub && dub.subjectId != null ? String(dub.subjectId) : "";
-        const language = dub && dub.lanName ? String(dub.lanName) : "";
-        if (!dubSubjectId || !language) return;
-        if (dubSubjectId === subjectId) {
-            originalLanguage = language;
-            return;
-        }
-        if (seenIds.has(dubSubjectId)) return;
-        seenIds.add(dubSubjectId);
-        tracks.push({ subjectId: dubSubjectId, language, detailUrl: dub.detailUrl || null });
-    });
-    tracks.unshift({ subjectId, language: originalLanguage, detailUrl: null });
-    return tracks;
-}
-
-async function resolveAudioTrack(context, track) {
-    try {
-        const site = await resolveTrackSite(context, track);
-        const origins = [];
-        if (site.origin) origins.push(String(site.origin).replace(/\/+$/, ""));
-        if (!origins.includes("https://h5-api.aoneroom.com")) origins.push("https://h5-api.aoneroom.com");
-
-        const playback = { subjectId: track.subjectId, season: context.season, episode: context.episode };
-        const [mobileStreams, webStreams] = await Promise.all([
-            fetchMobileStreams(playback, site).catch(() => []),
-            fetchWebStreams(origins, site.path || "", playback).catch(() => []),
-        ]);
-        const rawCandidates = mobileStreams.concat(webStreams);
-        const candidates = rawCandidates.filter((candidate) => isResolutionEnabled(candidate.resolution));
-        diagnostics.log('track.candidates', {
-            subjectId: track.subjectId,
-            language: track.language,
-            mobile: mobileStreams.length,
-            web: webStreams.length,
-            kept: candidates.length,
-            droppedByResolution: rawCandidates
-                .filter((candidate) => !isResolutionEnabled(candidate.resolution))
-                .map((candidate) => ({ url: candidate.url, resolution: candidate.resolution, format: candidate.format })),
-            resolutions: rawCandidates.map((candidate) => candidate.resolution)
-        });
-        if (!candidates.length) return [];
-
-        const subtitles = readToggle("subtitles", true)
-            ? await fetchSubtitles(candidates[0].streamId, track.language, track.subjectId).catch(() => [])
-            : [];
-        return candidates.map((candidate) => ({ ...candidate, language: track.language, subtitles }));
-    } catch (error) {
-        diagnostics.log('track.failed', { subjectId: track.subjectId, language: track.language, error: error.message });
-        return [];
-    }
-}
-
-function dedupeByUrl(candidates) {
-    const seenUrls = new Set();
-    return candidates.filter((candidate) => {
-        if (seenUrls.has(candidate.url)) return false;
-        seenUrls.add(candidate.url);
-        return true;
-    });
-}
-
-function sortByResolution(candidates) {
-    return [...candidates].sort((a, b) => resolutionRank(b.resolution) - resolutionRank(a.resolution));
-}
-
-function toStreamResult(candidate, position) {
-    const audioName = toAudioDisplayName(candidate.language);
-    const prefix = buildSortPrefix(position);
-    const result = {
-        name: `${prefix}${PROVIDER} • ${audioName} • ${candidate.resolution}`,
-        title: `${prefix}${PROVIDER} • ${audioName} • ${candidate.resolution}`,
-        url: candidate.url,
-        quality: `${candidate.resolution} • ${candidate.format}`,
-        headers: candidate.headers,
-    };
-    if (candidate.subtitles.length) result.subtitles = candidate.subtitles;
-    return result;
-}
-
-async function onSettings() {
-    const layout = [
-        { type: "header", label: PROVIDER },
-        {
-            type: "toggle",
-            key: "subtitles",
-            label: "Subtitles",
-            defaultValue: false,
-            description: "Subtitles for each audio track [Default & Recommended: Disabled]",
-        },
-        { type: "header", label: "Resolutions" },
-        { type: "info", label: "Only the enabled resolutions are returned. Anything below 720p is always removed." },
-        { type: "toggle", key: "res_2160p", label: "2160p (4K)", defaultValue: true },
-        { type: "toggle", key: "res_1080p", label: "1080p", defaultValue: true },
-        { type: "toggle", key: "res_720p", label: "720p", defaultValue: false },
-        { type: "header", label: "Audio tracks" },
-        { type: "info", label: "Original and English Dub are always on. Turned-off tracks are skipped entirely and never requested." },
-    ];
-    AUDIO_TRACK_LABELS.filter((label) => !ALWAYS_ENABLED_TRACKS.includes(label)).forEach((label) => {
-        layout.push({
-            type: "toggle",
-            key: audioTrackSettingKey(label),
-            label,
-            defaultValue: DEFAULT_ENABLED_TRACKS.includes(label),
-        });
-    });
-    return layout;
-}
-
-async function getStreams(tmdbId, mediaType, season, episode) {
-    const args = [tmdbId, mediaType, season, episode];
-    return diagnostics.run(() => getStreamsImpl(...args), args);
-}
-
-async function getStreamsImpl(tmdbId, mediaType, season, episode) {
-    try {
-        const isTv = mediaType === "tv";
-        if (!isTv && mediaType !== "movie") {
-            diagnostics.log('request.rejected', { tmdbId, mediaType });
-            return [];
-        }
-        if (isTv && (season == null || episode == null)) {
-            diagnostics.log('request.rejected', { tmdbId, mediaType, season, episode });
-            return [];
-        }
-
-        const [metadata] = await Promise.all([fetchTmdbMetadata(tmdbId, mediaType), ensureToken(false)]);
-        if (!metadata) {
-            diagnostics.log('abort.no_tmdb', { tmdbId, mediaType });
-            return [];
-        }
-
-        const subjectId = await findMatchingSubjectId(metadata);
-        if (!subjectId) {
-            diagnostics.log('abort.no_match', { tmdbId, mediaType });
-            return [];
-        }
-
-        const subject = await fetchSubjectDetail(subjectId);
-        if (!subject) {
-            diagnostics.log('abort.no_subject', { subjectId });
-            return [];
-        }
-
-        const enabledTracks = extractAudioTracks(subject, subjectId).filter(isTrackEnabled);
-        diagnostics.log('tracks.enabled', { subjectId, tracks: enabledTracks.map((t) => t.language) });
-        if (!enabledTracks.length) {
-            diagnostics.log('abort.no_tracks', { subjectId });
-            return [];
-        }
-
-        const context = {
-            originalSubjectId: subjectId,
-            mainSite: resolveMainSite(subject),
-            season: isTv ? Number(season) : 0,
-            episode: isTv ? Number(episode) : 0,
-        };
-        const trackResults = await Promise.all(enabledTracks.map((track) => resolveAudioTrack(context, track)));
-
-        const streams = sortByResolution(dedupeByUrl(trackResults.flat())).map(toStreamResult);
-        diagnostics.log('streams.resolved', {
-            count: streams.length,
-            streams: streams.map((s) => ({ name: s.name, quality: s.quality, url: s.url }))
-        });
-        return streams;
-    } catch (error) {
-        diagnostics.log('extract.error', { tmdbId, mediaType, season, episode, error: error.message });
-        return [];
-    }
-}
-
-module.exports = { getStreams, onSettings, getMovieboxStreams: getStreams };
+const getMovieboxStreams = getStreams;
+module.exports = { getStreams, getMovieboxStreams };

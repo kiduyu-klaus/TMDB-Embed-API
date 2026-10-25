@@ -109,6 +109,8 @@ const providerFunctionMap = {
   'MoviesHunt.js': 'getStreams',
   'moviesjoy.js': 'getmoviesjoyStreams',
   'mapple.js': 'getStreams',
+  'noxpulse.js': 'getStreams',
+  'movix.js': 'getStreams',
   'bingebang.js': 'getStreams',
   'uhdmovies.js': 'getStreams',
 
@@ -180,7 +182,9 @@ const providerCategoryMap = {
   'MoviesHunt.js': 'MoviesTv',
   'moviesjoy.js': 'MoviesTv',
   'mapple.js': 'MoviesTv',
-  'bingebang.js': 'MoviesTv',
+  'noxpulse.js': 'MoviesTv',
+  'movix.js': 'MoviesTv',
+  'bingebang.js': ['MoviesTv', 'Anime'], 
   'uhdmovies.js': 'MoviesTv',
 };
 

@@ -46,7 +46,7 @@ function resolveUrl(path, baseUrl) {
     try {
         if (path.startsWith('http://') || path.startsWith('https://')) return path;
         const base = new URL(baseUrl.startsWith('http') ? baseUrl : BASE_URL);
-        return new URL(path, base).href;
+        return new URL(path, base.origin).href;
     } catch {
         return null;
     }
