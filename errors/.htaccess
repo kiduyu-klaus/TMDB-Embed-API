@@ -1,4 +1,0 @@
-# Serve these files without starting the Node.js application.
-<IfModule mod_passenger.c>
-  PassengerEnabled off
-</IfModule>
