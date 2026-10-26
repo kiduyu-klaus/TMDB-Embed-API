@@ -6,6 +6,26 @@ const diagnostics = require('../utils/providerTrace').createProviderTrace('Movie
 const tracedFetch = diagnostics.fetch;
 const PROVIDER = 'MoviesHunt';
 const BASE_URL = 'https://movieshunt.icu';
+// movieshunt.icu is a rotating front door: it redirects to the live mirror (new1, new2, ...)
+// but drops the path, so the wp-json/lookup endpoints 404 into the homepage. Resolve the
+// origin we actually land on and call the API there.
+let resolvedBaseUrl = null;
+
+async function getBaseUrl() {
+    if (resolvedBaseUrl) return resolvedBaseUrl;
+    try {
+        const response = await tracedFetch(`${BASE_URL}/`, { headers: hdrs(randomUA()), redirect: 'follow' });
+        const finalUrl = response && response.url ? String(response.url) : '';
+        const origin = finalUrl ? new URL(finalUrl).origin : '';
+        if (origin && origin !== BASE_URL) {
+            resolvedBaseUrl = origin;
+            diagnostics.log('domain.resolved', { baseUrl: resolvedBaseUrl, from: BASE_URL });
+            return resolvedBaseUrl;
+        }
+    } catch { /* keep the fallback domain */ }
+    resolvedBaseUrl = BASE_URL;
+    return resolvedBaseUrl;
+}
 const TMDB_API = "https://api.themoviedb.org/3";
 const ABHL_URL = 'https://abhilinks.site';
 const Q_KEEP = new Set(['1080P', '2160P']);
@@ -47,7 +67,7 @@ async function fetchText(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.text();
-    } catch { }
+    } catch { /* ignore upstream failure */ }
     return null;
 }
 
@@ -55,7 +75,7 @@ async function fetchJson(url, options) {
     try {
         const res = await tracedFetch(url, options || {});
         if (res && res.ok) return await res.json();
-    } catch { }
+    } catch { /* ignore upstream failure */ }
     return null;
 }
 
@@ -81,7 +101,7 @@ function firstSuccess(promises, isEmpty) {
     });
 }
 
-async function searchSite(query, ua) {
+async function searchSite(query, ua, baseUrl) {
     const queries = [query.replace(/'/g, '').trim()];
     const collected = [];
     const addResults = items => {
@@ -115,7 +135,7 @@ async function searchSite(query, ua) {
 
     for (const q of queries.filter(x => x.length >= 3)) {
         const data = await fetchJson(
-            `${BASE_URL}/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=10`,
+            `${baseUrl}/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=10`,
             { headers: hdrs(ua) }
         );
         if (data && data.length) {
@@ -123,7 +143,7 @@ async function searchSite(query, ua) {
             continue;
         }
         const lookup = await fetchJson(
-            `${BASE_URL}/lookup.php?q=${encodeURIComponent(q)}&page=1&per_page=30`,
+            `${baseUrl}/lookup.php?q=${encodeURIComponent(q)}&page=1&per_page=30`,
             { headers: hdrs(ua) }
         );
         if (lookup && lookup.length) addResults(lookup);
@@ -419,7 +439,7 @@ async function processHubcloud(url, ua) {
     return extractR2Links(phpHtml);
 }
 
-async function processVcloud(url, ua) {
+async function processVcloud(url, ua, baseUrl) {
     const html = await fetchText(url, { headers: hdrs(ua, { 'Referer': `${ABHL_URL}/` }) });
     if (!html) return null;
     const atobMatch = html.match(/atob\s*\(\s*atob\s*\(\s*['"]([^'"]+)['"]\s*\)\s*\)/);
@@ -427,7 +447,7 @@ async function processVcloud(url, ua) {
     let decoded;
     try { decoded = atob(atob(atobMatch[1])); } catch { return null; }
     const innerHtml = await fetchText(decoded, {
-        headers: hdrs(ua, { 'Referer': `${BASE_URL}/`, 'Cookie': 'xla=s4t' }),
+        headers: hdrs(ua, { 'Referer': `${baseUrl}/`, 'Cookie': 'xla=s4t' }),
     });
     if (!innerHtml) return null;
     return extractR2Links(innerHtml);
@@ -443,7 +463,7 @@ function dedupe(arr) {
     });
 }
 
-async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
+async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua, baseUrl) {
     const postHtml = await fetchText(postUrl, { headers: hdrs(ua) });
     if (!postHtml) return [];
 
@@ -482,12 +502,11 @@ async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
 
             for (const ep of filtered) {
                 for (const link of ep.links) {
-                    const epNum = ep.number;
                     const epSize = ep.size;
                     tasks.push(async () => {
                         let r2Links = null;
                         if (link.type === 'hubcloud') r2Links = await processHubcloud(link.url, ua);
-                        else if (link.type === 'vcloud') r2Links = await processVcloud(link.url, ua);
+                        else if (link.type === 'vcloud') r2Links = await processVcloud(link.url, ua, baseUrl);
                         if (r2Links) r2Links.forEach(l => {
                             l.quality = l.quality || entry.quality;
                             l.size = epSize || '';
@@ -512,7 +531,7 @@ async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
                     url: item.url,
                     quality: item.quality || '',
                     size: item.size || '',
-                    headers: { 'Referer': `${BASE_URL}/`, 'User-Agent': ua },
+                    headers: { 'Referer': `${baseUrl}/`, 'User-Agent': ua },
                 });
             }
         }
@@ -549,7 +568,7 @@ async function resolveMatch(postUrl, isSeries, seasonNum, episodeNum, ua) {
                     url: item.url,
                     quality,
                     size: opt.size || '',
-                    headers: { 'Referer': `${BASE_URL}/`, 'User-Agent': ua },
+                    headers: { 'Referer': `${baseUrl}/`, 'User-Agent': ua },
                 });
             }
         }
@@ -596,7 +615,8 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
         }
         diagnostics.log('tmdb.resolved', { tmdbId, mediaType, title, year: tmdbInfo.year });
 
-        const searchResults = await searchSite(title, ua);
+        const baseUrl = await getBaseUrl();
+        const searchResults = await searchSite(title, ua, baseUrl);
         diagnostics.log('search.results', { title, count: (searchResults || []).length });
         if (!searchResults || !searchResults.length) {
             diagnostics.log('abort.no_results', { tmdbId, title });
@@ -616,7 +636,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
 
         try {
             const streams = await firstSuccess(
-                matches.map(m => resolveMatch(m.url, isSeries, seasonNum, episodeNum, ua)),
+                matches.map(m => resolveMatch(m.url, isSeries, seasonNum, episodeNum, ua, baseUrl)),
                 val => !val || !val.length
             );
             const list = Array.isArray(streams) ? streams : [];
@@ -626,7 +646,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
             });
             return streams;
         } catch (error) {
-	            diagnostics.log('resolve.failed', { tmdbId, title, error: error?.message || String(error || 'unknown error') });
+            diagnostics.log('resolve.failed', { tmdbId, title, error: error?.message || String(error || 'unknown error') });
             return [];
         }
     } catch (error) {

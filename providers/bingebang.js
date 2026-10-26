@@ -139,8 +139,8 @@ const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').tr
 const normalizeQuality = (raw) => {
     const s = String(raw || '').toLowerCase();
     if (s.includes('2160') || s.includes('4k')) return { label: '2160p', rank: 4 };
-    if (s.includes('1080') || s.includes('full hd') || s.includes('fhd')) return { label: '1080p', rank: 3 };
-    if (s.includes('720') || s === 'hd' || s.startsWith('hd ')) return { label: '720p', rank: 2 };
+    if (s.includes('1080')) return { label: '1080p', rank: 3 };
+    if (s.includes('720')) return { label: '720p', rank: 2 };
     if (s.includes('480')) return { label: '480p', rank: 1 };
     return { label: 'Auto', rank: 0 };
 };
