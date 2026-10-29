@@ -678,7 +678,7 @@ function _scrapeVidlink(p) {
  * (cheerio does not exist in QuickJS).
  */
 
-var _URLS_JSON = 'https://raw.githubusercontent.com/SaurabhKaperwan/Utils/refs/heads/main/urls.json';
+var _URLS_JSON = 'https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json';
 var _DYN_CACHE = null;
 var _DYN_AT = 0;
 

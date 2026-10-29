@@ -48,7 +48,7 @@ var __async = (__this, __arguments, generator) => {
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var WYZIE_API = "https://sub.wyzie.io";
-var URLS_JSON = "https://raw.githubusercontent.com/SaurabhKaperwan/Utils/refs/heads/main/urls.json";
+var URLS_JSON = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
 var _dynamicCache = null;
 var _dynamicAt = 0;
 function getDynamicUrls() {
@@ -701,10 +701,10 @@ function wyzieKeyField() {
 }
 
 // src/_shared/sources/indian.js
-var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
+var import_cheerio_without_node_native2 = __toESM(require("cheerio"), 1);
 
 // src/_shared/sources/hubcloud.js
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var import_cheerio_without_node_native = __toESM(require("cheerio"), 1);
 var import_crypto_js = __toESM(require("crypto-js"));
 function getBaseUrl(url) {
   try {

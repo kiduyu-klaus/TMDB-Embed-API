@@ -44,7 +44,7 @@
     "dub_thai_dub": false,
     "dub_turkish_dub": false,
     "dub_urdu_dub": false,
-    "proxy_enabled": true
+    "proxy_enabled": false
   },
   "tmdbApiKeys": [
     "9de3de623b579f6e127c6ec603b9f74d"

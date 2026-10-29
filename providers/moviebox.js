@@ -1508,8 +1508,8 @@ function detectStreamFormat(declaredFormat, url) {
 /**
  * The h5 player attaches `playHeader = { [signHeaderKey]: signCookie,
  * Referer: <page url> }` to every signed row (see `zO()` in the bundle).
- * The old code additionally sent the cookie as a raw `Cookie` header, which
- * the edge does not expect - that is removed.
+ * Preserve the designated signing header and also pass the signed cookie to
+ * downstream players as a Cookie header.
  */
 function buildStreamHeaders(subjectId, detailPath, row) {
     const headers = {
@@ -1533,6 +1533,7 @@ function buildStreamHeaders(subjectId, detailPath, row) {
             ? String(row.signHeaderKey)
             : "X-MB-Token";
         headers[headerKey] = signCookie;
+        headers.Cookie = signCookie;
     }
     return headers;
 }
