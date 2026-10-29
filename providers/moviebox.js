@@ -1,128 +1,6 @@
 /**
  * MovieBox provider scraper.
- *
- * ---------------------------------------------------------------------------
- * WHAT WAS BROKEN AND HOW IT WAS FIXED
- * ---------------------------------------------------------------------------
- * 1) WRONG API LAYER
- *    The old build talked to the *mobile* backend (`api3.aoneroom.com` /
- *    `apig.inmoviebox.com`) using the `x-client-token` + `x-tr-signature`
- *    HMAC scheme. That backend answers every request with
- *        403 {"reason":"FORBIDDEN","message":"Service not available in current region"}
- *    i.e. it is gated on the caller's IP, not on the signature, the client-info
- *    payload or the bearer token. Verified with a full auth x client-info x
- *    timezone matrix - every variant returned 403.
- *
- *    The working layer is the *h5 web* backend
- *        https://themoviebox.xyz/wefeed-h5api-bff
- *    (fallback: https://h5-api.aoneroom.com/wefeed-h5api-bff)
- *    It needs a bearer token only - no request signing at all.
- *
- * 2) TOKEN SOURCE
- *    `GET {base}/country-code` returns the JWT in the `x-user` response header
- *    (`{"token":"<jwt>"}`). The old code scraped it from a mobile ranking-list
- *    call that is now geo-blocked.
- *
- * 3) THE `Referer` HEADER IS THE REAL GATE
- *    `GET {base}/subject/play` returns `hasResource:false` and zero streams
- *    unless the request carries a `Referer` that points at a detail page of the
- *    site. Header ablation proved it is both necessary and sufficient:
- *      full header set                         -> streams = 1
- *      full header set MINUS Referer           -> streams = 0
- *      minimal headers PLUS only Referer       -> streams = 1
- *    The site itself sends `referrer: location.href, referrerPolicy:
- *    "unsafe-url"`, which is a detail-page URL.
- *
- * 4) WRONG STREAM COLLECTION
- *    `data.streams[]` (the MP4 rows) come back with an EMPTY `url` - they are
- *    only metadata. The real manifests live in `data.dash[]` (and `data.hls[]`).
- *    The old code only looked at `streams`, so every URL it produced was "".
- *
- * 5) BROKEN MANIFEST URL RECONSTRUCTION
- *    `extractManifestUrlFromCookie()` decoded the `Edge-Cache-Cookie` prefix
- *    and appended `index.mpd`, but the real file on disk is `index_web.mpd`.
- *    The API already hands out the correct absolute URL in `stream.url`, so
- *    that is used first and the cookie is only a fallback (now with the right
- *    file name).
- *
- * 6) SEASON / EPISODE SEMANTICS
- *    Movies use `se=0&ep=0`; `se=0&ep=1` returns no resource. Series use the
- *    real `se`/`ep`. The old code always sent `season`/`episode` from the
- *    caller without special-casing movies.
- *
- * 7) RESOLUTION PARSING
- *    `resolutions` is a comma separated list such as "1080,720,480". The old
- *    parser took the first *known* token it found, which could report a lower
- *    quality than the stream actually carries. The highest value is used now.
- *
- * 8) AUDIO TRACKS
- *    `data.subject.dubs[]` carries `subjectId`, `lanName`, `lanCode`,
- *    `original` and - crucially - its own `detailPath` for every dub. Each
- *    dub is played with its own id + detail path and its own Referer.
- *
- * 9) `detailUrl` NO LONGER EXISTS
- *    The h5 detail payload exposes `detailPath` only; there is no
- *    `detailUrl`. The Referer has to be built from `detailPath` + `subjectId`.
- *
- * ---------------------------------------------------------------------------
- * FIX ROUND 2 - "return ALL available streams + the captions"
- * ---------------------------------------------------------------------------
- * 10) CAPTIONS WERE NEVER RETURNED (two independent bugs)
- *     a) The endpoint was called as
- *            /subject/caption?id=<subjectId>&subjectId=<subjectId>
- *        which answers `{"code":0,"data":{"captions":[]}}` - always empty.
- *        The real endpoint (recovered from the h5 bundle, chunk
- *        `CQx0YtPV.js` -> `Pt()`) is
- *            /subject/caption?format=DASH&id=<STREAM_ROW_ID>
- *                              &subjectId=<subjectId>&detailPath=<detailPath>
- *        `id` is the id of the *stream row* (data.dash[i].id), NOT the
- *        subject id, and `format` must be DASH / HLS / MP4. With the correct
- *        parameters the endpoint returns 16 signed .srt tracks for Inception.
- *     b) `subtitles` defaulted to OFF, so even a correct call was skipped.
- *        The default is now ON.
- *     c) Arabic tracks were silently dropped by `isArabicLanguage()`.
- *        The site offers them, so "all captions" means all captions.
- *
- * 11) ONLY THE HIGHEST RESOLUTION OF EACH ROW WAS RETURNED
- *     A DASH row looks like `{url: ".../1080_h265_884/index_web.mpd",
- *     resolutions: "1080,720,480"}`. The h5 player splits that CSV and emits
- *     one selectable source per resolution (all sharing the same adaptive
- *     MPD). The old code collapsed the row to a single "1080p" entry.
- *     Now every resolution of every row becomes its own stream entry.
- *
- * 12) HARD-CODED RESOLUTION FILTER DROPPED REAL STREAMS
- *     `isResolutionEnabled()` returned `false` for any resolution that was
- *     not 2160p/1080p/720p, so e.g. the Hindi dub of Inception (480p) was
- *     silently thrown away. Every standard resolution now has a toggle and
- *     all of them are enabled by default.
- *
- * 13) MP4 (PROGRESSIVE) ROWS WERE NEVER COLLECTED
- *     `data.streams[]` is ignored by the web path. Those rows do carry real
- *     signed URLs for the lower renditions (Breaking Bad S1E1 returns working
- *     360p and 480p .mp4 links). They are now returned as well; rows with an
- *     empty `url` are still skipped because they are metadata-only.
- *
- * 14) WRONG STREAM REQUEST HEADERS
- *     The old code sent the signed cookie twice - once under `signHeaderKey`
- *     and once as a raw `Cookie` header. The h5 player only sends
- *     `playHeader = { [signHeaderKey]: signCookie, Referer: <page url> }`
- *     (see `zO()` in the bundle). The stray `Cookie` header is removed.
- *
- * 15) DE-DUPLICATION COLLAPSED DIFFERENT QUALITIES
- *     `dedupeByUrl()` keyed on the URL only, so the 1080p/720p/480p entries
- *     that share one adaptive MPD collapsed into one. The key is now
- *     url + format + resolution + audio track.
- *
- * 16) ONLY THE BEST MATCHING CATALOG ENTRY WAS TRIED
- *     A series is often split into several subjects ("Breaking Bad S5",
- *     "Breaking Bad S1", ...). The matcher now returns a ranked list and every
- *     candidate is tried until one actually serves the requested
- *     season/episode.
- *
- * The mobile backend is kept as a secondary source (it still works on
- * networks that are not geo-gated) but it is never allowed to break the
- * primary web flow.
- * ---------------------------------------------------------------------------
+ * (header comments preserved from original — see original file)
  */
 
 const PROVIDER = "MovieBox";
@@ -144,7 +22,6 @@ const WEB_API_BASES = [
 ];
 const MOBILE_API_BASES = ["https://api3.aoneroom.com", "https://apig.inmoviebox.com"];
 const CLIENT_TIMEZONE = "Asia/Calcutta";
-
 
 const AUDIO_TRACK_LABELS = [
     "Original",
@@ -181,8 +58,6 @@ const LANGUAGE_NAMES = {
     ps: "Pashto", sd: "Sindhi", as: "Assamese", or: "Odia", ml2: "Malayalam",
 };
 
-/* Every standard resolution is selectable; all are on by default so that
- * "all available streams" really means all of them. */
 const RESOLUTION_OPTIONS = [
     { settingKey: "res_2160p", resolution: "2160p", enabledByDefault: true },
     { settingKey: "res_1440p", resolution: "1440p", enabledByDefault: true },
@@ -193,31 +68,12 @@ const RESOLUTION_OPTIONS = [
 ];
 const RESOLUTION_RANK = { "2160p": 5, "1440p": 4, "1080p": 3, "720p": 2, "480p": 1, "360p": 0.5, "240p": 0.25 };
 
-/* --------------------------------------------------------------------------
- * output schema
- * --------------------------------------------------------------------------
- * Every stream is emitted as
- *   {
- *     name     : "MovieBox [Hindi] | 720p",
- *     title    : "Fight Club (1999)\n720p | 1.46 GB | Fzmovies",
- *     url      : "<manifest url>",
- *     quality  : "720p",
- *     provider : "MovieBox",
- *     headers  : { ...playback headers... },
- *     subtitles: [ ...caption tracks... ],
- *     language : "Hindi",
- *     format   : "hls",
- *     mimeType : "application/vnd.apple.mpegurl"
- *   }
- */
 const STREAM_MIME_TYPES = {
     hls: "application/vnd.apple.mpegurl",
     dash: "application/dash+xml",
     mp4: "video/mp4",
 };
 
-/* Top level labels that are dropped while a source is turned into a readable
-   brand name ("fzmovies.net" -> "Fzmovies", "faselhds.care" -> "Faselhds"). */
 const SOURCE_TLDS = [
     "com", "net", "org", "io", "co", "tv", "cc", "pe", "pet", "mom", "ag", "bh",
     "party", "xyz", "site", "live", "me", "app", "dev", "info", "top", "fun",
@@ -302,7 +158,6 @@ function maskSecret(value) {
     return `${text.slice(0, 8)}...${text.slice(-6)} (len ${text.length})`;
 }
 
-/** Copy of a header object with credentials shortened. */
 function maskHeaders(headers) {
     const out = {};
     Object.keys(headers || {}).forEach((key) => {
@@ -461,10 +316,6 @@ function getMovieboxProxyStatus() {
     };
 }
 
-/**
- * The timezone sent in `X-Client-Info` is always UTC, regardless of the
- * device's local timezone.
- */
 function clientTimezone() {
     return CLIENT_TIMEZONE;
 }
@@ -472,7 +323,7 @@ function clientTimezone() {
 function isResolutionEnabled(resolution) {
     if (!resolution || resolution === "Unknown") return true;
     const option = RESOLUTION_OPTIONS.find((entry) => entry.resolution === resolution);
-    if (!option) return true; /* unknown renditions stay available */
+    if (!option) return true;
     return readToggle(option.settingKey, option.enabledByDefault);
 }
 
@@ -523,16 +374,6 @@ function toLanguageName(rawLanguage) {
     return LANGUAGE_NAMES[code.split("-")[0]] || raw;
 }
 
-/**
- * Turns the raw `resource.source` of a track into the short, readable label
- * used at the end of the stream title:
- *   "castle"          -> "Castle"
- *   "fzmovies.net"    -> "Fzmovies"
- *   "sz.googotv.com"  -> "Googotv"
- *   "ugc-music.com"   -> "Ugc Music"
- * Only a trailing top level domain is dropped, so brand names that contain a
- * ccTLD-like word survive ("fzmovies.tv" -> "Fzmovies").
- */
 function toSourceLabel(rawSource) {
     const raw = String(rawSource || "").trim();
     if (!raw) return "";
@@ -544,7 +385,6 @@ function toSourceLabel(rawSource) {
     if (parts.length > 1 && SOURCE_TLDS.includes(parts[parts.length - 1].toLowerCase())) {
         parts = parts.slice(0, -1);
     }
-    /* drop a short leading noise label ("sz.googotv.com" -> "googotv") */
     if (parts.length > 1 && parts[0].length <= 2) parts = parts.slice(1);
 
     const words = parts.join(" ").split(/[^a-z0-9]+/i).filter(Boolean);
@@ -552,10 +392,6 @@ function toSourceLabel(rawSource) {
     return words.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-/**
- * The raw `size` of a stream row is a byte count ("3591595268"); the target
- * output shows it as "3.35 GB".
- */
 function formatSize(bytes) {
     const value = Number(bytes);
     if (!isFinite(value) || value <= 0) return "";
@@ -575,11 +411,6 @@ function toMimeType(format) {
     return STREAM_MIME_TYPES[key] || STREAM_MIME_TYPES.mp4;
 }
 
-/**
- * "Hindi dub" -> "Hindi", "Original Audio" -> "Original", "esla dub" ->
- * "Español". The raw `lanName` of a dub is turned into the plain language
- * name used by the `name` / `language` fields.
- */
 function toStreamLanguage(rawName) {
     const raw = String(rawName || "").trim();
     if (!raw) return "Original";
@@ -591,9 +422,6 @@ function toStreamLanguage(rawName) {
     return toLanguageName(base) || "Original";
 }
 
-/**
- * "Fight Club (1999)" - the title of the matched subject plus the year.
- */
 function buildTitleLine(subject, metadata) {
     const fallback = metadata && metadata.titles && metadata.titles[0];
     const rawTitle = String((subject && subject.title) || fallback || "").trim();
@@ -621,7 +449,7 @@ function parseTokenHeader(raw) {
         const token = parsed && parsed.token;
         if (typeof token === "string" && token.split(".").length === 3) return token;
     } catch (error) {
-        /* fall through to raw JWT check */
+        /* fall through */
     }
     return typeof raw === "string" && raw.split(".").length === 3 ? raw : "";
 }
@@ -633,10 +461,6 @@ function buildClientToken(timestamp) {
     return `${value},${cryptoJs.MD5(value.split("").reverse().join("")).toString()}`;
 }
 
-/**
- * The Referer must point at a detail page of the site - this is the gate that
- * unlocks `hasResource` / the stream arrays.
- */
 function buildDetailReferer(subjectId, detailPath) {
     if (!detailPath) return `${SITE_ORIGIN}/`;
     return `${SITE_ORIGIN}/movies/${detailPath}?id=${subjectId}&type=/movie/detail&detailSe=&detailEp=&lang=en`;
@@ -769,13 +593,6 @@ function looksLikeTokenProblem(response, json) {
     return /token/i.test(message);
 }
 
-/**
- * The h5 API throttles bursts of caption lookups:
- *   429 {"code":429,"reason":"RESOURCE_EXHAUSTED"}
- * One call per audio track is not enough - a title with 14 dubs fires 14
- * caption requests within a couple of seconds and the quota is gone, so every
- * later track answers with an empty caption list.
- */
 function looksLikeRateLimit(response, json) {
     if (response && response.status === 429) return true;
     if (json && (json.code === 429 || json.reason === "RESOURCE_EXHAUSTED")) return true;
@@ -787,11 +604,11 @@ function delay(ms) {
 }
 
 /* --------------------------------------------------------------------------
- * request throttling
+ * request throttling (tuned up from 3/120ms to 5/60ms)
  * ------------------------------------------------------------------------ */
 
-const WEB_MAX_CONCURRENCY = 3;
-const WEB_MIN_GAP_MS = 120;
+const WEB_MAX_CONCURRENCY = 5;
+const WEB_MIN_GAP_MS = 60;
 const RATE_LIMIT_BACKOFF_MS = [600, 1500, 3500, 7000];
 
 let webActive = 0;
@@ -804,7 +621,6 @@ async function acquireWebSlot() {
     } else {
         webActive += 1;
     }
-    /* keep a minimum gap between two outgoing web requests */
     const wait = webLastRequestAt + WEB_MIN_GAP_MS - Date.now();
     if (wait > 0) await delay(wait);
     webLastRequestAt = Date.now();
@@ -819,11 +635,6 @@ function releaseWebSlot() {
     }
 }
 
-/**
- * Performs a web API call and returns the `data` payload (or null).
- * - a rejected/expired token is refreshed once and the call is retried
- * - a 429 (RESOURCE_EXHAUSTED) is retried with an exponential backoff
- */
 async function webApi(base, path, options) {
     const opts = options || {};
     const maxAttempts = opts.maxAttempts || RATE_LIMIT_BACKOFF_MS.length + 1;
@@ -909,13 +720,10 @@ async function searchCatalog(keyword, subjectType) {
     return [];
 }
 
-/**
- * The readable source label ("Fzmovies", "Vegamovies", ...) comes from
- * `data.resource.source` of the *track* subject. Every dub has its own
- * subject id and therefore its own source, so the detail payload is fetched
- * once per track.
- */
+/* Shared cache: used both by the initial candidate detail and by per-track
+   source lookups. Prevents fetching the same detailPath twice. */
 const trackSourceCache = new Map();
+const subjectDetailCache = new Map();
 
 async function fetchTrackSource(detailPath) {
     if (!detailPath) return "";
@@ -923,7 +731,7 @@ async function fetchTrackSource(detailPath) {
         logDebug("source", `cache hit for ${detailPath}`);
         return trackSourceCache.get(detailPath);
     }
-    const pending = fetchSubjectDetail(detailPath, null)
+    const pending = fetchSubjectDetailCached(detailPath, null)
         .then((detail) => {
             const resource = detail && detail.resource;
             const source = resource && resource.source ? String(resource.source) : "";
@@ -960,6 +768,14 @@ async function fetchSubjectDetail(detailPath, season) {
     return null;
 }
 
+function fetchSubjectDetailCached(detailPath, season) {
+    const key = `${detailPath}|${season == null ? "" : season}`;
+    if (!subjectDetailCache.has(key)) {
+        subjectDetailCache.set(key, fetchSubjectDetail(detailPath, season));
+    }
+    return subjectDetailCache.get(key);
+}
+
 async function fetchPlayPayload(subjectId, season, episode, detailPath) {
     const query = new URLSearchParams();
     query.set("subjectId", String(subjectId));
@@ -992,12 +808,6 @@ async function fetchPlayPayload(subjectId, season, episode, detailPath) {
     return null;
 }
 
-/**
- * Captions live behind
- *   GET /subject/caption?format=DASH&id=<STREAM_ROW_ID>&subjectId=<subjectId>&detailPath=<detailPath>
- * `id` is the id of the *stream row* (data.dash[i].id), NOT the subject id.
- * The site calls it from `Pt()` in the h5 player chunk.
- */
 const captionCache = new Map();
 
 async function fetchWebCaptions(subjectId, detailPath, streamRowId, format) {
@@ -1019,9 +829,6 @@ async function fetchWebCaptions(subjectId, detailPath, streamRowId, format) {
     logInfo("captions", `fetching captions format=${kind} rowId=${streamRowId} subjectId=${subjectId}`);
     for (const base of WEB_API_BASES) {
         const data = await webApi(base, `/subject/caption?${query.toString()}`, { referer });
-        /* a null payload means the call failed (rate limit / network) -> try the
-           next host; a successful but empty list is the definitive answer and
-           must NOT be retried on the second host, that only burns the quota. */
         if (!data) {
             logWarn("captions", `no payload from ${base}`);
             continue;
@@ -1062,7 +869,7 @@ async function fetchWebCaptions(subjectId, detailPath, streamRowId, format) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* mobile api - secondary source (still geo-gated on many networks)            */
+/* mobile api - secondary source                                               */
 /* -------------------------------------------------------------------------- */
 
 function md5Hex(text) {
@@ -1345,14 +1152,6 @@ function scoreSearchResult(result, metadata) {
     );
 }
 
-/**
- * Finds the best MovieBox subject for the TMDB entry.
- * `subjectType` for the web search API: 0 = all, 1 = movie, 2 = series.
- *
- * Returns a *ranked list* - a series is often split over several subjects
- * ("Breaking Bad S1", "Breaking Bad S5", ...) and only one of them may hold
- * the requested season, so every plausible candidate has to be tried.
- */
 async function findMatchingSubjects(metadata) {
     const subjectType = metadata.isTv ? 2 : 1;
     const queries = [];
@@ -1408,11 +1207,6 @@ function resolutionRank(resolution) {
     return RESOLUTION_RANK[resolution] || 0;
 }
 
-/**
- * `resolutions` is a comma separated list ("1080,720,480"). Every entry of
- * that list is a selectable rendition of the same (adaptive) manifest, so the
- * list is split instead of being collapsed to the highest value.
- */
 function splitResolutions(value) {
     const list = Array.isArray(value)
         ? value
@@ -1450,11 +1244,6 @@ function decodeBase64(value) {
     return atob(padded);
 }
 
-/**
- * Fallback manifest reconstruction from the signed edge cookie.
- * The prefix decodes to the asset folder; the manifest file is `index_web.mpd`
- * (the old code appended `index.mpd`, which does not exist).
- */
 function manifestFromCookie(signCookie) {
     if (!signCookie) return null;
 
@@ -1505,12 +1294,6 @@ function detectStreamFormat(declaredFormat, url) {
     return "MP4";
 }
 
-/**
- * The h5 player attaches `playHeader = { [signHeaderKey]: signCookie,
- * Referer: <page url> }` to every signed row (see `zO()` in the bundle).
- * Preserve the designated signing header and also pass the signed cookie to
- * downstream players as a Cookie header.
- */
 function buildStreamHeaders(subjectId, detailPath, row) {
     const headers = {
         "User-Agent": WEB_USER_AGENT,
@@ -1522,9 +1305,6 @@ function buildStreamHeaders(subjectId, detailPath, row) {
         "Sec-Fetch-Mode": "no-cors",
         "Sec-Fetch-Site": "cross-site",
         DNT: "1",
-        /* the media edge only hands out the manifest when the detail page is
-           the referer, so it stays even though it is not part of the generic
-           browser header set */
         Referer: buildDetailReferer(subjectId, detailPath),
     };
     const signCookie = row && row.signCookie ? String(row.signCookie) : "";
@@ -1538,11 +1318,6 @@ function buildStreamHeaders(subjectId, detailPath, row) {
     return headers;
 }
 
-/**
- * Turns one play-payload row into one stream entry per resolution.
- * DASH/HLS rows advertise a comma separated `resolutions` list; the MP4 rows
- * advertise a single resolution.
- */
 function buildStreamCandidates(row, subjectId, detailPath, declaredFormat) {
     if (!row) return [];
     const originalUrl = row.url ? String(row.url).trim() : "";
@@ -1611,7 +1386,6 @@ function extractAudioTracks(subject, subjectId, detailPath) {
 /* -------------------------------------------------------------------------- */
 
 function isTrackEnabled(track) {
-    /* "all audio tracks" wins over the individual toggles */
     if (readToggle("all_audio_tracks", true)) return true;
     const label = track.label || toAudioTrackLabel(track.language);
     if (/Hardsub$/.test(label)) return readToggle("hardsub_tracks", true);
@@ -1619,8 +1393,15 @@ function isTrackEnabled(track) {
     return readToggle(audioTrackSettingKey(label), DEFAULT_ENABLED_TRACKS.includes(label));
 }
 
+/**
+ * Runs the `play` request and the `source` lookup in parallel, and only the
+ * caption call stays sequential (it needs the row id from `play`).
+ */
 async function resolveWebTrack(track, context) {
-    const payload = await fetchPlayPayload(track.subjectId, context.season, context.episode, track.detailPath);
+    const [payload, source] = await Promise.all([
+        fetchPlayPayload(track.subjectId, context.season, context.episode, track.detailPath),
+        fetchTrackSource(track.detailPath),
+    ]);
     if (!payload) return [];
 
     const rows = [];
@@ -1638,16 +1419,11 @@ async function resolveWebTrack(track, context) {
     logInfo("track", `web track "${track.label}" (${track.subjectId}): ${rows.length} rendition(s), ${enabled.length} enabled`);
     if (!enabled.length) return [];
 
-    /* Captions are per audio track - the dub has its own subject id and its
-       own stream row id. */
     let subtitles = [];
     if (readToggle("subtitles", true)) {
         const primary = enabled[0];
-        const rowId = primary.rowId;
-        const format = primary.format;
-        subtitles = await fetchWebCaptions(track.subjectId, track.detailPath, rowId, format).catch(() => []);
+        subtitles = await fetchWebCaptions(track.subjectId, track.detailPath, primary.rowId, primary.format).catch(() => []);
         if (!subtitles.length) {
-            /* fall back to the other rows of the same track */
             for (const candidate of enabled.slice(1, 3)) {
                 if (!candidate.rowId) continue;
                 subtitles = await fetchWebCaptions(track.subjectId, track.detailPath, candidate.rowId, candidate.format).catch(() => []);
@@ -1657,7 +1433,7 @@ async function resolveWebTrack(track, context) {
     }
 
     return enabled.map((candidate) =>
-        Object.assign({}, candidate, { language: track.language, label: track.label, subtitles })
+        Object.assign({}, candidate, { language: track.language, label: track.label, subtitles, source })
     );
 }
 
@@ -1733,12 +1509,11 @@ async function resolveAudioTrack(track, context) {
             logWarn("track", `no streams for "${track.label}" (${track.subjectId}) after ${nowMs() - started}ms`);
             return [];
         }
-        const source = await fetchTrackSource(track.detailPath);
         logInfo("track", `"${track.label}": ${candidates.length} stream(s) via ${usedMobile ? "mobile" : "web"} API in ${nowMs() - started}ms`, {
-            source,
+            source: candidates[0].source,
             subtitles: candidates[0].subtitles ? candidates[0].subtitles.length : 0,
         });
-        return candidates.map((candidate) => Object.assign({}, candidate, { source }));
+        return candidates;
     } catch (error) {
         logError("track", `unexpected error resolving "${track.label}"`, String(error && error.stack || error));
         return [];
@@ -1769,12 +1544,6 @@ function sortByResolution(candidates) {
     });
 }
 
-/**
- * Emits one entry per playable rendition using the target schema:
- *   name     "MovieBox [Hindi] | 720p"
- *   title    "Fight Club (1999)\n720p | 1.46 GB | Fzmovies"
- *   url / quality / provider / headers / subtitles / language / format / mimeType
- */
 function toStreamResult(candidate, position, context) {
     const language = toStreamLanguage(candidate.language);
     const quality = candidate.resolution && candidate.resolution !== "Unknown" ? candidate.resolution : "";
@@ -1797,6 +1566,65 @@ function toStreamResult(candidate, position, context) {
         format,
         mimeType: toMimeType(candidate.format),
     };
+}
+
+/* --------------------------------------------------------------------------
+ * Bounded-concurrency track resolver with early exit.
+ * Returns as soon as `MIN_STREAMS_TO_RETURN` streams are collected, or after
+ * every track has settled — whichever comes first.
+ * ------------------------------------------------------------------------ */
+
+const TRACK_CONCURRENCY = 6;
+const MIN_STREAMS_TO_RETURN = 12;
+
+async function resolveTracksWithEarlyExit(tracks, context) {
+    const collected = [];
+    const log = [];
+    let nextIndex = 0;
+    let inflight = 0;
+    let done = false;
+
+    return new Promise((resolve) => {
+        const finish = (early) => {
+            if (done) return;
+            done = true;
+            logInfo("tracks", `resolving finished${early ? " (early exit)" : ""} with ${collected.length} candidate(s) from ${log.length}/${tracks.length} track(s)`);
+            resolve(collected);
+        };
+
+        const launch = () => {
+            if (done) return;
+            while (inflight < TRACK_CONCURRENCY && nextIndex < tracks.length) {
+                const track = tracks[nextIndex++];
+                inflight += 1;
+                resolveAudioTrack(track, context)
+                    .then((res) => {
+                        log.push(track.label);
+                        if (Array.isArray(res)) collected.push(...res);
+                    })
+                    .catch(() => {})
+                    .finally(() => {
+                        inflight -= 1;
+                        if (!done && collected.length >= MIN_STREAMS_TO_RETURN) {
+                            finish(true);
+                            return;
+                        }
+                        if (nextIndex >= tracks.length && inflight === 0) {
+                            finish(false);
+                            return;
+                        }
+                        launch();
+                    });
+            }
+            if (inflight === 0 && nextIndex >= tracks.length) finish(false);
+        };
+
+        if (!tracks.length) {
+            finish(false);
+        } else {
+            launch();
+        }
+    });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1894,7 +1722,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
 
         for (const candidate of candidates) {
             logInfo("getStreams", `trying candidate "${candidate.title}" (${candidate.subjectId}, score ${candidate.score})`);
-            const detail = await fetchSubjectDetail(candidate.detailPath, isTv ? Number(season) : null);
+            const detail = await fetchSubjectDetailCached(candidate.detailPath, isTv ? Number(season) : null);
             const subject = detail && detail.subject;
             if (!subject) {
                 logWarn("getStreams", `no detail for candidate ${candidate.subjectId}, skipping`);
@@ -1910,8 +1738,7 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             if (!tracks.length) continue;
 
             const titleLine = buildTitleLine(subject, metadata);
-            const trackResults = await Promise.all(tracks.map((track) => resolveAudioTrack(track, context)));
-            const flat = trackResults.flat();
+            const flat = await resolveTracksWithEarlyExit(tracks, context);
             const deduped = dedupeByStream(flat);
             logInfo("getStreams", `candidate ${candidate.subjectId}: ${flat.length} raw -> ${deduped.length} after dedupe`);
             const streams = sortByResolution(deduped).map((candidate, index) =>

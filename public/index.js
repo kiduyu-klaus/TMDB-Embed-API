@@ -229,8 +229,35 @@ async function renderVidfastProxySettings(enabled = false){
 	}
 }
 
+async function renderVidyProxySettings(enabled = false){
+	const checkbox = document.getElementById('vidyProxyEnabled');
+	const label = document.getElementById('vidyProxyEnabledLabel');
+	const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+	const status = document.getElementById('vidyProxyStatus');
+	if(checkbox) {
+		checkbox.checked = enabled === true;
+		label?.classList.toggle('on', checkbox.checked);
+		if(labelText) labelText.textContent = checkbox.checked ? 'Proxy enabled' : 'Enable proxy';
+	}
+	if(!status) return;
+	try {
+		const response = await fetch(U('/api/providers/vidy/proxy-status'), { cache:'no-store' });
+		const proxy = await response.json();
+		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		status.textContent = proxy.selectedProxy
+			? `Selected: ${proxy.selectedProxy}`
+			: proxy.listAvailable
+				? `Shared list is saved in ${proxy.sharedList}. ${proxy.enabled ? 'A proxy will be selected on the next Vidy request.' : 'Enable proxying to select one on the next Vidy request.'}`
+				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
+	} catch(error) {
+		status.textContent = `Unable to load Vidy proxy status: ${error.message}`;
+	}
+}
+
 async function downloadProviderProxyList(provider){
-	const buttonId = provider === 'MovieBox' ? 'downloadMovieboxProxyListBtn' : 'downloadVidfastProxyListBtn';
+	const buttonId = provider === 'MovieBox' ? 'downloadMovieboxProxyListBtn'
+		: provider === 'Vidy' ? 'downloadVidyProxyListBtn'
+			: 'downloadVidfastProxyListBtn';
 	const button = document.getElementById(buttonId);
 	const status = document.getElementById(`${provider.toLowerCase()}ProxyStatus`);
 	if(button) button.disabled = true;
@@ -255,6 +282,10 @@ async function downloadMovieboxProxyList(){
 
 async function downloadVidfastProxyList(){
 	return downloadProviderProxyList('VidFast');
+}
+
+async function downloadVidyProxyList(){
+	return downloadProviderProxyList('Vidy');
 }
 
 async function saveMovieboxProxySettings(){
@@ -297,6 +328,30 @@ async function saveVidfastProxySettings(){
 		await renderVidfastProxySettings(data.enabled);
 		await reloadLiveOnly();
 		if(status) status.textContent = 'VidFast connection saved to user-config.json';
+	} catch(error) {
+		if(status) status.textContent = `Save failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
+}
+
+async function saveVidyProxySettings(){
+	const button = document.getElementById('saveVidyProxySettingsBtn');
+	const status = document.getElementById('vidyProxySettingsStatus');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Saving...';
+	try {
+		const enabled = document.getElementById('vidyProxyEnabled').checked;
+		const response = await fetch(U('/api/providers/vidy/proxy-settings'), {
+			method:'POST',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify({ enabled })
+		});
+		const data = await response.json();
+		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
+		await renderVidyProxySettings(data.enabled);
+		await reloadLiveOnly();
+		if(status) status.textContent = 'Vidy connection saved to user-config.json';
 	} catch(error) {
 		if(status) status.textContent = `Save failed: ${error.message}`;
 	} finally {
@@ -536,6 +591,7 @@ function fillForm(data){
 	const override = data.override || {};
 	renderMovieboxSettings(merged.movieboxSettings || {});
 	renderVidfastProxySettings(merged.vidfastProxyEnabled === true);
+	renderVidyProxySettings(merged.vidyProxyEnabled === true);
 	const f = document.getElementById('cfgForm');
 	const fields = ['port'];
 	fields.forEach(k=>{ if(!f.elements[k]) return; const ov = override[k]; f.elements[k].value = ov !== undefined ? ov : (merged[k]||''); });
@@ -814,6 +870,7 @@ async function clearAll(){
 			res_360p: true
 		},
 		vidfastProxyEnabled: false,
+		vidyProxyEnabled: false,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -1094,8 +1151,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('saveMovieboxSettingsBtn')?.addEventListener('click', saveMovieboxSettings);
 	document.getElementById('saveMovieboxProxySettingsBtn')?.addEventListener('click', saveMovieboxProxySettings);
 	document.getElementById('saveVidfastProxySettingsBtn')?.addEventListener('click', saveVidfastProxySettings);
+	document.getElementById('saveVidyProxySettingsBtn')?.addEventListener('click', saveVidyProxySettings);
 	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
 	document.getElementById('downloadVidfastProxyListBtn')?.addEventListener('click', downloadVidfastProxyList);
+	document.getElementById('downloadVidyProxyListBtn')?.addEventListener('click', downloadVidyProxyList);
 	document.getElementById('movieboxProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('movieboxProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
@@ -1104,6 +1163,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	});
 	document.getElementById('vidfastProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('vidfastProxyEnabledLabel');
+		label?.classList.toggle('on', event.target.checked);
+		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';
+	});
+	document.getElementById('vidyProxyEnabled')?.addEventListener('change', event=>{
+		const label = document.getElementById('vidyProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
 		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
 		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';

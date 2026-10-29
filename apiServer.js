@@ -478,6 +478,10 @@ router.post('/api/providers/vidfast/proxies', requireAuth, (_req, res) =>
   downloadProviderProxyList('vidfast', res)
 );
 
+router.post('/api/providers/vidy/proxies', requireAuth, (_req, res) =>
+  downloadProviderProxyList('vidfast', res)
+);
+
 router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   const { getMovieboxProxyStatus } = require('./providers/moviebox');
   res.setHeader('Cache-Control', 'no-store');
@@ -499,6 +503,23 @@ router.post('/api/providers/vidfast/proxy-settings', requireAuth, (req, res) => 
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
   res.json({ success:true, enabled:config.vidfastProxyEnabled });
+});
+
+router.get('/api/providers/vidy/proxy-status', requireAuth, (_req, res) => {
+  const { getVidyProxyStatus } = require('./providers/vidy');
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success:true, ...getVidyProxyStatus() });
+});
+
+router.post('/api/providers/vidy/proxy-settings', requireAuth, (req, res) => {
+  const enabled = req.body && req.body.enabled;
+  if (typeof enabled !== 'boolean') {
+    return res.status(400).json({ success:false, error:'INVALID_VIDY_PROXY_SETTING' });
+  }
+  if (!saveConfigPatch({ vidyProxyEnabled: enabled })) {
+    return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
+  }
+  res.json({ success:true, enabled:config.vidyProxyEnabled });
 });
 
 router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {

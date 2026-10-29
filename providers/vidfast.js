@@ -8,10 +8,12 @@ const DEC_API = "https://enc-dec.app/api/dec-vidfast";
 const VIDFAST_PROXY_LIST_PATH = path.join(__dirname, "..", "utils", "vidfast-proxies.json");
 const VIDFAST_PREFERRED_PROXY = "http://4.144.146.21:80";
 const PROXY_PROBE_URL = "https://httpbin.org/ip";
-const PROXY_PROBE_TIMEOUT_MS = 2500;
+const PROXY_PROBE_TIMEOUT_MS = 1500;
 const PROXY_PROBE_LIMIT = 100;
-const REQUEST_TIMEOUT_MS = 8000;
-const RESOLUTION_TIMEOUT_MS = 20000;
+const REQUEST_TIMEOUT_MS = 4000;
+const RESOLUTION_TIMEOUT_MS = 12000;
+const SERVER_TIMEOUT_MS = 4000;
+const PLAYLIST_TIMEOUT_MS = 3500;
 const ALW_RES = new Set(["2160p", "1080p", "Auto"]);
 const HEADERS = {
     "Accept": "*/*",
@@ -25,6 +27,24 @@ const HEADERS = {
 let vidfastProxyAgent = null;
 let vidfastProxyUrl = "";
 let vidfastProxySelection = null;
+
+// ---------------------------------------------------------------------------
+// Hard timeout helper
+// ---------------------------------------------------------------------------
+// AbortSignal.timeout() does not reliably abort an in-flight undici request
+// that is tunnelled through a ProxyAgent. AbortController + Promise.race gives
+// us a real wall-clock deadline for the fetch *and* the body read.
+const withHardTimeout = async (factory, ms, label) => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => {
+        try { ac.abort(new Error(`hard timeout ${ms}ms: ${label}`)); } catch { /* noop */ }
+    }, ms);
+    try {
+        return await factory(ac.signal);
+    } finally {
+        clearTimeout(timer);
+    }
+};
 
 const isValidProxyUrl = (value) => {
     if (typeof value !== "string") return false;
@@ -66,14 +86,19 @@ const readProxyCandidates = () => {
 
 const selectVidfastProxy = async () => {
     const { ProxyAgent, fetch: undiciFetch } = require("undici");
+
     const probe = async (proxyUrl, label) => {
-        const agent = new ProxyAgent({ uri: proxyUrl, connectTimeout: PROXY_PROBE_TIMEOUT_MS });
+        const agent = new ProxyAgent({
+            uri: proxyUrl,
+            connectTimeout: PROXY_PROBE_TIMEOUT_MS,
+        });
         try {
             console.info(`[VidFast][Proxy] -> GET ${PROXY_PROBE_URL} via ${proxyUrl} (${label})`);
-            const response = await undiciFetch(PROXY_PROBE_URL, {
-                dispatcher: agent,
-                signal: AbortSignal.timeout(PROXY_PROBE_TIMEOUT_MS),
-            });
+            const response = await withHardTimeout(
+                (signal) => undiciFetch(PROXY_PROBE_URL, { dispatcher: agent, signal }),
+                PROXY_PROBE_TIMEOUT_MS,
+                `proxy probe ${label}`
+            );
             console.info(`[VidFast][Proxy] <- GET ${PROXY_PROBE_URL} status=${response.status}`);
             const result = await response.json();
             if (response.ok && typeof result.origin === "string" && result.origin.trim()) {
@@ -83,7 +108,7 @@ const selectVidfastProxy = async () => {
                 return agent;
             }
         } catch (error) {
-            console.warn(`[VidFast][Proxy] ${label} unavailable: ${error.code || error.name}`);
+            console.warn(`[VidFast][Proxy] ${label} unavailable: ${error.code || error.name || error.message}`);
         }
         try {
             await agent.close();
@@ -123,14 +148,25 @@ const fetchVidfast = async (url, options) => {
     return undiciFetch(url, { ...options, dispatcher });
 };
 
-const fetchWithLogs = async (url, options = {}, resolutionSignal) => {
+// ---------------------------------------------------------------------------
+// Logged fetch with a real, enforced hard deadline (headers + body)
+// ---------------------------------------------------------------------------
+const fetchWithLogs = async (url, options = {}, resolutionSignal, timeoutMs = REQUEST_TIMEOUT_MS) => {
     const method = String(options.method || "GET").toUpperCase();
     console.info(`[VidFast][HTTP] -> ${method} ${url}`);
     const startedAt = Date.now();
-    const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
-    const signal = resolutionSignal
-        ? AbortSignal.any([resolutionSignal, timeoutSignal, ...(options.signal ? [options.signal] : [])])
-        : options.signal || timeoutSignal;
+
+    const ac = new AbortController();
+    const hardTimer = setTimeout(() => {
+        try { ac.abort(new Error(`hard timeout ${timeoutMs}ms`)); } catch { /* noop */ }
+    }, timeoutMs);
+
+    // Compose caller signals with our hard abort.
+    const signals = [ac.signal];
+    if (resolutionSignal) signals.push(resolutionSignal);
+    if (options.signal) signals.push(options.signal);
+    const signal = signals.length === 1 ? signals[0] : AbortSignal.any(signals);
+
     try {
         const response = await fetchVidfast(url, { ...options, signal });
         console.info(
@@ -140,9 +176,32 @@ const fetchWithLogs = async (url, options = {}, resolutionSignal) => {
     } catch (error) {
         console.error(`[VidFast][HTTP] !! ${method} ${url} duration=${Date.now() - startedAt}ms error=${error.message}`);
         throw error;
+    } finally {
+        clearTimeout(hardTimer);
     }
 };
 
+// Fetch and fully read text with a hard deadline that also covers the body.
+const fetchTextWithDeadline = async (url, options = {}, resolutionSignal, timeoutMs = REQUEST_TIMEOUT_MS) => {
+    return withHardTimeout(
+        async () => {
+            const res = await fetchWithLogs(url, options, resolutionSignal, timeoutMs);
+            if (!res.ok) {
+                // Drain body so the socket is released.
+                try { await res.text(); } catch { /* noop */ }
+                return { res, text: null };
+            }
+            const text = await res.text();
+            return { res, text };
+        },
+        timeoutMs,
+        `fetchText ${url}`
+    );
+};
+
+// ---------------------------------------------------------------------------
+// Quality helpers
+// ---------------------------------------------------------------------------
 const heightToQuality = (height) => {
     if (height >= 2160) return "2160p";
     if (height >= 1440) return "1440p";
@@ -192,18 +251,24 @@ const getInvertedSortTag = (score, maxScore) => {
     return bin.split("").map(b => b === "1" ? "\uFEFF" : "\u200B").join("");
 };
 
+// ---------------------------------------------------------------------------
+// HLS playlist expansion (with hard deadline on body read too)
+// ---------------------------------------------------------------------------
 const fetchPlaylistVariants = async (playlistUrl, resolutionSignal) => {
     try {
-        const res = await fetchWithLogs(playlistUrl, {
-            headers: {
-                "User-Agent": HEADERS["User-Agent"],
-                "Referer": `${BASE_URL}/`,
+        const { res, text } = await fetchTextWithDeadline(
+            playlistUrl,
+            {
+                headers: {
+                    "User-Agent": HEADERS["User-Agent"],
+                    "Referer": `${BASE_URL}/`,
+                },
             },
-        }, resolutionSignal);
+            resolutionSignal,
+            PLAYLIST_TIMEOUT_MS
+        );
 
-        if (!res.ok) return null;
-
-        const text = await res.text();
+        if (!res.ok || !text) return null;
         if (!text.includes("#EXT-X-STREAM-INF")) return null;
 
         const tracks = [];
@@ -245,22 +310,32 @@ const fetchPlaylistVariants = async (playlistUrl, resolutionSignal) => {
         }
 
         return tracks;
-    } catch {
+    } catch (error) {
+        console.warn(`[VidFast] playlist fetch failed for ${playlistUrl}: ${error.message}`);
         return null;
     }
 };
 
+// ---------------------------------------------------------------------------
+// enc/dec helpers
+// ---------------------------------------------------------------------------
 const decrypt = async (payload, resolutionSignal) => {
     try {
-        const res = await fetchWithLogs(DEC_API, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "User-Agent": HEADERS["User-Agent"],
+        const { text } = await fetchTextWithDeadline(
+            DEC_API,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Agent": HEADERS["User-Agent"],
+                },
+                body: JSON.stringify({ text: payload }),
             },
-            body: JSON.stringify({ text: payload }),
-        }, resolutionSignal);
-        return await res.json();
+            resolutionSignal,
+            REQUEST_TIMEOUT_MS
+        );
+        if (!text) return null;
+        return JSON.parse(text);
     } catch (error) {
         console.warn(`[VidFast] decrypt request failed: ${error.message}`);
         return null;
@@ -269,10 +344,15 @@ const decrypt = async (payload, resolutionSignal) => {
 
 const encStage = async (text, stage, resolutionSignal) => {
     const url = `${ENC_API}?text=${encodeURIComponent(text)}&stage=${stage}`;
-    const res = await fetchWithLogs(url, {}, resolutionSignal);
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json?.result || null;
+    try {
+        const { res, text: body } = await fetchTextWithDeadline(url, {}, resolutionSignal, REQUEST_TIMEOUT_MS);
+        if (!res.ok || !body) return null;
+        const json = JSON.parse(body);
+        return json?.result || null;
+    } catch (error) {
+        console.warn(`[VidFast] enc stage ${stage} failed: ${error.message}`);
+        return null;
+    }
 };
 
 const resolvePageUrl = (tmdbId, mediaType, season, episode) =>
@@ -285,18 +365,27 @@ const extractEncryptedPayload = (pageText) => {
     return m ? m[1] : null;
 };
 
+// ---------------------------------------------------------------------------
+// Core resolution
+// ---------------------------------------------------------------------------
 const fetchRawStreams = async (tmdbId, mediaType, season, episode) => {
     const resolutionSignal = AbortSignal.timeout(RESOLUTION_TIMEOUT_MS);
     const pageUrl = resolvePageUrl(tmdbId, mediaType, season, episode);
-    const pageRes = await fetchWithLogs(pageUrl, {
-        headers: {
-            "User-Agent": HEADERS["User-Agent"],
-            "Referer": `${BASE_URL}/`,
-        },
-    }, resolutionSignal);
-    if (!pageRes.ok) return [];
 
-    const payload = extractEncryptedPayload(await pageRes.text());
+    const pageFetch = await fetchTextWithDeadline(
+        pageUrl,
+        {
+            headers: {
+                "User-Agent": HEADERS["User-Agent"],
+                "Referer": `${BASE_URL}/`,
+            },
+        },
+        resolutionSignal,
+        REQUEST_TIMEOUT_MS
+    );
+    if (!pageFetch.res.ok || !pageFetch.text) return [];
+
+    const payload = extractEncryptedPayload(pageFetch.text);
     if (!payload) return [];
 
     const first = await encStage(payload, 1, resolutionSignal);
@@ -309,31 +398,48 @@ const fetchRawStreams = async (tmdbId, mediaType, season, episode) => {
         "X-CSRF-Token": first.token || "",
     };
 
-    const stage1Res = await fetchWithLogs(first.stage1, { method: "POST", headers }, resolutionSignal);
-    if (!stage1Res.ok) return [];
+    const stage1Fetch = await fetchTextWithDeadline(
+        first.stage1,
+        { method: "POST", headers },
+        resolutionSignal,
+        REQUEST_TIMEOUT_MS
+    );
+    if (!stage1Fetch.res.ok || !stage1Fetch.text) return [];
 
-    const second = await encStage(await stage1Res.text(), 2, resolutionSignal);
+    const second = await encStage(stage1Fetch.text, 2, resolutionSignal);
     if (!second?.servers || !second?.stream) return [];
 
     const streamBase = second.stream;
     headers["X-CSRF-Token"] = second.token || "";
 
-    const serversRes = await fetchWithLogs(second.servers, { method: "POST", headers }, resolutionSignal);
-    if (!serversRes.ok) return [];
+    const serversFetch = await fetchTextWithDeadline(
+        second.servers,
+        { method: "POST", headers },
+        resolutionSignal,
+        REQUEST_TIMEOUT_MS
+    );
+    if (!serversFetch.res.ok || !serversFetch.text) return [];
 
-    const decryptedServers = await decrypt(await serversRes.text(), resolutionSignal);
+    const decryptedServers = await decrypt(serversFetch.text, resolutionSignal);
     if (!Array.isArray(decryptedServers?.result) || decryptedServers.result.length === 0) return [];
 
+    // ---- Per-server resolution, each hard-capped so one dead host
+    //      cannot stall the whole pipeline.
     const settled = (
         await Promise.allSettled(
-            decryptedServers.result
-                .map(async (server, i) => {
-                    const name = server.name || `Server ${i + 1}`;
-                    const streamUrl = `${streamBase}/${server.data}`;
-                    const res = await fetchWithLogs(streamUrl, { method: "POST", headers }, resolutionSignal);
-                    if (!res.ok) return null;
+            decryptedServers.result.map(async (server, i) => {
+                const name = server.name || `Server ${i + 1}`;
+                const url = `${streamBase}/${server.data}`;
+                try {
+                    const { res, text } = await fetchTextWithDeadline(
+                        url,
+                        { method: "POST", headers },
+                        resolutionSignal,
+                        SERVER_TIMEOUT_MS
+                    );
+                    if (!res.ok || !text) return null;
 
-                    const streamData = await decrypt(await res.text(), resolutionSignal);
+                    const streamData = await decrypt(text, resolutionSignal);
                     if (!streamData?.result?.url) return null;
 
                     const data = streamData.result;
@@ -343,16 +449,23 @@ const fetchRawStreams = async (tmdbId, mediaType, season, episode) => {
                         quality: extractStreamQuality(data),
                         isM3U8: data.url.includes(".m3u8"),
                     };
-                })
+                } catch (error) {
+                    console.warn(`[VidFast] server ${name} failed: ${error.message}`);
+                    return null;
+                }
+            })
         )
     )
         .filter(r => r.status === "fulfilled" && r.value != null)
         .map(r => r.value);
 
+    // ---- HLS expansion, each hard-capped
     const expanded = (
         await Promise.allSettled(
             settled.map(async (stream) => {
-                if (!stream.isM3U8 || (ALW_RES.has(stream.quality) && stream.quality !== "Auto")) return [stream];
+                if (!stream.isM3U8 || (ALW_RES.has(stream.quality) && stream.quality !== "Auto")) {
+                    return [stream];
+                }
                 const tracks = await fetchPlaylistVariants(stream.url, resolutionSignal);
                 if (tracks?.length > 0) {
                     return tracks.map(t => ({
@@ -377,6 +490,9 @@ const fetchRawStreams = async (tmdbId, mediaType, season, episode) => {
     });
 };
 
+// ---------------------------------------------------------------------------
+// Output shaping
+// ---------------------------------------------------------------------------
 const sortAndTag = (streams) => {
     streams.sort((a, b) => resWeight(b.quality) - resWeight(a.quality));
     const total = streams.length;
@@ -400,6 +516,9 @@ const normalizeStreams = (streams) =>
         }))
     );
 
+// ---------------------------------------------------------------------------
+// Public entrypoint
+// ---------------------------------------------------------------------------
 async function getVidfastStreams(tmdbId, mediaType, season, episode) {
     const startedAt = Date.now();
     try {

@@ -237,17 +237,18 @@ Saving in the UI writes only changed keys. Setting a field to empty removes the 
 | Keys | Add/remove TMDB API keys (rotated randomly) |
 | Advanced | Provider toggles, cache & validation flags |
 | MovieBox | Configure audio tracks, resolutions, subtitles, and provider logs |
-| Outbound connection | Configure independent MovieBox and VidFast outbound proxying |
+| Outbound connection | Configure MovieBox and independent VidFast/Vidy outbound proxy settings |
 | Server Status | Live metrics, provider functional checks |
 | Live Config | View merged + override JSON snapshots |
 
 Session is revalidated on visibility and back/forward navigation to prevent stale access.
 
-MovieBox and VidFast proxying are optional and configured independently in the
-Outbound connection panel. Each provider has a separate ProxyScrape list saved
-as `utils/moviebox-proxies.json` or `utils/vidfast-proxies.json`. Both check the
-preferred proxy first, then probe their own list when it is unavailable. Free
-proxies are third-party services and may be unreliable.
+MovieBox, VidFast, and Vidy proxying are optional in the Outbound connection
+panel. MovieBox uses `utils/moviebox-proxies.json`; VidFast and Vidy share
+`utils/vidfast-proxies.json` but keep independent enable settings and proxy
+selection. Each provider checks the preferred proxy first, then probes its
+configured list if needed. Free proxies are third-party services and may be
+unreliable.
 
 ---
 
