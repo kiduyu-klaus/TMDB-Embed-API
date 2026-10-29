@@ -165,7 +165,7 @@ const pageHeaders = () => ({
     'Upgrade-Insecure-Requests': '1',
     'Referer': `${BASE_URL}/`
 });
-});
+
 const playerHeaders = (playUrl, ticket) => ({
     'User-Agent': USER_AGENT,
     Accept: 'application/json, text/plain, */*',
