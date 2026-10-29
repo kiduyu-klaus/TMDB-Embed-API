@@ -126,15 +126,45 @@ async function providerFetch(url, options) {
     return tracedFetch(url, { ...options, dispatcher });
 }
 
-const pageHeaders = () => ({
-    'User-Agent': USER_AGENT,
-    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    Referer: `${BASE_URL}/`
-});
 const apiHeaders = () => ({
     'User-Agent': USER_AGENT,
-    Accept: 'application/json, text/plain, */*',
-    Referer: `${BASE_URL}/`
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'Accept-Language': 'en-US,en;q=0.9,fr-FR;q=0.8,fr;q=0.7',
+    'Cache-Control': 'no-cache',
+    'DNT': '1',
+    'Pragma': 'no-cache',
+    'Priority': 'u=0, i',
+    'Sec-Ch-Ua': '"Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"',
+    'Sec-Ch-Ua-Mobile': '?1',
+    'Sec-Ch-Ua-Platform': '"Android"',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'cross-site',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'Referer': `${BASE_URL}/`
+});
+
+const pageHeaders = () => ({
+    'User-Agent': USER_AGENT,
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'Accept-Language': 'en-US,en;q=0.9,fr-FR;q=0.8,fr;q=0.7',
+    'Cache-Control': 'no-cache',
+    'DNT': '1',
+    'Pragma': 'no-cache',
+    'Priority': 'u=0, i',
+    'Sec-Ch-Ua': '"Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"',
+    'Sec-Ch-Ua-Mobile': '?1',
+    'Sec-Ch-Ua-Platform': '"Android"',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'cross-site',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'Referer': `${BASE_URL}/`
+});
 });
 const playerHeaders = (playUrl, ticket) => ({
     'User-Agent': USER_AGENT,
