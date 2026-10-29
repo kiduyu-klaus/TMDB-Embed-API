@@ -165,9 +165,11 @@ async function renderMovieboxSettings(settings = {}){
 		}
 		const proxyEnabled = document.getElementById('movieboxProxyEnabled');
 		const proxyLabel = document.getElementById('movieboxProxyEnabledLabel');
+		const proxyLabelText = proxyLabel?.querySelector('.moviebox-proxy-toggle__label');
 		if(proxyEnabled) {
 			proxyEnabled.checked = settings.proxy_enabled === true;
 			proxyLabel?.classList.toggle('on', proxyEnabled.checked);
+			if(proxyLabelText) proxyLabelText.textContent = proxyEnabled.checked ? 'Proxy enabled' : 'Enable proxy';
 		}
 		const proxyStatus = document.getElementById('movieboxProxyStatus');
 		try {
@@ -179,7 +181,7 @@ async function renderMovieboxSettings(settings = {}){
 					? `Selected: ${proxy.selectedProxy}`
 					: proxy.listAvailable
 						? `Proxy list is saved in utils. ${proxy.enabled ? 'A proxy will be selected on the next MovieBox request.' : 'Enable proxying to select one on the next MovieBox request.'}`
-						: 'Download the ProxyScrape JSON first. The provider will probe it when the next MovieBox request starts.';
+						: 'The preferred proxy will be checked first. Download the ProxyScrape JSON to provide fallback candidates.';
 			}
 		} catch(error) {
 			if(proxyStatus) proxyStatus.textContent = `Unable to load proxy status: ${error.message}`;
@@ -1009,7 +1011,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('saveMovieboxSettingsBtn')?.addEventListener('click', saveMovieboxSettings);
 	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
 	document.getElementById('movieboxProxyEnabled')?.addEventListener('change', event=>{
-		document.getElementById('movieboxProxyEnabledLabel')?.classList.toggle('on', event.target.checked);
+		const label = document.getElementById('movieboxProxyEnabledLabel');
+		label?.classList.toggle('on', event.target.checked);
+		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';
 	});
 	bindNavigation();
 	bindShellControls();

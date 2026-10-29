@@ -272,6 +272,7 @@ const MOVIEBOX_PROXY_LIST_PATH = path.join(__dirname, "..", "utils", "moviebox-p
 const MOVIEBOX_PROXY_PROBE_URL = "https://httpbin.org/ip";
 const MOVIEBOX_PROXY_PROBE_TIMEOUT_MS = 2500;
 const MOVIEBOX_PROXY_PROBE_LIMIT = 100;
+const MOVIEBOX_PREFERRED_PROXY = "http://4.144.146.21:80";
 
 function logEnabled() {
     const settings = getSettings();
@@ -393,12 +394,8 @@ function readMovieboxProxyCandidates() {
 
 async function selectMovieboxProxy() {
     const { ProxyAgent, fetch: undiciFetch } = require("undici");
-    const candidates = readMovieboxProxyCandidates();
-    if (!candidates.length) throw new Error("MovieBox proxy list contains no usable HTTP proxies");
-
-    logInfo("proxy", `probing up to ${candidates.length} ProxyScrape HTTP proxies`);
-    for (const [index, candidate] of candidates.entries()) {
-        const agent = new ProxyAgent({ uri: candidate.proxy, connectTimeout: MOVIEBOX_PROXY_PROBE_TIMEOUT_MS });
+    async function probeProxy(proxyUrl, label) {
+        const agent = new ProxyAgent({ uri: proxyUrl, connectTimeout: MOVIEBOX_PROXY_PROBE_TIMEOUT_MS });
         try {
             const response = await undiciFetch(MOVIEBOX_PROXY_PROBE_URL, {
                 dispatcher: agent,
@@ -407,21 +404,33 @@ async function selectMovieboxProxy() {
             const result = await response.json();
             if (response.ok && typeof result.origin === "string" && result.origin.trim()) {
                 movieboxProxyAgent = agent;
-                movieboxProxyUrl = candidate.proxy;
-                logInfo("proxy", `selected working proxy (${index + 1}/${candidates.length})`, {
-                    countryCode: candidate.ip_data && candidate.ip_data.countryCode || "",
-                });
+                movieboxProxyUrl = proxyUrl;
+                logInfo("proxy", `selected working proxy: ${label}`);
                 return agent;
             }
-            logWarn("proxy", `probe ${index + 1}/${candidates.length} failed with HTTP ${response.status}`);
+            logWarn("proxy", `${label} probe failed with HTTP ${response.status}`);
         } catch (error) {
-            logDebug("proxy", `probe ${index + 1}/${candidates.length} failed`, error.code || error.name);
+            logDebug("proxy", `${label} probe failed`, error.code || error.name);
         }
         try {
             await agent.close();
         } catch (error) {
-            logWarn("proxy", "failed to close rejected proxy agent", error.message);
+            logWarn("proxy", `failed to close rejected ${label} agent`, error.message);
         }
+        return null;
+    }
+
+    logInfo("proxy", `checking preferred proxy ${MOVIEBOX_PREFERRED_PROXY} first`);
+    const preferredAgent = await probeProxy(MOVIEBOX_PREFERRED_PROXY, "preferred proxy");
+    if (preferredAgent) return preferredAgent;
+
+    const candidates = readMovieboxProxyCandidates();
+    if (!candidates.length) throw new Error("Preferred MovieBox proxy is unavailable and the proxy list contains no usable HTTP proxies");
+
+    logInfo("proxy", `preferred proxy unavailable; probing up to ${candidates.length} ProxyScrape HTTP proxies`);
+    for (const [index, candidate] of candidates.entries()) {
+        const agent = await probeProxy(candidate.proxy, `ProxyScrape proxy (${index + 1}/${candidates.length})`);
+        if (agent) return agent;
     }
     throw new Error(`No working MovieBox proxy found after probing ${candidates.length} candidates`);
 }

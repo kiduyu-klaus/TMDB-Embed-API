@@ -481,9 +481,6 @@ router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {
   if (!isValidMovieboxSettings(settings)) {
     return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
   }
-  if (settings.proxy_enabled && !require('fs').existsSync(path.join(__dirname, 'utils', 'moviebox-proxies.json'))) {
-    return res.status(400).json({ success:false, error:'PROXY_LIST_REQUIRED' });
-  }
   if (!saveConfigPatch({ movieboxSettings: settings })) {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
