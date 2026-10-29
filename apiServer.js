@@ -4,7 +4,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const os = require('os');
-const { config, saveConfigPatch, OVERRIDE_PATH } = require('./utils/config');
+const {
+  config, saveConfigPatch, isValidMovieboxSettings, OVERRIDE_PATH
+} = require('./utils/config');
 const { authenticate, issueSession, requireAuth, getSession, updatePassword } = require('./utils/auth');
 const path = require('path');
 const { listProviders, getProvider, getCookieStats } = require('./providers/registry');
@@ -15,6 +17,18 @@ const { requireStreamToken, hashStreamToken, isValidStreamTokenFormat, normalize
 
 const app = express();
 app.set('trust proxy', 1);
+
+function isValidMovieboxProxyUrl(value) {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' && !!url.hostname && !!url.port &&
+      !url.username && !url.password && url.pathname === '/' &&
+      !url.search && !url.hash;
+  } catch {
+    return false;
+  }
+}
 
 // Raw JSON documents have no HTML icon link. Browsers look at the origin root
 // for /favicon.ico, including when the API is mounted under a sub-path.
@@ -256,6 +270,13 @@ router.get('/api/config', (req,res) => {
 });
 router.post('/api/config', (req,res) => {
   const patch = req.body || {};
+  if (Object.prototype.hasOwnProperty.call(patch, 'movieboxSettings') && !getSession(req)) {
+    return res.status(401).json({ success:false, error:'AUTH_REQUIRED' });
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'movieboxSettings') &&
+      !isValidMovieboxSettings(patch.movieboxSettings)) {
+    return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
+  }
   // Token changes go through the session-guarded /api/stream-token endpoint only.
   delete patch.streamTokenHash;
   delete patch.STREAM_TOKEN_HASH;
@@ -405,6 +426,68 @@ router.get('/api/providers/:name', (req,res) => {
   const p = getProvider(req.params.name);
   if (!p) return res.status(404).json({ success:false, error:'PROVIDER_NOT_FOUND' });
   res.json({ success:true, provider:{ name: p.name, category: p.category, categories: p.categories, enabled: p.enabled } });
+});
+
+router.get('/api/providers/moviebox/settings', requireAuth, async (_req, res) => {
+  try {
+    const layout = await require('./providers/moviebox').onSettings();
+    res.json({ success:true, layout, settings: config.movieboxSettings || {} });
+  } catch (error) {
+    console.error('[api] failed to load MovieBox settings:', error.message);
+    res.status(500).json({ success:false, error:'SETTINGS_UNAVAILABLE' });
+  }
+});
+
+router.post('/api/providers/moviebox/proxies', requireAuth, async (_req, res) => {
+  try {
+    const response = await fetch(
+      'https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=json',
+      { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) }
+    );
+    if (!response.ok) {
+      console.error('[api] ProxyScrape returned HTTP', response.status);
+      return res.status(502).json({ success:false, error:'PROXY_LIST_UNAVAILABLE' });
+    }
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.proxies)) {
+      return res.status(502).json({ success:false, error:'INVALID_PROXY_LIST' });
+    }
+    const proxyListPath = path.join(__dirname, 'utils', 'moviebox-proxies.json');
+    const temporaryPath = `${proxyListPath}.tmp`;
+    const fs = require('fs');
+    fs.writeFileSync(temporaryPath, JSON.stringify(payload));
+    fs.renameSync(temporaryPath, proxyListPath);
+    const usableCount = payload.proxies.filter(proxy =>
+      proxy && proxy.alive === true && proxy.ssl === true &&
+      proxy.protocol === 'http' && proxy.anonymity !== 'transparent' &&
+      isValidMovieboxProxyUrl(proxy.proxy)
+    ).length;
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ success:true, count:payload.proxies.length, usableCount });
+  } catch (error) {
+    console.error('[api] failed to download ProxyScrape list:', error.name);
+    res.status(502).json({ success:false, error:'PROXY_LIST_UNAVAILABLE' });
+  }
+});
+
+router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
+  const { getMovieboxProxyStatus } = require('./providers/moviebox');
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success:true, ...getMovieboxProxyStatus() });
+});
+
+router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {
+  const settings = req.body && req.body.settings;
+  if (!isValidMovieboxSettings(settings)) {
+    return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
+  }
+  if (settings.proxy_enabled && !require('fs').existsSync(path.join(__dirname, 'utils', 'moviebox-proxies.json'))) {
+    return res.status(400).json({ success:false, error:'PROXY_LIST_REQUIRED' });
+  }
+  if (!saveConfigPatch({ movieboxSettings: settings })) {
+    return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
+  }
+  res.json({ success:true, settings: config.movieboxSettings });
 });
 
 function providerSupportsCategory(provider, category) {

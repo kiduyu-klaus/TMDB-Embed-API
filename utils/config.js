@@ -9,13 +9,30 @@ const OVERRIDE_PATH = (fs.existsSync(NEW_OVERRIDE_PATH) || !fs.existsSync(LEGACY
 const CONFIG_SCHEMA_VERSION = 1; // Increment when structure / semantics change
 
 function parseJsonMaybe(val) {
-  if (!val) return null;
+  if (typeof val !== 'string' || !val) return null;
   const trimmed = val.trim();
   if (!trimmed) return null;
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
     try { return JSON.parse(trimmed); } catch { return null; }
   }
   return null;
+}
+
+function normalizeMovieboxSettings(value) {
+  const settings = typeof value === 'string' ? parseJsonMaybe(value) : value;
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return {};
+  return Object.fromEntries(Object.entries(settings).filter(([key, enabled]) =>
+    /^(subtitles|all_audio_tracks|hardsub_tracks|debug_logs|proxy_enabled|res_(2160p|1440p|1080p|720p|480p|360p)|dub_[a-z0-9_]+)$/.test(key) &&
+    typeof enabled === 'boolean'
+  ));
+}
+
+function isValidMovieboxSettings(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  return Object.entries(value).every(([key, enabled]) =>
+    /^(subtitles|all_audio_tracks|hardsub_tracks|debug_logs|proxy_enabled|res_(2160p|1440p|1080p|720p|480p|360p)|dub_[a-z0-9_]+)$/.test(key) &&
+    typeof enabled === 'boolean'
+  );
 }
 
 function parseCookies(raw) {
@@ -53,6 +70,23 @@ function writeOverrideFile(obj) {
   }
 }
 
+function writeMovieboxSettingsToEnv(settings) {
+  const envPath = path.join(process.cwd(), '.env');
+  let original;
+  try {
+    original = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
+    const line = `MOVIEBOX_SETTINGS='${JSON.stringify(settings)}'`;
+    const updated = /^MOVIEBOX_SETTINGS\s*=.*$/m.test(original)
+      ? original.replace(/^MOVIEBOX_SETTINGS\s*=.*$/m, line)
+      : `${original}${original && !original.endsWith('\n') ? '\n' : ''}${line}\n`;
+    fs.writeFileSync(envPath, updated, 'utf8');
+    return original;
+  } catch (error) {
+    console.error('[config] Failed to write MovieBox settings to .env:', error.message);
+    return null;
+  }
+}
+
 function getProviderNames() {
   try {
     const providersDir = path.join(process.cwd(), 'providers');
@@ -75,6 +109,7 @@ function normalizeConfig(base) {
   cfg.minQualities = parseJsonMaybe(cfg.minQualitiesRaw) || (cfg.minQualitiesRaw ? { default: cfg.minQualitiesRaw } : null);
   cfg.excludeCodecs = parseJsonMaybe(cfg.excludeCodecsRaw) || null;
   cfg.febboxCookies = Array.isArray(cfg.febboxCookies) ? cfg.febboxCookies : parseCookies(cfg.febboxCookies);
+  cfg.movieboxSettings = normalizeMovieboxSettings(cfg.movieboxSettings);
   // TMDB multi-key support: allow tmdbApiKeys (array) or legacy single tmdbApiKey
   if (cfg.tmdbApiKeys && !Array.isArray(cfg.tmdbApiKeys)) {
     if (typeof cfg.tmdbApiKeys === 'string') {
@@ -148,6 +183,7 @@ function applyConfigToEnv(cfg){
   if (cfg.febboxCookies && cfg.febboxCookies.length) process.env.FEBBOX_COOKIES = cfg.febboxCookies.join(',');
   else delete process.env.FEBBOX_COOKIES;
   if (cfg.defaultRegion) process.env.DEFAULT_REGION = cfg.defaultRegion; else delete process.env.DEFAULT_REGION;
+  process.env.MOVIEBOX_SETTINGS = JSON.stringify(cfg.movieboxSettings || {});
   
   // Dynamic provider enable flags
   const providerNames = getProviderNames();
@@ -199,7 +235,8 @@ function loadConfig() {
     disable4khdhubUrlValidation: process.env.DISABLE_4KHDHUB_URL_VALIDATION,
     enableProxy: process.env.ENABLE_PROXY,
     providerCheckTmdbId: process.env.PROVIDER_CHECK_TMDB_ID || null,
-    streamTokenHash: process.env.STREAM_TOKEN_HASH || null
+    streamTokenHash: process.env.STREAM_TOKEN_HASH || null,
+    movieboxSettings: parseJsonMaybe(process.env.MOVIEBOX_SETTINGS)
   };
   
   // Dynamic provider enable flags from env
@@ -224,11 +261,33 @@ function saveConfigPatch(patch) {
   if (!updated.configVersion) updated.configVersion = CONFIG_SCHEMA_VERSION;
   // Remove keys set to null to fall back to env
   Object.keys(updated).forEach(k => { if (updated[k] === null) delete updated[k]; });
+  let previousEnv = null;
+  if (Object.prototype.hasOwnProperty.call(patch, 'movieboxSettings')) {
+    const settings = normalizeMovieboxSettings(patch.movieboxSettings);
+    if (!isValidMovieboxSettings(patch.movieboxSettings)) return false;
+    previousEnv = writeMovieboxSettingsToEnv(settings);
+    if (previousEnv === null) return false;
+    updated.movieboxSettings = settings;
+  }
   if (writeOverrideFile(updated)) {
     Object.assign(config, loadConfig());
     return true;
   }
+  if (previousEnv !== null) {
+    try {
+      fs.writeFileSync(path.join(process.cwd(), '.env'), previousEnv, 'utf8');
+    } catch (error) {
+      console.error('[config] Failed to restore .env after MovieBox config save failed:', error.message);
+    }
+  }
   return false;
 }
 
-module.exports = { config, reloadConfig: () => Object.assign(config, loadConfig()), saveConfigPatch, OVERRIDE_PATH, CONFIG_SCHEMA_VERSION };
+module.exports = {
+  config,
+  reloadConfig: () => Object.assign(config, loadConfig()),
+  saveConfigPatch,
+  isValidMovieboxSettings,
+  OVERRIDE_PATH,
+  CONFIG_SCHEMA_VERSION
+};

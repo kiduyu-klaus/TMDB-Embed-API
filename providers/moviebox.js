@@ -128,6 +128,9 @@
 const PROVIDER = "MovieBox";
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const { getTmdbApiKey } = require("../utils/tmdbKey");
+const { config } = require("../utils/config");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const WEB_USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36";
@@ -262,6 +265,13 @@ const CLIENT_INFO = JSON.stringify({
 const LOG_PREFIX = "[MovieBox]";
 const LOG_BODY_PREVIEW = 300;
 let requestCounter = 0;
+let movieboxProxyAgent = null;
+let movieboxProxyUrl = "";
+let movieboxProxySelection = null;
+const MOVIEBOX_PROXY_LIST_PATH = path.join(__dirname, "..", "utils", "moviebox-proxies.json");
+const MOVIEBOX_PROXY_PROBE_URL = "https://httpbin.org/ip";
+const MOVIEBOX_PROXY_PROBE_TIMEOUT_MS = 2500;
+const MOVIEBOX_PROXY_PROBE_LIMIT = 100;
 
 function logEnabled() {
     const settings = getSettings();
@@ -320,7 +330,19 @@ function nowMs() {
 /* -------------------------------------------------------------------------- */
 
 function getSettings() {
-    return globalThis.SCRAPER_SETTINGS || {};
+    return globalThis.SCRAPER_SETTINGS || config.movieboxSettings || {};
+}
+
+function isValidMovieboxProxyUrl(value) {
+    if (typeof value !== "string") return false;
+    try {
+        const url = new URL(value);
+        return url.protocol === "http:" && !!url.hostname && !!url.port &&
+            !url.username && !url.password && url.pathname === "/" &&
+            !url.search && !url.hash;
+    } catch (error) {
+        return false;
+    }
 }
 
 function readToggle(key, fallback) {
@@ -338,6 +360,96 @@ function getCrypto() {
         return null;
     }
     return null;
+}
+
+function isUsableProxy(proxy) {
+    if (!proxy || proxy.alive !== true || proxy.ssl !== true ||
+        proxy.protocol !== "http" || proxy.anonymity === "transparent" ||
+        !isValidMovieboxProxyUrl(proxy.proxy)) return false;
+    return true;
+}
+
+function readMovieboxProxyCandidates() {
+    let payload;
+    try {
+        payload = JSON.parse(fs.readFileSync(MOVIEBOX_PROXY_LIST_PATH, "utf8"));
+    } catch (error) {
+        if (error.code === "ENOENT") {
+            throw new Error("MovieBox proxy list is missing; download the ProxyScrape JSON from the admin panel");
+        }
+        throw new Error(`Unable to read MovieBox proxy list: ${error.message}`);
+    }
+    if (!payload || !Array.isArray(payload.proxies)) {
+        throw new Error("MovieBox proxy list has an invalid JSON format");
+    }
+    return payload.proxies
+        .filter(isUsableProxy)
+        .sort((a, b) =>
+            (Number(b.uptime) || 0) - (Number(a.uptime) || 0) ||
+            (Number(a.timeout) || Infinity) - (Number(b.timeout) || Infinity)
+        )
+        .slice(0, MOVIEBOX_PROXY_PROBE_LIMIT);
+}
+
+async function selectMovieboxProxy() {
+    const { ProxyAgent, fetch: undiciFetch } = require("undici");
+    const candidates = readMovieboxProxyCandidates();
+    if (!candidates.length) throw new Error("MovieBox proxy list contains no usable HTTP proxies");
+
+    logInfo("proxy", `probing up to ${candidates.length} ProxyScrape HTTP proxies`);
+    for (const [index, candidate] of candidates.entries()) {
+        const agent = new ProxyAgent({ uri: candidate.proxy, connectTimeout: MOVIEBOX_PROXY_PROBE_TIMEOUT_MS });
+        try {
+            const response = await undiciFetch(MOVIEBOX_PROXY_PROBE_URL, {
+                dispatcher: agent,
+                signal: AbortSignal.timeout(MOVIEBOX_PROXY_PROBE_TIMEOUT_MS),
+            });
+            const result = await response.json();
+            if (response.ok && typeof result.origin === "string" && result.origin.trim()) {
+                movieboxProxyAgent = agent;
+                movieboxProxyUrl = candidate.proxy;
+                logInfo("proxy", `selected working proxy (${index + 1}/${candidates.length})`, {
+                    countryCode: candidate.ip_data && candidate.ip_data.countryCode || "",
+                });
+                return agent;
+            }
+            logWarn("proxy", `probe ${index + 1}/${candidates.length} failed with HTTP ${response.status}`);
+        } catch (error) {
+            logDebug("proxy", `probe ${index + 1}/${candidates.length} failed`, error.code || error.name);
+        }
+        try {
+            await agent.close();
+        } catch (error) {
+            logWarn("proxy", "failed to close rejected proxy agent", error.message);
+        }
+    }
+    throw new Error(`No working MovieBox proxy found after probing ${candidates.length} candidates`);
+}
+
+function getMovieboxProxyAgent() {
+    if (movieboxProxyAgent) return Promise.resolve(movieboxProxyAgent);
+    if (!movieboxProxySelection) {
+        movieboxProxySelection = selectMovieboxProxy().finally(() => {
+            movieboxProxySelection = null;
+        });
+    }
+    return movieboxProxySelection;
+}
+
+async function movieboxFetch(url, options) {
+    if (getSettings().proxy_enabled !== true) return fetch(url, options);
+    const { fetch: undiciFetch } = require("undici");
+    const agent = await getMovieboxProxyAgent();
+    return undiciFetch(url, { ...options, dispatcher: agent });
+}
+
+function getMovieboxProxyStatus() {
+    return {
+        enabled: getSettings().proxy_enabled === true,
+        selectedProxy: movieboxProxyUrl || null,
+        listAvailable: fs.existsSync(MOVIEBOX_PROXY_LIST_PATH),
+        probeLimit: MOVIEBOX_PROXY_PROBE_LIMIT,
+    };
 }
 
 /**
@@ -527,7 +639,7 @@ async function requestWebToken() {
         const started = nowMs();
         try {
             logDebug("token", `GET ${url}`);
-            const response = await fetch(url, {
+            const response = await movieboxFetch(url, {
                 headers: {
                     Accept: "application/json",
                     "User-Agent": WEB_USER_AGENT,
@@ -600,7 +712,7 @@ async function rawWebRequest(base, path, options) {
     let response;
     let text;
     try {
-        response = await fetch(fullUrl, init);
+        response = await movieboxFetch(fullUrl, init);
         text = await response.text();
     } catch (error) {
         logError("http", `#${reqId} network error after ${nowMs() - started}ms: ${fullUrl}`, String(error && error.message || error));
@@ -1009,7 +1121,7 @@ async function sendSignedRequest(method, url, body, withAuth) {
     });
     let response;
     try {
-        response = await fetch(url, options);
+        response = await movieboxFetch(url, options);
     } catch (error) {
         logError("mobile", `#${reqId} network error after ${nowMs() - started}ms: ${url}`, String(error && error.message || error));
         throw error;
@@ -1104,7 +1216,7 @@ async function fetchTmdbMetadata(tmdbId, mediaType) {
     const started = nowMs();
     try {
         logDebug("tmdb", `GET ${tmdbUrl}?api_key=${maskSecret(tmdbKey)}`);
-        const response = await fetch(`${tmdbUrl}?api_key=${encodeURIComponent(tmdbKey)}`);
+        const response = await movieboxFetch(`${tmdbUrl}?api_key=${encodeURIComponent(tmdbKey)}`);
         logDebug("tmdb", `<- ${response.status} in ${nowMs() - started}ms`, {
             contentType: response.headers.get("content-type"),
         });
@@ -1359,7 +1471,7 @@ function manifestFromCookie(signCookie) {
             const policy = JSON.parse(decodeBase64(attempt));
             const resource = policy && policy.Statement && policy.Statement[0] && policy.Statement[0].Resource;
             if (resource) {
-                const trimmed = String(resource).replace(/[*\/]+$/, "");
+                const trimmed = String(resource).replace(/[*\\/]+$/, "");
                 return /\.mpd$/i.test(trimmed) ? trimmed : `${trimmed}/index_web.mpd`;
             }
         } catch (error) {
@@ -1810,4 +1922,4 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     }
 }
 const getMovieboxStreams = getStreams;
-module.exports = { getStreams, getMovieboxStreams, onSettings  };
+module.exports = { getStreams, getMovieboxStreams, onSettings, getMovieboxProxyStatus };

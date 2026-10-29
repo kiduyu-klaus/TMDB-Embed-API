@@ -119,6 +119,135 @@ async function fetchProviders(){
 	return r.json();
 }
 
+async function renderMovieboxSettings(settings = {}){
+	const container = document.getElementById('movieboxSettingsControls');
+	if(!container) return;
+	container.replaceChildren();
+	try {
+		const response = await fetch(U('/api/providers/moviebox/settings'));
+		if(!response.ok) throw new Error(`HTTP ${response.status}`);
+		const data = await response.json();
+		if(!data.success || !Array.isArray(data.layout)) throw new Error('Invalid settings response');
+		let grid = null;
+		for(const item of data.layout){
+			if(item.type === 'header'){
+				grid = null;
+				const heading = document.createElement('h2');
+				heading.textContent = item.label;
+				container.appendChild(heading);
+			} else if(item.type === 'info'){
+				grid = null;
+				const info = document.createElement('p');
+				info.className = 'hint';
+				info.textContent = item.label;
+				container.appendChild(info);
+			} else if(item.type === 'toggle'){
+				if(!grid){
+					grid = document.createElement('div');
+					grid.className = 'adv-flag-grid';
+					container.appendChild(grid);
+				}
+				const label = document.createElement('label');
+				label.className = 'adv-flag-item';
+				const checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.dataset.movieboxSetting = item.key;
+				checkbox.checked = Object.prototype.hasOwnProperty.call(settings, item.key)
+					? settings[item.key] === true
+					: item.defaultValue === true;
+				if(checkbox.checked) label.classList.add('on');
+				const text = document.createElement('span');
+				text.textContent = item.label;
+				label.append(checkbox, text);
+				if(item.description) label.title = item.description;
+				grid.appendChild(label);
+			}
+		}
+		const proxyEnabled = document.getElementById('movieboxProxyEnabled');
+		const proxyLabel = document.getElementById('movieboxProxyEnabledLabel');
+		if(proxyEnabled) {
+			proxyEnabled.checked = settings.proxy_enabled === true;
+			proxyLabel?.classList.toggle('on', proxyEnabled.checked);
+		}
+		const proxyStatus = document.getElementById('movieboxProxyStatus');
+		try {
+			const statusResponse = await fetch(U('/api/providers/moviebox/proxy-status'), { cache:'no-store' });
+			const proxy = await statusResponse.json();
+			if(!statusResponse.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${statusResponse.status}`);
+			if(proxyStatus) {
+				proxyStatus.textContent = proxy.selectedProxy
+					? `Selected: ${proxy.selectedProxy}`
+					: proxy.listAvailable
+						? `Proxy list is saved in utils. ${proxy.enabled ? 'A proxy will be selected on the next MovieBox request.' : 'Enable proxying to select one on the next MovieBox request.'}`
+						: 'Download the ProxyScrape JSON first. The provider will probe it when the next MovieBox request starts.';
+			}
+		} catch(error) {
+			if(proxyStatus) proxyStatus.textContent = `Unable to load proxy status: ${error.message}`;
+		}
+		const saveButton = document.getElementById('saveMovieboxSettingsBtn');
+		if(saveButton) saveButton.disabled = false;
+		if(!container._bound){
+			container.addEventListener('change', event=>{
+				if(event.target.matches('[data-moviebox-setting]')){
+					event.target.closest('.adv-flag-item').classList.toggle('on', event.target.checked);
+				}
+			});
+			container._bound = true;
+		}
+	} catch(error){
+		const saveButton = document.getElementById('saveMovieboxSettingsBtn');
+		if(saveButton) saveButton.disabled = true;
+		container.textContent = `Unable to load MovieBox settings: ${error.message}`;
+	}
+}
+
+async function downloadMovieboxProxyList(){
+	const button = document.getElementById('downloadMovieboxProxyListBtn');
+	const status = document.getElementById('movieboxProxyStatus');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Downloading and saving the ProxyScrape JSON...';
+	try {
+		const response = await fetch(U('/api/providers/moviebox/proxies'), { method:'POST', cache:'no-store' });
+		const data = await response.json();
+		if(!response.ok || !data.success) {
+			throw new Error(data.error || `HTTP ${response.status}`);
+		}
+		if(status) status.textContent = `Saved ${data.count} proxies to utils/moviebox-proxies.json (${data.usableCount} eligible for probing).`;
+	} catch(error){
+		if(status) status.textContent = `Proxy list download failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
+}
+
+async function saveMovieboxSettings(){
+	const button = document.getElementById('saveMovieboxSettingsBtn');
+	const status = document.getElementById('movieboxSettingsStatus');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Saving...';
+	const settings = {};
+	document.querySelectorAll('[data-moviebox-setting]').forEach(input=>{
+		settings[input.dataset.movieboxSetting] = input.checked;
+	});
+	settings.proxy_enabled = document.getElementById('movieboxProxyEnabled').checked;
+	try {
+		const response = await fetch(U('/api/providers/moviebox/settings'), {
+			method:'POST',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify({ settings })
+		});
+		const data = await response.json();
+		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
+		await renderMovieboxSettings(data.settings || settings);
+		await reloadLiveOnly();
+		if(status) status.textContent = 'Saved to .env and user-config.json';
+	} catch(error){
+		if(status) status.textContent = `Save failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
+}
+
 function setFebboxCookies(cookiesArray){
 	const listEl = document.getElementById('febboxCookieList');
 	const hidden = document.querySelector('input[name="febboxCookiesHidden"]');
@@ -322,6 +451,7 @@ document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='
 function fillForm(data){
 	const merged = data.merged || {};
 	const override = data.override || {};
+	renderMovieboxSettings(merged.movieboxSettings || {});
 	const f = document.getElementById('cfgForm');
 	const fields = ['port'];
 	fields.forEach(k=>{ if(!f.elements[k]) return; const ov = override[k]; f.elements[k].value = ov !== undefined ? ov : (merged[k]||''); });
@@ -587,6 +717,18 @@ async function clearAll(){
 		providerCheckSeriesTmdbId: null,
 		providerCheckSeason: null,
 		providerCheckEpisode: null,
+		movieboxSettings: {
+			subtitles: true,
+			all_audio_tracks: true,
+			hardsub_tracks: true,
+			debug_logs: true,
+			res_2160p: true,
+			res_1440p: true,
+			res_1080p: true,
+			res_720p: true,
+			res_480p: true,
+			res_360p: true
+		},
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -864,6 +1006,11 @@ async function saveAnimeProviderCheckTmdbId(){
 document.addEventListener('DOMContentLoaded', ()=> {
 	initTheme();
 	attachCoreListeners();
+	document.getElementById('saveMovieboxSettingsBtn')?.addEventListener('click', saveMovieboxSettings);
+	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
+	document.getElementById('movieboxProxyEnabled')?.addEventListener('change', event=>{
+		document.getElementById('movieboxProxyEnabledLabel')?.classList.toggle('on', event.target.checked);
+	});
 	bindNavigation();
 	bindShellControls();
 	const logoutBtn = document.getElementById('logoutBtn');
