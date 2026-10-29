@@ -243,13 +243,13 @@ Saving in the UI writes only changed keys. Setting a field to empty removes the 
 
 Session is revalidated on visibility and back/forward navigation to prevent stale access.
 
-MovieBox, VidFast, Vidy, BingeBang, Videasy, and Vidlove proxying are optional in the Outbound
+MovieBox, VidFast, Vidy, BingeBang, Videasy, Vidlove, and Superstream proxying are optional in the Outbound
 connection panel. MovieBox uses `utils/moviebox-proxies.json`; VidFast, Vidy,
-BingeBang, Videasy, and Vidlove share `utils/vidfast-proxies.json` but keep
+BingeBang, Videasy, Vidlove, and Superstream share `utils/vidfast-proxies.json` but keep
 independent enable settings and proxy selection. Each provider checks the
 preferred proxy first, then probes the shared list if needed. TMDB API requests
-from Videasy and Vidlove bypass the proxy. Free proxies are third-party services
-and may be unreliable.
+from Videasy, Vidlove, and Superstream bypass the proxy. Free proxies are
+third-party services and may be unreliable.
 
 ---
 

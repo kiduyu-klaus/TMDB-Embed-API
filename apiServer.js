@@ -494,6 +494,10 @@ router.post('/api/providers/vidlove/proxies', requireAuth, (_req, res) =>
   downloadProviderProxyList('vidfast', res)
 );
 
+router.post('/api/providers/superstream/proxies', requireAuth, (_req, res) =>
+  downloadProviderProxyList('vidfast', res)
+);
+
 router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   const { getMovieboxProxyStatus } = require('./providers/moviebox');
   res.setHeader('Cache-Control', 'no-store');
@@ -551,8 +555,10 @@ router.post('/api/providers/bingebang/proxy-settings', requireAuth, (req, res) =
   res.json({ success:true, enabled:config.bingebangProxyEnabled });
 });
 
-for (const provider of ['videasy', 'vidlove']) {
-  const providerName = provider === 'videasy' ? 'Videasy' : 'Vidlove';
+for (const provider of ['videasy', 'vidlove', 'superstream']) {
+  const providerName = provider === 'videasy' ? 'Videasy'
+    : provider === 'vidlove' ? 'Vidlove'
+      : 'Superstream';
   const settingKey = `${provider}ProxyEnabled`;
   router.get(`/api/providers/${provider}/proxy-status`, requireAuth, (_req, res) => {
     const { [ `get${providerName}ProxyStatus` ]: getProxyStatus } = require(`./providers/${provider}`);

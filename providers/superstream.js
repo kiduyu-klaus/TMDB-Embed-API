@@ -13,6 +13,16 @@
 // type is declared rather than sniffed.
 const { adaptProvider } = require('../utils/providerAdapter');
 const { fetchVidnestPayload, REQUEST_HEADERS } = require('../utils/vidnest');
+const { config } = require('../utils/config');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('Superstream', { redact: false });
+const proxy = require('../utils/providerProxy').createProviderProxy({
+  provider: 'Superstream',
+  config,
+  settingKey: 'superstreamProxyEnabled',
+  tracedFetch: diagnostics.fetch,
+  log: diagnostics.log,
+  bypassOrigins: ['https://api.themoviedb.org']
+});
 
 const PROVIDER_ID = 'superstream';
 const PROVIDER_LABEL = 'Superstream';
@@ -147,7 +157,7 @@ async function getSuperstreamStreams(tmdbId, mediaType = 'movie', season = null,
   console.info(`[Superstream] START tmdbId=${tmdbId} mediaType=${mediaType} season=${season} episode=${episode}`);
   try {
     const payload = await fetchVidnestPayload(
-      BACKEND, mediaType, String(tmdbId), season, episode, REQUEST_TIMEOUT_MS
+      BACKEND, mediaType, String(tmdbId), season, episode, REQUEST_TIMEOUT_MS, proxy.fetch
     );
 
     const list = Array.isArray(payload?.streams) ? payload.streams : [];
@@ -191,6 +201,7 @@ async function getSuperstreamStreams(tmdbId, mediaType = 'movie', season = null,
 }
 
 module.exports = {
+  getSuperstreamProxyStatus: proxy.getStatus,
   getSuperstreamStreams: adaptProvider({
     id: PROVIDER_ID,
     label: PROVIDER_LABEL,

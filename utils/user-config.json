@@ -44,11 +44,11 @@
     "dub_thai_dub": false,
     "dub_turkish_dub": false,
     "dub_urdu_dub": false,
-    "proxy_enabled": false
+    "proxy_enabled": true
   },
-  "vidfastProxyEnabled": false,
+  "vidfastProxyEnabled": true,
   "vidyProxyEnabled": true,
-  "bingebangProxyEnabled": true,
+  "bingebangProxyEnabled": false,
   "tmdbApiKeys": [
     "9de3de623b579f6e127c6ec603b9f74d"
   ],
@@ -58,7 +58,7 @@
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODQ1ODM0NjksIm5iZiI6MTc4NDU4MzQ2OSwiZXhwIjoxODE1Njg3NDg5LCJkYXRhIjp7InVpZCI6MTcwNjMzNSwidG9rZW4iOiIxZTZjMTdkYWU4ZGNjMmJkYmM5YWVkYWIyMDM4YTAwZiJ9fQ.Rs6Uvh7faH1m1z767o0o4hFMivaLlABr7xxmnn_UWfE"
   ],
   "enable4khdhubProvider": true,
-  "enableVixsrcProvider": false,
+  "enableVixsrcProvider": true,
   "enableProxy": false,
   "disableCache": false,
   "enablePStreamApi": true,
@@ -66,7 +66,7 @@
   "disable4khdhubUrlValidation": false,
   "excludeCodecsRaw": "{\"excludeDV\":false,\"excludeHDR\":false}",
   "minQualitiesRaw": "all",
-  "enableUhdmoviesProvider": true,
+  "enableUhdmoviesProvider": false,
   "enableVidlinkProvider": true,
   "enableVideasyProvider": true,
   "enableLordflixProvider": false,
@@ -83,12 +83,20 @@
   "enableZxcstreamsProvider": false,
   "enableAnime-dekhoProvider": false,
   "animeProviderCheckTmdbId": "1363974",
-  "enableVidboxProvider": true,
+  "enableVidboxProvider": false,
   "enableSuperstreamProvider": true,
   "enableVidloveProvider": false,
   "providerCheckType": "series",
   "providerCheckSeriesTmdbId": "1622",
   "providerCheckSeason": 1,
   "providerCheckEpisode": 1,
-  "enableWcoflixProvider": false
+  "enableWcoflixProvider": false,
+  "videasyProxyEnabled": true,
+  "vidloveProxyEnabled": true,
+  "enableVidrockProvider": false,
+  "enableVegamoviesProvider": false,
+  "enableHdmovie2Provider": false,
+  "enableFramextvProvider": false,
+  "enableMoviesdrive1Provider": false,
+  "enableMoviesjoyProvider": false
 }

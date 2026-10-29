@@ -40,13 +40,13 @@ function decodeVidnestCipher(blob) {
   return Buffer.from(std, 'base64').toString('utf8');
 }
 
-async function fetchJSON(url, timeoutMs) {
+async function fetchJSON(url, timeoutMs, fetcher = fetch) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const startedAt = Date.now();
   console.info(`[Vidnest][HTTP] -> GET ${url}`);
   try {
-    const res = await fetch(url, { headers: REQUEST_HEADERS, signal: controller.signal });
+    const res = await fetcher(url, { headers: REQUEST_HEADERS, signal: controller.signal });
     console.info(`[Vidnest][HTTP] <- GET ${res.url || url} status=${res.status} ${res.statusText || ''} duration=${Date.now() - startedAt}ms`.trim());
     if (!res.ok) {
       const err = new Error(`vidnest API returned ${res.status}`);
@@ -81,11 +81,11 @@ function titlePath(backend, type, tmdbId, season, episode) {
     : `/${backend}/movie/${tmdbId}`;
 }
 
-async function lookupPayload(path, timeoutMs) {
+async function lookupPayload(path, timeoutMs, fetcher) {
   const apiUrl = `${API_BASE}${path}`;
   let json;
   try {
-    json = await fetchJSON(apiUrl, timeoutMs);
+    json = await fetchJSON(apiUrl, timeoutMs, fetcher);
   } catch (directErr) {
     const prefix = relayPrefix();
     if (!prefix) throw directErr;
@@ -93,7 +93,7 @@ async function lookupPayload(path, timeoutMs) {
     // reset, timeout) is worth one retry through the relay.
     if (directErr.status === 404) throw directErr;
     try {
-      json = await fetchJSON(`${prefix}${encodeURIComponent(apiUrl)}`, timeoutMs);
+      json = await fetchJSON(`${prefix}${encodeURIComponent(apiUrl)}`, timeoutMs, fetcher);
     } catch (relayErr) {
       throw new Error(`direct: ${directErr.message}; relay: ${relayErr.message}`);
     }
@@ -122,11 +122,11 @@ async function lookupPayload(path, timeoutMs) {
 }
 
 // Decoded payload for one backend/title, memoised. Network/parse errors throw.
-async function fetchVidnestPayload(backend, type, tmdbId, season, episode, timeoutMs) {
+async function fetchVidnestPayload(backend, type, tmdbId, season, episode, timeoutMs, fetcher = fetch) {
   const path = titlePath(backend, type, tmdbId, season, episode);
   const cached = lookupCache.get(path);
   if (cached && Date.now() - cached.at < LOOKUP_TTL_MS) return cached.value;
-  const value = await lookupPayload(path, timeoutMs);
+  const value = await lookupPayload(path, timeoutMs, fetcher);
   lookupCache.set(path, { at: Date.now(), value });
   return value;
 }

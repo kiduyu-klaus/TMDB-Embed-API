@@ -444,6 +444,43 @@
             <button class="btn btn-outline-primary" id="saveVidloveProxySettingsBtn" type="button">Save Vidlove connection</button>
           </div>
         </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-collection-play"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>
+                <h3>Superstream proxy</h3>
+                <p class="moviebox-proxy-card__description">Route Superstream/Vidnest requests through a verified HTTP proxy. Superstream shares VidFast's proxy list and keeps an independent enable setting and proxy selection. TMDB API requests bypass the proxy.</p>
+              </div>
+            </div>
+            <label class="moviebox-proxy-toggle" id="superstreamProxyEnabledLabel">
+              <input id="superstreamProxyEnabled" type="checkbox" />
+              <span class="moviebox-proxy-toggle__track" aria-hidden="true"></span>
+              <span class="moviebox-proxy-toggle__label">Enable proxy</span>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__source">
+            <div class="moviebox-proxy-card__source-copy">
+              <p class="moviebox-proxy-card__eyebrow">Shared proxy list</p>
+              <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
+                ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <p class="moviebox-proxy-card__description">Superstream checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list shared by the other providers.</p>
+            </div>
+            <div class="moviebox-proxy-card__actions">
+              <p class="moviebox-proxy-status" id="superstreamProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
+              <button class="btn btn-outline-primary moviebox-proxy-download" id="downloadSuperstreamProxyListBtn" type="button">
+                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                <span>Download shared proxy list</span>
+              </button>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="superstreamProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveSuperstreamProxySettingsBtn" type="button">Save Superstream connection</button>
+          </div>
+        </div>
       </section>
       <section id="panel-moviebox" class="panel">
         <h1>MovieBox Settings</h1>

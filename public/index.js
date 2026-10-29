@@ -313,12 +313,17 @@ async function renderVidloveProxySettings(enabled = false){
 	return renderSharedProviderProxySettings('Vidlove', enabled);
 }
 
+async function renderSuperstreamProxySettings(enabled = false){
+	return renderSharedProviderProxySettings('Superstream', enabled);
+}
+
 async function downloadProviderProxyList(provider){
 	const buttonId = provider === 'MovieBox' ? 'downloadMovieboxProxyListBtn'
 		: provider === 'Vidy' ? 'downloadVidyProxyListBtn'
 			: provider === 'BingeBang' ? 'downloadBingebangProxyListBtn'
 				: provider === 'Videasy' ? 'downloadVideasyProxyListBtn'
 					: provider === 'Vidlove' ? 'downloadVidloveProxyListBtn'
+						: provider === 'Superstream' ? 'downloadSuperstreamProxyListBtn'
 			: 'downloadVidfastProxyListBtn';
 	const button = document.getElementById(buttonId);
 	const status = document.getElementById(`${provider.toLowerCase()}ProxyStatus`);
@@ -360,6 +365,10 @@ async function downloadVideasyProxyList(){
 
 async function downloadVidloveProxyList(){
 	return downloadProviderProxyList('Vidlove');
+}
+
+async function downloadSuperstreamProxyList(){
+	return downloadProviderProxyList('Superstream');
 }
 
 async function saveMovieboxProxySettings(){
@@ -473,7 +482,8 @@ async function saveSharedProviderProxySettings(provider){
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
 		if(provider === 'Videasy') await renderVideasyProxySettings(data.enabled);
-		else await renderVidloveProxySettings(data.enabled);
+		else if(provider === 'Vidlove') await renderVidloveProxySettings(data.enabled);
+		else await renderSuperstreamProxySettings(data.enabled);
 		await reloadLiveOnly();
 		if(status) status.textContent = `${provider} connection saved to user-config.json`;
 	} catch(error) {
@@ -489,6 +499,10 @@ async function saveVideasyProxySettings(){
 
 async function saveVidloveProxySettings(){
 	return saveSharedProviderProxySettings('Vidlove');
+}
+
+async function saveSuperstreamProxySettings(){
+	return saveSharedProviderProxySettings('Superstream');
 }
 
 async function saveMovieboxSettings(){
@@ -727,6 +741,7 @@ function fillForm(data){
 	renderBingebangProxySettings(merged.bingebangProxyEnabled === true);
 	renderVideasyProxySettings(merged.videasyProxyEnabled === true);
 	renderVidloveProxySettings(merged.vidloveProxyEnabled === true);
+	renderSuperstreamProxySettings(merged.superstreamProxyEnabled === true);
 	const f = document.getElementById('cfgForm');
 	const fields = ['port'];
 	fields.forEach(k=>{ if(!f.elements[k]) return; const ov = override[k]; f.elements[k].value = ov !== undefined ? ov : (merged[k]||''); });
@@ -1009,6 +1024,7 @@ async function clearAll(){
 		bingebangProxyEnabled: false,
 		videasyProxyEnabled: false,
 		vidloveProxyEnabled: false,
+		superstreamProxyEnabled: false,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -1293,12 +1309,14 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('saveBingebangProxySettingsBtn')?.addEventListener('click', saveBingebangProxySettings);
 	document.getElementById('saveVideasyProxySettingsBtn')?.addEventListener('click', saveVideasyProxySettings);
 	document.getElementById('saveVidloveProxySettingsBtn')?.addEventListener('click', saveVidloveProxySettings);
+	document.getElementById('saveSuperstreamProxySettingsBtn')?.addEventListener('click', saveSuperstreamProxySettings);
 	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
 	document.getElementById('downloadVidfastProxyListBtn')?.addEventListener('click', downloadVidfastProxyList);
 	document.getElementById('downloadVidyProxyListBtn')?.addEventListener('click', downloadVidyProxyList);
 	document.getElementById('downloadBingebangProxyListBtn')?.addEventListener('click', downloadBingebangProxyList);
 	document.getElementById('downloadVideasyProxyListBtn')?.addEventListener('click', downloadVideasyProxyList);
 	document.getElementById('downloadVidloveProxyListBtn')?.addEventListener('click', downloadVidloveProxyList);
+	document.getElementById('downloadSuperstreamProxyListBtn')?.addEventListener('click', downloadSuperstreamProxyList);
 	document.getElementById('movieboxProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('movieboxProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
@@ -1313,6 +1331,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	});
 	document.getElementById('vidloveProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('vidloveProxyEnabledLabel');
+		label?.classList.toggle('on', event.target.checked);
+		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';
+	});
+	document.getElementById('superstreamProxyEnabled')?.addEventListener('change', event=>{
+		const label = document.getElementById('superstreamProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
 		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
 		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';
