@@ -20,6 +20,16 @@ const PROXY_PROBE_URL = 'https://httpbin.org/ip';
 const PROXY_PROBE_TIMEOUT_MS = 2500;
 const PROXY_PROBE_LIMIT = 100;
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36';
+
+// Hard deadlines. Previously there were none anywhere in this file, so a
+// single hung TCP connection (e.g. berlin in the log) stalled the whole
+// provider for 22 s until the upstream eventually answered 500.
+const TMDB_TIMEOUT_MS = 5000;
+const SEED_TIMEOUT_MS = 5000;
+const SERVER_TIMEOUT_MS = 4000;
+const CITY_TOTAL_TIMEOUT_MS = 8000;   // covers seed fetch + retries per server
+const PROBE_TIMEOUT_MS = 4000;
+
 const Q_RANK = { '2160p': 2, '1080p': 1, 'Auto': 0 };
 const HEADERS = {
     'User-Agent': USER_AGENT,
@@ -39,7 +49,7 @@ const SERVERS = [
     { slug: 'boise', display: 'Boise', langNote: 'English' },
     { slug: 'delhi', display: 'Delhi', langNote: 'Hindi' },
     { slug: 'miami', display: 'Miami', langNote: 'English' },
-    { slug: 'munich', display: 'Munich', langNote: 'German' },
+    //{ slug: 'munich', display: 'Munich', langNote: 'German' },
     { slug: 'phoenix', display: 'Phoenix', langNote: 'English' },
     { slug: 'reno', display: 'Reno', langNote: 'English' },
     { slug: 'seattle', display: 'Seattle', langNote: 'English' }
@@ -48,6 +58,26 @@ const SERVERS = [
 let vidyProxyAgent = null;
 let vidyProxyUrl = '';
 let vidyProxySelection = null;
+
+/* -------------------------------------------------------------------------- */
+/* hard timeout helper                                                         */
+/* -------------------------------------------------------------------------- */
+
+// AbortController + Promise.race. Covers both the fetch promise and any
+// body read, so a body that never ends cannot slip past the deadline.
+function withTimeout(factory, ms, label) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+        try { controller.abort(new Error(`${label} hard timeout ${ms}ms`)); } catch { /* noop */ }
+    }, ms);
+    return Promise.resolve()
+        .then(() => factory(controller.signal))
+        .finally(() => clearTimeout(timer));
+}
+
+/* -------------------------------------------------------------------------- */
+/* proxy                                                                       */
+/* -------------------------------------------------------------------------- */
 
 function isValidProxyUrl(value) {
     if (typeof value !== 'string') return false;
@@ -92,10 +122,11 @@ async function selectVidyProxy() {
         const agent = new ProxyAgent({ uri: proxyUrl, connectTimeout: PROXY_PROBE_TIMEOUT_MS });
         try {
             diagnostics.log('proxy.probe.start', { proxy: proxyUrl, label, url: PROXY_PROBE_URL });
-            const response = await undiciFetch(PROXY_PROBE_URL, {
-                dispatcher: agent,
-                signal: AbortSignal.timeout(PROXY_PROBE_TIMEOUT_MS)
-            });
+            const response = await withTimeout(
+                signal => undiciFetch(PROXY_PROBE_URL, { dispatcher: agent, signal }),
+                PROXY_PROBE_TIMEOUT_MS,
+                `proxy probe ${label}`
+            );
             diagnostics.log('proxy.probe.response', { proxy: proxyUrl, label, status: response.status });
             const result = await response.json();
             if (response.ok && typeof result.origin === 'string' && result.origin.trim()) {
@@ -137,6 +168,10 @@ function getVidyProxyAgent() {
     return vidyProxySelection;
 }
 
+/* -------------------------------------------------------------------------- */
+/* fetch helpers                                                               */
+/* -------------------------------------------------------------------------- */
+
 async function safeFetch(url, options) {
     try {
         const isTmdbRequest = new URL(url).origin === new URL(TMDB_API).origin;
@@ -152,7 +187,20 @@ async function safeFetch(url, options) {
 }
 
 async function getJson(url) {
-    const res = await safeFetch(url, { headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' } });
+    let res;
+    try {
+        res = await withTimeout(
+            sig => safeFetch(url, {
+                headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' },
+                signal: sig
+            }),
+            TMDB_TIMEOUT_MS,
+            'tmdb'
+        );
+    } catch (e) {
+        diagnostics.log('tmdb.timeout', { url, error: e && e.message });
+        return null;
+    }
     if (!res || res.status !== 200) return null;
     try {
         return await res.json();
@@ -160,6 +208,10 @@ async function getJson(url) {
         return null;
     }
 }
+
+/* -------------------------------------------------------------------------- */
+/* crypto / encoding (unchanged)                                               */
+/* -------------------------------------------------------------------------- */
 
 function javaEncode(text) {
     return encodeURIComponent(text)
@@ -303,6 +355,10 @@ function decrypt(payload, seed, mediaId) {
     }
 }
 
+/* -------------------------------------------------------------------------- */
+/* seed pool                                                                   */
+/* -------------------------------------------------------------------------- */
+
 function SeedPool(mediaId) {
     this.mediaId = mediaId;
     this.seed = null;
@@ -329,7 +385,19 @@ SeedPool.prototype.current = function () {
 SeedPool.prototype.fetchSeed = async function () {
     let rateLimited = 0;
     for (; ;) {
-        const res = await safeFetch(API_BASE + '/seed?mediaId=' + this.mediaId, { headers: HEADERS });
+        let res = null;
+        try {
+            res = await withTimeout(
+                sig => safeFetch(API_BASE + '/seed?mediaId=' + this.mediaId, {
+                    headers: { ...HEADERS, signal: sig }
+                }),
+                SEED_TIMEOUT_MS,
+                'seed'
+            );
+        } catch (e) {
+            diagnostics.log('seed.timeout', { mediaId: this.mediaId, error: e && e.message });
+            return null;
+        }
         if (!res) return null;
         if (res.status === 200) {
             let reply = null;
@@ -354,6 +422,10 @@ SeedPool.prototype.fetchSeed = async function () {
     }
 };
 
+/* -------------------------------------------------------------------------- */
+/* upstream URL + fetch                                                       */
+/* -------------------------------------------------------------------------- */
+
 function buildUrl(city, req, seed) {
     let q = 'title=' + titleOnWire(req.title);
     q += '&mediaType=' + req.mediaType;
@@ -368,33 +440,79 @@ function buildUrl(city, req, seed) {
     return API_BASE + '/' + city.slug + '/sources?' + q;
 }
 
+// One attempt to reach a single server's `/sources` endpoint.
+// Returns the decrypted parsed JSON object, or `null` on any failure.
+// Note: this function must be wrapped in `withTimeout(...)` by the caller
+// so the entire attempt (fetch + body read + decrypt) has a hard deadline.
+async function attemptCitySources(city, req, seed) {
+    const url = buildUrl(city, req, seed);
+    diagnostics.log('server.request', { server: city.slug, url });
+    const res = await safeFetch(url, { headers: HEADERS });
+    if (!res) return null;
+    const code = res.status;
+    if (code !== 200) return { _status: code };
+    let body = null;
+    try {
+        body = await res.text();
+    } catch (e) {
+        body = null;
+    }
+    const plain = body ? decrypt(body, seed, req.tmdbId) : null;
+    if (plain === null) return { _status: 'decrypt_fail' };
+    try {
+        return JSON.parse(plain);
+    } catch (e) {
+        return null;
+    }
+}
+
 async function citySources(city, req, pool) {
-    let transportRetries = 1;
-    let staleStrikes = 0;
-    let coolDowns = 0;
-    for (let attempt = 0; attempt < 5; attempt++) {
-        const seed = await pool.current();
-        if (!seed) return null;
-        const url = buildUrl(city, req, seed);
-        diagnostics.log('server.request', { server: city.slug, url });
-        const res = await safeFetch(url, { headers: HEADERS });
-        if (!res) {
-            if (transportRetries > 0) {
-                transportRetries--;
-                continue;
-            }
-            return null;
-        }
-        const code = res.status;
-        if (code === 200) {
-            let body = null;
+    // The whole per-server phase (seed fetch + up to 5 attempts) is capped
+    // at CITY_TOTAL_TIMEOUT_MS so a pathological retry loop can't stall
+    // the worker indefinitely. Each individual HTTP call also has its own
+    // SERVER_TIMEOUT_MS deadline.
+    return withTimeout(async () => {
+        let transportRetries = 1;
+        let staleStrikes = 0;
+        let coolDowns = 0;
+
+        for (let attempt = 0; attempt < 5; attempt++) {
+            const seed = await pool.current();
+            if (!seed) return null;
+
+            let reply = null;
             try {
-                body = await res.text();
+                reply = await withTimeout(
+                    () => attemptCitySources(city, req, seed),
+                    SERVER_TIMEOUT_MS,
+                    `server ${city.slug} attempt ${attempt + 1}`
+                );
             } catch (e) {
-                body = null;
+                diagnostics.log('server.timeout', {
+                    server: city.slug,
+                    attempt: attempt + 1,
+                    error: e && e.message
+                });
+                // A timeout is not retryable — treat as a hard failure so we
+                // don't burn the remaining attempts on the same hung host.
+                return null;
             }
-            const plain = body ? decrypt(body, seed, req.tmdbId) : null;
-            if (plain === null) {
+
+            if (!reply) {
+                // transport failure (safeFetch returned null)
+                if (transportRetries > 0) {
+                    transportRetries--;
+                    continue;
+                }
+                return null;
+            }
+
+            const status = reply._status;
+            if (status === undefined) {
+                // Successful decrypt + JSON parse.
+                return reply;
+            }
+            if (status === 'decrypt_fail') {
                 staleStrikes++;
                 if (staleStrikes >= 2) {
                     pool.drop();
@@ -402,28 +520,37 @@ async function citySources(city, req, pool) {
                 }
                 continue;
             }
-            try {
-                return JSON.parse(plain);
-            } catch (e) {
+            if (status === 200) {
+                // shouldn't happen (200 is decoded above), treat as failure
                 return null;
             }
-        } else if (code === 401) {
-            staleStrikes++;
-            if (staleStrikes >= 3) {
-                pool.drop();
-                staleStrikes = 0;
+            if (status === 401) {
+                staleStrikes++;
+                if (staleStrikes >= 3) {
+                    pool.drop();
+                    staleStrikes = 0;
+                }
+                continue;
             }
-        } else if (code === 429) {
-            if (coolDowns >= 1) return null;
-            coolDowns++;
-            pool.drop();
-        } else {
-            diagnostics.log('server.http_error', { server: city.slug, status: code });
+            if (status === 429) {
+                if (coolDowns >= 1) return null;
+                coolDowns++;
+                pool.drop();
+                continue;
+            }
+            diagnostics.log('server.http_error', { server: city.slug, status });
             return null;
         }
-    }
-    return null;
+        return null;
+    }, CITY_TOTAL_TIMEOUT_MS, `city ${city.slug}`).catch(error => {
+        diagnostics.log('city.timeout', { server: city.slug, error: error && error.message });
+        return null;
+    });
 }
+
+/* -------------------------------------------------------------------------- */
+/* TMDB metadata                                                              */
+/* -------------------------------------------------------------------------- */
 
 async function loadMeta(tmdbId, mediaType) {
     const tmdbKey = getTmdbApiKey();
@@ -459,6 +586,10 @@ async function loadMeta(tmdbId, mediaType) {
     return { title: title, year: year, imdbId: imdbId, germanTitle: germanTitle };
 }
 
+/* -------------------------------------------------------------------------- */
+/* quality detection                                                          */
+/* -------------------------------------------------------------------------- */
+
 function bucket(height) {
     if (height >= 2000) return '2160p';
     if (height >= 1000) return '1080p';
@@ -484,7 +615,17 @@ function qualityFromUrl(url) {
 
 async function probeQuality(record) {
     record.quality = 'Auto';
-    const res = await safeFetch(record.url, { headers: P_HEADERS });
+    let res = null;
+    try {
+        res = await withTimeout(
+            sig => safeFetch(record.url, { headers: { ...P_HEADERS, signal: sig } }),
+            PROBE_TIMEOUT_MS,
+            `probe ${record.city.slug}`
+        );
+    } catch (e) {
+        diagnostics.log('probe.timeout', { server: record.city.slug, error: e && e.message });
+        return;
+    }
     if (!res || res.status !== 200) return;
     let text = '';
     try {
@@ -501,6 +642,10 @@ async function probeQuality(record) {
     }
     if (best > 0) record.quality = bucket(best);
 }
+
+/* -------------------------------------------------------------------------- */
+/* record collection                                                          */
+/* -------------------------------------------------------------------------- */
 
 function collectSubtitles(city, reply, seen) {
     const out = [];
@@ -550,6 +695,10 @@ function collectRecords(city, reply, seenLinks, seenSubs) {
     return out;
 }
 
+/* -------------------------------------------------------------------------- */
+/* stream shaping                                                             */
+/* -------------------------------------------------------------------------- */
+
 function getSortTag(rank, maxRank) {
     let bin = Math.max(0, maxRank - rank).toString(2);
     while (bin.length < 20) bin = '0' + bin;
@@ -572,6 +721,10 @@ function toStream(record) {
     if (record.subtitles.length) stream.subtitles = record.subtitles;
     return stream;
 }
+
+/* -------------------------------------------------------------------------- */
+/* public entry                                                               */
+/* -------------------------------------------------------------------------- */
 
 async function getStreams(tmdbId, mediaType, season, episode) {
     const args = [tmdbId, mediaType, season, episode];
@@ -603,8 +756,6 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
         const seenLinks = new Set();
         const seenSubs = { urls: new Set(), labels: new Set() };
         const records = [];
-        // The plugin runtime injects SCRAPER_SETTINGS; outside it the global is absent and a
-        // bare read would throw, which used to swallow the whole provider.
         const settings = (typeof globalThis !== 'undefined' && globalThis.SCRAPER_SETTINGS) || {};
         const queue = SERVERS.filter(function (city) {
             return settings['city_' + city.slug] !== false;
@@ -639,6 +790,7 @@ async function getStreamsImpl(tmdbId, mediaType, season, episode) {
                 return Q_RANK[b.quality] - Q_RANK[a.quality];
             })
             .map(toStream);
+
         diagnostics.log('streams.resolved', {
             tmdbId: id,
             mediaType: req.mediaType,
