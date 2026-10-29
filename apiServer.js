@@ -18,7 +18,7 @@ const { requireStreamToken, hashStreamToken, isValidStreamTokenFormat, normalize
 const app = express();
 app.set('trust proxy', 1);
 
-function isValidMovieboxProxyUrl(value) {
+function isValidHttpProxyUrl(value) {
   if (typeof value !== 'string') return false;
   try {
     const url = new URL(value);
@@ -438,7 +438,7 @@ router.get('/api/providers/moviebox/settings', requireAuth, async (_req, res) =>
   }
 });
 
-router.post('/api/providers/moviebox/proxies', requireAuth, async (_req, res) => {
+async function downloadProviderProxyList(providerName, res) {
   try {
     const response = await fetch(
       'https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=json',
@@ -452,7 +452,7 @@ router.post('/api/providers/moviebox/proxies', requireAuth, async (_req, res) =>
     if (!payload || !Array.isArray(payload.proxies)) {
       return res.status(502).json({ success:false, error:'INVALID_PROXY_LIST' });
     }
-    const proxyListPath = path.join(__dirname, 'utils', 'moviebox-proxies.json');
+    const proxyListPath = path.join(__dirname, 'utils', `${providerName}-proxies.json`);
     const temporaryPath = `${proxyListPath}.tmp`;
     const fs = require('fs');
     fs.writeFileSync(temporaryPath, JSON.stringify(payload));
@@ -460,15 +460,23 @@ router.post('/api/providers/moviebox/proxies', requireAuth, async (_req, res) =>
     const usableCount = payload.proxies.filter(proxy =>
       proxy && proxy.alive === true && proxy.ssl === true &&
       proxy.protocol === 'http' && proxy.anonymity !== 'transparent' &&
-      isValidMovieboxProxyUrl(proxy.proxy)
+      isValidHttpProxyUrl(proxy.proxy)
     ).length;
     res.setHeader('Cache-Control', 'no-store');
-    res.json({ success:true, count:payload.proxies.length, usableCount });
+    res.json({ success:true, count:payload.proxies.length, usableCount, file:`utils/${providerName}-proxies.json` });
   } catch (error) {
-    console.error('[api] failed to download ProxyScrape list:', error.name);
+    console.error(`[api] failed to download ProxyScrape list for ${providerName}:`, error.name);
     res.status(502).json({ success:false, error:'PROXY_LIST_UNAVAILABLE' });
   }
-});
+}
+
+router.post('/api/providers/moviebox/proxies', requireAuth, (_req, res) =>
+  downloadProviderProxyList('moviebox', res)
+);
+
+router.post('/api/providers/vidfast/proxies', requireAuth, (_req, res) =>
+  downloadProviderProxyList('vidfast', res)
+);
 
 router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   const { getMovieboxProxyStatus } = require('./providers/moviebox');
@@ -476,8 +484,29 @@ router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   res.json({ success:true, ...getMovieboxProxyStatus() });
 });
 
+router.get('/api/providers/vidfast/proxy-status', requireAuth, (_req, res) => {
+  const { getVidfastProxyStatus } = require('./providers/vidfast');
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success:true, ...getVidfastProxyStatus() });
+});
+
+router.post('/api/providers/vidfast/proxy-settings', requireAuth, (req, res) => {
+  const enabled = req.body && req.body.enabled;
+  if (typeof enabled !== 'boolean') {
+    return res.status(400).json({ success:false, error:'INVALID_VIDFAST_PROXY_SETTING' });
+  }
+  if (!saveConfigPatch({ vidfastProxyEnabled: enabled })) {
+    return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
+  }
+  res.json({ success:true, enabled:config.vidfastProxyEnabled });
+});
+
 router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {
-  const settings = req.body && req.body.settings;
+  const settingsPatch = req.body && req.body.settings;
+  if (!isValidMovieboxSettings(settingsPatch)) {
+    return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
+  }
+  const settings = { ...(config.movieboxSettings || {}), ...settingsPatch };
   if (!isValidMovieboxSettings(settings)) {
     return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
   }

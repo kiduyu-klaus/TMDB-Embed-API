@@ -5,7 +5,7 @@ const { getTmdbApiKey } = require('../utils/tmdbKey');
 const diagnostics = require('../utils/providerTrace').createProviderTrace('MoviesHunt', { redact: false });
 const tracedFetch = diagnostics.fetch;
 const PROVIDER = 'MoviesHunt';
-const BASE_URL = 'https://movieshunt.icu';
+const BASE_URL = 'https://new4.movieshunt.website';
 // movieshunt.icu is a rotating front door: it redirects to the live mirror (new1, new2, ...)
 // but drops the path, so the wp-json/lookup endpoints 404 into the homepage. Resolve the
 // origin we actually land on and call the API there.

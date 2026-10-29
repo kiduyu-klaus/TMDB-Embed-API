@@ -110,6 +110,9 @@ function normalizeConfig(base) {
   cfg.excludeCodecs = parseJsonMaybe(cfg.excludeCodecsRaw) || null;
   cfg.febboxCookies = Array.isArray(cfg.febboxCookies) ? cfg.febboxCookies : parseCookies(cfg.febboxCookies);
   cfg.movieboxSettings = normalizeMovieboxSettings(cfg.movieboxSettings);
+  if (cfg.vidfastProxyEnabled === 'true') cfg.vidfastProxyEnabled = true;
+  else if (cfg.vidfastProxyEnabled === 'false') cfg.vidfastProxyEnabled = false;
+  if (cfg.vidfastProxyEnabled === undefined) cfg.vidfastProxyEnabled = false;
   // TMDB multi-key support: allow tmdbApiKeys (array) or legacy single tmdbApiKey
   if (cfg.tmdbApiKeys && !Array.isArray(cfg.tmdbApiKeys)) {
     if (typeof cfg.tmdbApiKeys === 'string') {

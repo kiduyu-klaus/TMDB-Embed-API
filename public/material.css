@@ -70,63 +70,70 @@ pre { border-radius:12px; font-size:.8rem; line-height:1.7; }
 .login-card .status { display:block; margin-top:16px; min-height:24px; font-size:.875rem; }
 .login-card .error { color:var(--danger); }
 .login-card .success { color:#237343; }
-#panel-moviebox .moviebox-proxy-card {
+#panel-outbound .moviebox-proxy-card {
   overflow:hidden; margin:0 0 28px; border:1px solid var(--border); border-radius:20px;
   background:var(--bg-alt); box-shadow:var(--shadow);
 }
-#panel-moviebox .moviebox-proxy-card__top {
+#panel-outbound .moviebox-proxy-card__top {
   display:flex; align-items:center; justify-content:space-between; gap:24px; padding:24px;
 }
-#panel-moviebox .moviebox-proxy-card__intro { display:flex; align-items:flex-start; gap:16px; min-width:0; }
-#panel-moviebox .moviebox-proxy-card__icon {
+#panel-outbound .moviebox-proxy-card__intro { display:flex; align-items:flex-start; gap:16px; min-width:0; }
+#panel-outbound .moviebox-proxy-card__icon {
   display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; border-radius:15px;
   background:var(--selected); color:var(--selected-text); font-size:1.35rem;
 }
-#panel-moviebox .moviebox-proxy-card__eyebrow {
+#panel-outbound .moviebox-proxy-card__eyebrow {
   margin:0 0 4px; color:var(--text-dim); font-size:.7rem; font-weight:700;
   letter-spacing:.08em; text-transform:uppercase;
 }
-#panel-moviebox .moviebox-proxy-card__top h3 { margin:0 0 6px; color:var(--text); font-size:1.05rem; font-weight:650; }
-#panel-moviebox .moviebox-proxy-card__description { max-width:620px; margin:0; color:var(--text-dim); font-size:.84rem; line-height:1.55; }
-#panel-moviebox .moviebox-proxy-toggle {
+#panel-outbound .moviebox-proxy-card__top h3 { margin:0 0 6px; color:var(--text); font-size:1.05rem; font-weight:650; }
+#panel-outbound .moviebox-proxy-card__description { max-width:620px; margin:0; color:var(--text-dim); font-size:.84rem; line-height:1.55; }
+#panel-outbound .moviebox-proxy-toggle {
   display:flex; align-items:center; gap:10px; flex:0 0 auto; padding:10px 12px;
   border:1px solid var(--border); border-radius:14px; background:var(--bg);
   color:var(--text); cursor:pointer; font-size:.82rem; font-weight:600; white-space:nowrap;
 }
-#panel-moviebox .moviebox-proxy-toggle input {
+#panel-outbound .moviebox-proxy-toggle input {
   position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
 }
-#panel-moviebox .moviebox-proxy-toggle__track {
+#panel-outbound .moviebox-proxy-toggle__track {
   position:relative; width:38px; height:22px; border-radius:999px; background:var(--border-strong);
   transition:background .18s ease;
 }
-#panel-moviebox .moviebox-proxy-toggle__track::after {
+#panel-outbound .moviebox-proxy-toggle__track::after {
   position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%;
   background:#fff; content:""; box-shadow:0 1px 3px #0003; transition:transform .18s ease;
 }
-#panel-moviebox .moviebox-proxy-toggle:has(input:checked) .moviebox-proxy-toggle__track { background:var(--primary); }
-#panel-moviebox .moviebox-proxy-toggle:has(input:checked) .moviebox-proxy-toggle__track::after { transform:translateX(16px); }
-#panel-moviebox .moviebox-proxy-toggle input:focus-visible + .moviebox-proxy-toggle__track { outline:3px solid var(--primary); outline-offset:3px; }
-#panel-moviebox .moviebox-proxy-card__source {
+#panel-outbound .moviebox-proxy-toggle:has(input:checked) .moviebox-proxy-toggle__track { background:var(--primary); }
+#panel-outbound .moviebox-proxy-toggle:has(input:checked) .moviebox-proxy-toggle__track::after { transform:translateX(16px); }
+#panel-outbound .moviebox-proxy-toggle input:focus-visible + .moviebox-proxy-toggle__track { outline:3px solid var(--primary); outline-offset:3px; }
+#panel-outbound .moviebox-proxy-card__source {
   display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.75fr); align-items:center;
   gap:24px; padding:20px 24px; border-top:1px solid var(--border); background:var(--bg);
 }
-#panel-moviebox .moviebox-proxy-card__link {
+#panel-outbound .moviebox-proxy-card__link {
   display:inline-flex; align-items:center; gap:7px; margin-bottom:6px; color:var(--primary);
   font-size:.93rem; font-weight:650; text-decoration:none;
 }
-#panel-moviebox .moviebox-proxy-card__link:hover { text-decoration:underline; }
-#panel-moviebox .moviebox-proxy-card__actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
-#panel-moviebox .moviebox-proxy-status {
+#panel-outbound .moviebox-proxy-card__link:hover { text-decoration:underline; }
+#panel-outbound .moviebox-proxy-card__actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+#panel-outbound .moviebox-proxy-status {
   width:100%; margin:0; padding:10px 12px; border:1px solid var(--border); border-radius:10px;
   background:var(--bg-alt); color:var(--text-dim); font-size:.78rem; line-height:1.5; overflow-wrap:anywhere;
 }
-#panel-moviebox .moviebox-proxy-download { display:inline-flex; align-items:center; justify-content:center; gap:9px; }
+#panel-outbound .moviebox-proxy-download { display:inline-flex; align-items:center; justify-content:center; gap:9px; }
+#panel-outbound .moviebox-proxy-card__footer {
+  display:flex; justify-content:flex-end; align-items:center; gap:16px; padding:14px 24px;
+  border-top:1px solid var(--border);
+}
+#panel-outbound .moviebox-proxy-card__footer .hint { margin:0 auto 0 0; }
 @media(max-width:680px) {
-  #panel-moviebox .moviebox-proxy-card__top { align-items:flex-start; flex-direction:column; gap:18px; padding:20px; }
-  #panel-moviebox .moviebox-proxy-card__source { grid-template-columns:minmax(0,1fr); gap:18px; padding:18px 20px; }
-  #panel-moviebox .moviebox-proxy-card__actions { width:100%; }
-  #panel-moviebox .moviebox-proxy-download { width:100%; }
+  #panel-outbound .moviebox-proxy-card__top { align-items:flex-start; flex-direction:column; gap:18px; padding:20px; }
+  #panel-outbound .moviebox-proxy-card__source { grid-template-columns:minmax(0,1fr); gap:18px; padding:18px 20px; }
+  #panel-outbound .moviebox-proxy-card__actions { width:100%; }
+  #panel-outbound .moviebox-proxy-download { width:100%; }
+  #panel-outbound .moviebox-proxy-card__footer { align-items:stretch; flex-direction:column; padding:16px 20px; }
+  #panel-outbound .moviebox-proxy-card__footer .hint { margin:0; }
 }
 @media (min-width:1500px) { .status-grid { grid-template-columns:minmax(280px,.75fr) minmax(650px,1.6fr); } }
 @media (max-width:880px) {

@@ -236,16 +236,18 @@ Saving in the UI writes only changed keys. Setting a field to empty removes the 
 | Quality / Filters | Min quality presets & codec exclusion JSON |
 | Keys | Add/remove TMDB API keys (rotated randomly) |
 | Advanced | Provider toggles, cache & validation flags |
-| MovieBox | Configure audio tracks, resolutions, subtitles, provider logs, and optional outbound proxying |
+| MovieBox | Configure audio tracks, resolutions, subtitles, and provider logs |
+| Outbound connection | Configure independent MovieBox and VidFast outbound proxying |
 | Server Status | Live metrics, provider functional checks |
 | Live Config | View merged + override JSON snapshots |
 
 Session is revalidated on visibility and back/forward navigation to prevent stale access.
 
-MovieBox proxying is optional. The dashboard downloads the ProxyScrape JSON list
-to `utils/moviebox-proxies.json`; when proxying is enabled, MovieBox probes
-candidates sequentially and routes all provider requests through the first
-passing proxy. Free proxies are third-party services and may be unreliable.
+MovieBox and VidFast proxying are optional and configured independently in the
+Outbound connection panel. Each provider has a separate ProxyScrape list saved
+as `utils/moviebox-proxies.json` or `utils/vidfast-proxies.json`. Both check the
+preferred proxy first, then probe their own list when it is unavailable. Free
+proxies are third-party services and may be unreliable.
 
 ---
 

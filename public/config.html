@@ -30,6 +30,7 @@
     <button class="btn nav-item" data-target="panel-quality">Quality / Filters</button>
     <button class="btn nav-item" data-target="panel-keys">Keys</button>
     <button class="btn nav-item" data-target="panel-febbox">FebBox / PStream</button>
+    <button class="btn nav-item" data-target="panel-outbound">Outbound connection</button>
     <button class="btn nav-item" data-target="panel-moviebox">MovieBox</button>
   <button class="btn nav-item" data-target="panel-advanced">Advanced</button>
     <button class="btn nav-item" data-target="panel-live">Live Config</button>
@@ -218,13 +219,9 @@
   </li>
 </ol>
       </section>
-      <section id="panel-moviebox" class="panel">
-        <h1>MovieBox Settings</h1>
-        <p class="hint">Choose which resolutions, audio versions, and subtitle tracks the MovieBox provider returns. Changes are saved to <code>utils/user-config.json</code> and <code>.env</code>.</p>
-        <div id="movieboxSettingsControls" aria-live="polite">
-          <p class="hint">Loading MovieBox settings...</p>
-        </div>
-        <h2>Connection</h2>
+      <section id="panel-outbound" class="panel">
+        <h1>Outbound connection</h1>
+        <p class="hint">Configure provider-specific outbound proxies. Each provider uses its own saved proxy list and selection.</p>
         <div class="moviebox-proxy-card">
           <div class="moviebox-proxy-card__top">
             <div class="moviebox-proxy-card__intro">
@@ -247,7 +244,7 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">Download the list locally. MovieBox checks candidates in sequence and uses the first proxy that passes.</p>
+              <p class="moviebox-proxy-card__description">The preferred proxy is checked first. If unavailable, MovieBox probes its own downloaded list in sequence and uses the first proxy that passes.</p>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="movieboxProxyStatus" role="status" aria-live="polite">No proxy selected yet.</p>
@@ -257,6 +254,54 @@
               </button>
             </div>
           </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="movieboxProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveMovieboxProxySettingsBtn" type="button">Save MovieBox connection</button>
+          </div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>
+                <h3>VidFast proxy</h3>
+                <p class="moviebox-proxy-card__description">Route VidFast provider requests through a verified HTTP proxy. This setting and proxy list are independent from MovieBox.</p>
+              </div>
+            </div>
+            <label class="moviebox-proxy-toggle" id="vidfastProxyEnabledLabel">
+              <input id="vidfastProxyEnabled" type="checkbox" />
+              <span class="moviebox-proxy-toggle__track" aria-hidden="true"></span>
+              <span class="moviebox-proxy-toggle__label">Enable proxy</span>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__source">
+            <div class="moviebox-proxy-card__source-copy">
+              <p class="moviebox-proxy-card__eyebrow">Proxy list source</p>
+              <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
+                ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <p class="moviebox-proxy-card__description">VidFast checks the preferred proxy first, then probes candidates from its own downloaded list.</p>
+            </div>
+            <div class="moviebox-proxy-card__actions">
+              <p class="moviebox-proxy-status" id="vidfastProxyStatus" role="status" aria-live="polite">No proxy selected yet.</p>
+              <button class="btn btn-outline-primary moviebox-proxy-download" id="downloadVidfastProxyListBtn" type="button">
+                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                <span>Download VidFast proxy list</span>
+              </button>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="vidfastProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveVidfastProxySettingsBtn" type="button">Save VidFast connection</button>
+          </div>
+        </div>
+      </section>
+      <section id="panel-moviebox" class="panel">
+        <h1>MovieBox Settings</h1>
+        <p class="hint">Choose which resolutions, audio versions, and subtitle tracks the MovieBox provider returns. Changes are saved to <code>utils/user-config.json</code> and <code>.env</code>.</p>
+        <div id="movieboxSettingsControls" aria-live="polite">
+          <p class="hint">Loading MovieBox settings...</p>
         </div>
         <div class="field" style="display:flex; align-items:center; gap:.75rem;">
           <button class="btn btn-outline-primary" id="saveMovieboxSettingsBtn" type="button" disabled>Save MovieBox Settings</button>
