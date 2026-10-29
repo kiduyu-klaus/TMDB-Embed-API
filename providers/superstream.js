@@ -143,7 +143,8 @@ function normalizeSubtitleList(raw) {
 }
 
 async function getSuperstreamStreams(tmdbId, mediaType = 'movie', season = null, episode = null) {
-  console.log(`[Superstream] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
+  const startedAt = Date.now();
+  console.info(`[Superstream] START tmdbId=${tmdbId} mediaType=${mediaType} season=${season} episode=${episode}`);
   try {
     const payload = await fetchVidnestPayload(
       BACKEND, mediaType, String(tmdbId), season, episode, REQUEST_TIMEOUT_MS
@@ -151,7 +152,7 @@ async function getSuperstreamStreams(tmdbId, mediaType = 'movie', season = null,
 
     const list = Array.isArray(payload?.streams) ? payload.streams : [];
     if (list.length === 0) {
-      console.log(`[Superstream] No Superstream entry for TMDB ${tmdbId}`);
+      console.info(`[Superstream] no streams found tmdbId=${tmdbId} duration=${Date.now() - startedAt}ms`);
       return [];
     }
 
@@ -177,14 +178,14 @@ async function getSuperstreamStreams(tmdbId, mediaType = 'movie', season = null,
       });
 
     if (streams.length === 0) {
-      console.log(`[Superstream] All ${list.length} entries for ${tmdbId} were non-HLS or invalid`);
+      console.info(`[Superstream] all ${list.length} entries were non-HLS or invalid tmdbId=${tmdbId} duration=${Date.now() - startedAt}ms`);
       return [];
     }
 
-    console.log(`[Superstream] Got ${streams.length} stream(s), ${subtitles.length} subtitle(s) for ${tmdbId}`);
+    console.info(`[Superstream] DONE streams=${streams.length} subtitles=${subtitles.length} tmdbId=${tmdbId} duration=${Date.now() - startedAt}ms`);
     return streams;
   } catch (err) {
-    console.warn(`[Superstream] Failed for ${tmdbId}: ${err.message}`);
+    console.error(`[Superstream] FAILED tmdbId=${tmdbId} duration=${Date.now() - startedAt}ms error=${err.message}`);
     return [];
   }
 }

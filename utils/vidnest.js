@@ -43,14 +43,20 @@ function decodeVidnestCipher(blob) {
 async function fetchJSON(url, timeoutMs) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const startedAt = Date.now();
+  console.info(`[Vidnest][HTTP] -> GET ${url}`);
   try {
     const res = await fetch(url, { headers: REQUEST_HEADERS, signal: controller.signal });
+    console.info(`[Vidnest][HTTP] <- GET ${res.url || url} status=${res.status} ${res.statusText || ''} duration=${Date.now() - startedAt}ms`.trim());
     if (!res.ok) {
       const err = new Error(`vidnest API returned ${res.status}`);
       err.status = res.status;
       throw err;
     }
     return await res.json();
+  } catch (error) {
+    console.error(`[Vidnest][HTTP] !! GET ${url} duration=${Date.now() - startedAt}ms error=${error.message}`);
+    throw error;
   } finally {
     clearTimeout(timer);
   }

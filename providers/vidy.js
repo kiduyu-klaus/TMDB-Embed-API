@@ -139,7 +139,10 @@ function getVidyProxyAgent() {
 
 async function safeFetch(url, options) {
     try {
-        if (config.vidyProxyEnabled !== true) return await tracedFetch(url, options);
+        const isTmdbRequest = new URL(url).origin === new URL(TMDB_API).origin;
+        if (config.vidyProxyEnabled !== true || isTmdbRequest) {
+            return await tracedFetch(url, options);
+        }
         const dispatcher = await getVidyProxyAgent();
         return await tracedFetch(url, { ...options, dispatcher });
     } catch (e) {
