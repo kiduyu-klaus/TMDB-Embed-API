@@ -237,18 +237,19 @@ Saving in the UI writes only changed keys. Setting a field to empty removes the 
 | Keys | Add/remove TMDB API keys (rotated randomly) |
 | Advanced | Provider toggles, cache & validation flags |
 | MovieBox | Configure audio tracks, resolutions, subtitles, and provider logs |
-| Outbound connection | Configure MovieBox and independent VidFast/Vidy/BingeBang outbound proxy settings |
+| Outbound connection | Configure MovieBox and independent provider outbound proxy settings |
 | Server Status | Live metrics, provider functional checks |
 | Live Config | View merged + override JSON snapshots |
 
 Session is revalidated on visibility and back/forward navigation to prevent stale access.
 
-MovieBox, VidFast, Vidy, and BingeBang proxying are optional in the Outbound
+MovieBox, VidFast, Vidy, BingeBang, Videasy, and Vidlove proxying are optional in the Outbound
 connection panel. MovieBox uses `utils/moviebox-proxies.json`; VidFast, Vidy,
-and BingeBang share `utils/vidfast-proxies.json` but keep independent enable
-settings and proxy selection. Each provider checks the preferred proxy first,
-then probes its configured list if needed. Free proxies are third-party
-services and may be unreliable.
+BingeBang, Videasy, and Vidlove share `utils/vidfast-proxies.json` but keep
+independent enable settings and proxy selection. Each provider checks the
+preferred proxy first, then probes the shared list if needed. TMDB API requests
+from Videasy and Vidlove bypass the proxy. Free proxies are third-party services
+and may be unreliable.
 
 ---
 

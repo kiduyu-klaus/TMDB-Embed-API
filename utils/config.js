@@ -119,6 +119,12 @@ function normalizeConfig(base) {
   if (cfg.bingebangProxyEnabled === 'true') cfg.bingebangProxyEnabled = true;
   else if (cfg.bingebangProxyEnabled === 'false') cfg.bingebangProxyEnabled = false;
   if (cfg.bingebangProxyEnabled === undefined) cfg.bingebangProxyEnabled = false;
+  for (const provider of ['videasy', 'vidlove']) {
+    const key = `${provider}ProxyEnabled`;
+    if (cfg[key] === 'true') cfg[key] = true;
+    else if (cfg[key] === 'false') cfg[key] = false;
+    if (cfg[key] === undefined) cfg[key] = false;
+  }
   // TMDB multi-key support: allow tmdbApiKeys (array) or legacy single tmdbApiKey
   if (cfg.tmdbApiKeys && !Array.isArray(cfg.tmdbApiKeys)) {
     if (typeof cfg.tmdbApiKeys === 'string') {

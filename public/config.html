@@ -221,7 +221,7 @@
       </section>
       <section id="panel-outbound" class="panel">
         <h1>Outbound connection</h1>
-        <p class="hint">Configure provider-specific outbound proxies. Each provider uses its own saved proxy list and selection.</p>
+        <p class="hint">Configure provider-specific outbound proxies. Providers can share the downloaded proxy list while keeping independent enable settings and proxy selections.</p>
         <div class="moviebox-proxy-card">
           <div class="moviebox-proxy-card__top">
             <div class="moviebox-proxy-card__intro">
@@ -368,6 +368,80 @@
           <div class="moviebox-proxy-card__footer">
             <span class="hint" id="bingebangProxySettingsStatus" role="status"></span>
             <button class="btn btn-outline-primary" id="saveBingebangProxySettingsBtn" type="button">Save BingeBang connection</button>
+          </div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-camera-reels"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>
+                <h3>Videasy proxy</h3>
+                <p class="moviebox-proxy-card__description">Route Videasy provider requests through a verified HTTP proxy. Videasy shares VidFast's proxy list and keeps an independent enable setting and proxy selection. TMDB requests bypass the proxy.</p>
+              </div>
+            </div>
+            <label class="moviebox-proxy-toggle" id="videasyProxyEnabledLabel">
+              <input id="videasyProxyEnabled" type="checkbox" />
+              <span class="moviebox-proxy-toggle__track" aria-hidden="true"></span>
+              <span class="moviebox-proxy-toggle__label">Enable proxy</span>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__source">
+            <div class="moviebox-proxy-card__source-copy">
+              <p class="moviebox-proxy-card__eyebrow">Shared proxy list</p>
+              <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
+                ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <p class="moviebox-proxy-card__description">Videasy checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+            </div>
+            <div class="moviebox-proxy-card__actions">
+              <p class="moviebox-proxy-status" id="videasyProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
+              <button class="btn btn-outline-primary moviebox-proxy-download" id="downloadVideasyProxyListBtn" type="button">
+                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                <span>Download shared proxy list</span>
+              </button>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="videasyProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveVideasyProxySettingsBtn" type="button">Save Videasy connection</button>
+          </div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-heart-pulse"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>
+                <h3>Vidlove proxy</h3>
+                <p class="moviebox-proxy-card__description">Route Vidlove provider requests through a verified HTTP proxy. Vidlove shares VidFast's proxy list and keeps an independent enable setting and proxy selection. TMDB requests bypass the proxy.</p>
+              </div>
+            </div>
+            <label class="moviebox-proxy-toggle" id="vidloveProxyEnabledLabel">
+              <input id="vidloveProxyEnabled" type="checkbox" />
+              <span class="moviebox-proxy-toggle__track" aria-hidden="true"></span>
+              <span class="moviebox-proxy-toggle__label">Enable proxy</span>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__source">
+            <div class="moviebox-proxy-card__source-copy">
+              <p class="moviebox-proxy-card__eyebrow">Shared proxy list</p>
+              <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
+                ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <p class="moviebox-proxy-card__description">Vidlove checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+            </div>
+            <div class="moviebox-proxy-card__actions">
+              <p class="moviebox-proxy-status" id="vidloveProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
+              <button class="btn btn-outline-primary moviebox-proxy-download" id="downloadVidloveProxyListBtn" type="button">
+                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                <span>Download shared proxy list</span>
+              </button>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="vidloveProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveVidloveProxySettingsBtn" type="button">Save Vidlove connection</button>
           </div>
         </div>
       </section>

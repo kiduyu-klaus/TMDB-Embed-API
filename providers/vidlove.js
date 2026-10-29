@@ -1,5 +1,16 @@
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __commonJS = (cb, mod) => function __require() {
+const { config: vidloveConfig } = require("../utils/config");
+const vidloveDiagnostics = require("../utils/providerTrace").createProviderTrace("Vidlove", { redact: false });
+const vidloveProxy = require("../utils/providerProxy").createProviderProxy({
+  provider: "Vidlove",
+  config: vidloveConfig,
+  settingKey: "vidloveProxyEnabled",
+  tracedFetch: vidloveDiagnostics.fetch,
+  log: vidloveDiagnostics.log,
+  bypassOrigins: ["https://api.themoviedb.org"]
+});
+const providerFetch = vidloveProxy.fetch;
+var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __async = (__this, __arguments, generator) => {
@@ -33,7 +44,7 @@ var require_http = __commonJS({
     };
     function fetchText(url) {
       return __async(this, null, function* () {
-        const res = yield fetch(url, { headers: DEFAULT_HEADERS });
+        const res = yield providerFetch(url, { headers: DEFAULT_HEADERS });
         if (!res.ok)
           throw new Error("HTTP " + res.status);
         return res.text();
@@ -41,7 +52,7 @@ var require_http = __commonJS({
     }
     function fetchJson(url) {
       return __async(this, null, function* () {
-        const res = yield fetch(url, { headers: DEFAULT_HEADERS });
+        const res = yield providerFetch(url, { headers: DEFAULT_HEADERS });
         if (!res.ok)
           throw new Error("HTTP " + res.status);
         const text = yield res.text();
@@ -351,4 +362,4 @@ var require_extractor = __commonJS({
 
 // src/vidlove/index.js
 var { getVidloveStreams } = require_extractor();
-module.exports = { getVidloveStreams };
+module.exports = { getVidloveStreams, getVidloveProxyStatus: vidloveProxy.getStatus };

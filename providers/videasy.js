@@ -1,9 +1,19 @@
 const { getTmdbApiKey } = require('../utils/tmdbKey');
+const { config } = require('../utils/config');
 
 // Detailed request logging with complete, unredacted URLs (local debugging).
 // Set PROVIDER_LOG_REDACT=1 to force redaction back on.
 const diagnostics = require('../utils/providerTrace').createProviderTrace('Videasy', { redact: false });
 const tracedFetch = diagnostics.fetch;
+const proxy = require('../utils/providerProxy').createProviderProxy({
+    provider: 'Videasy',
+    config,
+    settingKey: 'videasyProxyEnabled',
+    tracedFetch,
+    log: diagnostics.log,
+    bypassOrigins: ['https://api.themoviedb.org']
+});
+const providerFetch = proxy.fetch;
 
 const VIDEASY_API = 'https://api.wecollege.net';
 const ENC_DEC_API = 'https://enc-dec.app/api';
@@ -111,7 +121,7 @@ async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum
     const url = buildSourceUrl(server, details, tmdbId, seasonNum, episodeNum, seed, titleOverride);
     diagnostics.log('server.request', { server: server.id, label: server.label, url });
 
-    const response = await tracedFetch(url, {
+    const response = await providerFetch(url, {
         headers: VIDEASY_HEADERS,
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
     });
@@ -126,7 +136,7 @@ async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum
         return [];
     }
 
-    const decryptResponse = await tracedFetch(`${ENC_DEC_API}/dec-videasy`, {
+    const decryptResponse = await providerFetch(`${ENC_DEC_API}/dec-videasy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: encryptedText, id: String(tmdbId), seed }),
@@ -188,7 +198,7 @@ async function getVideasyStreamsImpl(tmdbId, mediaType, seasonNum, episodeNum) {
     let details;
     try {
         const type = isSeries ? 'tv' : 'movie';
-        const response = await tracedFetch(
+        const response = await providerFetch(
             `https://api.themoviedb.org/3/${type}/${encodeURIComponent(tmdbId)}?api_key=${encodeURIComponent(tmdbKey)}&append_to_response=external_ids,alternative_titles`,
             { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
         );
@@ -224,7 +234,7 @@ async function getVideasyStreamsImpl(tmdbId, mediaType, seasonNum, episodeNum) {
 
     let seed;
     try {
-        const response = await tracedFetch(
+        const response = await providerFetch(
             `${VIDEASY_API}/seed?mediaId=${encodeURIComponent(tmdbId)}`,
             { headers: VIDEASY_HEADERS, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
         );
@@ -275,4 +285,10 @@ async function getVideasyStreamsImpl(tmdbId, mediaType, seasonNum, episodeNum) {
     return streams;
 }
 
-module.exports = { getVideasyStreams, getStreams: getVideasyStreams, buildSourceUrl, SERVERS };
+module.exports = {
+    getVideasyStreams,
+    getStreams: getVideasyStreams,
+    buildSourceUrl,
+    SERVERS,
+    getVideasyProxyStatus: proxy.getStatus
+};
