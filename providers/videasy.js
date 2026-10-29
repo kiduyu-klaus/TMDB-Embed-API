@@ -9,10 +9,6 @@ const VIDEASY_API = 'https://api.wecollege.net';
 const ENC_DEC_API = 'https://enc-dec.app/api';
 const REQUEST_TIMEOUT_MS = 15000;
 const DECRYPT_TIMEOUT_MS = 20000;
-// The upstream edge throttles connection bursts, so the server fan-out is limited
-// instead of firing all 18 requests in the same tick.
-const SERVER_CONCURRENCY = 6;
-const SERVER_ATTEMPTS = 2;
 
 // The upstream API only answers for the vidy.st origin - any other Referer/Origin pair
 // is rejected with HTTP 403 by the edge. These headers must stay in sync with the
@@ -107,36 +103,6 @@ function buildSourceUrl(server, details, tmdbId, seasonNum, episodeNum, seed, ti
     );
     if (server.queryLanguage) params.push(`language=${encodeURIComponent(server.queryLanguage)}`);
     return `${VIDEASY_API}/${server.id}/sources?${params.join('&')}`;
-}
-
-async function mapWithConcurrency(items, limit, worker) {
-    const results = new Array(items.length);
-    let cursor = 0;
-    const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
-        for (;;) {
-            const index = cursor++;
-            if (index >= items.length) return;
-            results[index] = await worker(items[index], index);
-        }
-    });
-    await Promise.all(runners);
-    return results;
-}
-
-async function withRetry(fn, attempts) {
-    let lastError;
-    for (let attempt = 1; attempt <= attempts; attempt++) {
-        try {
-            return await fn();
-        } catch (error) {
-            lastError = error;
-            if (attempt < attempts) {
-                diagnostics.log('server.retry', { attempt, error: error && error.message });
-                await new Promise(resolve => setTimeout(resolve, 250 * attempt));
-            }
-        }
-    }
-    throw lastError;
 }
 
 async function fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum, seed) {
@@ -275,15 +241,9 @@ async function getVideasyStreamsImpl(tmdbId, mediaType, seasonNum, episodeNum) {
     diagnostics.log('seed.resolved', { tmdbId, seed });
 
     // Every server is queried; a failing server only drops its own results.
-    const settled = await mapWithConcurrency(SERVERS, SERVER_CONCURRENCY, server =>
-        withRetry(
-            () => fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum, seed),
-            SERVER_ATTEMPTS
-        ).then(
-            value => ({ status: 'fulfilled', value }),
-            reason => ({ status: 'rejected', reason })
-        )
-    );
+    const settled = await Promise.allSettled(SERVERS.map(server =>
+        fetchServerStreams(server, details, tmdbId, seasonNum, episodeNum, seed)
+    ));
 
     const streams = [];
     const seen = new Set();

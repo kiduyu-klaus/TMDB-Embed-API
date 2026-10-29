@@ -11,7 +11,6 @@ const PLAYER_HEADERS = {
   'User-Agent': USER_AGENT,
   Origin: MEGAPLAY_BASE,
   Referer: `${MEGAPLAY_BASE}/`,
-  
 };
 const SUBTITLE_LANGUAGE_CODES = {
   english: 'en', eng: 'en', arabic: 'ar', ara: 'ar', bengali: 'bn', ben: 'bn',

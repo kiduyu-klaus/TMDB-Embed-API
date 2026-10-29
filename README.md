@@ -33,7 +33,7 @@
 ---
 
 ## ✨ Features
-- **54 Built-in Providers** – MoviesTv + Anime sources with per-provider enable toggles + default selection.
+- **66 Built-in Providers** – MoviesTv + Anime sources with per-provider enable toggles + default selection.
 - **Multi-TMDB Key Rotation** – Supply multiple API keys; one is chosen randomly per request.
 - **🔥 Plugin System** – Drop new provider files in `providers/` and add its exported function to the registry map (`providers/registry.js` → `providerFunctionMap`). No core file edits required.
 - **Dynamic Filtering** – Minimum quality presets, custom JSON quality map, codec exclusion rules (presets + JSON).
@@ -250,7 +250,8 @@ The API supports a plugin system. Drop a new provider file in the `providers/` f
 - `showbox` - Showbox/FebBox streams (requires FebBox JWT cookie)
 - `4khdhub` - 4KHDHub streams
 - `vixsrc` - VixSrc streams
-- `videasy` - Videasy streams (10 servers via enc-dec.app)
+- `videasy` - Videasy streams (18 servers via enc-dec.app)
+- `vidy` - Vidy streams (10 servers via api.wecollege.net)
 - `vidlink` - Vidlink streams
 - `dahmermovies` - DahmerMovies streams (direct file links)
 - `streamflix` - StreamFlix streams (direct MP4 links)

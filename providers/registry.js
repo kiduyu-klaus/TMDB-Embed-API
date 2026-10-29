@@ -59,6 +59,7 @@ const providerFunctionMap = {
   '4khdhub.js': 'get4KHDHubStreams',
   'vixsrc.js': 'getVixsrcStreams',
   'videasy.js': 'getVideasyStreams',
+  'vidy.js': 'getStreams',
   'vidlink.js': 'getVidlinkStreams',
   'vidlove.js': 'getVidloveStreams',
   'vidfast.js': 'getVidfastStreams',
@@ -113,6 +114,8 @@ const providerFunctionMap = {
   'movix.js': 'getStreams',
   'bingebang.js': 'getStreams',
   'uhdmovies.js': 'getStreams',
+  'duro.js': 'getStreams',
+  'a111477.js': 'getStreams',
 
 };
 
@@ -132,6 +135,7 @@ const providerCategoryMap = {
   '4khdhub.js': 'MoviesTv',
   'vixsrc.js': 'MoviesTv',
   'videasy.js': 'MoviesTv',
+  'vidy.js': 'MoviesTv',
   'vidlink.js': 'MoviesTv',
   'vidlove.js': 'MoviesTv',
   'vidfast.js': 'MoviesTv',
@@ -186,6 +190,8 @@ const providerCategoryMap = {
   'movix.js': 'MoviesTv',
   'bingebang.js': ['MoviesTv', 'Anime'], 
   'uhdmovies.js': 'MoviesTv',
+  'duro.js': 'MoviesTv',
+  'a111477.js': 'MoviesTv',
 };
 
 // Stats for debug endpoint
