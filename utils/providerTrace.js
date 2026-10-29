@@ -29,7 +29,10 @@ function createProviderTrace(name, options = {}) {
         const started = Date.now();
         log('request.start', { requestId, url: String(url), method: options.method || 'GET' });
         try {
-            const response = await require('./providerFetch').fetch(url, options);
+            const transport = options.dispatcher
+                ? require('undici').fetch
+                : require('./providerFetch').fetch;
+            const response = await transport(url, options);
             log('request.response', { requestId, url: response.url || String(url), status: response.status, ok: response.ok,
                 elapsedMs: Date.now() - started, contentType: response.headers?.get('content-type') });
             return new Proxy(response, {

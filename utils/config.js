@@ -116,6 +116,9 @@ function normalizeConfig(base) {
   if (cfg.vidyProxyEnabled === 'true') cfg.vidyProxyEnabled = true;
   else if (cfg.vidyProxyEnabled === 'false') cfg.vidyProxyEnabled = false;
   if (cfg.vidyProxyEnabled === undefined) cfg.vidyProxyEnabled = false;
+  if (cfg.bingebangProxyEnabled === 'true') cfg.bingebangProxyEnabled = true;
+  else if (cfg.bingebangProxyEnabled === 'false') cfg.bingebangProxyEnabled = false;
+  if (cfg.bingebangProxyEnabled === undefined) cfg.bingebangProxyEnabled = false;
   // TMDB multi-key support: allow tmdbApiKeys (array) or legacy single tmdbApiKey
   if (cfg.tmdbApiKeys && !Array.isArray(cfg.tmdbApiKeys)) {
     if (typeof cfg.tmdbApiKeys === 'string') {

@@ -482,6 +482,10 @@ router.post('/api/providers/vidy/proxies', requireAuth, (_req, res) =>
   downloadProviderProxyList('vidfast', res)
 );
 
+router.post('/api/providers/bingebang/proxies', requireAuth, (_req, res) =>
+  downloadProviderProxyList('vidfast', res)
+);
+
 router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   const { getMovieboxProxyStatus } = require('./providers/moviebox');
   res.setHeader('Cache-Control', 'no-store');
@@ -520,6 +524,23 @@ router.post('/api/providers/vidy/proxy-settings', requireAuth, (req, res) => {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
   res.json({ success:true, enabled:config.vidyProxyEnabled });
+});
+
+router.get('/api/providers/bingebang/proxy-status', requireAuth, (_req, res) => {
+  const { getBingebangProxyStatus } = require('./providers/bingebang');
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success:true, ...getBingebangProxyStatus() });
+});
+
+router.post('/api/providers/bingebang/proxy-settings', requireAuth, (req, res) => {
+  const enabled = req.body && req.body.enabled;
+  if (typeof enabled !== 'boolean') {
+    return res.status(400).json({ success:false, error:'INVALID_BINGEBANG_PROXY_SETTING' });
+  }
+  if (!saveConfigPatch({ bingebangProxyEnabled: enabled })) {
+    return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
+  }
+  res.json({ success:true, enabled:config.bingebangProxyEnabled });
 });
 
 router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {

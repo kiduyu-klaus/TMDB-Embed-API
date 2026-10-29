@@ -254,9 +254,35 @@ async function renderVidyProxySettings(enabled = false){
 	}
 }
 
+async function renderBingebangProxySettings(enabled = false){
+	const checkbox = document.getElementById('bingebangProxyEnabled');
+	const label = document.getElementById('bingebangProxyEnabledLabel');
+	const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+	const status = document.getElementById('bingebangProxyStatus');
+	if(checkbox) {
+		checkbox.checked = enabled === true;
+		label?.classList.toggle('on', checkbox.checked);
+		if(labelText) labelText.textContent = checkbox.checked ? 'Proxy enabled' : 'Enable proxy';
+	}
+	if(!status) return;
+	try {
+		const response = await fetch(U('/api/providers/bingebang/proxy-status'), { cache:'no-store' });
+		const proxy = await response.json();
+		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		status.textContent = proxy.selectedProxy
+			? `Selected: ${proxy.selectedProxy}`
+			: proxy.listAvailable
+				? `Shared list is saved in ${proxy.sharedList}. ${proxy.enabled ? 'A proxy will be selected on the next BingeBang request.' : 'Enable proxying to select one on the next BingeBang request.'}`
+				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
+	} catch(error) {
+		status.textContent = `Unable to load BingeBang proxy status: ${error.message}`;
+	}
+}
+
 async function downloadProviderProxyList(provider){
 	const buttonId = provider === 'MovieBox' ? 'downloadMovieboxProxyListBtn'
 		: provider === 'Vidy' ? 'downloadVidyProxyListBtn'
+			: provider === 'BingeBang' ? 'downloadBingebangProxyListBtn'
 			: 'downloadVidfastProxyListBtn';
 	const button = document.getElementById(buttonId);
 	const status = document.getElementById(`${provider.toLowerCase()}ProxyStatus`);
@@ -286,6 +312,10 @@ async function downloadVidfastProxyList(){
 
 async function downloadVidyProxyList(){
 	return downloadProviderProxyList('Vidy');
+}
+
+async function downloadBingebangProxyList(){
+	return downloadProviderProxyList('BingeBang');
 }
 
 async function saveMovieboxProxySettings(){
@@ -352,6 +382,30 @@ async function saveVidyProxySettings(){
 		await renderVidyProxySettings(data.enabled);
 		await reloadLiveOnly();
 		if(status) status.textContent = 'Vidy connection saved to user-config.json';
+	} catch(error) {
+		if(status) status.textContent = `Save failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
+}
+
+async function saveBingebangProxySettings(){
+	const button = document.getElementById('saveBingebangProxySettingsBtn');
+	const status = document.getElementById('bingebangProxySettingsStatus');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Saving...';
+	try {
+		const enabled = document.getElementById('bingebangProxyEnabled').checked;
+		const response = await fetch(U('/api/providers/bingebang/proxy-settings'), {
+			method:'POST',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify({ enabled })
+		});
+		const data = await response.json();
+		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
+		await renderBingebangProxySettings(data.enabled);
+		await reloadLiveOnly();
+		if(status) status.textContent = 'BingeBang connection saved to user-config.json';
 	} catch(error) {
 		if(status) status.textContent = `Save failed: ${error.message}`;
 	} finally {
@@ -592,6 +646,7 @@ function fillForm(data){
 	renderMovieboxSettings(merged.movieboxSettings || {});
 	renderVidfastProxySettings(merged.vidfastProxyEnabled === true);
 	renderVidyProxySettings(merged.vidyProxyEnabled === true);
+	renderBingebangProxySettings(merged.bingebangProxyEnabled === true);
 	const f = document.getElementById('cfgForm');
 	const fields = ['port'];
 	fields.forEach(k=>{ if(!f.elements[k]) return; const ov = override[k]; f.elements[k].value = ov !== undefined ? ov : (merged[k]||''); });
@@ -871,6 +926,7 @@ async function clearAll(){
 		},
 		vidfastProxyEnabled: false,
 		vidyProxyEnabled: false,
+		bingebangProxyEnabled: false,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -1152,9 +1208,11 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('saveMovieboxProxySettingsBtn')?.addEventListener('click', saveMovieboxProxySettings);
 	document.getElementById('saveVidfastProxySettingsBtn')?.addEventListener('click', saveVidfastProxySettings);
 	document.getElementById('saveVidyProxySettingsBtn')?.addEventListener('click', saveVidyProxySettings);
+	document.getElementById('saveBingebangProxySettingsBtn')?.addEventListener('click', saveBingebangProxySettings);
 	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
 	document.getElementById('downloadVidfastProxyListBtn')?.addEventListener('click', downloadVidfastProxyList);
 	document.getElementById('downloadVidyProxyListBtn')?.addEventListener('click', downloadVidyProxyList);
+	document.getElementById('downloadBingebangProxyListBtn')?.addEventListener('click', downloadBingebangProxyList);
 	document.getElementById('movieboxProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('movieboxProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
@@ -1169,6 +1227,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	});
 	document.getElementById('vidyProxyEnabled')?.addEventListener('change', event=>{
 		const label = document.getElementById('vidyProxyEnabledLabel');
+		label?.classList.toggle('on', event.target.checked);
+		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';
+	});
+	document.getElementById('bingebangProxyEnabled')?.addEventListener('change', event=>{
+		const label = document.getElementById('bingebangProxyEnabledLabel');
 		label?.classList.toggle('on', event.target.checked);
 		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
 		if(labelText) labelText.textContent = event.target.checked ? 'Proxy enabled' : 'Enable proxy';

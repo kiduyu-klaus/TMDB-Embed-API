@@ -48,6 +48,7 @@
   },
   "vidfastProxyEnabled": false,
   "vidyProxyEnabled": true,
+  "bingebangProxyEnabled": false,
   "tmdbApiKeys": [
     "9de3de623b579f6e127c6ec603b9f74d"
   ],
