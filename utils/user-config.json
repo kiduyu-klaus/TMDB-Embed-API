@@ -84,7 +84,7 @@
   "enableAnime-dekhoProvider": false,
   "animeProviderCheckTmdbId": "1363974",
   "enableVidboxProvider": true,
-  "enableSuperstreamProvider": false,
+  "enableSuperstreamProvider": true,
   "enableVidloveProvider": false,
   "providerCheckType": "series",
   "providerCheckSeriesTmdbId": "1622",
