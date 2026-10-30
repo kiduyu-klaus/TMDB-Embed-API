@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const tmdb = require('../utils/tmdb');
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('MegaPlay');
+const fetch = diagnostics.fetch;
 
 const MEGAPLAY_BASE = 'https://megaplay.buzz';
 const ANILIST_API = 'https://graphql.anilist.co';
@@ -54,7 +55,7 @@ function uniqueStrings(values) {
 }
 
 async function getTmdbAnimeInfo(tmdbId, mediaType, seasonNumber) {
-  const details = await tmdb.getDetails(mediaType, tmdbId);
+  const details = await tmdb.getDetails(mediaType, tmdbId, fetch);
   if (!details) return null;
 
   const title = mediaType === 'tv'
@@ -70,7 +71,7 @@ async function getTmdbAnimeInfo(tmdbId, mediaType, seasonNumber) {
 
   if (mediaType === 'tv' && seasonNumber >= 0) {
     try {
-      const season = await tmdb.getSeasonDetails(tmdbId, seasonNumber);
+      const season = await tmdb.getSeasonDetails(tmdbId, seasonNumber, fetch);
       year = yearFromDate(season && season.air_date) || year;
     } catch (_) {
       // Fall back to the series' first-air year if season metadata is unavailable.
@@ -371,4 +372,6 @@ async function getStreams(tmdbId, mediaType = 'tv', season = 1, episode = 1) {
   }
 }
 
-module.exports = { getStreams };
+module.exports = {
+  getStreams: (...args) => diagnostics.run(() => getStreams(...args), args)
+};

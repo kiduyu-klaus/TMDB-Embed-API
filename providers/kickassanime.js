@@ -1,4 +1,5 @@
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('KickassAnime');
+const fetch = diagnostics.fetch;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -276,4 +277,6 @@ function wrappedGetStreams(...args) {
     return finalStreams;
   });
 }
-module.exports = { getStreams: wrappedGetStreams };
+module.exports = {
+  getStreams: (...args) => diagnostics.run(() => wrappedGetStreams(...args), args)
+};

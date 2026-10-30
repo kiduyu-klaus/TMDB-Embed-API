@@ -160,6 +160,1745 @@
       "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
       "expires": 1793387781167,
       "subtitles": []
+    },
+    "movie:155": {
+      "tmdbId": "155",
+      "type": "movie",
+      "season": null,
+      "episode": null,
+      "imdbId": "tt0468569",
+      "credentialId": "510b77de179e5e5b46dcddeb32632438820162064cf35f68f2f53df6f839bdb2",
+      "expires": 1793412591914,
+      "subtitles": [
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c5a/id/1951925188?format=srt&encoding=UTF-8&id=tt0468569&tok=3.mnU0hAaEGHyc8x7yOh6Tl_ZmLBNNEpH7nBuLZ9Mx5y6cTVjjBwAJfruRi1969CR5sqCnCqSlua_obZZsG2DLVkSDucaj1QzNAJOtC4cTN9wbQAK9FhL4kRcd8eWKyfEM",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a90c4d/id/1951925040?format=sub&encoding=UTF-8&id=tt0468569&tok=3.ROyZiOugm275P7mC5oDs0HyQXh8TUUsTUOkWP8A1tsZIiADURSRg5zbooGr3m5tTwFiOt3qApwm7BCbGjm8Ki3RHfLNa2p5i2xx2AagqrotlSMEX6hYup8jwH0qZP_nu",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Polish - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c4e/id/1951925041?format=sub&encoding=UTF-8&id=tt0468569&tok=3.zIE_OjOGztNEKjX6kwc-Xm1C5kLy-xP7k363L24pvcQdwSALC1yK4EZuRhovNf0-dQbp8tSje0A9PVR4l71vyuCXF4PGL1udxG6PgMGt0joK2Gsh9apIMUVnm7cEC-qd",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Polish - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c58/id/1951915781?format=sub&encoding=UTF-8&id=tt0468569&tok=3.k4rcdVbO_L1KsPAWxZExXItoj2Xq6idAqgzetZQDJldAc3Q07Q4GVgWfOlXZevlKdaAFGKAhxIbhDxGBCbIECzO1AR-SIrCbAJFLUGqDaVOAFHVjwiCDZqMlZWtU7RkH",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "Polish - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c59/id/1951915782?format=sub&encoding=UTF-8&id=tt0468569&tok=3.Fz7if6Uddnfmm9FN8GQ1vVV6TwYVy71XWx22RJQju0HfH9Sqp4nLU-aofliBdu7ZVpS4VGn99ajJciHIc7GIQWZZjlwRA_ZwAQqf3ki5F52L3LkjcGoYdgecCqC9SJ-j",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "Polish - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c55/id/1951925354?format=sub&encoding=UTF-8&id=tt0468569&tok=3.rM87fGuGp_P1SF5jJ5rdB6gEX1ITPb14_p7c3-VfwQjsFujOFLKPHDR1xNLl87qC6gdbOTvMbS0POMyEZSB9YM237veGtvgRBlUqmbQPJ4Gy6pJu4hcfSPUH7XE799Pk",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Polish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c56/id/1951925355?format=sub&encoding=UTF-8&id=tt0468569&tok=3.IHyIC8dvYgsXF2G53WL-rVox7DxwmAz-cwLyfWHiLbO1zyiuxjG20Bf4Flutl0EF-kFzN5jimOOW6YVgF6oJEXe1bdfHDum1p2iyITQM4ijCSr7EPscA4G6wLkK0ptke",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Polish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e70c60/id/1951897744?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Sdv-Qs_26PbI_JjlT-KqDw9rHW5ZC_L1qZF__74jgjr76UFuSC_hcHNAjAQ81mMczo7kOQ3UAma4aFz1-d_a2nTRX54vmyTz0_9sfzLYXzBI2brIwO5dcyR1Sk1srKAm",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - I do not know",
+          "name": "Romanian - I do not know",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ea0c60/id/1951899391?format=srt&encoding=UTF-8&id=tt0468569&tok=3.hZt_Bp73bJiCllGxsvdgDCd_gebzjZdYrTCQW6jvaUPB1nbgnzxvbFd5QcYpeZcQqrSrzefw9b592O6aalUk7SlKz8C9wOUm-USqpKgPMguGxKrTy0AkTP2DT3aQbSVn",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The Dark Knight",
+          "name": "Arabic - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c57/id/1951924870?format=srt&encoding=UTF-8&id=tt0468569&tok=3.6cSCMl5mR8ohQlLoecRPjr9XKkhxFZkTsxyhmEJ1LEYfZpWuWRSQUx5JQngOhj0FJhWebTtsZeA5a_vzLcTHKZM-tQ5iSQ-0-Amh4JnROOEYj-diagB5WrYz-BqxS9LD",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Danish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c58/id/1951924871?format=srt&encoding=UTF-8&id=tt0468569&tok=3.POLwtm5gALBaqZ02jF_-XGgwMUvxjquh-di565kw2dCnrBttV5q4LAn1sRKBXv6fcpTunjaw4NdnPzFzYzRwDm35IeCHTlJYcw7bEJKxw8WcPLmXEmaLVKx_qkHeSji0",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Danish - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5c/id/1951924983?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Ywf2bpJpX21eSu_EX0_PyV_rweTTkZcfEVwoo_ElRB9ouHPQT6K93tz_H3Nop6YN_s6oWgN8hg6FrzcyazRLKZNfipiEDtDb3flquWd1VFlRzbRuLlv16UggsgwiQ2IE",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5d/id/1951924984?format=srt&encoding=UTF-8&id=tt0468569&tok=3.9FtgzO2HCSt5EkYa5Rq6ep68c1osn_Tk2uiK4xbDbcfCjbompUNkpoBIu9YhNIMIf4cZVDRTofVpWRKG52W1VQsOjuzzatbGGvkqoMovjzJpygKz5MWUOXxQ7opnGxlg",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Portuguese (BR) - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c5e/id/1951924949?format=srt&encoding=UTF-8&id=tt0468569&tok=3.HhsG0jZKqeleo4pAncNNtI6uFA6uKqAAUwhwjJgZo40Ke_ZHmeSXOw5RQ-mM68YhncUXptq9TQkP_YjbPjBcY6XWs8nytgocr6OgnioYQHKIOJXFkjQTIetqxyBTvWnv",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c56/id/1951924950?format=srt&encoding=UTF-8&id=tt0468569&tok=3.yW5NQk1_HWT4ENhlfI1XZ2gfS2cBLwRt8x_v_cnStaVSe6u4KA_ehzvZxMkhrwJw6YICFsF1igcYqPhNMZIgzhRuBeD9XKO5l53zZlcarWRb-j0UPUpowybculQpkVtQ",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19eb0c60/id/1951899481?format=srt&encoding=UTF-8&id=tt0468569&tok=3._mgKKd_M9Dzl2zBzhvzOYIDgP-7jl_pR7Wb3M5QT5FTo2FEI5pq_1LDS0szPMugLiVNdV82pj1hA7DQWGNBkJkpYVbgivFEn4FzcTbyNZ1vqgTlg4t-3Mx-HPCSRi60C",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - The Dark Knight",
+          "name": "Danish - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c56/id/1951924707?format=srt&encoding=UTF-8&id=tt0468569&tok=3.aQtM9XNkdw0mTcW0iNLRsJWEVITo3vfSTuuVIRJYvWQRV7vo6WhVav_6_8XtDU3IjlwDPuq1PHPAziMKZOIxcczLRTwSP_r8rIn1DwrVLWNabY82oJtI8fQBduTt_nhw",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Danish - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c57/id/1951924708?format=srt&encoding=UTF-8&id=tt0468569&tok=3.lDkp0sKBnX6qFVak7O0MKxVF5wBYLWRNO6Cyc4BY2xj_rivfAEzCvQmftDhBl6kA4K1SKD61vYjKpGgYlBOsC4-pf1XLe6dUKo3setl8oZD75tR1dnMqCbJrQozuTmpN",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Danish - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5b/id/1951898144?format=srt&encoding=UTF-8&id=tt0468569&tok=3.3pNJvChtqux4mIvJ5I7VvDGVylxive2S1jZYHuXVXWWtaBv31glzkZCsywulIB_O87R3yVLRJ0CpMTDG4QL9oQXgyCdiED1yKzUTY2lYdJIT9McR8Wjj2W8D0GFSjjZs",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Batman The Dark Knight  2008",
+          "name": "Spanish - Batman The Dark Knight  2008",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5c/id/1951898145?format=srt&encoding=UTF-8&id=tt0468569&tok=3.O-R-PjSX1WgT4NLyd7C7YuLPKGSNu2RqVoHKyLXqLrAmlncpaJ-SdvyKDvtI-W6klfNrU5jhpySr60Wrqq2Txt_QEeIBfqIrDxGzjAhuqFH2fYFxQzNWSpBW61Kq2E-f",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - Batman The Dark Knight  2008",
+          "name": "Spanish - Batman The Dark Knight  2008",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c59/id/1951922919?format=srt&encoding=UTF-8&id=tt0468569&tok=3.LmuuUozuJgsGe72W842sTCOawWi59bHD8hUgd6nQ5T_k7bGNXsyoF45TEAf4wn1rdeKvIAmj0mjfETTy4NL6vop8zVUMVTHt5U6p3kRS8zk4ufInoE1LBuJVrMsXVNaY",
+          "mimeType": "application/x-subrip",
+          "language": "sv",
+          "label": "Swedish - Batman The Dark Knight",
+          "name": "Swedish - Batman The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c52/id/1951925306?format=srt&encoding=UTF-8&id=tt0468569&tok=3.bByNYafjugZrh5I_JrS3rGKETnx1IZ6EoIYLK5s6Ki0S8crsfoYGKYb3e3_2WBROC4i_RNL7VuAr2SFaX6mCYgR4O-2f26GX7sT_nezGL57rRUdlBYYt_KRHzVMJMjDm",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Batman The Dark Knight",
+          "name": "Portuguese - Batman The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c53/id/1951925307?format=srt&encoding=UTF-8&id=tt0468569&tok=3.6vvWmwbNXEhQocsZaWwJjCTJKjjfmGsJZNqPDeFEURTM-EB8grNCZ3FGBi-1ZccE3Vz8CpSKgaaRiLcB8xn56osa4fdXXS_kbZWrn0pKY5StCZzcb7XbJYEaEWixELgq",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - Batman The Dark Knight",
+          "name": "Portuguese - Batman The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c51/id/1951925314?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ssSaBNGQOLTVWJoaZ7V5SAXNR_Fgo6AqVS6LGNYC5VH73LmOp2gXFCqapu2NeJXOD6h3Y8GTbh5tXhObhPsMWbp2Gmw8Iaahl6_HZt7vlRFatKzuRkPhUVnd6ECwWOtf",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The Dark Knight",
+          "name": "Portuguese - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c52/id/1951925315?format=srt&encoding=UTF-8&id=tt0468569&tok=3.8UJfNU9jcE9ZOisupcHGLqspRNbPw6mohYZhTJUzFPW8ssNu7QLvwznPWuAQ0uaFWVfFBfmRC-J72nnHMwfb40it1ggNTQNzb_lGm1iJzO15qGDyUQsdI2ILn7nwhVXE",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The Dark Knight",
+          "name": "Portuguese - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c55/id/1951925129?format=srt&encoding=UTF-8&id=tt0468569&tok=3.1yOPxHJdwkM3mOd60mmcZUumtl-n7NB0unFePpHonqkXREvBsN4hPu97ewaIGFLoC1mIzDBzSZRTlVAaMX_39blA-IsXVpWLHfIMP00c_GJz_Y7rTQhH_BRPvG-Kckdc",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Dutch - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c4d/id/1951925130?format=srt&encoding=UTF-8&id=tt0468569&tok=3.BM_7HnYqJYHd8XtfQvILa4d9o1dc7GGtTSp0fkBidXcaUea7PHpGDYHsNcNfRRqVltfufk4Qp_Dk4TvBAhAuwirjmX7xevR9soyTgXCJHPjb2pO_5TvxzIw3Mq9vMU5r",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Dutch - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c5a/id/1951906972?format=srt&encoding=UTF-8&id=tt0468569&tok=3.87JJvgrxiFdUFRvnwHeOzF93Gk89ir_snaaIwDXRxQqNdUwtk48VHF5_eLJWEK7YFU-cnImCQTX7eSn9kX8qcd26Mu-Sq3exjdlkxKphzvIbOqiNCnbH3hAzQ3DDR1jY",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - The Dark Knight TS XViD-STG",
+          "name": "Romanian - The Dark Knight TS XViD-STG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c56/id/1951925544?format=srt&encoding=UTF-8&id=tt0468569&tok=3.wwTq4e8BP7qhXrEng1u0ekg2-7Sot-LkGUJH7TM1Qfrx7s6EVYEhQN9s4PqPnZdrHpKLVF7Y82fwrnpeVP40aDFHFBY0u_5rWaEndPwmePdtFcPuFe6loZyWV8w8Ohd4",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - Batman The Dark Knight",
+          "name": "Romanian - Batman The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5c/id/1951924839?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Osv719s1BiWQjooxYLSJMgUAUNuPPjIikVOdZyt0WkHmSXaki4pFhpEf49fxQXixwPgUBz1dH0V_zR5wQBiuZfqi-r0y2PJzo1r3cnVX2FQnRewfVzHhpCFrrZ1t6S6Y",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c54/id/1951924840?format=srt&encoding=UTF-8&id=tt0468569&tok=3.rqNMpKDB0Uqujtq0SuYYQyLZAVFyoUZChCeaKZOcFHCNoDIHY3Ql0zrXjrR3Qid4IkcM5tnT17DsA2jMjoJMLMbzhvmRcpFqzjqL8Kpm8lpGFhD5f1jqYvA4ej42HjKY",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a20c4d/id/1951922223?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ptXMfGJb27w36C4ZoNSSNvsxkNGR8e8-4Gb9qk00NYpf1BSAB662y8X0_67qHFEkEFcaWrXQ3kw53RxyEofnv4HTrO3gRq6hEyQcN7ptSkWLBf-bBueURnWQlmxdmfq7",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "name": "Greek - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19eb0c65/id/1951898469?format=sub&encoding=UTF-8&id=tt0468569&tok=3.lbqJFR-vk0pPuXQBTNoRJPZbLMOuzEECl-hB_yfxD6eYMO7g48_p9kXvQ44AmJCUL9xpJGvr5vds59FgM2180uLdg-rmRjprZueVAsQXYAPMONX1bIiZCzv3lQabpNMY",
+          "mimeType": "text/plain",
+          "language": "fi",
+          "label": "Finnish - The Dark Knight 2008 cam XviD-KingBen",
+          "name": "Finnish - The Dark Knight 2008 cam XviD-KingBen",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c5b/id/1951924676?format=srt&encoding=UTF-8&id=tt0468569&tok=3.hA-0AUigjIbP6eHq-fIV-yIX_r6QWDLQ1nn207h646oQq5dYHCaEas4NmO8nNYvz43nALR9gMSxXp1kOvYBxfOQNsy0J0cjcMncglcSBKMx5DoLQ2R7JpovTGaQVO5KP",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "English - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5c/id/1951924677?format=srt&encoding=UTF-8&id=tt0468569&tok=3.C5trQ9CQixmM01v7CiRa8YgoDEvdDXNCtZ6AX-3hEvUXGwyr5GTZWajb-m9c1miS36n69yJY9Kzk0wtCVKWXDD58lVfbITObq1divb8y8n5fiGEleoGHBwrWHuE05RSb",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "English - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5e/id/1951924886?format=srt&encoding=UTF-8&id=tt0468569&tok=3.FNw8YrluY0kmF-6cpgYl1eCIDz8FfubOPey3IkFYDsLGClKXzVMTKaXYQsE2RkB0RtnrmJizrJNinCUxdMplZlXb32jK0D63T6qd4VobNofhMojxnMSC-b-M2qEL8D0J",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDSCR.x264-DEViSE",
+          "name": "English - The.Dark.Knight.DVDSCR.x264-DEViSE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c5f/id/1951902999?format=srt&encoding=UTF-8&id=tt0468569&tok=3.CbCnIv6bwO0eKia_9a76PxMsBq17srHcjmckYCcem390-a1fIUSflFm-TZvRBcpQMj09A3izRgu0cCAyR66l87iOtfQDy2e27aur6KVhNSAkwnpt-syGh6fX0_DUXgak",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - TS.XviD-STG",
+          "name": "Portuguese - TS.XviD-STG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ee0c61/id/1951899824?format=srt&encoding=UTF-8&id=tt0468569&tok=3.towwh37VnfB5NMZVkvmLSN8Z3Z51kmkrtbXBMf_u1l2zK2_3xwF2EXqDavRDzwaNsCbl0BEGUWkJb3YpB4SsPkHgloxyEfuVIUn3lMwVpKL389Hyjb-F_tU_ik4rwfqi",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "Croatian - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ef0c62/id/1951899825?format=srt&encoding=UTF-8&id=tt0468569&tok=3.uqDhzQvbL428AqYmocEM1BTiCANcC2l7iQghuHvgrfQwx5xDjMV_mMbzP76WYC_Rb0IrFDnmGcVb5-WgUN7Z0YpwGgB8hNzZDjjW6gE4ffIqQxY01P9HFuSLvSVt93Gj",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "Croatian - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19eb0c61/id/1951899392?format=srt&encoding=UTF-8&id=tt0468569&tok=3.5VYVaXCG29BCoO5vKUP6OILwazqLt5EoyCZix_Un8qSYp4RPcC3Cw5l2Ej_UpGNCt0LfoQLPZ7kyj-usS3U0zqmqJvPpt7CS7g7bppKJP3DzmYsO70_zVAN7-b9cLKFG",
+          "mimeType": "application/x-subrip",
+          "language": "fi",
+          "label": "Finnish - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "name": "Finnish - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5a/id/1951925746?format=srt&encoding=UTF-8&id=tt0468569&tok=3.H7DdgVJ2iOgz7OSa74OSWN86GgT6SpNuQzT53QQ72BnYmD5x9CXUvMvtidf4_tp5pFe-Zyk7-6NoPv0Gf1VcVmkE4EIXa24AWc2jG9k2JTP_va0M1A_2YeYnR_esDYmF",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XviD-contempt",
+          "name": "English - Batman.The.Dark.Knight.PROPER.DVDSCR.XviD-contempt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ed0c62/id/1951898673?format=srt&encoding=UTF-8&id=tt0468569&tok=3.g299JcddNhczwAQoMF4O_pPegxrfu6l1_AzqklLOdxO2IbUlMVffZRQZBeEPaStaBySfip0_ARTwPRcXpBAqOuZZMWVis9GxnH6gcFPiAJTvmjUTI7ue7wj0paYMQ64K",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - batman The dark Knight",
+          "name": "Spanish - batman The dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ea0c5f/id/1951899642?format=srt&encoding=UTF-8&id=tt0468569&tok=3.b9MirnzuEHtlYYh9jUwFLplBgYBS8zLJXpZeHinub3-oLKfky-b-D-zgS2UL583ytQjmB69ZDbGH_lMPfuv8PErOMbXKN2BSIreSf-3M64xOogIGW4BNlagADg8tIyTa",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - The Dark Knight",
+          "name": "Turkish - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f80c66/id/1951899874?format=srt&encoding=UTF-8&id=tt0468569&tok=3.YER0Gq6HgjaL3Ry0pJWuicp_6qOyffb9rdpzsZdHgoYvNkKqNu0b5x3dFguKw3mHm8TgVSKihye9i3PqbjokFjXl1XX_13-knd4Li8ZwBGmAGPJyGR3Lv6dnvvy0-r2c",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - The Dark Knight",
+          "name": "Portuguese (BR) - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ac0c50/id/1951925043?format=srt&encoding=UTF-8&id=tt0468569&tok=3.yxyP_ek1-tGBuDs0uOf-_r0zTyz5_y3-Drt7EN0SvsQwJESCU4THDsuJos0nEwAFxQXH33haKpCwvD7u76azuxLmTNIJx5yPT4HVquxYR-CArm2IAwjcL-OAR-U1sVum",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Persian - The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ad0c51/id/1951925044?format=srt&encoding=UTF-8&id=tt0468569&tok=3.KUfJi9RSNHZjhIJiwWAiGg8beWnZQZcNBwyfUpEIzbN4RRN1R_yalPK5NHCxnm2wZpWofnzO7FQ2JOZRyQaJFrnQz49tEqPa9IPmFyOqHfelOQcRk4nNCvQcHNk1Fc3a",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Persian - The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c52/id/1951900484?format=sub&encoding=UTF-8&id=tt0468569&tok=3.Fz4fdIxVWCD6KRTwDIe54krVwb88STfdmw9Md2ybgq94MkcO-qOG1Qt6EbtTlL4Hjm44tv7IoAHiQVFOqA44vBMQMnjSBWFuSebFzojpjUJIVvSrp1txZ5Ba_dppczZb",
+          "mimeType": "text/plain",
+          "language": "fi",
+          "label": "Finnish - The.Dark.Knight.TS.XviD-Prevail",
+          "name": "Finnish - The.Dark.Knight.TS.XviD-Prevail",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a40c53/id/1951900485?format=sub&encoding=UTF-8&id=tt0468569&tok=3.ONb4tIjZMLOpXLCTHdUVJ7jfw5ha9D1XFov3D7Z9ToLarczKYVKQbG9GAZfTzkCsS6JDbnIJQLupZo2953yqYLZkHDbpaUX3g1_CN8-xrrblN_AozX1cH4t7NeDMPHLC",
+          "mimeType": "text/plain",
+          "language": "fi",
+          "label": "Finnish - The.Dark.Knight.TS.XviD-Prevail",
+          "name": "Finnish - The.Dark.Knight.TS.XviD-Prevail",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a80c55/id/1951904069?format=srt&encoding=UTF-8&id=tt0468569&tok=3.vpKuM5DuS0P7vWd7imrZLnXfaWQ0GFzZ5JjCK5P8SIEBtGaFiN_r2VxJFQzftPkx1K3YNarqzg9uEjyg-vfA6FfxtCZ8iU2kYO6_WPtoO1_8TPZDGFeg-LL8RcxXV4L8",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The.Dark.Knight.TS.XviD-STG",
+          "name": "Portuguese - The.Dark.Knight.TS.XviD-STG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c53/id/1951925325?format=srt&encoding=UTF-8&id=tt0468569&tok=3.HRheoa6UFd1jM64c4upfuLOa4kWiJmLXl0FibOKe-ZjrBRB5kAIzslCE2_GMrdM1eOKsG3Lqy4g_zXRrwPG4ZMSQJMW8JXhn0TtIVH1rhr3eACOoqe6Qlym0Bjq5yxiS",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDScr.x264.AC3-WoLF.mkv",
+          "name": "English - The.Dark.Knight.DVDScr.x264.AC3-WoLF.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c5d/id/1951904896?format=srt&encoding=UTF-8&id=tt0468569&tok=3.OeeLqySr4-m9EYwVvTZgFH-GK4SLq8vtM2hu2kXzo0pgIwzd6V1UECmy4rU5aw1m_EFjDKbUAcq7OU6ygfToWWuL0hxg2k-V8sTD5MQiiOFBxIkFmXOeYSULxgH43htc",
+          "mimeType": "application/x-subrip",
+          "language": "tr",
+          "label": "Turkish - Batman The Dark Knight",
+          "name": "Turkish - Batman The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c56/id/1951907922?format=srt&encoding=UTF-8&id=tt0468569&tok=3.6TZ3xKTf_OsmMRxjk18VcHTzy4cGfkeYs0IebS4_TNDGqnv0zQC2FJ-T3IgMOiHbSlUrxjYt8diphhuzuklGRpGMM4Qz2yoJL3BSbyaHj9CITW8ujd-8lyZcMXVkFAy4",
+          "mimeType": "application/x-subrip",
+          "language": "sr",
+          "label": "Serbian - DKTS",
+          "name": "Serbian - DKTS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c54/id/1951917361?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Lp4WZQHRFABz8Qp_G2Xu9Bw5B-prkwSSE2fh32Ttv5XWzoGErbj0zJxRpFFzhPRUQTijiGFkDpkYxoRfJVM2g82s34816IO4Y0tOHbf8Cyq8ykwc7glWhiGIXESFWhIy",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - The.Dark.Knight.Prologue.2008.720p.Blu-ray.x264-SIF",
+          "name": "Spanish - The.Dark.Knight.Prologue.2008.720p.Blu-ray.x264-SIF",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c56/id/1951924671?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ZdPFo7-Hj5RrIXimQB7cvF33Q3vjW7afdLpx4hMc6mxvFEOHCH0s7NVmOmigkTgRDOMiXSr3IvJh8npHDCsD975cztMlved613VTs2xflFopNP6pta_HQIAzLchXeh56",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c57/id/1951924672?format=srt&encoding=UTF-8&id=tt0468569&tok=3.UHov_e_2hvnJGsuavmnoTmH6agDYD52uDI2QyrAsno0bz9fh9F9IpAjPlFsArEGt9nfP0Z3IV9AWszpGhME_i1jtKQ5c1qFX05HSmU3vb8xBBU6AEhw6xwzfTI7PQoNA",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c57/id/1951919056?format=srt&encoding=UTF-8&id=tt0468569&tok=3.s8BDRaOJg3NV83z0tuaLKbZ0kvmeN8UiV-K_6BVXaST29ICXrCyk8yeVSHiC4zPkIGTvyvNH5jb0H9TijroNQTxa3HFENhCt-CJlsogrcU79rxfbrftQuEq6pJePL4eu",
+          "mimeType": "application/x-subrip",
+          "language": "pl",
+          "label": "Polish - The.Dark.Knight.2008.Eng.Telesync.DivX-LTT",
+          "name": "Polish - The.Dark.Knight.2008.Eng.Telesync.DivX-LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c56/id/1951924752?format=srt&encoding=UTF-8&id=tt0468569&tok=3.VmiiXFxmZmMB_5ntYDNH9GHc5RUACjT8N6kBnbNh6y7aBdteni4LuFGERoSeyrBCyj_I2HduFARhKdgCdge18-0yLJKi2kvRrPHXu7UW-HDeZ_zTUm5fU98wUE5Oi5SC",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Dark.Knight.DVDSCR.XVi",
+          "name": "Persian - The.Dark.Knight.DVDSCR.XVi",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c57/id/1951924753?format=srt&encoding=UTF-8&id=tt0468569&tok=3.a65xvhg3uSDHXi5vDqesmyqga_agEnPccBZnRbzwpd2bcap007HkWkgpGUCB9HJzLdF_etTvzYKs2LgtJU-W6GpQo2kiHnENp3KevEsJ315RyxxtZr-0L-0FP9B1wiNp",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - The.Dark.Knight.DVDSCR.XVi",
+          "name": "Persian - The.Dark.Knight.DVDSCR.XVi",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c54/id/1951924714?format=srt&encoding=UTF-8&id=tt0468569&tok=3.3i3hUBNQg6wrvBVYFjY9VqGhzeTTBGhqeJQMEHKqBy3hQAeAqCQqvgwnSMvX-KW4bSXPABCsfhoYoCjK5I_TFtdwH185ex2DsHg0FRqT9onsBxvIPha-SF7E_nTyXjLY",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Portuguese (BR) - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c55/id/1951924715?format=srt&encoding=UTF-8&id=tt0468569&tok=3.REXM75xfyvjcm6O_x3Y1lpu03okAhmw-DexoIk5eXqiMcm77S31GeA5ZERX745b5KsV_9lkjmGoHREx7CjsSYlwS5_yc5-E2KRVn01t8O5PEFgZLeemreRBUsCz2cZjK",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Portuguese (BR) - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b90c57/id/1951925266?format=srt&encoding=UTF-8&id=tt0468569&tok=3.2-O9tMyOqUWbxVuAT_oCMbJEOjyPD12bx3WzzboE_mRYcTFYbOOVstMZcfH4523qo7dAfgmElrOhzm3c1K71Hgvz85xIl34YJnCN76KIBGgfBM8OZMhYk0xgRIZuARps",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The Dark Knight Cd1.srt",
+          "name": "Portuguese - The Dark Knight Cd1.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c58/id/1951925267?format=srt&encoding=UTF-8&id=tt0468569&tok=3.1wdozcAgXOIMlB-mqyiQNGuh8uchlhQuijbo2h4BYXjb2BzGsvJhLZYDu1HtiNfqMK2tItns9_MAH7M9FIHVIfDgiYKDVEYXC1V5CQlL3_DgWJ_e02hFeMTMm154U-Gy",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The Dark Knight Cd2.srt",
+          "name": "Portuguese - The Dark Knight Cd2.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c54/id/1951925146?format=srt&encoding=UTF-8&id=tt0468569&tok=3.FNrwjwq2vpkL0eG4fNPY3w6KzBJ6lcq8TFOLCf0Du7LAlzxXb0FDZF6nlsIHE0Js4oUIHaSBGUNquq-0TmEI8428loXRa7bcxHK29isnE6WwmsSq6YtcYovqMVYSz89f",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c55/id/1951925147?format=srt&encoding=UTF-8&id=tt0468569&tok=3.U5cI29QQeU9TzcySrPnntGKyHxQY1GxFcn7pSY0DSES-CV3mjIs0NXnTJbjcWzwt6XutILdlsBnLnETCY97lD0dYUTfZJY5mDGnZT4KUMDuoTIVbzrZHVixAovBQtBMC",
+          "mimeType": "application/x-subrip",
+          "language": "cs",
+          "label": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Czech - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c5a/id/1951924945?format=srt&encoding=UTF-8&id=tt0468569&tok=3.en-ToTQ76jwCK3elEGNKz_kqpEfeUwwj1-j9bpyAmUePrGGAIq3vR4OCGLgq44uLwBpi6Nrj_2d_DCz4krhpP585chhvgMuSKDzRpIj_AiuYtWoMBWqAxHcoVoTT9prm",
+          "mimeType": "application/x-subrip",
+          "language": "sv",
+          "label": "Swedish - The.Dark.Knight.2008.DVDSCR.XviD-iAPULA",
+          "name": "Swedish - The.Dark.Knight.2008.DVDSCR.XviD-iAPULA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c5b/id/1951924946?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Xh_W6bflylHs0viL2z5MspWnKm_sIeJgxmQd8lgZAvF8v_3fdpHNJowvPyg5SlLoR1M88r8zgk6QIGXr-DMOyisv404SRDR0FrGDn930tu-A9q9jtT3Lfv7C8VJ5qRdQ",
+          "mimeType": "application/x-subrip",
+          "language": "sv",
+          "label": "Swedish - The.Dark.Knight.2008.DVDSCR.XviD-iAPULA",
+          "name": "Swedish - The.Dark.Knight.2008.DVDSCR.XviD-iAPULA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c55/id/1951925327?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ttVJkQO0n-CQc_8dI0f-mJbHEIcsr1g2rgt-DUqgi381m_EqYWOvau4YP39G62HVKWJzW2uDkBGL-H2hwPJXKzGmTEzBKpOF2mJQGsXa9y2RV6TP9G9EERpWTC0Tc7w9",
+          "mimeType": "application/x-subrip",
+          "language": "sr",
+          "label": "Serbian - The.Dark.Knight.DVDScr.x264.AC3-WoLF.mkv",
+          "name": "Serbian - The.Dark.Knight.DVDScr.x264.AC3-WoLF.mkv",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bd0c56/id/1951925634?format=srt&encoding=UTF-8&id=tt0468569&tok=3.XgeW2zC91SAIH5k-3nMbCoaN_GQpiT621TrSqioFMaQ_oldXrLD5F7S8vzXdTUev_WLon9-xA0iCKWBdRiQ4khXSNX3kGvHixbBi-mFNqe2GkiJAaF0u2ePFN9FV-Bnp",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - opt-tdka",
+          "name": "Spanish - opt-tdka",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c57/id/1951925635?format=srt&encoding=UTF-8&id=tt0468569&tok=3.OZRwcvphKXaMlkpr5drLB2TOGhfZ-0Xrulj8b4gzCXp017cntBdcn9omL9cFQUJK3oP7oEgO1JuNwTZziciPi5HEj17V47KubszEWKrb1xhKXY_RWBtVIR69lJZJM1Cd",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - opt-tdka",
+          "name": "Spanish - opt-tdka",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c5e/id/1951924859?format=srt&encoding=UTF-8&id=tt0468569&tok=3.DwhsnjJuUG5VJswo8Rjpjz12yxsqFYIaVRXB_05mWTp2ZJP6WY-5_M1lAItq5JXmNkiNBarKlNtMAVtpN2s_J6np0dy3DligCtt948h8iUBxCtFmiK4noZMYxLcQu-HM",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Hungarian - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c56/id/1951924860?format=srt&encoding=UTF-8&id=tt0468569&tok=3.a_8Pya9LBdUL2TIsMuS7iC_s32fP0pbcr89M-Jt6wdlBiKyW-07CZBnVLjrf401fUPeS82nzAWxxS-bbW43WJHBQsvSEGJxSSaNgB4HkH5KdOTrnfwNAAL9mUVHRkYwX",
+          "mimeType": "application/x-subrip",
+          "language": "hu",
+          "label": "Hungarian - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "name": "Hungarian - Batman.The.Dark.Knight.PROPER.DVDSCR.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5c/id/1951924758?format=srt&encoding=UTF-8&id=tt0468569&tok=3.qC5vlwd_aqgYYt4xljzyfPFtyxX97sU_BAjcwUkgh7kH2d4Eh3Y7aXDWe0mSCi-vmaKANQwI8Z_cvnkeQkmDs1BgaidYJl_ubNgvVl8jNpJxHbfIufOHv2lG2YQJ4cOC",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Batman The Dark Knight PROPER DVDSCR XViD-mVs",
+          "name": "Dutch - Batman The Dark Knight PROPER DVDSCR XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c5d/id/1951924759?format=srt&encoding=UTF-8&id=tt0468569&tok=3.4KCjtADsPlo2qcgXI0uMZY4gHjxg7QQOXSYBSxmKI2237qU3cGEq8_oJu2RqmkytKoh0CCljfnvSX_Jr-h1L_rfx2v0fR0yFjOm3x4g2AYp9g7y2V7x9S9EjfH4NRK2w",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - Batman The Dark Knight PROPER DVDSCR XViD-mVs",
+          "name": "Dutch - Batman The Dark Knight PROPER DVDSCR XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c30c5c/id/1951924668?format=srt&encoding=UTF-8&id=tt0468569&tok=3.UnwUXZXQk8Y46f-lOPuqgs9RW1KymieTNgawO0cr8Mcb5HAwAK0raxY7jcHHTVMjhmftbqw0y1HTs_fwWNCBzd1DbTR2kOB1oNPnkuEn_1_cv9cN1VBTu5vyOeKJyz31",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Dutch - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c40c5d/id/1951924669?format=srt&encoding=UTF-8&id=tt0468569&tok=3.niGCYAPAo4vtTCzrNrWumF77WQlYL7cNOTD2m59UUBlOJeTcSQly9JLruX23cSfwWj-11glnAkThVeloiUsF2xent47s3c6PsRy8fSX2glBQ-04I8o3sk7yuvrSvfM6K",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Dutch - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a20c52/id/1951902419?format=srt&encoding=UTF-8&id=tt0468569&tok=3.QQC95DCUf1jdZ2MHnAB3cF5DkkuEg4xUuo8IPOfTqzimeAgejZhgWNNXS-2isJ3fowW3HTxLqc1I0blfzjE5vUfmq3s_4enbZmejkgiXsBag3OgqdwPGwi-t1RvSLidI",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - The dark knight divx LTT",
+          "name": "Danish - The dark knight divx LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19920c48/id/1951903003?format=srt&encoding=UTF-8&id=tt0468569&tok=3.zpQWEPlamNGc4cJCudZOsTtXBsD0aQvg-qq3df-tug53-L8kr4UogGpiGxBtuu_fbZCp7V1iKoMKVQc2nYxyrKstzcZqAaUPF8g56QVaKljZGeqTMB3-GcTX5iI1O3rj",
+          "mimeType": "application/x-subrip",
+          "language": "hr",
+          "label": "Croatian - the dark knight.srt",
+          "name": "Croatian - the dark knight.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c58/id/1951924745?format=txt&encoding=UTF-8&id=tt0468569&tok=3.jMt3iUoQk3-r2xqwARQb1Xr-idDptFvkKyTDqsp0uKMZiS074DqiMZ-pRL81JwVYG7kgjlyG5vnommJqk3mVIic-z9tpTBpdFp3Sjcg5tWxaon-2SroacNd4_j0UsJhH",
+          "mimeType": "text/plain",
+          "language": "ru",
+          "label": "Russian - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Russian - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "txt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c59/id/1951924746?format=txt&encoding=UTF-8&id=tt0468569&tok=3.NwVd1SqfSyo5pgBDY78gEm4lPibMtCpMQukOCO-sdtwlafmexQM0vZQglRTObMvlrIPS2Jb2lYudkNeepwL_ggnvr14jWNb4eIWnYVNDVXY-ZH0xFWBLFPPTKP4jbjM1",
+          "mimeType": "text/plain",
+          "language": "ru",
+          "label": "Russian - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Russian - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "txt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c5a/id/1951925098?format=srt&encoding=UTF-8&id=tt0468569&tok=3.p0hxSpTqBaNMdvvSjFf4zNW8idIuGXZfZ5PV_vDH6Y9-H747uEVCO-K5Op9DQFB9HeUI5dPt5fTnnjnMCrCli6j_qpABdkJO38FCmjTrd0OtG7ImQXYrqYPin-X-oaVt",
+          "mimeType": "application/x-subrip",
+          "language": "nl",
+          "label": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "name": "Dutch - The Dark Knight DVDSCR XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c51/id/1951904605?format=srt&encoding=UTF-8&id=tt0468569&tok=3.cY7rT5qoBg699v383fYSITx_t5AhnqadxH7YdiK7aowcmj83LP5nJ6h4i15haus9wJhkY_l5AI4Ld-wtktEDwd9Dj31Hm3REzvWSlYNKgdo22vL7Tu0yc42KjTODqxD0",
+          "mimeType": "application/x-subrip",
+          "language": "ru",
+          "label": "Russian - Dark Knight",
+          "name": "Russian - Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199f0c4b/id/1951903420?format=srt&encoding=UTF-8&id=tt0468569&tok=3.4iOd308L4bl_9WHOu3RNcFZec5Ow5EV50jx3LxIAmVPklPmqh-_WhEadvxGWi-zcDccTZ7ARQGyMdgDY3EZvqCb8_uhH1Z5iz2V8lGcolXnFczC7H3KZMHCOf2hbFLc8",
+          "mimeType": "application/x-subrip",
+          "language": "da",
+          "label": "Danish - DivX LTT",
+          "name": "Danish - DivX LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19980c4c/id/1951901243?format=srt&encoding=UTF-8&id=tt0468569&tok=3.nk06fhLjdjK4Nj_Fx2nvXYMnAPczj6iEFZM6gUKjxl4H9jrPnbl9v0x13h4EuZDU8f6Q3_rFlwyLKRIMfzK6CP5CNjZNBCGjyU_9TLP7LBIkivhD7mmgLJ_w3Tbv5TX1",
+          "mimeType": "application/x-subrip",
+          "language": "pt",
+          "label": "Portuguese - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "name": "Portuguese - The.Dark.Knight.[2008.Eng].Telesync.DivX-LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c5c/id/1951917738?format=srt&encoding=UTF-8&id=tt0468569&tok=3.pu_4yO4HccHbggy0C8ujRDZ7HAJGd1ghx9Hms1XDaZIikayTBJLaUaUl7ZC5GqDAnhnIKFAgtILPQM_Sy9Aa2TuKo5DmiawtnE0gprjpMf67lr60fFrvE65nbSaESqoT",
+          "mimeType": "application/x-subrip",
+          "language": "id",
+          "label": "Indonesian - The Dark Knight (2008)",
+          "name": "Indonesian - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ab0c51/id/1951903561?format=srt&encoding=UTF-8&id=tt0468569&tok=3.-z2YoFjB6EKnymaP-H-i-PPsE77sHqnTIcxckWLDBMAH-sif3skaRbzsspxS41QtMlwjk0t_9D0bubeAJChPL-j-B35JcUNqyuqPJQZylTztJR4ph1hWaGCKM2PHjTky",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Portuguese (BR) - Batman - The Dark Knight 2008",
+          "name": "Portuguese (BR) - Batman - The Dark Knight 2008",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5e/id/1951919468?format=srt&encoding=UTF-8&id=tt0468569&tok=3.MRahdpfMa987KCphGIebog5MfhhbvIzV9PXXPck88dReu5UR_QLOL7fO0P1nFVaeZ0J82fZhFF6ms85BDyfIuHGn5mnUkIZYx58hyXkZaedctzwg5ZN7GrjND9MEVxaq",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - TS - The Dark Knight (prevail) Part1",
+          "name": "Greek - TS - The Dark Knight (prevail) Part1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5f/id/1951919469?format=srt&encoding=UTF-8&id=tt0468569&tok=3.FGzNBuNkTiUyMONNzjX-mKXxVsdpL7qTG0Ib8HIVJf1QQ7LzvsMUhJbu5GXV7wTThrWDLG1jHYkIkK4zo9u3T5YApi5t5OBon5307iILNbQ5mRN0JnozOFTAdCrotNg7",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - TS - The Dark Knight (prevail) Part1",
+          "name": "Greek - TS - The Dark Knight (prevail) Part1",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c56/id/1951924725?format=srt&encoding=UTF-8&id=tt0468569&tok=3.cRlWmE_-zqlrEAxKKtV6xHI2R14kVOulV3WoRUDDJM37g6S2FRtwWiTPAog0fTRFxleQz1zg_GuKV7MVg20XjmMSB8FWmOXcvsQfWhItDoG_DI6HtwhHfneNNfH-ajVN",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Arabic - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c57/id/1951924726?format=srt&encoding=UTF-8&id=tt0468569&tok=3.x4p2OC17WLcsCMpfkTvT_Oo8YaIxyjo0h2M39dMc41zwMgwWPxbf1KFkpFQuD1XCgrziMEsSFycNLgVvCZRU4sbaE6lg-7jq4w1ILod5W8mZ-bxrm0FEIgrX_Wp_ADs_",
+          "mimeType": "application/x-subrip",
+          "language": "ar",
+          "label": "Arabic - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "name": "Arabic - The.Dark.Knight.DVDSCR.XViD-OPTiC",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b20c51/id/1951905811?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ChH2jy_jQDwm4CmgHes0GG3Ixi72ORUT1PC2lb-31Bn8H6iglnhjiQvX90UjaIgCE9iPoCoBj-0R8Vxi097aC5JJfALIUNhY_OZUbZDWE7C-VhxjlLuMaWNEYkRhe6_g",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - The.Dark.Knight.TS.XviD.Dual-ITL2",
+          "name": "Spanish - The.Dark.Knight.TS.XviD.Dual-ITL2",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c55/id/1951925741?format=srt&encoding=UTF-8&id=tt0468569&tok=3.brPsxGmx7thS6PK7xd2dTAZHIvzqc7nDRJeLYIsZAWhbslfcasBI6fdtpNR8sQiCXCtWqiHv9Iy2gwYkLpR7ttmlwGU8TcnmJt5HKtfcjZuhVZs297D6_aZBN_kurVRt",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight (2008)",
+          "name": "English - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c61/id/1951905998?format=srt&encoding=UTF-8&id=tt0468569&tok=3.odCjXEX6j-4fVzRVh4qiLHA58m8mMHPvLMXQxZcSVlr43uTSA9PqOV6kZhrfuJIwOJ6z3l7Tbvlr8D48QwxiepIhC1jU2utwsma47YGddWlAo56PNVZQWJs8RQ5GM4sg",
+          "mimeType": "application/x-subrip",
+          "language": "es",
+          "label": "Spanish - The Dark Knight TS XViD-STG",
+          "name": "Spanish - The Dark Knight TS XViD-STG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b00c54/id/1951925047?format=srt&encoding=UTF-8&id=tt0468569&tok=3.SGRVe_mb0F_QfHExgVLsgl34vtKXL9Kw_zXQv4rFS8cpotVkHhjK4PCpWKDNdoXKM1t4WAaP4x-7UsQ0gEM5uzOdSW7gFLLDZnf0Lj3ztg5c_YGgyzjRHFiIrr81-kFV",
+          "mimeType": "application/x-subrip",
+          "language": "fa",
+          "label": "Persian - the dark knight",
+          "name": "Persian - the dark knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ac0c56/id/1951903287?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ooTK3J5-RW9BwUW9HDdR84UkYsKR8me81kTy8Cx-CR-hA0KIAaBDTaW1ZY16QObWmB96Z5aNT9SqF61USOJaxaEgmegW2NXUTJ1PwSGEfhqYh9YN97SJ_P1S_TQ4lzA-",
+          "mimeType": "application/x-subrip",
+          "language": "el",
+          "label": "Greek - The Dark Knight",
+          "name": "Greek - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5f/id/1951916886?format=srt&encoding=UTF-8&id=tt0468569&tok=3.9dUvkQLtuRsQN6QXmwzCWEQgN9KIa-9baCQ2BJj23Is4xbQGD2BMiW7m5V5O97JtRuvVIpCTWPeXo3r4w3nDpD4a2-E8xfQ5ijfQRNZjhOjoD8K-S4pf2aWP2sIN1t3g",
+          "mimeType": "application/x-subrip",
+          "language": "ro",
+          "label": "Romanian - The Dark Knight TS XViD-STG",
+          "name": "Romanian - The Dark Knight TS XViD-STG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ba0c58/id/1951925429?format=srt&encoding=UTF-8&id=tt0468569&tok=3.zXzoDUcpxttFC3tYU7mqUX-T4sSadGBqAwXL-e9hkqaRxqp69joNKAYgR0tZglsIVeX-Lly9cgA584aesKY-iiwqyZ3X-RmVMiweoYtEO0T_j6MK_Dc-Tj6nS3VJf_30",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - The Dark Knight (2008)",
+          "name": "Italian - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c50/id/1951925430?format=srt&encoding=UTF-8&id=tt0468569&tok=3.OfPozk-dJIBxRrojgUjgzDkC0DZMkHnH9iYFnCGMzPY_l5-Sj2aa8HEmz8EY_Oq1-gBh1Su7jMf3qGFa_kZ2peeAP0iUY57Bc_W7HqJurPIUrH9pvK0RTFUq7NBsbuFB",
+          "mimeType": "application/x-subrip",
+          "language": "it",
+          "label": "Italian - The Dark Knight (2008)",
+          "name": "Italian - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c58/id/1951925636?format=srt&encoding=UTF-8&id=tt0468569&tok=3.qO8TxdU6LDPaLx9Qfp5GwnvBrtRL8b0pVzTjb6Bacp74oX8IttqbLUzEyOED07_kJeOo5YOjLCyRrT6XzuJzxvFOcxQgUHnMmtiKQ1Pj09j5OvuAcs8J62F-p2f0c9Hp",
+          "mimeType": "application/x-subrip",
+          "language": "pb",
+          "label": "Brazilian (SDH) - TS Occor",
+          "name": "Brazilian (SDH) - TS Occor",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b30c51/id/1951915540?format=sub&encoding=UTF-8&id=tt0468569&tok=3.pe4kbKqEGtd52EDNoF1tQVL0cdeMN24RMOHK5t_zCGOQ2pSRlDGlSoJ2ppGsRIG2ozDWWjELkPXZ48q_3URqGSf8mjAk6f8HV_0RquHxDrsz_jYX3oi4LLY6uk4PegBm",
+          "mimeType": "text/plain",
+          "language": "sr",
+          "label": "Serbian - THE DARK KNIGHT (2008) Divx Cam (Fin subs)",
+          "name": "Serbian - THE DARK KNIGHT (2008) Divx Cam (Fin subs)",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c55/id/1951917731?format=sub&encoding=UTF-8&id=tt0468569&tok=3.dqdm-BBKUXx54F7m8ujdDG-5pnyyqzpElUQoQPd-lCdaHeaS7-0rWp-NgtVWZtYGUXP3MoFUw-ZtRme0tpWmKxcbLwoUkhgrFtBqYfrWEhd8Xqu8-obUX3nlMc0zYRwT",
+          "mimeType": "text/plain",
+          "language": "pl",
+          "label": "Polish - prevail-dknight-a",
+          "name": "Polish - prevail-dknight-a",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c55/id/1953224756?format=srt&encoding=UTF-8&id=tt0468569&tok=3.XLy0esFGHB5O6zzybhwidSKojq-UMKkutbrEDE1jJZqaylLf1J5f2t6TJBY-mM7mqwOZUKtTpi-k9ymfRLKI7FYOsjUi4XJA-Vx-rDMCdnIvrLq9n6TeFpDPytX1KE9I",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark Knight 2008 IMAX BluRay 720p DTS AC3 x264-3Li",
+          "name": "English (SDH) - The Dark Knight 2008 IMAX BluRay 720p DTS AC3 x264-3Li",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c5a/id/1951970638?format=srt&encoding=UTF-8&id=tt0468569&tok=3.yKEDoVF031_6mI1mqRtthZJvmkiNaTTZuCdh4lqO1ijZmyQqvc6cvFP_VFyjfW095Q0DvlLq7UhMIiDHmJaiBNLDUNGk6DO7rwSKgRbN8rwvHxX4ixR07gfxgwRbE3Rg",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c53/id/1951970640?format=srt&encoding=UTF-8&id=tt0468569&tok=3.F7uDlKy88cP50cccaDGsMC3psehBZObX4z68P0ZadBjiI203ejgzMVnNZHbiPBlF4CDQ-hecKaObmrhYXA4bYzo79vs4fN2g21S_S_S3oo-Visk3z8OHMkuwxlMlXfXK",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199a0c4b/id/1952183311?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Q_rvI0kzi9qYqAPmEz83F-hPG3dLQCUJFToy1DsN3yVq_6eAfiwne-MYlT-Zn2PAFchNrecZx6ALyKr2O7qJcRjpOWk10eye1rxsOJd-LMAow1gHMarlvzPkliW1sXDn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - [BluRay 1080p x264 AC3-Dts DUAL][Grupo HD-Spain]",
+          "name": "English - [BluRay 1080p x264 AC3-Dts DUAL][Grupo HD-Spain]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f00c62/id/1951988772?format=srt&encoding=UTF-8&id=tt0468569&tok=3.hgccqTvUj8O-uKoCkyMTLLIl9k5rgCTbKoHAT9MbFTEvaimvwveefEb6YP_mnSL3vXJr0YKo73QYfeJCOyLX4XlOrxd4bFdjiogP7jx44RvXWf3BjHXcC77Z4Nb4mE-m",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - 02:25:56 25 fps DVD NikonXp KLAXXON",
+          "name": "English - 02:25:56 25 fps DVD NikonXp KLAXXON",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c55/id/1951970624?format=srt&encoding=UTF-8&id=tt0468569&tok=3.JclbWtogb29NMOWfnj1S1Pm8cKFDpamUDMFRxud8MZObwPjNFNKUAxn4okOcfXtlqGXv19MSTttHhcTyskI7lu_oeHPeJQHYLEJWripZNX2kZiK-4Jeoc_AFZDw2dtTp",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c10c56/id/1951970625?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ffG_0fl-B27rHpufe9CoCor5Azq2tGoSw9wXC0SZTTbYeQjbUll6KF2jpc1uAMSXn55OJZy-ujYj_StuYymSdSgL7TnRCSDYEes7mdiwSeoODEcnkyvq7vDm8U1p9AFa",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e40c5b/id/1954894271?format=srt&encoding=UTF-8&id=tt0468569&tok=3.urj46cNBiaoNIxekoom7iIler2QBf5yqwC9ayd1f-E4IpDow3Ih-C2Gc4TF0Gwv3yROITur6P6MzUmxhM31sm31vBm0Ba9oUqB5HzUfUC1aSs7TzaKGa5L6w8vpmPOV9",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.1080p.Bluray.x264.anoXmous",
+          "name": "English - The.Dark.Knight.2008.1080p.Bluray.x264.anoXmous",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19930c4f/id/1953019217?format=srt&encoding=UTF-8&id=tt0468569&tok=3.QzDXpTMa5HVcozaVc0E_4KVyppc5ON6UI8MPsI8GQBZyj36j0U2yzj1FvJ_M-jz_rSXKWVNK_V77Iv1prgOrKs2jbhcgL0IMznBPwXORjgL7JNt0wkuGRuCrfT8iqSXa",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.BluRay.720p.x264.DTS-WiKi",
+          "name": "English - The.Dark.Knight.2008.BluRay.720p.x264.DTS-WiKi",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e90c5e/id/1951987931?format=srt&encoding=UTF-8&id=tt0468569&tok=3.PdDXJOJeOi1VKCN_a-bwXx46UlReicFkrhsfx3Bim9B4Tk5-HfeM6Yza6GDBKntMz4MmmtSoYFAE00zcnz9j4kCT2W0jQN7hqno7kLwqendyuVe6-QHr0kyMHQ9v35lY",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - 720p.BluRay.x264-SiNNERS",
+          "name": "English - 720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c59/id/1951985730?format=srt&encoding=UTF-8&id=tt0468569&tok=3.NPD60ZtReq_RKpbVBfuV_RmYYSgKpGo4mVGJU54o1QOOOvNzASipz5-U1HckV4vFwHe0rRRzCoRq_HZvP6PccQcjT3r6wwUEp1hEpQoVOz5cCBboE_ReVRl-svYunpsn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c5c/id/1951996137?format=srt&encoding=UTF-8&id=tt0468569&tok=3.0OeICFm2vrEf4lQ0gDgUZVabiqFGKETkiqxt_tkUPv1Gdf-3krW8W65I2tXZ4PD9-Iswl_Rsd8RcXvbk9mXrDpqa8odIQBak8XsfQxcQoJpxB7OGAo6h2SKwhmhtz0rQ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "name": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ee0c64/id/1951987928?format=srt&encoding=UTF-8&id=tt0468569&tok=3.WvMMfJG9oWrHFaLkhJg5OpJVKXWTfem5zsaedHfQEz5LFAANG1tNzh1kIaXakt-PzGbWZZMQ3WfIvsUc8KCfP7N05Ltd0iYj434RaHczEWps6A1btbc0STVKRPwbpwI4",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - 720p.BluRay.x264-SiNNERS",
+          "name": "English (SDH) - 720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5e/id/1951996139?format=srt&encoding=UTF-8&id=tt0468569&tok=3.rXA8lt4vAyuha2cgP1qZkZQktcujPbGRexbmn-ymGmIcagI2JBSg4wHcA32nHKlfwmVyUbLoLQ9kCmfbUjN7H-2im7ESgSEQSO_8jOTvZishRHpeknHQs0T4b5WAAlP7",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "name": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d30c56/id/1951996140?format=srt&encoding=UTF-8&id=tt0468569&tok=3.8w3gTmg-z-9l5fcuhmSmVv16dldZHQSQyI3Kcn6QJExGJYStG7atUEyhWRCZ4zSCvd84-tqf_ZY9Tfp2eU25pQXWUsCzXwcSlLLAmBUiSxFoZ-8t1qkO5w9F8FUaliBr",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "name": "English - The.Dark.Knight.(2008).BDRip.AC3.XviD-D-Z0N3",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5a/id/1951971880?format=srt&encoding=UTF-8&id=tt0468569&tok=3.MPTP2JriYWoIHMOQqX8OQAtFk2xf0e32ev8ITR5qkFDANhYbhDofn4S9dFL3IRJk__zPg5VSfQuAgJB8ZZxgczE-p2_svVdiFPUgGuOgDpRbz2WSGIXIFNUd1fqnJ3cE",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.DVDRip.XviD.AC3-iAPULA",
+          "name": "English - The.Dark.Knight.2008.DVDRip.XviD.AC3-iAPULA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d30c5b/id/1951971881?format=srt&encoding=UTF-8&id=tt0468569&tok=3.HJJB5zhSyqDrnndSeray4cWIMIXQdxgPJANMgdT8Jj5Xsd6fBX_K-ZOJ9ttkZQ0jU84CNsNiKf0f82DkZYYCQ4QOcW1EKkUUY5c3ILHICxKPOWmnC9Np90i1NVmk-FKQ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.DVDRip.XviD.AC3-iAPULA",
+          "name": "English - The.Dark.Knight.2008.DVDRip.XviD.AC3-iAPULA",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c57/id/1951970671?format=srt&encoding=UTF-8&id=tt0468569&tok=3.PjY25GqK7Ti0WOUIyjmHrpnPUCWK3cmJmoFPlg3Ad01UkvpgB6PZkd7ht0Xcesi0juI-JyPJe-N06alP54o9MHFxj0CNaG6hQDgTIUHHq5yFcIE3cnQ_QtdMJFbtRYct",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - 02:32:11 23.976 fps DVDSCR LTT",
+          "name": "English - 02:32:11 23.976 fps DVDSCR LTT",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5d/id/1951970488?format=srt&encoding=UTF-8&id=tt0468569&tok=3.JdQZ7tNy8bUfTnViI-mWiFnXUOrw1VnfX5nVxZMb8UI3HwKO7Jr3VFYaAgh-l6788kpbs1uYWzDV1ZzQpzKbNguyshSp_tywjnlrBj8L-ORt0xpGaT1TAYl32FtVnd9o",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English (SDH) - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cb0c5e/id/1951970489?format=srt&encoding=UTF-8&id=tt0468569&tok=3.MZlVh9h4hcb99V3o7C02iUDkT6jPKAyscCZhfUxPWWTBErCD0eXf89hpYghbQctgV0Xw8ZkdE6VH8tcPgcBxCacYliOY49hJIA5gE7qTk9gcb1bhMSpJ0JkGFSTQLGJd",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English (SDH) - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19eb0c63/id/1951989529?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Nu5L4PQhyBaEajJznUE8dX5bVXsTGWAzjY06dPoXs_2loPa4CFbnBVlkL8b1gucNL4qRYRiXjAZAjKm1HzJSnj_tlXOdyG6X-y-sjFln_cCJ--trzaXjjJOC91gbxD_d",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "name": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19940c54/id/1952005957?format=srt&encoding=UTF-8&id=tt0468569&tok=3.cRMxJSiGV00UAvxlzBlnfecqJX11wS680jGLENqQ3ptRheicd_R7y3wKVT5S_zEYeWpgClrnt1Be2YnbkyPDKyvuI-3NjOKO48ofoK8iJXHuaHbD6UtRPG71UW1uBZ6h",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d70c5a/id/1951979053?format=srt&encoding=UTF-8&id=tt0468569&tok=3.K5rkF8IFnjbtkbWJKHKPoY5D5DoY96CRVmCMmXvWnLmpN947C_Y3ztkmnZf_9TJyr1nGuhncXE4fkWhcTWbrC2TPwFCu-hEztIOPMLEnwfjBu1CI736_ehpkwmKvqhYs",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight[2008]DvDrip[Eng]-FXG",
+          "name": "English - The Dark Knight[2008]DvDrip[Eng]-FXG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c20c52/id/1951976012?format=srt&encoding=UTF-8&id=tt0468569&tok=3.pxSX-WBOgSRgGaBGALBii-5_muLVSSPEjIy6pWqwojv_YS-D52YIX9xfdcAVP6J5LSdiUay2YU6deao7OMpMfkFRgxk4Lg98EhHrexfB_pLFNrnFJ-glNVL_IemsIaXd",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.720p.BluRay.x264-iNFAMOUS",
+          "name": "English - The.Dark.Knight.720p.BluRay.x264-iNFAMOUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19910c4d/id/1952131860?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Y8P7nNiVPK94D7GRG4wrX71Eza_-8OH4S_mUugVlOILeVFNKrZ2K1S4S3kuwswe7uUF_S8p0H4QAKKXPeyRVu0xdqHNm4TvGUTCTEaXXqzpuZeo6cmU57P3j-m5S63lo",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.BRRip.XviD.AC3-CODE",
+          "name": "English (SDH) - The.Dark.Knight.2008.BRRip.XviD.AC3-CODE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19aa0c57/id/1952164648?format=srt&encoding=UTF-8&id=tt0468569&tok=3.rqCJlZ-I1I40wpDJxkihwimLDB8-nJtaN6YhF0YEJbpiG_HNijSwVBHeaTO_3UFwbl_qW-hn_Mib4m3sMKJD_LETUIeX2O2d30sXNmDTQ8SqfL-SukzOBElIHrUeupZc",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman The Dark Knight.2008.BluRay",
+          "name": "English - Batman The Dark Knight.2008.BluRay",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c57/id/1951972282?format=srt&encoding=UTF-8&id=tt0468569&tok=3.28xZTxUsjLKkMxCJ2dj8yRFI87sjnkxU94KuFHlFjed_TsD3kCWiKnfSDBvGEfYa7zJgAmIU2II8k1-e4hEgorFViCZc_y2rg3crBVBXuIF5qPXgtBkJ9fsXKP4wSOSL",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c53/id/1952751705?format=srt&encoding=UTF-8&id=tt0468569&tok=3.BtTuXvHxko7ZmIeBE07WGOrM7_X8bpBlgMxNVRsQjhVyvOghFMJpi4-c_pV86fDlA5m1ZNFHVEsqc-BQaNTAXKSLfvWv19919sb3jPLexmB5ZC3-kF4RSqLE4frY2hR5",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight",
+          "name": "English - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c56/id/1951973451?format=srt&encoding=UTF-8&id=tt0468569&tok=3.xIIyUWggtssAx2eHnN6zNT-DKvHB5cZdz73LNF5ao7MpisJuh1Vhtuv0Utm32zPL3Uh2fj5RbbD7MJHtX4Ukvd8QxNNsHwgsnlRfej_Y4ke1CjPkYlvVzVOB8uXI3iGA",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19f10c61/id/1951989761?format=srt&encoding=UTF-8&id=tt0468569&tok=3.JCZT8oqOnWzva5R0Nn5yFTk-e7kQlD4cVs6fb2nqK7vWAOyPe4OU911w9R2Mrj4NxhyHKivB5zAOP6ep-4xsBtEBww1d3sq8eRmqTvAidHLvY2b2XB_FuelwfEI8-VP6",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.720p.BluRay.x264-iNFAMOUS",
+          "name": "English (SDH) - The.Dark.Knight.720p.BluRay.x264-iNFAMOUS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d90c5a/id/1952859541?format=srt&encoding=UTF-8&id=tt0468569&tok=3.SJ-pX3ntfuc9aGiV7Jpd4uYR-_VYIV8ssCWAVIV5ogbPA1MXcL-OmdUZcGD1Lu8HpNp7HGBEBrD4cJM-fuDnek_3ri-5dBseTwxCwxKFy_c_8EPWI1Cy85uvNZRlcUVn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "name": "English (SDH) - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c56/id/1951984143?format=srt&encoding=UTF-8&id=tt0468569&tok=3._v-nFc6msm1MceHJZVD74Bx3Ga5Sh7V_oxhc6yHiYOi9Z_kosHhrym7BDDChJNHk4TfdZL4RnqYQElV7u_PAQw6GyaAuYuPk8gK_vZr62RGkWLqWIMRTpgecnq0Ej3-d",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c5a/id/1952931694?format=srt&encoding=UTF-8&id=tt0468569&tok=3._TsxUav6C0xZRtosT99ovmrUI5YZvTtIa_7Y-_NnheA0lKSbvI_tUWi5QZ3azL572pqRGwkpjDPWGIvs5oMEkLwZaWIQs9Z44mlHn0FzcJLevQauL_SS1iQzSN57iOrU",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.DVDRip.XviD-OpeD",
+          "name": "English - The.Dark.Knight.2008.DVDRip.XviD-OpeD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d80c59/id/1952859540?format=srt&encoding=UTF-8&id=tt0468569&tok=3.5QTpja7QoNotglA_gZodYbd4WAXJe1S-7oTRP4CDBfFn0EPgCMH3R4Xa6drQY9lofdcmf96B30tn-qvUt_V-I_8cWX1gVNqOy0oeObsjf2XkRpEpVoYYw-HQyOnKNify",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "name": "English - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b40c52/id/1951970216?format=srt&encoding=UTF-8&id=tt0468569&tok=3.IB5oGcvh5hdQn85Euo8zTHxo6Can2wrE_qOXW2ok4CiA0z8aGj8gAnjYfuLvD_Jgt-u22SlzpR6CnHqA-jCquyugWzXixNZ-wvE72zo0zED7QfO3lXAiiJm5Re0ccCoE",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b50c53/id/1951970217?format=srt&encoding=UTF-8&id=tt0468569&tok=3.zZulzb2lI94SrYzszgpSPegp38w1cM0joyZJshr70xL7kulUbm90TcxHW0jlrEROQU2rdF7p3z1rfX1c1L5DHdcVZJ5CPhaNSPyywbWSWgjNfTOMnVXYoInM-oRZwFbD",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD-DoNE",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c5d/id/1951970758?format=srt&encoding=UTF-8&id=tt0468569&tok=3.-jLQPrZVnx4tvo8u5U5ptdqK3LM-BKPFMPN-M68R3BwMG03g6HBU0B6XezOA7D_QevINWXBFtBduAmfXmRvnV--r6MYseto31ZmHHsJv4b1APC4TokqTJ9kRT0HXnbIK",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Batman-The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "name": "English (SDH) - Batman-The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c5e/id/1951970759?format=srt&encoding=UTF-8&id=tt0468569&tok=3.aVIfYWD3olHj6FKD5r14Hg2f63M0ke5lli_DQxB2fglSa_idoS3_5GveNp3KSSkp-VrRclI1HlxI8DGPAgwiagJY22-EMmp32zowRoOLrbPADlzF6_L5FiCll09RqOQG",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Batman-The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "name": "English (SDH) - Batman-The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bb0c56/id/1951970247?format=srt&encoding=UTF-8&id=tt0468569&tok=3.OAdC0JFXciCgBxKtxTYvmXQxkfR5HgI9qhZdR7FzmB9xAoY-1PE7Dj1o24yTvGPaz9xRC8DpNc4mI4NcvGRcFefxs8Oryp2Koite1z6gdRP_70Dwr1mXtTX9cHEEo9wO",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "name": "English - Batman.The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c57/id/1951970248?format=srt&encoding=UTF-8&id=tt0468569&tok=3.qYGLEyukhxNuz7JBZuDuD_3YUfQVoTzvcwjclB2hFJvkGH1LORn2yRKS8Ie5gBwEqxL6HFg7hpELLFUORAphbStQbvg0VpTo3LfL-2Env-oV9qXm7Uf9j4wmtnSjMQOq",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "name": "English - Batman.The.Dark.Knight-2008-DVDScr.XviD~mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c50c56/id/1951970904?format=srt&encoding=UTF-8&id=tt0468569&tok=3.PWPzA9cIrNpxrSG_IS_FI9LfR9tuKjOBpMocONxr2g7DkY2rVGDN_cImhXmxI6i307ufnLrK559BJkRh388QEXYM2inXhCyVzjsA4krogzWOuNk8MLapcObgPcC_Bxgu",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c58/id/1953196418?format=srt&encoding=UTF-8&id=tt0468569&tok=3.lI_dSTJhjhu3WB7ZDhaWRHs7wv0hILC-44xgjgI9zof1EeCptMEkrDzXp6xTrTIA4YZnTTN-Q5B05UwYVJpIhHQfyLAlGi04XxP-wM548BhvO2uG17ELWrFyKB5qGTts",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman.The.Dark.Knight.2008.1080p.BluRay.x264.YIFY",
+          "name": "English - Batman.The.Dark.Knight.2008.1080p.BluRay.x264.YIFY",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c58/id/1951985162?format=srt&encoding=UTF-8&id=tt0468569&tok=3.qbox1sOhTH9oXDpOTzVoBSxgAs64oC7xQUpwLS2VsMUmBKhEZFjrSEAvMlRevspZA4WqC3jtEBa9WDvvQzD_Ec_vOj-wf_zX2m_ewfsRTcuX9ygIPV_eHO_np_EmNy3X",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c57/id/1951985161?format=srt&encoding=UTF-8&id=tt0468569&tok=3.IesYf3Y9Q7GAhIZG9jDzSCuxn9mCxjIBGLBniwFemCWeDJ_jo9pScGVUZzHF2jtufB9NTIGbhdV3pKs8jVX1iZT4YvkE6Ewa_0g8TVePus6lKBKgWDMWlSrZa4k1NF4n",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19da0c5c/id/1951978335?format=sub&encoding=UTF-8&id=tt0468569&tok=3.MgmkaFlUAUNwEfTSnM05wDA9CxP4XMnHk0sB-MJ3ZSNTQH62j0-ZF9ma49f9ygXkzoFP7cRicsEEjv-dAySXWEOdOTYJRa6J9Fqfl2svowdarnXXecWfi3ltM82d0aHg",
+          "mimeType": "text/plain",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD.AC3-DEViSE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD.AC3-DEViSE",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c5b/id/1951925783?format=srt&encoding=UTF-8&id=tt0468569&tok=3.0jE7fLAN7autZBQFqojmpjrIra_LXhqd5KrQBSZvl6AZx5p_w66xsn-vP_kWmMNECsl5C4hotvbHXaNwHszDUZHOsR4yuK-p2-pK94Den9vEHLJy7fkFDTLRvKMLPSyn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "English - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5c/id/1951925784?format=srt&encoding=UTF-8&id=tt0468569&tok=3.2U5xjxcdXEMFFeYyjiVvLfpEgagQOaEOKGhg3Ge1yYXkDajZhX2dotWhFnnhet5yXiLYtLEquVvcHAQHC4bzIgD2t2TIHC2c8P3lwuo3qzQ7vcwwgE7Fo74zFKxi2xkn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "name": "English - The.Dark.Knight.PROPER.TS.XViD-mVs",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e10c61/id/1951975847?format=srt&encoding=UTF-8&id=tt0468569&tok=3.mS3bbutrbS0TUAIwgK3SYlIZoAQ_K1-dTSQfmF91smp4vp0X-imChXdraCL83WfoDaFN-AsJHjZr0ABou7j91Kcx1bodv8grCxrsFOvQgiT2I_H9i77YUkeJOylQ_s2A",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "name": "English (SDH) - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c58/id/1951928075?format=srt&encoding=UTF-8&id=tt0468569&tok=3.1P0o86w-xDxlaDVO6AskgQwCuciNV7rAmVv0WhXLaVjEyHiI0RGncN-32UXhfVCzZC1tlQV4iG5YNZI1Oz8dG6G0-m6O7kC-oNUG6mRhlv5cH6JfC2OnTa_5-7g3NASx",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight with Trailer at the beginning",
+          "name": "English - The Dark Knight with Trailer at the beginning",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/198e0c55/id/1952002979?format=srt&encoding=UTF-8&id=tt0468569&tok=3.H9xc9CgFPq3xdVN0UepCsjEtH8dfkPafxs2yUhfaXQ-RkoivTsZwcAmKa_WiezjLbu0_08VnygX1zzxJ-veplkECXMZGSzH5_iAvaPNpVbTC3WTrXiNgf52OZF1rN3fw",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19fc0c67/id/1954599794?format=srt&encoding=UTF-8&id=tt0468569&tok=3.pdoweKwaip6baIYYCKH3THwCAsPAnqLyQ-7ShpMFCFgqB8-J1n6sfrgcPRaXyIYmHxEtRVrZ6-NrGux-p8ZtJ_vFswQmK3a-EUSAyOeYem6tIbdjdrLLJjj_QkHfKa4y",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight (2008)",
+          "name": "English - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5c/id/1951985148?format=srt&encoding=UTF-8&id=tt0468569&tok=3.ScAMjr63-BQ_3PJN1iyp28NOKGHX6HPZuqY_fc43X10pt1UdeTYoBxQDBFTSFQm7av_8b5oimTeRW3KZBSoSf25GBX2fN2THxccQLdqIPvnUpd4eK2oxJwMaSL2P2P8_",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.720p.BluRay.DTS.x264-ESiR",
+          "name": "English (SDH) - The.Dark.Knight.2008.720p.BluRay.DTS.x264-ESiR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ce0c58/id/1951985144?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Ed5A3JVpxxTLbGaF9ms6PXZlzec22m3Q2HGAdgB1n63Q-O7PZp68AIY1kAgMU3PeTvFe137hEF4SMEUxVlXEWFJQHEdmM_yMQO5MlThh8perOisZ0iYFzrH-2kvCpS7g",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark Knight 2008 BRRip Xvid AC3-FLAWL3SS",
+          "name": "English (SDH) - The Dark Knight 2008 BRRip Xvid AC3-FLAWL3SS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c54/id/1951925830?format=srt&encoding=UTF-8&id=tt0468569&tok=3.0_Ow9H-AW0KAbO6OXMGGFXQG6m0pj2kbjZF42-JQzzjoU6vWlLqR6LhPNlHhzFIt98Z2nJ7m1B_6StABNX6UPXLczHzHjOSoTAxrHvemwiAA8Gtm0evwSgUpQFC41Hhn",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 READNFO DVDSCREENER DVDR-MvS",
+          "name": "English - The Dark Knight 2008 READNFO DVDSCREENER DVDR-MvS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e20c62/id/1951975848?format=sub&encoding=UTF-8&id=tt0468569&tok=3.1nek6oYgkltqjqHhrTIcj7j6Ya80ZgCipZt3pZd2Ika9fU8llbuAVkIf2y-gbgsxgnifIFntOaA47nIt_JarE4tEeIkKRgvrJrXNgBZxMAwzP-ERREOf5zp_peGKYFaF",
+          "mimeType": "text/plain",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "name": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c5b/id/1951985147?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Iv1TdvOhabuWNSXqmhyXR2_L2kjS9_M1Lu-scR67WGIlHe4doFusp8_ZJO-L6EdGLCVIjvQAAhYLH1rxBzALTcsWzD41X-p-HKKVAOYLg8L-BvN0yvsSM-LMsoBmMY0Z",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.720p.BluRay.DTS.x264-ESiR",
+          "name": "English - The.Dark.Knight.2008.720p.BluRay.DTS.x264-ESiR",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c5a/id/1951985146?format=srt&encoding=UTF-8&id=tt0468569&tok=3.EaHEKrtQwKzvV9sm9K-V5q28Cex5rNjPM8AZwn8w2MULQZ4mpiGwV0FE4oPHTLSxcAjzF44Oaq32R7gTLoW9yUuq6YbwFIf-cVtnfqgx6LAzHBsMdedVlS4gxDcyoKt2",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "name": "English (SDH) - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a60c50/id/1952266161?format=srt&encoding=UTF-8&id=tt0468569&tok=3.bnIxTC_cesj3ZbDIcuou47iZ4Yqq76wRPnpOnM9N5eQvZlNGsBIGKzBuytBEsCd8cgq6SZ2ifKHiQGwUPXo-88aSxr16lm07UxTE5qX1_dpFXvj7gOpzdsyVcLrG7Kfe",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight.English",
+          "name": "English - The Dark Knight.English",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a30c54/id/1952252494?format=srt&encoding=UTF-8&id=tt0468569&tok=3.gfGcc3tT9_M6ypsyk7lZD7y0S3GgTF4L7GPuqRBH_ew9TI78xXgB-1Ys6lAIxoXAnFQbXPyDMzMLpWXPlm_KywpSgngkRGiLgywzWT6pYVzagfzZuDtmK56ejiMwfzuo",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - BluRay.1080-px264 [OCR Errors Fixed]",
+          "name": "English (SDH) - BluRay.1080-px264 [OCR Errors Fixed]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bc0c55/id/1951970345?format=srt&encoding=UTF-8&id=tt0468569&tok=3.TjtlxDD0StyqFJTr061TW-LAVQy8zn_FaiDKzkH5PvGRlMbBPP-foRIS6QogzS0aNHqs4K3vs5VYKYkdxX-4HA9O3s73JO4sgOa_wYiFLv6mVI_sU2U_zkW6Yp8qHXSG",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English (SDH) - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d10c5e/id/1951981397?format=srt&encoding=UTF-8&id=tt0468569&tok=3.LZmMPnUCy42LeaNDWKJv5WzoNiwfcB6vUE1ufoc9i4UADYYm1nySi5ZK9uFNs2a1uTtshhbxQtwmo7WUKWnn3B-H8YdjxknOdz7MGswy-SrzZow-xYxbhrT2ZqUFElZJ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.BDRip.XviD.AC3.Codres",
+          "name": "English (SDH) - The.Dark.Knight.2008.BDRip.XviD.AC3.Codres",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c56/id/1951985151?format=srt&encoding=UTF-8&id=tt0468569&tok=3.PSqKi6u08OEtomfA_QJNfSiH8Wvt308FEKkNRntBny_YVojx2AvE0AREzrtN96kRMLEZgls0QfLvUAJ0_vBP4otcdkPmnFr6KRWFCznJ1HjQoZnf3n72L3OrMn8tz5wl",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "name": "English - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d00c59/id/1951985154?format=srt&encoding=UTF-8&id=tt0468569&tok=3.87E3hBRZy3nY5jX8SEAct891D8Pc7s7j1nM-Ohhd9_dBmZgcevvzgVocb7UOUyVoDspbELBJuZMlHMzLS8qiMi5Vuq0yPw4oKSpGz5Qu6GcWoWkEY4agUzJxTWDd95Q6",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight[2008]DvDrip[Eng]-NikonXp",
+          "name": "English - The Dark Knight[2008]DvDrip[Eng]-NikonXp",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199d0c56/id/1952108568?format=srt&encoding=UTF-8&id=tt0468569&tok=3.CknMRhlAkM2Sch918pphf7buy8IMUUgYalj_IJSet6YC5JWcTaNIrVnNrbE4A2zKyGvX2yNkjXOU1vBKq_TUZRMSbE9Y86ATnPlLbVgMYN_HNq3uq3KyvQT3GyQuFhyo",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 BDRip-SecretMyth",
+          "name": "English - The Dark Knight 2008 BDRip-SecretMyth",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d20c5c/id/1954557384?format=srt&encoding=UTF-8&id=tt0468569&tok=3.TAegjERXLhnUSXqj8h2o9YevRgwBS1XfdRgRsreZzOSNLTi-i02PNe3TsETILKkgYgiMvoD3fvAJD0yEPUd6-c_tnBpCvGGLsjP4j7HABrQ62pQt_fFJ5fI79YYwV9q7",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.720p.BRRip.XviD.AC3-ViSiON",
+          "name": "English (SDH) - The.Dark.Knight.2008.720p.BRRip.XviD.AC3-ViSiON",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b40c57/id/1952167654?format=srt&encoding=UTF-8&id=tt0468569&tok=3.9tLlltu8I8Z0MRKUlpk1ACC98k25XoWGXTOFv1K0Gv7mjtjgmSpVLjPicC2D64TZGxN44UzxdXZz-eYH0_PRAOiX95c0cKba2upQRWpxh2rv6zwEG6aqoIgXelQnRw1p",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 DvDrip[Eng]-greenbud1969",
+          "name": "English - The Dark Knight 2008 DvDrip[Eng]-greenbud1969",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c59/id/1951985145?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Wd-5-t7TeKbWyqqCKHPtW7c487c_sHooW_MihFNHva4adSx109P2J1mamCHUrddU00JwwI-4uprJw7QHZB23xsEYPPTVnmo4vHSukJIIK5iaohY9cvWYZ7j9pPNDeXmD",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "name": "English - The.Dark.Knight.2008.PROPER.720p.BluRay.x264-SiNNERS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cf0c58/id/1951985153?format=srt&encoding=UTF-8&id=tt0468569&tok=3.lpU25_U0p7dTeciiowdPs4Aq6hYP3pdfBWvW1qTsBcpezxLtlluqR8CRoOMjZ7j0ZuLVvukWoyQ80bzYVmdezdHBIXviLYuHdOKWvNQpEPOnK4QoFmBlTKbfvY3FZ5MH",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "name": "English (SDH) - The Dark KnightThe Dark Knight[2008]DvDrip[Eng]-FXG",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d70c5c/id/1951984707?format=srt&encoding=UTF-8&id=tt0468569&tok=3.8WVEZDNdO-fnMmfsed13KShOk_uLxUiYvuRDxJpCKN1eyegRU8qEAU6Ejuq_CuKSfvurWNlEtzWqi8A9WJaaqLevUBdzz4wSPGOm08IAXpvoveks8nPVoRLVZsycp0xK",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight [2008-BDRip-H.264]-NewArtRiot",
+          "name": "English - The Dark Knight [2008-BDRip-H.264]-NewArtRiot",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cd0c57/id/1951985143?format=srt&encoding=UTF-8&id=tt0468569&tok=3.pEq0WUblKrRxuFfXrmIOoaeIaTVqLVuUMgy_mMtZhwCqzJGTr_TDm4OsQhzVn4wBpOLEeEeuY6vR0VzGY0Cqq7XHqGUbCaUgkrBjjrc3_7CxxFg0JA4BOlrpnXtB9PJj",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 BRRip Xvid AC3-FLAWL3SS",
+          "name": "English - The Dark Knight 2008 BRRip Xvid AC3-FLAWL3SS",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d40c5d/id/1951985158?format=srt&encoding=UTF-8&id=tt0468569&tok=3.g7VPs10-0d9XHUsJ8XPz2uMonZ010mm0d8-xaJMqEriGNjQiJMxoZV4DCfd-Ucp-ZuAw1NJQ3sGo_kyRXXV-2UayM8u6sXVUi-iz7y-grxAouPV2zEAQoDv0W70JY_H5",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark Knight[2008]DvDrip[Eng]-NikonXp",
+          "name": "English (SDH) - The Dark Knight[2008]DvDrip[Eng]-NikonXp",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ad0c50/id/1951970007?format=srt&encoding=UTF-8&id=tt0468569&tok=3.lTZl3BbnHr4xWaCU0OatE80k_30xhMS3UN29-maNTNE_tsIMTV9FeJIdAn-MuQh9gzEdzbNsTqtAPCADzHMifx4n0uTB03WKpB_pIFuDVriuja-fbl95QBDjl60Dqpmc",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "name": "English - The.Dark.Knight[2008]DvDrip-aXXo",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19e30c5f/id/1954767546?format=srt&encoding=UTF-8&id=tt0468569&tok=3.jrQtvbD3pPzN7OiCr9YarDR--SA9tALHjcvBtXnTnxCm1IbLdh_B51hkNZml1z6hXLszLB6Iv1b3h2CmbZbg7ctIZVas7mGQfHjnEBvayoXhAtVIoLX5oxNTG2k72jbC",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.BluRay.1080p.DTS.x264-CHD",
+          "name": "English - The.Dark.Knight.2008.BluRay.1080p.DTS.x264-CHD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19af0c59/id/1953134895?format=srt&encoding=UTF-8&id=tt0468569&tok=3.0t_hBvUdk-f2VdD1PJU7ESjQu-bJdoFv0t98hKTm6nChF2zV8ychos8DouXdinrscg5qWEbHVSeYfT7XEecsGg9PUPER7D-UsZ_ZARej5_Adx-yt2tL7KbdUdpNrgyyv",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.1080p.Bluray.x264.anoXmous",
+          "name": "English (SDH) - The.Dark.Knight.2008.1080p.Bluray.x264.anoXmous",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/199a0c4c/id/1954261034?format=srt&encoding=UTF-8&id=tt0468569&tok=3.lpL0Jb6yJMXWv5bOcTyRfgF3-Uh7JsY1M27g4dpXBkvBJc2sF5DSzMcOkCXWsiMhY7SHtpxNoa7prYHoabL21x6XSEAPfq8CDJXq5GzVvoLKNj4EfIOxDIbCwL7Au_zh",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark Knight (2008) m-HD",
+          "name": "English (SDH) - The Dark Knight (2008) m-HD",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19a50c4e/id/1952168401?format=srt&encoding=UTF-8&id=tt0468569&tok=3.cX_0SztdUeS744qJ9SZfRLX7T09-j3U8xHFZZVvwJI_DZye70m4nYq2e4CeC7a-2nU-4_bWEwD3iqbcsdbwcfMWNYcPcBIbrHgxH5GCgM0cfd2zrLx45ksSEjVybtLtc",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight (2008)",
+          "name": "English - The Dark Knight (2008)",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c59/id/1951925790?format=srt&encoding=UTF-8&id=tt0468569&tok=3.tk3u_yF3ARXeTetFT-sUTwEbeMKugm3e8m0qZP_m0p1J4VYyIRj17O-eyLUM8vNqSdN609Hd7tk2q0da95fOzboDjHhMxC1PjS1nCDMj0Uolai3-zLzKsIbRT7A_LosM",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 DvDScR H264-KingBen",
+          "name": "English - The Dark Knight 2008 DvDScR H264-KingBen",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ca0c5d/id/1954831489?format=srt&encoding=UTF-8&id=tt0468569&tok=3.rKLJ2FypTVrwtIomEUMrX5Ei76cMK3brB2YrY9i0kwr8hq7JQjq9iHhg4i6mm6i77NRbDkY_WtDM8TV-5iHjkxH0HmKKrIrzOaNdOevtxkMT0Y6-1j-yqj9NRsqV83wf",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight 2008 IMAX BluRay 720p BluRay x264 AAC Ozlem",
+          "name": "English - The Dark Knight 2008 IMAX BluRay 720p BluRay x264 AAC Ozlem",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c60c57/id/1951974226?format=srt&encoding=UTF-8&id=tt0468569&tok=3.0609CYa9KK-rrg9IbHB_rTg6D7x1v8ZSJQjq4jidAXRIcx_12AniRtsXTfe6l4n12Zn_5lJ_n-Xq--c7lad-1_kEGTZvQS0JN2hNuECR8tJtgobZKR3QiiASZ2OACZvP",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman - The Dark Knight",
+          "name": "English - Batman - The Dark Knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19cc0c5d/id/1951938268?format=srt&encoding=UTF-8&id=tt0468569&tok=3.aIp0KSoAdjprbEMWnJHSfSin4RGw4_05I6BdtjeoOXoEDwEWhlaXgpOTi-VW1qckqQRy3Y3v6IhmNDVvbaTf93v_02nvHIO6Ls6Igkrrjt-Ow5SSRBzeQ9c9uQleXyX1",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight [2008]",
+          "name": "English - The Dark Knight [2008]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c70c53/id/1952849310?format=srt&encoding=UTF-8&id=tt0468569&tok=3.HT76eYCnIheRGEwA__cUI7ypYSHDHhFy8DpksjvdsiP61NjBGvOyknufLhbUHU-YLTREf67-Ls7JObMEoEzGWiy_1CEP8JjcXq1j2wIwbagGGdr2XqNs_HRHrutMfZAV",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.IMAX.BDRip.XviD.AC3[DUAL]",
+          "name": "English - The.Dark.Knight.2008.IMAX.BDRip.XviD.AC3[DUAL]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c56/id/1951961526?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Hujvjl9xKE7gGxO_vK6rn60ApfR40PTTfIkP-_AeGdCejcCtHJHdAgt9S-YnygjS0W1pG6MkUyDtJ6QxDuFELAlbCqG_enRYlb6UPKnoiEV5N2SaKMiLhP13yxFEMAaM",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Batman The Dark Knight [2008] dvd screener nlx",
+          "name": "English - Batman The Dark Knight [2008] dvd screener nlx",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c80c5b/id/1951963358?format=srt&encoding=UTF-8&id=tt0468569&tok=3.bLzxlbywIeNQWh-WfWGEApmjFLCAzEMnV22YKGuyrp13_kKaw6HYXUlQfVrP1svOKlj8pn1wWflSkjnh2ZM6H54QXKom8vtVR9u7-bYVTP242c3z8W3duOJmgdaTpCfc",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDScr.x264.AC3-WoLF",
+          "name": "English - The.Dark.Knight.DVDScr.x264.AC3-WoLF",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c90c58/id/1951947272?format=srt&encoding=UTF-8&id=tt0468569&tok=3.moxRWyeYa6l7Fi8M_2pfPFsfQEARjEX61l3LC_PXDY9BZmFmEY9tR7FHncsuE7LEiZ1YkktQaYrt_nhMJBeaU9PmzqHjBHZE8mMwqH6PdIZzZY426Rpbo8wT9Dl6KNss",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - Dark knight",
+          "name": "English - Dark knight",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19d50c5f/id/1953744795?format=srt&encoding=UTF-8&id=tt0468569&tok=3.7H6tAvpulAlWWKAeVWNzYxzaUB4EI4QRfKugUprgBtsIPPiPhVKXkp18v58tvr6viUetKdQS0fr3TEcWhtFGNkQcqKeZjPgUnAh5eJ4qcchxVQNuIMO5EIO9qsKN8PiG",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The Dark Knight (2008) 720p BluRay x264 [GlowGaze.Com]",
+          "name": "English (SDH) - The Dark Knight (2008) 720p BluRay x264 [GlowGaze.Com]",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19900c4a/id/1952170512?format=srt&encoding=UTF-8&id=tt0468569&tok=3.K21BVjhDsbb03c_3G8dOeqvRPAnSc9EW-V9ebgqVlRdZ42gw0G-uWUateBPrz6LYV6BuNvdjh66oKOyxelC_XgfkdYXFp7kDtXhhZ9Mgbq_YRTKzz14YHFx2ZvxFplho",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The Dark Knight.srt",
+          "name": "English - The Dark Knight.srt",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b10c4d/id/1951972011?format=sub&encoding=UTF-8&id=tt0468569&tok=3.muviLt2NbNG12VvK1e5W-ICD0rXlwEdBnWMDH_HiteGiz0MQo5Wc6KgR9j6uAVqKGydLYJJWIB54iUnbeCWCuHf6ABqjm4n-02i85FRxTMnNsbKoeAEE1bmXOm_IMexw",
+          "mimeType": "text/plain",
+          "language": "en",
+          "label": "English - The.Dark.Knight.DVDRip.XviD.AC3-DEViSE",
+          "name": "English - The.Dark.Knight.DVDRip.XviD.AC3-DEViSE",
+          "format": "sub",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19bf0c5c/id/1953175839?format=srt&encoding=UTF-8&id=tt0468569&tok=3.i3MssfG5KOHRb8eQbhux60maZ19nmiGRTbrSDv5TX5dQuycTlSzwdazluOaFCeB3fbYaSCV8h2T0W1bw5IfjBz7hwPIuXeAxr7kD0qp1aE6l147Vk3kZ7IY3fyTvh-qZ",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - The.Dark.Knight.2008.1080p.BluRay.DTS.x264-LEGi0N",
+          "name": "English (SDH) - The.Dark.Knight.2008.1080p.BluRay.DTS.x264-LEGi0N",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19ac0c54/id/1954084066?format=srt&encoding=UTF-8&id=tt0468569&tok=3.1LxNDap9f6AQnomsOqmHEoCAfTVEoqNwbcta6uHtQBIuzFu4_lXghKPjvKPKxcIXEqyfBBYNxImxeU6236laqcJZOJuaQchyi09nd6afL9SwNXoFgF87Q0osEFfsb3h3",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.BluRay.576p.H264",
+          "name": "English - The.Dark.Knight.2008.BluRay.576p.H264",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19be0c5a/id/1953580198?format=srt&encoding=UTF-8&id=tt0468569&tok=3.u1yNhxcz8IH4HBwAtChE0UoVMfWJKlBXtQQbAeYk4oFUQuC0GLU-EVP1xcYxY2Nsq4gNXu8ofnwtLwbckh3-LUShEmTVnpYhZtobhMPUzr_WQWJyE2OlIUIq-TATihax",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - Batman-A.sotet.lovag.2008.iNT.DVDrip.XviD.Dual.AC3.5.1-RH",
+          "name": "English (SDH) - Batman-A.sotet.lovag.2008.iNT.DVDrip.XviD.Dual.AC3.5.1-RH",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19c00c59/id/1952819148?format=srt&encoding=UTF-8&id=tt0468569&tok=3.Q9OQVnPfZHRj6Qd4Tlt1f4bXG1RIwakbTsUGMEIXWpckmgaBWPXWDs-QOuPAlI2S1WVCQO7kHO28szPE2ayZPS_sBZr5OqgE0CJbiRNDwpIPZfuNNcubGUzMrQPASdpf",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English (SDH) - iq-tdk",
+          "name": "English (SDH) - iq-tdk",
+          "format": "srt",
+          "headers": {}
+        },
+        {
+          "url": "https://sub.wyzie.io/c/19b80c4f/id/1954920701?format=srt&encoding=UTF-8&id=tt0468569&tok=3.rukphHZ4jar2PMCbP56d5Q0gHF4Slf0uDMzD9UEzRQVsfJS8sng63LYGECKyvPNmp4AuJXpcdiS0HM2c6A6I-7_OfO7dSEBDHihQMQ2XQDo_Xe_UKbX6GBvJQ6fdoh4W",
+          "mimeType": "application/x-subrip",
+          "language": "en",
+          "label": "English - The.Dark.Knight.2008.720p.BluRay.x264.YIFY",
+          "name": "English - The.Dark.Knight.2008.720p.BluRay.x264.YIFY",
+          "format": "srt",
+          "headers": {}
+        }
+      ]
     }
   }
 }

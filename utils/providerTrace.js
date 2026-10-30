@@ -58,7 +58,35 @@ function createProviderTrace(name, options = {}) {
             throw error;
         }
     }
-    return { log, run, fetch };
+    async function axiosGet(client, url, options = {}) {
+        const requestId = context.getStore() ? ++context.getStore().requests : 0;
+        const started = Date.now();
+        const requestUrl = client.getUri({ ...options, url });
+        log('request.start', { requestId, url: requestUrl, method: 'GET' });
+        try {
+            const response = await client.get(url, options);
+            log('request.response', {
+                requestId,
+                url: response.request?.res?.responseUrl || requestUrl,
+                status: response.status,
+                ok: response.status >= 200 && response.status < 300,
+                elapsedMs: Date.now() - started,
+                contentType: response.headers?.['content-type']
+            });
+            return response;
+        } catch (error) {
+            log('request.failed', {
+                requestId,
+                url: requestUrl,
+                status: error.response?.status,
+                errorType: error.name,
+                code: error.code,
+                elapsedMs: Date.now() - started
+            });
+            throw error;
+        }
+    }
+    return { log, run, fetch, axiosGet };
 }
 
 module.exports = { createProviderTrace };

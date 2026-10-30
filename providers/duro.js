@@ -1,4 +1,6 @@
 const PROVIDER = "Dulo";
+const diagnostics = require("../utils/providerTrace").createProviderTrace(PROVIDER);
+const tracedFetch = diagnostics.fetch;
 const BASE_URL = "https://dulo.mov";
 const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36";
 const TMDB_API = "https://api.themoviedb.org/3";
@@ -10,7 +12,7 @@ const HEADERS = {
 
 async function fetchJson(url, referer) {
     try {
-        const response = await fetch(url, {
+        const response = await tracedFetch(url, {
             headers: { "User-Agent": USER_AGENT, Accept: "application/json, text/plain, */*", Referer: referer }
         });
         return response ? await response.json() : null;
@@ -135,4 +137,6 @@ async function getStreams(tmdbId, mediaType, season, episode) {
     }
 }
 
-module.exports = { getStreams };
+module.exports = {
+    getStreams: (...args) => diagnostics.run(() => getStreams(...args), args)
+};

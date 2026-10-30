@@ -1,4 +1,5 @@
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('PlayIMDb');
+const fetch = diagnostics.fetch;
 const { getDetails } = require('../utils/tmdb');
 const { adaptProvider } = require('../utils/providerAdapter');
 
@@ -65,7 +66,7 @@ async function getPlayImdbStreams(tmdbId, mediaType = 'movie', season = null, ep
   try {
     const [payload, details] = await Promise.all([
       fetchPlayImdbData(tmdbId, type, season, episode),
-      getDetails(type, tmdbId).catch(() => null)
+      getDetails(type, tmdbId, fetch).catch(() => null)
     ]);
     const streamUrls = payload?.data?.stream_urls;
     if (!Array.isArray(streamUrls) || streamUrls.length === 0) return [];
@@ -107,7 +108,7 @@ module.exports = {
   getPlayimdbStreams: adaptProvider({
     id: 'playimdb',
     label: 'PlayIMDb',
-    extractor: getPlayImdbStreams,
+    extractor: (...args) => diagnostics.run(() => getPlayImdbStreams(...args), args),
     headers: {
       origin: PLAYER_ORIGIN,
       referer: `${PLAYER_ORIGIN}/`,

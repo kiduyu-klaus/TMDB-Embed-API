@@ -1,4 +1,5 @@
-const { fetch } = require('../utils/providerFetch');
+const diagnostics = require('../utils/providerTrace').createProviderTrace('VaPlayer');
+const fetch = diagnostics.fetch;
 const { resolveImdbId } = require('../utils/tmdb');
 
 const STREAM_API = 'https://streamdata.vaplayer.ru/api.php';
@@ -66,7 +67,7 @@ async function getVaplayerStreams(tmdbId, mediaType = 'movie', seasonNum = null,
     console.log(`[VaPlayer] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
 
     try {
-        const imdbId = await resolveImdbId(mediaType === 'tv' ? 'tv' : 'movie', tmdbId);
+        const imdbId = await resolveImdbId(mediaType === 'tv' ? 'tv' : 'movie', tmdbId, fetch);
         if (!imdbId || !imdbId.startsWith('tt')) {
             console.log(`[VaPlayer] No IMDB ID resolved for TMDB ${tmdbId}`);
             return [];
@@ -85,4 +86,6 @@ async function getVaplayerStreams(tmdbId, mediaType = 'movie', seasonNum = null,
     }
 }
 
-module.exports = { getVaplayerStreams };
+module.exports = {
+    getVaplayerStreams: (...args) => diagnostics.run(() => getVaplayerStreams(...args), args)
+};
