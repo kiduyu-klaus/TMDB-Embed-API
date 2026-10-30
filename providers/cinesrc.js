@@ -41,19 +41,33 @@ const CLD_HEADERS = {
 // Prefer the environment variable in production; the bundled key keeps this
 // standalone module usable when no environment has been configured.
 const TMDB_API_KEY = process.env.TMDB_API_KEY || '9de3de623b579f6e127c6ec603b9f74d';
+const REQUEST_TIMEOUT_MS = 4000;
 
 // TMDB cache + eviction timers (prevents repeated API calls + timer leaks)
 const tmdbInfoCache = new Map();
 const tmdbInfoTimers = new Map();
 
-async function fetchJson(url, opts = {}) {
-    const res = await fetch(url, {
-        ...opts,
-        headers: { 'Accept': 'application/json', ...(opts.headers || {}) },
-        signal: opts.signal || AbortSignal.timeout(30000)
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
+// --- ADDED: Hard Timeout Helper ---
+function withTimeout(factory, ms, label) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+        try { controller.abort(new Error(`${label} timeout ${ms}ms`)); } catch {}
+    }, ms);
+    return Promise.resolve()
+        .then(() => factory(controller.signal))
+        .finally(() => clearTimeout(timer));
+}
+
+async function fetchJson(url, opts = {}, label = 'fetch') {
+    return withTimeout(async (signal) => {
+        const res = await fetch(url, {
+            ...opts,
+            headers: { 'Accept': 'application/json', ...(opts.headers || {}) },
+            signal: signal
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    }, REQUEST_TIMEOUT_MS, label);
 }
 
 async function getTmdbInfo(tmdbId, mediaType, season) {
@@ -62,7 +76,11 @@ async function getTmdbInfo(tmdbId, mediaType, season) {
     const k = TMDB_API_KEY;
     if (!k) return { isAnime: false, titles: [], year: null, imdbId: null, mediaType: null };
     try {
-        const requestMain = type => fetch(`https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${k}&append_to_response=external_ids`, { signal: AbortSignal.timeout(30000) });
+        const requestMain = type => withTimeout(
+            (signal) => fetch(`https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${k}&append_to_response=external_ids`, { signal }),
+            REQUEST_TIMEOUT_MS,
+            'tmdb'
+        );
         let resolvedType = mediaType;
         let mainRes = await requestMain(mediaType);
         if (!mainRes.ok) {
@@ -81,7 +99,11 @@ async function getTmdbInfo(tmdbId, mediaType, season) {
         let seasonData = null;
         if (mainRes?.ok) mainData = await mainRes.json();
         if (season && resolvedType === 'tv') {
-            const seasonRes = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${k}`, { signal: AbortSignal.timeout(30000) });
+            const seasonRes = await withTimeout(
+                (signal) => fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${k}`, { signal }),
+                REQUEST_TIMEOUT_MS,
+                'tmdb-season'
+            );
             if (seasonRes.ok) seasonData = await seasonRes.json(); else seasonRes.body?.cancel();
         }
 
@@ -209,9 +231,6 @@ function extractSubtitles(obj, subs = []) {
 // ---------------------------------------------------------------------------
 async function scrapeFlax(info, id, s, e) {
     const isTv = s != null && e != null;
-
-    // FlaxMovies delegates playback to Videasy. Probe the backend routes used
-    // by its current player and return only direct HLS/DASH sources.
     const params = new URLSearchParams({
         title: info?.titles?.[0] || '',
         mediaType: isTv ? 'TV Series' : 'Movie',
@@ -224,14 +243,16 @@ async function scrapeFlax(info, id, s, e) {
         params.set('episodeId', String(e));
     }
     const direct = [];
-    // The active player bundle uses /vsrc/sources-with-title; it may require
-    // the client's seed/encrypted `enc` payload, so keep the plain fallbacks.
     for (const route of ['/vsrc/sources-with-title', '/hdmovie/sources-with-title', '/cdn/sources-with-title', '/m4uhd/sources-with-title']) {
         try {
-            const res = await fetch(`https://api.speedracelight.com${route}?${params}`, {
-                headers: { ...SOURCE_HEADERS, Accept: 'application/json' },
-                signal: AbortSignal.timeout(30000)
-            });
+            const res = await withTimeout(
+                (signal) => fetch(`https://api.speedracelight.com${route}?${params}`, {
+                    headers: { ...SOURCE_HEADERS, Accept: 'application/json' },
+                    signal
+                }),
+                REQUEST_TIMEOUT_MS,
+                `flax ${route}`
+            );
             if (!res.ok) continue;
             const payload = await res.json();
             const candidates = Array.isArray(payload) ? payload : (payload.sources || payload.data || []);
@@ -278,10 +299,11 @@ function makeServerExtractor(server) {
     return async function scrapeServer(info, id, s, e) {
         const pageUrl = buildServerUrl(server, id, s, e);
         if (!pageUrl) return [];
-        const res = await fetch(pageUrl, {
-            headers: SOURCE_HEADERS,
-            signal: AbortSignal.timeout(30000)
-        });
+        const res = await withTimeout(
+            (signal) => fetch(pageUrl, { headers: SOURCE_HEADERS, signal }),
+            REQUEST_TIMEOUT_MS,
+            `server ${server}`
+        );
         if (!res.ok) return [];
         const html = (await res.text())
             .replace(/\\\//g, '/')
@@ -333,7 +355,11 @@ async function scrapeCld(info, id, s, e) {
     }
     const liveResolverUrl = `https://freakyniki.elaxo.lol/?${resolverParams}`;
     try {
-        const res = await fetch(liveResolverUrl, { headers: CLD_HEADERS, signal: AbortSignal.timeout(30000) });
+        const res = await withTimeout(
+            (signal) => fetch(liveResolverUrl, { headers: CLD_HEADERS, signal }),
+            REQUEST_TIMEOUT_MS,
+            'cld-resolver'
+        );
         if (res.ok) {
             const payload = preferCldProxyForBlockedRawHost(await res.json(), liveResolverUrl);
             const streams = extractStreamData(payload, [], liveResolverUrl);
@@ -355,7 +381,11 @@ async function scrapeCld(info, id, s, e) {
     const output = [];
     await Promise.all(urls.map(async url => {
         try {
-            const res = await fetch(url, { headers: CLD_HEADERS, signal: AbortSignal.timeout(30000) });
+            const res = await withTimeout(
+                (signal) => fetch(url, { headers: CLD_HEADERS, signal }),
+                REQUEST_TIMEOUT_MS,
+                'cld-provider'
+            );
             if (!res.ok) return;
             const payload = preferCldProxyForBlockedRawHost(await res.json(), url);
             output.push(...extractStreamData(payload, [], url));
@@ -380,13 +410,11 @@ async function scrapePrime(info, id, s, e) {
     if (!pageUrl) return [];
     const headers = { ...SOURCE_HEADERS, Accept: 'text/html,application/xhtml+xml' };
     try {
-        // EmbedMaster redirects to a signed player page with a short-lived
-        // session cookie and a hidden attestation form.
-        const gateRes = await fetch(pageUrl, {
-            headers,
-            redirect: 'follow',
-            signal: AbortSignal.timeout(30000)
-        });
+        const gateRes = await withTimeout(
+            (signal) => fetch(pageUrl, { headers, redirect: 'follow', signal }),
+            REQUEST_TIMEOUT_MS,
+            'prime-gate'
+        );
         if (!gateRes.ok) return [];
         const gateHtml = await gateRes.text();
         const gateUrl = gateRes.url || pageUrl;
@@ -395,18 +423,22 @@ async function scrapePrime(info, id, s, e) {
         const fields = [...gateHtml.matchAll(/<input[^>]+type=["']hidden["'][^>]+name=["']([^"']+)["'][^>]+value=["']([^"']*)["']/gi)]
             .map(match => [match[1], match[2]]);
         const gateCookies = getSetCookieHeader(gateRes);
-        const postRes = await fetch(new URL(action, gateUrl), {
-            method: 'POST',
-            headers: {
-                ...headers,
-                Referer: gateUrl,
-                Origin: new URL(gateUrl).origin,
-                'Content-Type': 'application/x-www-form-urlencoded',
-                ...(gateCookies ? { Cookie: gateCookies } : {})
-            },
-            body: new URLSearchParams(fields),
-            signal: AbortSignal.timeout(30000)
-        });
+        const postRes = await withTimeout(
+            (signal) => fetch(new URL(action, gateUrl), {
+                method: 'POST',
+                headers: {
+                    ...headers,
+                    Referer: gateUrl,
+                    Origin: new URL(gateUrl).origin,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    ...(gateCookies ? { Cookie: gateCookies } : {})
+                },
+                body: new URLSearchParams(fields),
+                signal
+            }),
+            REQUEST_TIMEOUT_MS,
+            'prime-post'
+        );
         if (!postRes.ok) return [];
         const watchingHtml = await postRes.text();
         const cookies = [gateCookies, getSetCookieHeader(postRes)].filter(Boolean).join('; ');
@@ -420,16 +452,20 @@ async function scrapePrime(info, id, s, e) {
         let sourceText = '';
         for (const base of sourceBases) {
             try {
-                const sourceRes = await fetch(`${base}${encodeURIComponent(token)}`, {
-                    headers: {
-                        'User-Agent': USER_AGENT,
-                        Referer: postRes.url || gateUrl,
-                        Accept: 'application/x-ndjson,text/plain;q=0.9,*/*;q=0.8',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        ...(cookies ? { Cookie: cookies } : {})
-                    },
-                    signal: AbortSignal.timeout(30000)
-                });
+                const sourceRes = await withTimeout(
+                    (signal) => fetch(`${base}${encodeURIComponent(token)}`, {
+                        headers: {
+                            'User-Agent': USER_AGENT,
+                            Referer: postRes.url || gateUrl,
+                            Accept: 'application/x-ndjson,text/plain;q=0.9,*/*;q=0.8',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            ...(cookies ? { Cookie: cookies } : {})
+                        },
+                        signal
+                    }),
+                    REQUEST_TIMEOUT_MS,
+                    'prime-sources'
+                );
                 if (sourceRes.ok) {
                     sourceText = await sourceRes.text();
                     if (sourceText.includes('"type":"server"')) break;
@@ -442,8 +478,6 @@ async function scrapePrime(info, id, s, e) {
                 const source = JSON.parse(line);
                 if (source.type !== 'server' || typeof source.source_url !== 'string') continue;
                 output.push({
-                    // Prime exposes a signed playable page token, not a raw
-                    // manifest. Keep it explicit so callers can load the embed.
                     url: `https://embdmstrplayer.com/play/${encodeURIComponent(source.source_url)}`,
                     quality: source.source_quality || source.source_name || 'Prime',
                     type: 'embed',
@@ -470,9 +504,11 @@ async function decryptVidSrcStreamUrls(payload) {
         const key = String(payload.vs.w || wasmUrl);
         modulePromise = vidsrcWasmModules.get(key);
         if (!modulePromise) {
-            modulePromise = fetch(wasmUrl, { signal: AbortSignal.timeout(30000) })
-                .then(res => { if (!res.ok) throw new Error(`WASM HTTP ${res.status}`); return res.arrayBuffer(); })
-                .then(bytes => WebAssembly.compile(bytes));
+            modulePromise = withTimeout(
+                (signal) => fetch(wasmUrl, { signal }).then(res => { if (!res.ok) throw new Error(`WASM HTTP ${res.status}`); return res.arrayBuffer(); }),
+                REQUEST_TIMEOUT_MS,
+                'mega-wasm'
+            ).then(bytes => WebAssembly.compile(bytes));
             vidsrcWasmModules.set(key, modulePromise);
         }
     } else if (typeof payload.vs.wasm === 'string') {
@@ -500,13 +536,14 @@ async function scrapeMega(info, id, s, e) {
     try {
         const route = await fetchJson(`https://vidsrc.sh/vs_src.php?${query}`, {
             headers: { ...SOURCE_HEADERS, Referer: 'https://vidsrc.sh/' },
-            signal: AbortSignal.timeout(30000)
-        });
+            signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+        }, 'mega-route');
         if (typeof route?.src !== 'string') return [];
-        const outer = await fetch(route.src, {
-            headers: { ...SOURCE_HEADERS, Referer: 'https://vidsrc.sh/' },
-            signal: AbortSignal.timeout(30000)
-        });
+        const outer = await withTimeout(
+            (signal) => fetch(route.src, { headers: { ...SOURCE_HEADERS, Referer: 'https://vidsrc.sh/' }, signal }),
+            REQUEST_TIMEOUT_MS,
+            'mega-outer'
+        );
         if (!outer.ok) return [];
         let html = (await outer.text()).replace(/\\u0026/g, '&').replace(/\\\//g, '/');
         const cfg = html.match(/window\.CFG\s*=\s*(\{.*?\});/s);
@@ -517,18 +554,16 @@ async function scrapeMega(info, id, s, e) {
                     const playerUrl = new URL(player, outer.url).toString();
                     const playerOrigin = new URL(playerUrl).origin;
                     mediaHeaders = { ...SOURCE_HEADERS, Referer: `${playerOrigin}/`, Origin: playerOrigin };
-                    const playerRes = await fetch(playerUrl, {
-                        headers: { ...SOURCE_HEADERS, Referer: outer.url },
-                        signal: AbortSignal.timeout(30000)
-                    });
+                    const playerRes = await withTimeout(
+                        (signal) => fetch(playerUrl, { headers: { ...SOURCE_HEADERS, Referer: outer.url }, signal }),
+                        REQUEST_TIMEOUT_MS,
+                        'mega-player'
+                    );
                     if (playerRes.ok) {
                         const playerHtml = (await playerRes.text()).replace(/\\u0026/g, '&').replace(/\\\//g, '/');
                         const config = playerHtml.match(/window\.CONFIG\s*=\s*(\{.*?\});/s);
                         if (config) {
                             const playerConfig = JSON.parse(config[1]);
-                            // Current VidSrc players expose streamBase and append
-                            // the episode parameters plus stream_urls themselves.
-                            // Older players exposed the complete endpoint as api.
                             let streamApi = typeof playerConfig.api === 'string' ? playerConfig.api : null;
                             if (!streamApi && typeof playerConfig.streamBase === 'string') {
                                 streamApi = playerConfig.streamBase;
@@ -543,8 +578,8 @@ async function scrapeMega(info, id, s, e) {
                             if (streamApi) {
                                 const streamPayload = await fetchJson(streamApi, {
                                     headers: { Accept: 'application/json' },
-                                    signal: AbortSignal.timeout(30000)
-                                });
+                                    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+                                }, 'mega-stream');
                                 for (const url of await decryptVidSrcStreamUrls(streamPayload)) {
                                     if (/^https?:/i.test(url) && /\.(?:m3u8|mpd)(?:[?#]|$)/i.test(url)) found.add(url);
                                 }
@@ -560,15 +595,17 @@ async function scrapeMega(info, id, s, e) {
     } catch (err) {
         console.warn(`[CineSrc] Mega VidSrc API failed: ${err.message}`);
     }
-    // Like the nested player, obtain a fresh IP-bound token per media host.
+    
     const tokens = new Map();
     const streams = await Promise.all([...found].map(async rawUrl => {
         const url = new URL(rawUrl);
         if (!tokens.has(url.origin)) {
             tokens.set(url.origin, (async () => {
-                const response = await fetch(`${url.origin}/generate.php`, {
-                    headers: mediaHeaders, signal: AbortSignal.timeout(30000)
-                });
+                const response = await withTimeout(
+                    (signal) => fetch(`${url.origin}/generate.php`, { headers: mediaHeaders, signal }),
+                    REQUEST_TIMEOUT_MS,
+                    'mega-token'
+                );
                 if (!response.ok) return '';
                 const text = (await response.text()).trim();
                 if (!text || text.startsWith('<')) return '';
@@ -591,6 +628,7 @@ async function scrapeMega(info, id, s, e) {
     }));
     return streams.filter(Boolean);
 }
+
 async function scrapeSpe(info, id, s, e) {
     const tv = s != null && e != null;
     const endpoint = tv ? 'tv' : 'movie';
@@ -602,8 +640,8 @@ async function scrapeSpe(info, id, s, e) {
         try {
             const payload = await fetchJson(`https://api.vidlove.cc/${endpoint}?${params}`, {
                 headers: VIDLOVE_HEADERS,
-                signal: AbortSignal.timeout(30000)
-            });
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+            }, 'spe-fetch');
             const source = payload?.source;
             if (!source) return;
             const headers = { ...VIDLOVE_HEADERS, Accept: '*/*', ...(source.headers || payload.headers || {}) };
@@ -639,10 +677,14 @@ async function scrapeVipplay(info, id, s, e) {
     const pageUrl = buildServerUrl('vipplay', id, s, e);
     if (!pageUrl) return [];
     try {
-        const res = await fetch(pageUrl, {
-            headers: { ...SOURCE_HEADERS, Referer: 'https://flaxmovies.lol/' },
-            signal: AbortSignal.timeout(30000)
-        });
+        const res = await withTimeout(
+            (signal) => fetch(pageUrl, {
+                headers: { ...SOURCE_HEADERS, Referer: 'https://flaxmovies.lol/' },
+                signal
+            }),
+            REQUEST_TIMEOUT_MS,
+            'vipplay'
+        );
         if (!res.ok) return [];
         let body = await res.text();
         body = body
@@ -663,8 +705,6 @@ async function scrapeVipplay(info, id, s, e) {
             const label = tag.match(/\blabel=["']([^"']+)["']/i)?.[1] || 'Unknown';
             subtitles.push({ url, lang: label });
         }
-        // The browser-rendered CinemaOS DOM exposes the selected media as a
-        // <source src="..."> element, which may be DASH with a query string.
         const sourcePattern = /<source\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
         for (const match of body.matchAll(sourcePattern)) {
             let url = match[1].trim();
@@ -713,17 +753,18 @@ async function scrapeViz(info, id, s, e) {
             ? `https://core.vidzee.wtf/streams/tv/${id}/${s}/${e}?s=${serverId}&e=1`
             : `https://core.vidzee.wtf/streams/movie/${id}?s=${serverId}&e=1`;
         try {
-            const res = await fetch(endpoint, {
-                headers: { ...SOURCE_HEADERS, Referer: 'https://player.vidzee.wtf/', Origin: 'https://player.vidzee.wtf' },
-                signal: AbortSignal.timeout(30000)
-            });
+            const res = await withTimeout(
+                (signal) => fetch(endpoint, {
+                    headers: { ...SOURCE_HEADERS, Referer: 'https://player.vidzee.wtf/', Origin: 'https://player.vidzee.wtf' },
+                    signal
+                }),
+                REQUEST_TIMEOUT_MS,
+                `viz ${serverName}`
+            );
             if (!res.ok) return;
             const payload = await decryptVidzeePayload(await res.json());
             if (!payload) return;
             for (const stream of extractStreamData(payload, [], endpoint)) {
-                // Vidzee currently advertises this CDN1 manifest route, but
-                // the origin responds with a Fastify 404 for tested titles.
-                // Keep other Viz mirrors (including cdn2.fastcloud.live).
                 try {
                     const streamUrl = new URL(stream.url);
                     if (streamUrl.hostname.toLowerCase() === 'cdn1.fastcloud.live'
@@ -745,7 +786,10 @@ async function scrapeViz(info, id, s, e) {
 
 async function scrapeVidrock(info, id, s, e) {
     const path = s != null && e != null ? `/api/tv/${id}/${s}/${e}` : `/api/movie/${id}`;
-    const data = await fetchJson(`https://vidrock.net${path}`, { headers: VIDROCK_HEADERS, signal: AbortSignal.timeout(30000) });
+    const data = await fetchJson(`https://vidrock.net${path}`, {
+        headers: VIDROCK_HEADERS,
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+    }, 'vidrock');
     const crypto = require('crypto');
     const key = Buffer.from('7f3e9c2a8b5d1f4e6a9c3b7d2e5f8a1c4b6d9e2f5a8c1b4d7e9f2a5c8b1d4e7f', 'hex');
     const decrypt = (value) => {
@@ -767,8 +811,6 @@ async function scrapeVidrock(info, id, s, e) {
 // ---------------------------------------------------------------------------
 // Server registry
 // ---------------------------------------------------------------------------
-// Mirrors the live FlaxMovies APP.EMBED_SERVERS ids/names. Every configured
-// embed source is queried; VidRock remains an additional non-embed source.
 const EMBED_SERVERS = [
     { id: 'tet',     name: 'Tet',     getUrl: (id, s, e) => buildServerUrl('tet', id, s, e),     fn: scrapeFlax },
     { id: 'cld',     name: 'cld',     getUrl: (id, s, e) => buildServerUrl('cld', id, s, e),     fn: scrapeCld },
@@ -786,8 +828,6 @@ const SERVERS = [...EMBED_SERVERS, ...AUXILIARY_SERVERS];
 
 // ---------------------------------------------------------------------------
 // Main entry — kept the original export name `getCinesrcStreams`.
-// Signature: (tmdbId, mediaType, seasonNum, episodeNum)
-// Returns: array of normalized stream objects (matches videasy.js shape)
 // ---------------------------------------------------------------------------
 async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, episodeNum = null) {
     console.log(`[CineSrc] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
@@ -804,11 +844,10 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
     const isTv = resolvedType === 'tv';
     const resolvedSeason = isTv ? seasonNum : null;
     const resolvedEpisode = isTv ? episodeNum : null;
+    
     if (resolvedType !== requestedType) {
         console.warn(`[CineSrc] TMDB ID ${tmdbId} is ${resolvedType}, not ${requestedType}; routing with TMDB's confirmed type.`);
     }
-    // All configured FlaxMovies embed servers accept the TMDB id directly.
-    // IMDb metadata is an optional hint for the Tet/Videasy resolver only.
 
     const allStreams = [];
     const seen = new Set();
@@ -816,7 +855,6 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
     await Promise.all(SERVERS.map(async (server) => {
         let data;
         try {
-            // scrapeFlax needs full info; scrapeVidrock needs only id+s+e
             data = await server.fn(info, tmdbId, resolvedSeason, resolvedEpisode);
         } catch (err) {
             console.warn(`[CineSrc] ${server.name} failed: ${err.message}`);
@@ -824,7 +862,6 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
         }
         if (!data) return;
 
-        // Browser-only HTML embeds are not playable direct media for mpv/Media3.
         const extracted = extractStreamData(data, [], server.getUrl?.(tmdbId, resolvedSeason, resolvedEpisode) || '').filter(stream => stream.type !== 'embed');
         const subtitles = extractSubtitles(data);
         let added = 0;
@@ -855,7 +892,6 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
             } else {
                 reqHeaders = { ...SOURCE_HEADERS };
             }
-            // Preserve extractor-supplied playback headers through normalization.
             for (const [name, value] of Object.entries(stream.headers || {})) {
                 if (typeof value !== 'string' || /[\r\n]/.test(name + value)) continue;
                 const key = Object.keys(reqHeaders).find(k => k.toLowerCase() === name.toLowerCase()) || name;
