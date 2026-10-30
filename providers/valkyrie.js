@@ -2,7 +2,15 @@
 (function () {
   'use strict';
   const diagnostics = require('../utils/providerTrace').createProviderTrace('Valkyrie');
-  const fetch = diagnostics.fetch;
+  const { config } = require('../utils/config');
+  const proxy = require('../utils/providerProxy').createProviderProxy({
+    provider: 'Valkyrie',
+    config,
+    settingKey: 'valkyrieProxyEnabled',
+    tracedFetch: diagnostics.fetch,
+    bypassOrigins: ['https://api.themoviedb.org']
+  });
+  const fetch = proxy.fetch;
   const API = 'https://api.framextv.tech';
   const PROVIDER = "valkyrie";
   const LABEL = "Valkyrie";
@@ -318,6 +326,7 @@
   }
 
   module.exports = {
+    getValkyrieProxyStatus: proxy.getStatus,
     getStreams: function () {
       const args = Array.prototype.slice.call(arguments);
       return diagnostics.run(function () {

@@ -99,5 +99,12 @@
   "enableFramextvProvider": false,
   "enableMoviesdrive1Provider": false,
   "enableMoviesjoyProvider": false,
-  "superstreamProxyEnabled": true
+  "superstreamProxyEnabled": true,
+  "bowlerProxyEnabled": false,
+  "cinesrcProxyEnabled": false,
+  "barbarianProxyEnabled": false,
+  "framextvProxyEnabled": false,
+  "minerProxyEnabled": false,
+  "titanProxyEnabled": false,
+  "valkyrieProxyEnabled": false
 }

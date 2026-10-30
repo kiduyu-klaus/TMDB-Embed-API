@@ -1,8 +1,27 @@
 /* FrameXTV provider for Nuvio TV. */
 (function () {
   'use strict';
+
   const diagnostics = require('../utils/providerTrace').createProviderTrace('FrameXTV');
-  const fetch = diagnostics.fetch;
+
+
+  const { config } = require('../utils/config');
+
+  const proxy = require('../utils/providerProxy').createProviderProxy({
+
+    provider: 'FrameXTV',
+
+    config,
+
+    settingKey: 'framextvProxyEnabled',
+
+    tracedFetch: diagnostics.fetch,
+
+    bypassOrigins: ['https://api.themoviedb.org']
+
+  });
+
+  const fetch = proxy.fetch;
   const API = 'https://api.framextv.tech';
   const PROVIDER = "headhunter";
   const LABEL = "headhunter";
@@ -320,7 +339,10 @@
   }
 
   module.exports = {
-    getStreams: function () {
+
+    getFramextvProxyStatus: proxy.getStatus,
+
+    getStreams: function () {
       const args = Array.prototype.slice.call(arguments);
       return diagnostics.run(function () {
         return getStreams.apply(null, args);

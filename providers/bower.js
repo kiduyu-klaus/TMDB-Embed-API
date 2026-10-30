@@ -2,7 +2,15 @@
 (function () {
   'use strict';
   const diagnostics = require('../utils/providerTrace').createProviderTrace('Bowler');
-  const fetch = diagnostics.fetch;
+  const { config } = require('../utils/config');
+  const proxy = require('../utils/providerProxy').createProviderProxy({
+    provider: 'Bowler',
+    config,
+    settingKey: 'bowlerProxyEnabled',
+    tracedFetch: diagnostics.fetch,
+    bypassOrigins: ['https://api.themoviedb.org']
+  });
+  const fetch = proxy.fetch;
   const API = 'https://api.framextv.tech';
   const PROVIDER = "bowler";
   const LABEL = "Bowler";
@@ -318,6 +326,7 @@
   }
 
   module.exports = {
+    getBowlerProxyStatus: proxy.getStatus,
     getStreams: function () {
       const args = Array.prototype.slice.call(arguments);
       return diagnostics.run(function () {

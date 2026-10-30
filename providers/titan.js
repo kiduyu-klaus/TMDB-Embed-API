@@ -1,8 +1,27 @@
 /* FrameXTV provider for Nuvio TV. */
 (function () {
   'use strict';
+
   const diagnostics = require('../utils/providerTrace').createProviderTrace('titan');
-  const fetch = diagnostics.fetch;
+
+
+  const { config } = require('../utils/config');
+
+  const proxy = require('../utils/providerProxy').createProviderProxy({
+
+    provider: 'Titan',
+
+    config,
+
+    settingKey: 'titanProxyEnabled',
+
+    tracedFetch: diagnostics.fetch,
+
+    bypassOrigins: ['https://api.themoviedb.org']
+
+  });
+
+  const fetch = proxy.fetch;
   const API = 'https://api.framextv.tech';
   const PROVIDER = "titan";
   const LABEL = "titan";
@@ -320,7 +339,10 @@
   }
 
   module.exports = {
-    getStreams: function () {
+
+    getTitanProxyStatus: proxy.getStatus,
+
+    getStreams: function () {
       const args = Array.prototype.slice.call(arguments);
       return diagnostics.run(function () {
         return getStreams.apply(null, args);

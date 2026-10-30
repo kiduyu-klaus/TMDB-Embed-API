@@ -486,17 +486,24 @@ router.post('/api/providers/bingebang/proxies', requireAuth, (_req, res) =>
   downloadProviderProxyList('vidfast', res)
 );
 
-router.post('/api/providers/videasy/proxies', requireAuth, (_req, res) =>
-  downloadProviderProxyList('vidfast', res)
-);
+const sharedProxyProviders = [
+  { slug: 'videasy', module: 'videasy', status: 'getVideasyProxyStatus' },
+  { slug: 'vidlove', module: 'vidlove', status: 'getVidloveProxyStatus' },
+  { slug: 'superstream', module: 'superstream', status: 'getSuperstreamProxyStatus' },
+  { slug: 'bowler', module: 'bower', status: 'getBowlerProxyStatus' },
+  { slug: 'cinesrc', module: 'cinesrc', status: 'getCinesrcProxyStatus' },
+  { slug: 'barbarian', module: 'Barbarian', status: 'getBarbarianProxyStatus' },
+  { slug: 'framextv', module: 'framextv', status: 'getFramextvProxyStatus' },
+  { slug: 'miner', module: 'miner', status: 'getMinerProxyStatus' },
+  { slug: 'titan', module: 'titan', status: 'getTitanProxyStatus' },
+  { slug: 'valkyrie', module: 'valkyrie', status: 'getValkyrieProxyStatus' }
+];
 
-router.post('/api/providers/vidlove/proxies', requireAuth, (_req, res) =>
-  downloadProviderProxyList('vidfast', res)
-);
-
-router.post('/api/providers/superstream/proxies', requireAuth, (_req, res) =>
-  downloadProviderProxyList('vidfast', res)
-);
+for (const provider of sharedProxyProviders) {
+  router.post(`/api/providers/${provider.slug}/proxies`, requireAuth, (_req, res) =>
+    downloadProviderProxyList('vidfast', res)
+  );
+}
 
 router.get('/api/providers/moviebox/proxy-status', requireAuth, (_req, res) => {
   const { getMovieboxProxyStatus } = require('./providers/moviebox');
@@ -555,20 +562,17 @@ router.post('/api/providers/bingebang/proxy-settings', requireAuth, (req, res) =
   res.json({ success:true, enabled:config.bingebangProxyEnabled });
 });
 
-for (const provider of ['videasy', 'vidlove', 'superstream']) {
-  const providerName = provider === 'videasy' ? 'Videasy'
-    : provider === 'vidlove' ? 'Vidlove'
-      : 'Superstream';
-  const settingKey = `${provider}ProxyEnabled`;
-  router.get(`/api/providers/${provider}/proxy-status`, requireAuth, (_req, res) => {
-    const { [ `get${providerName}ProxyStatus` ]: getProxyStatus } = require(`./providers/${provider}`);
+for (const provider of sharedProxyProviders) {
+  const settingKey = `${provider.slug}ProxyEnabled`;
+  router.get(`/api/providers/${provider.slug}/proxy-status`, requireAuth, (_req, res) => {
+    const { [provider.status]: getProxyStatus } = require(`./providers/${provider.module}`);
     res.setHeader('Cache-Control', 'no-store');
     res.json({ success:true, ...getProxyStatus() });
   });
-  router.post(`/api/providers/${provider}/proxy-settings`, requireAuth, (req, res) => {
+  router.post(`/api/providers/${provider.slug}/proxy-settings`, requireAuth, (req, res) => {
     const enabled = req.body && req.body.enabled;
     if (typeof enabled !== 'boolean') {
-      return res.status(400).json({ success:false, error:`INVALID_${provider.toUpperCase()}_PROXY_SETTING` });
+      return res.status(400).json({ success:false, error:`INVALID_${provider.slug.toUpperCase()}_PROXY_SETTING` });
     }
     if (!saveConfigPatch({ [settingKey]: enabled })) {
       return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });

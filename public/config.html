@@ -481,6 +481,90 @@
             <button class="btn btn-outline-primary" id="saveSuperstreamProxySettingsBtn" type="button">Save Superstream connection</button>
           </div>
         </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>Bowler proxy</h3>
+              <p class="moviebox-proxy-card__description">Route Bowler requests through a verified HTTP proxy. Bowler shares VidFast's proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="bowlerProxyEnabledLabel"><input id="bowlerProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="bowlerProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadBowlerProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="bowlerProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveBowlerProxySettingsBtn" type="button">Save Bowler connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>CineSrc proxy</h3>
+              <p class="moviebox-proxy-card__description">Route CineSrc requests, including Vidzee stream lookups, through a verified HTTP proxy. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="cinesrcProxyEnabledLabel"><input id="cinesrcProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="cinesrcProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadCinesrcProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="cinesrcProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveCinesrcProxySettingsBtn" type="button">Save CineSrc connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>Barbarian proxy</h3>
+              <p class="moviebox-proxy-card__description">Route Barbarian requests through a verified HTTP proxy. Uses the shared VidFast proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="barbarianProxyEnabledLabel"><input id="barbarianProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="barbarianProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadBarbarianProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="barbarianProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveBarbarianProxySettingsBtn" type="button">Save Barbarian connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>FrameXTV proxy</h3>
+              <p class="moviebox-proxy-card__description">Route FrameXTV requests through a verified HTTP proxy. Uses the shared VidFast proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="framextvProxyEnabledLabel"><input id="framextvProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="framextvProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadFrameXTVProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="framextvProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveFrameXTVProxySettingsBtn" type="button">Save FrameXTV connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>Miner proxy</h3>
+              <p class="moviebox-proxy-card__description">Route Miner requests through a verified HTTP proxy. Uses the shared VidFast proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="minerProxyEnabledLabel"><input id="minerProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="minerProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadMinerProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="minerProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveMinerProxySettingsBtn" type="button">Save Miner connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>Titan proxy</h3>
+              <p class="moviebox-proxy-card__description">Route Titan requests through a verified HTTP proxy. Uses the shared VidFast proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="titanProxyEnabledLabel"><input id="titanProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="titanProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadTitanProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="titanProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveTitanProxySettingsBtn" type="button">Save Titan connection</button></div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro"><span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></span><div>
+              <p class="moviebox-proxy-card__eyebrow">Outbound connection</p><h3>Valkyrie proxy</h3>
+              <p class="moviebox-proxy-card__description">Route Valkyrie requests through a verified HTTP proxy. Uses the shared VidFast proxy list with an independent enable setting. TMDB API requests bypass the proxy.</p>
+            </div></div>
+            <label class="moviebox-proxy-toggle" id="valkyrieProxyEnabledLabel"><input id="valkyrieProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
+          </div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+            <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="valkyrieProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadValkyrieProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
+          <div class="moviebox-proxy-card__footer"><span class="hint" id="valkyrieProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveValkyrieProxySettingsBtn" type="button">Save Valkyrie connection</button></div>
+        </div>
       </section>
       <section id="panel-moviebox" class="panel">
         <h1>MovieBox Settings</h1>

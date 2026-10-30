@@ -1,8 +1,27 @@
 /* Miner provider backed by FrameXTV and Movy APIs. */
 (function () {
   'use strict';
+
   var diagnostics = require('../utils/providerTrace').createProviderTrace('Miner');
-  var fetch = diagnostics.fetch;
+
+
+  const { config } = require('../utils/config');
+
+  const proxy = require('../utils/providerProxy').createProviderProxy({
+
+    provider: 'Miner',
+
+    config: config,
+
+    settingKey: 'minerProxyEnabled',
+
+    tracedFetch: diagnostics.fetch,
+
+    bypassOrigins: ['https://api.themoviedb.org']
+
+  });
+
+  const fetch = proxy.fetch;
   var API = 'https://api.framextv.tech';
   var PROVIDER = "miner";
   var LABEL = "Miner";
@@ -434,7 +453,10 @@
   }
 
   module.exports = {
-    getStreams: function () {
+
+    getMinerProxyStatus: proxy.getStatus,
+
+    getStreams: function () {
       var args = Array.prototype.slice.call(arguments);
       return diagnostics.run(function () {
         return getStreams.apply(null, args);

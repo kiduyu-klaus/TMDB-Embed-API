@@ -1,5 +1,14 @@
-const { fetch } = require('../utils/providerFetch');
+const { fetch: providerFetch } = require('../utils/providerFetch');
+const { config } = require('../utils/config');
 const { decryptVidzeePayload } = require('../utils/vidzee-decrypt');
+const cinesrcProxy = require('../utils/providerProxy').createProviderProxy({
+    provider: 'CineSrc',
+    config,
+    settingKey: 'cinesrcProxyEnabled',
+    tracedFetch: providerFetch,
+    bypassOrigins: ['https://api.themoviedb.org']
+});
+const { fetch } = cinesrcProxy;
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36';
 
@@ -878,4 +887,12 @@ async function getCinesrcStreams(tmdbId, mediaType = 'movie', seasonNum = null, 
     return allStreams;
 }
 
-module.exports = { getCinesrcStreams, EMBED_SERVERS, resolveSourceUrl, parseHlsVariants, extractPlaybackHeaders, extractStreamData };
+module.exports = {
+    getCinesrcStreams,
+    getCinesrcProxyStatus: cinesrcProxy.getStatus,
+    EMBED_SERVERS,
+    resolveSourceUrl,
+    parseHlsVariants,
+    extractPlaybackHeaders,
+    extractStreamData
+};
