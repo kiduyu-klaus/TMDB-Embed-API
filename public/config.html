@@ -299,6 +299,43 @@
         <div class="moviebox-proxy-card">
           <div class="moviebox-proxy-card__top">
             <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-camera-video"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>
+                <h3>VidRock proxy</h3>
+                <p class="moviebox-proxy-card__description">Route VidRock provider requests through a verified HTTP proxy. Requests to api.themoviedb.org always bypass the proxy.</p>
+              </div>
+            </div>
+            <label class="moviebox-proxy-toggle" id="vidrockProxyEnabledLabel">
+              <input id="vidrockProxyEnabled" type="checkbox" />
+              <span class="moviebox-proxy-toggle__track" aria-hidden="true"></span>
+              <span class="moviebox-proxy-toggle__label">Enable proxy</span>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__source">
+            <div class="moviebox-proxy-card__source-copy">
+              <p class="moviebox-proxy-card__eyebrow">Shared proxy list</p>
+              <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
+                ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <p class="moviebox-proxy-card__description">VidRock checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast.</p>
+            </div>
+            <div class="moviebox-proxy-card__actions">
+              <p class="moviebox-proxy-status" id="vidrockProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
+              <button class="btn btn-outline-primary moviebox-proxy-download" id="downloadVidrockProxyListBtn" type="button">
+                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                <span>Download shared proxy list</span>
+              </button>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="vidrockProxySettingsStatus" role="status"></span>
+            <button class="btn btn-outline-primary" id="saveVidrockProxySettingsBtn" type="button">Save VidRock connection</button>
+          </div>
+        </div>
+        <div class="moviebox-proxy-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
               <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-play-circle"></i></span>
               <div>
                 <p class="moviebox-proxy-card__eyebrow">Outbound connection</p>

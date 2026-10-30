@@ -496,7 +496,8 @@ const sharedProxyProviders = [
   { slug: 'framextv', module: 'framextv', status: 'getFramextvProxyStatus' },
   { slug: 'miner', module: 'miner', status: 'getMinerProxyStatus' },
   { slug: 'titan', module: 'titan', status: 'getTitanProxyStatus' },
-  { slug: 'valkyrie', module: 'valkyrie', status: 'getValkyrieProxyStatus' }
+  { slug: 'valkyrie', module: 'valkyrie', status: 'getValkyrieProxyStatus' },
+  { slug: 'vidrock', module: 'vidrock', status: 'getVidrockProxyStatus' }
 ];
 
 for (const provider of sharedProxyProviders) {

@@ -345,6 +345,10 @@ async function renderValkyrieProxySettings(enabled = false){
 	return renderSharedProviderProxySettings('Valkyrie', enabled);
 }
 
+async function renderVidrockProxySettings(enabled = false){
+	return renderSharedProviderProxySettings('Vidrock', enabled);
+}
+
 async function downloadProviderProxyList(provider){
 	const buttonId = provider === 'MovieBox' ? 'downloadMovieboxProxyListBtn'
 		: provider === 'Vidy' ? 'downloadVidyProxyListBtn'
@@ -398,6 +402,10 @@ async function downloadVidloveProxyList(){
 
 async function downloadSuperstreamProxyList(){
 	return downloadProviderProxyList('Superstream');
+}
+
+async function downloadVidrockProxyList(){
+	return downloadProviderProxyList('Vidrock');
 }
 
 async function saveMovieboxProxySettings(){
@@ -539,6 +547,7 @@ async function saveFrameXTVProxySettings(){ return saveSharedProviderProxySettin
 async function saveMinerProxySettings(){ return saveSharedProviderProxySettings('Miner'); }
 async function saveTitanProxySettings(){ return saveSharedProviderProxySettings('Titan'); }
 async function saveValkyrieProxySettings(){ return saveSharedProviderProxySettings('Valkyrie'); }
+async function saveVidrockProxySettings(){ return saveSharedProviderProxySettings('Vidrock'); }
 
 async function saveMovieboxSettings(){
 	const button = document.getElementById('saveMovieboxSettingsBtn');
@@ -784,6 +793,7 @@ function fillForm(data){
 	renderMinerProxySettings(merged.minerProxyEnabled === true);
 	renderTitanProxySettings(merged.titanProxyEnabled === true);
 	renderValkyrieProxySettings(merged.valkyrieProxyEnabled === true);
+	renderVidrockProxySettings(merged.vidrockProxyEnabled === true);
 	const f = document.getElementById('cfgForm');
 	const fields = ['port'];
 	fields.forEach(k=>{ if(!f.elements[k]) return; const ov = override[k]; f.elements[k].value = ov !== undefined ? ov : (merged[k]||''); });
@@ -1365,7 +1375,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('saveFrameXTVProxySettingsBtn')?.addEventListener('click', saveFrameXTVProxySettings);
 	document.getElementById('saveMinerProxySettingsBtn')?.addEventListener('click', saveMinerProxySettings);
 	document.getElementById('saveTitanProxySettingsBtn')?.addEventListener('click', saveTitanProxySettings);
-	document.getElementById('saveValkyrieProxySettingsBtn')?.addEventListener('click', saveValkyrieProxySettings);
+		document.getElementById('saveValkyrieProxySettingsBtn')?.addEventListener('click', saveValkyrieProxySettings);
+		document.getElementById('saveVidrockProxySettingsBtn')?.addEventListener('click', saveVidrockProxySettings);
 	document.getElementById('downloadMovieboxProxyListBtn')?.addEventListener('click', downloadMovieboxProxyList);
 	document.getElementById('downloadVidfastProxyListBtn')?.addEventListener('click', downloadVidfastProxyList);
 	document.getElementById('downloadVidyProxyListBtn')?.addEventListener('click', downloadVidyProxyList);
@@ -1379,8 +1390,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	document.getElementById('downloadFrameXTVProxyListBtn')?.addEventListener('click', () => downloadProviderProxyList('FrameXTV'));
 	document.getElementById('downloadMinerProxyListBtn')?.addEventListener('click', () => downloadProviderProxyList('Miner'));
 	document.getElementById('downloadTitanProxyListBtn')?.addEventListener('click', () => downloadProviderProxyList('Titan'));
-	document.getElementById('downloadValkyrieProxyListBtn')?.addEventListener('click', () => downloadProviderProxyList('Valkyrie'));
-	for(const provider of ['bowler', 'cinesrc', 'barbarian', 'framextv', 'miner', 'titan', 'valkyrie']){
+		document.getElementById('downloadValkyrieProxyListBtn')?.addEventListener('click', () => downloadProviderProxyList('Valkyrie'));
+		document.getElementById('downloadVidrockProxyListBtn')?.addEventListener('click', downloadVidrockProxyList);
+	for(const provider of ['bowler', 'cinesrc', 'barbarian', 'framextv', 'miner', 'titan', 'valkyrie', 'vidrock']){
 		document.getElementById(`${provider}ProxyEnabled`)?.addEventListener('change', event=>{
 			const label = document.getElementById(`${provider}ProxyEnabledLabel`);
 			label?.classList.toggle('on', event.target.checked);

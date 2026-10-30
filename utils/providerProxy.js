@@ -126,6 +126,20 @@ function createProviderProxy({ provider, config, settingKey, tracedFetch, log, b
         return tracedFetch(input, { ...options, dispatcher });
     }
 
+    async function getAxiosProxyConfig(input) {
+        const requestUrl = input && typeof input === 'object' && typeof input.url === 'string'
+            ? input.url
+            : String(input);
+        if (config[settingKey] !== true || bypass.has(new URL(requestUrl).origin)) return false;
+        await getProxyAgent();
+        const selected = new URL(proxyUrl);
+        return {
+            protocol: selected.protocol.replace(/:$/, ''),
+            host: selected.hostname,
+            port: Number(selected.port)
+        };
+    }
+
     function getStatus() {
         return {
             enabled: config[settingKey] === true,
@@ -137,7 +151,7 @@ function createProviderProxy({ provider, config, settingKey, tracedFetch, log, b
         };
     }
 
-    return { fetch, getStatus };
+    return { fetch, getAxiosProxyConfig, getStatus };
 }
 
 module.exports = { createProviderProxy };

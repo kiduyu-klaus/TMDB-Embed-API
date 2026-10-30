@@ -1,5 +1,15 @@
 const crypto = require('crypto');
 const axios = require('axios').create({ timeout: 30000 });
+const { config } = require('../utils/config');
+const { fetch: providerFetch } = require('../utils/providerFetch');
+let httpRequestSequence = 0;
+const vidrockProxy = require('../utils/providerProxy').createProviderProxy({
+    provider: 'Vidrock',
+    config,
+    settingKey: 'vidrockProxyEnabled',
+    tracedFetch: providerFetch,
+    bypassOrigins: ['https://api.themoviedb.org']
+});
 
 const API_BASE = 'https://vidrock.to/api';
 const API_ORIGIN = 'https://vidrock.to';
@@ -30,7 +40,23 @@ const PLAYBACK_HEADERS = {
 };
 
 async function httpGet(url, config = {}) {
-    return axios.get(url, { ...config, headers: config.headers || {} });
+    const requestId = ++httpRequestSequence;
+    const requestConfig = { ...config, headers: config.headers || {} };
+    const requestUrl = axios.getUri({ ...requestConfig, url });
+    const startedAt = Date.now();
+    console.info(`[Vidrock][HTTP ${requestId}] -> GET ${requestUrl}`);
+    try {
+        requestConfig.proxy = await vidrockProxy.getAxiosProxyConfig(requestUrl);
+        const response = await axios.get(url, requestConfig);
+        const responseUrl = response.request?.res?.responseUrl || requestUrl;
+        console.info(`[Vidrock][HTTP ${requestId}] <- GET ${responseUrl} status=${response.status} ${response.statusText || ''} content-type=${response.headers['content-type'] || 'unknown'} elapsedMs=${Date.now() - startedAt}`.trim());
+        return response;
+    } catch (error) {
+        const responseUrl = error.response?.request?.res?.responseUrl || requestUrl;
+        const status = error.response?.status ?? 'NO_RESPONSE';
+        console.warn(`[Vidrock][HTTP ${requestId}] <- GET ${responseUrl} status=${status} code=${error.code || 'none'} error=${error.message} elapsedMs=${Date.now() - startedAt}`);
+        throw error;
+    }
 }
 
 function normalizeHttpUrl(value) {
@@ -293,5 +319,6 @@ module.exports = {
     getVidRockRawResponse,
     decryptStreamUrl,
     normalizeServer,
-    isPlayableStream
+    isPlayableStream,
+    getVidrockProxyStatus: vidrockProxy.getStatus
 };

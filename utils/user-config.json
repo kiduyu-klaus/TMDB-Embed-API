@@ -106,5 +106,6 @@
   "framextvProxyEnabled": false,
   "minerProxyEnabled": false,
   "titanProxyEnabled": false,
-  "valkyrieProxyEnabled": false
+  "valkyrieProxyEnabled": false,
+  "vidrockProxyEnabled": true
 }
