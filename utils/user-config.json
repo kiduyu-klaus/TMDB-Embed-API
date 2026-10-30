@@ -98,5 +98,6 @@
   "enableHdmovie2Provider": false,
   "enableFramextvProvider": false,
   "enableMoviesdrive1Provider": false,
-  "enableMoviesjoyProvider": false
+  "enableMoviesjoyProvider": false,
+  "superstreamProxyEnabled": true
 }
