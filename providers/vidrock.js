@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const axios = require('axios').create({ timeout: 30000 });
-const { gsFetch } = require('./gsFetch.cjs');
 
 const API_BASE = 'https://vidrock.to/api';
 const API_ORIGIN = 'https://vidrock.to';
@@ -30,34 +29,8 @@ const PLAYBACK_HEADERS = {
     Referer: API_ORIGIN + '/'
 };
 
-/**
- * HTTP GET with automatic Cloudflare bypass: axios first, then got-scraping
- * when the edge returns a bot-block status (403 / 503 / 522).
- */
 async function httpGet(url, config = {}) {
-    try {
-        return await httpGet(url, config);
-    } catch (error) {
-        const status = error.response?.status;
-        if (![403, 503, 522].includes(status)) throw error;
-
-        const gsRes = await gsFetch(url, { method: 'GET', headers: config.headers || {} });
-        const contentType = String(gsRes.headers.get('content-type') || '').toLowerCase();
-        let data;
-        if (config.responseType === 'arraybuffer') {
-            data = Buffer.from(await gsRes.arrayBuffer());
-        } else if (contentType.includes('json')) {
-            data = JSON.parse(await gsRes.text());
-        } else {
-            data = await gsRes.text();
-        }
-        if (!gsRes.ok) {
-            const err = new Error(`Request failed with status code ${gsRes.status}`);
-            err.response = { status: gsRes.status, data };
-            throw err;
-        }
-        return { status: gsRes.status, statusText: gsRes.statusText, data, headers: gsRes.headers.raw(), config };
-    }
+    return axios.get(url, { ...config, headers: config.headers || {} });
 }
 
 function normalizeHttpUrl(value) {
