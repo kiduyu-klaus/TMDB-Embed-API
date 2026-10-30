@@ -20,6 +20,7 @@ const PROXY_PROBE_LIMIT = 100;
 let bingebangProxyAgent = null;
 let bingebangProxyUrl = '';
 let bingebangProxySelection = null;
+let bingebangPreferredState = config.bingebangPreferredProxyEnabled !== false;
 
 const isValidProxyUrl = (value) => {
     if (typeof value !== 'string') return false;
@@ -98,8 +99,12 @@ async function selectBingebangProxy() {
         return null;
     };
 
-    const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
-    if (preferredAgent) return preferredAgent;
+    if (config.bingebangPreferredProxyEnabled !== false) {
+        const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
+        if (preferredAgent) return preferredAgent;
+    } else {
+        diagnostics.log('proxy.preferred.disabled', {});
+    }
 
     const candidates = readProxyCandidates();
     diagnostics.log('proxy.preferred.unavailable', { fallbackCandidates: candidates.length });
@@ -110,7 +115,15 @@ async function selectBingebangProxy() {
     throw new Error(`No working Bingebang proxy found after checking preferred proxy and ${candidates.length} shared-list candidates`);
 }
 
-function getBingebangProxyAgent() {
+async function getBingebangProxyAgent() {
+    const preferredState = config.bingebangPreferredProxyEnabled !== false;
+    if (preferredState !== bingebangPreferredState) {
+        bingebangPreferredState = preferredState;
+        const oldAgent = bingebangProxyAgent;
+        bingebangProxyAgent = null;
+        bingebangProxyUrl = '';
+        if (oldAgent) await oldAgent.close().catch(error => diagnostics.log('proxy.close.failed', { error: error.message }));
+    }
     if (bingebangProxyAgent) return Promise.resolve(bingebangProxyAgent);
     if (!bingebangProxySelection) {
         bingebangProxySelection = selectBingebangProxy().finally(() => {
@@ -430,7 +443,8 @@ function getBingebangProxyStatus() {
         selectedProxy: bingebangProxyUrl || null,
         listAvailable: fs.existsSync(PROXY_LIST_PATH),
         probeLimit: PROXY_PROBE_LIMIT,
-        preferredProxy: PREFERRED_PROXY,
+        preferredProxy: config.bingebangPreferredProxyEnabled !== false ? PREFERRED_PROXY : null,
+        preferredProxyEnabled: config.bingebangPreferredProxyEnabled !== false,
         sharedList: 'utils/vidfast-proxies.json'
     };
 }

@@ -56,10 +56,12 @@ const withHardTimeout = async (factory, timeoutMs, label) => {
     }
 };
 
-function createProviderProxy({ provider, config, settingKey, tracedFetch, log, bypassOrigins = [] }) {
+function createProviderProxy({ provider, config, settingKey, preferredSettingKey, tracedFetch, log, bypassOrigins = [] }) {
     let proxyAgent = null;
     let proxyUrl = '';
     let proxySelection = null;
+    const usePreferredSetting = preferredSettingKey || settingKey.replace(/ProxyEnabled$/, 'PreferredProxyEnabled');
+    let preferredState = config[usePreferredSetting] !== false;
     const bypass = new Set(bypassOrigins.map(origin => new URL(origin).origin));
     const logEvent = typeof log === 'function' ? log : (event, data) =>
         console.info(`[${provider}][Proxy] ${event}`, data);
@@ -93,8 +95,12 @@ function createProviderProxy({ provider, config, settingKey, tracedFetch, log, b
             return null;
         };
 
-        const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
-        if (preferredAgent) return preferredAgent;
+        if (config[usePreferredSetting] !== false) {
+            const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
+            if (preferredAgent) return preferredAgent;
+        } else {
+            logEvent('proxy.preferred.disabled', { provider });
+        }
 
         const candidates = readProxyCandidates();
         logEvent('proxy.preferred.unavailable', { fallbackCandidates: candidates.length });
@@ -106,6 +112,14 @@ function createProviderProxy({ provider, config, settingKey, tracedFetch, log, b
     }
 
     function getProxyAgent() {
+        const currentPreferredState = config[usePreferredSetting] !== false;
+        if (preferredState !== currentPreferredState) {
+            preferredState = currentPreferredState;
+            const oldAgent = proxyAgent;
+            proxyAgent = null;
+            proxyUrl = '';
+            if (oldAgent) oldAgent.close().catch(error => logEvent('proxy.close.failed', { error: error.message }));
+        }
         if (proxyAgent) return Promise.resolve(proxyAgent);
         if (!proxySelection) {
             proxySelection = selectProxy().finally(() => {
@@ -146,7 +160,8 @@ function createProviderProxy({ provider, config, settingKey, tracedFetch, log, b
             selectedProxy: proxyUrl || null,
             listAvailable: fs.existsSync(PROXY_LIST_PATH),
             probeLimit: PROXY_PROBE_LIMIT,
-            preferredProxy: PREFERRED_PROXY,
+            preferredProxy: config[usePreferredSetting] !== false ? PREFERRED_PROXY : null,
+            preferredProxyEnabled: config[usePreferredSetting] !== false,
             sharedList: 'utils/vidfast-proxies.json'
         };
     }

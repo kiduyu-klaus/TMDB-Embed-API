@@ -58,6 +58,7 @@ const SERVERS = [
 let vidyProxyAgent = null;
 let vidyProxyUrl = '';
 let vidyProxySelection = null;
+let vidyPreferredState = config.vidyPreferredProxyEnabled !== false;
 
 /* -------------------------------------------------------------------------- */
 /* hard timeout helper                                                         */
@@ -146,8 +147,12 @@ async function selectVidyProxy() {
         return null;
     }
 
-    const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
-    if (preferredAgent) return preferredAgent;
+    if (config.vidyPreferredProxyEnabled !== false) {
+        const preferredAgent = await probe(PREFERRED_PROXY, 'preferred');
+        if (preferredAgent) return preferredAgent;
+    } else {
+        diagnostics.log('proxy.preferred.disabled', {});
+    }
 
     const candidates = readVidyProxyCandidates();
     diagnostics.log('proxy.preferred.unavailable', { fallbackCandidates: candidates.length });
@@ -158,7 +163,15 @@ async function selectVidyProxy() {
     throw new Error(`No working Vidy proxy found after checking preferred proxy and ${candidates.length} shared-list candidates`);
 }
 
-function getVidyProxyAgent() {
+async function getVidyProxyAgent() {
+    const preferredState = config.vidyPreferredProxyEnabled !== false;
+    if (preferredState !== vidyPreferredState) {
+        vidyPreferredState = preferredState;
+        const oldAgent = vidyProxyAgent;
+        vidyProxyAgent = null;
+        vidyProxyUrl = '';
+        if (oldAgent) await oldAgent.close().catch(error => diagnostics.log('proxy.close.failed', { error: error.message }));
+    }
     if (vidyProxyAgent) return Promise.resolve(vidyProxyAgent);
     if (!vidyProxySelection) {
         vidyProxySelection = selectVidyProxy().finally(() => {
@@ -813,7 +826,8 @@ function getVidyProxyStatus() {
         selectedProxy: vidyProxyUrl || null,
         listAvailable: fs.existsSync(VIDFAST_PROXY_LIST_PATH),
         probeLimit: PROXY_PROBE_LIMIT,
-        preferredProxy: PREFERRED_PROXY,
+        preferredProxy: config.vidyPreferredProxyEnabled !== false ? PREFERRED_PROXY : null,
+        preferredProxyEnabled: config.vidyPreferredProxyEnabled !== false,
         sharedList: 'utils/vidfast-proxies.json'
     };
 }

@@ -116,6 +116,7 @@ pre { border-radius:12px; font-size:.8rem; line-height:1.7; }
   font-size:.93rem; font-weight:650; text-decoration:none;
 }
 #panel-outbound .moviebox-proxy-card__link:hover { text-decoration:underline; }
+#panel-outbound .moviebox-proxy-card__source-copy .moviebox-proxy-toggle { width:max-content; max-width:100%; margin-top:14px; }
 #panel-outbound .moviebox-proxy-card__actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
 #panel-outbound .moviebox-proxy-status {
   width:100%; margin:0; padding:10px 12px; border:1px solid var(--border); border-radius:10px;
@@ -127,9 +128,13 @@ pre { border-radius:12px; font-size:.8rem; line-height:1.7; }
   border-top:1px solid var(--border);
 }
 #panel-outbound .moviebox-proxy-card__footer .hint { margin:0 auto 0 0; }
+.proxy-automation-controls { grid-template-columns:minmax(220px,.6fr) !important; }
+.proxy-automation-field { display:flex; flex-direction:column; gap:8px; color:var(--text); font-size:.85rem; font-weight:600; }
+.proxy-automation-field select { min-height:42px; width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg-alt); color:var(--text); font:inherit; }
 @media(max-width:680px) {
   #panel-outbound .moviebox-proxy-card__top { align-items:flex-start; flex-direction:column; gap:18px; padding:20px; }
   #panel-outbound .moviebox-proxy-card__source { grid-template-columns:minmax(0,1fr); gap:18px; padding:18px 20px; }
+  #panel-outbound .proxy-automation-controls { grid-template-columns:minmax(0,1fr) !important; }
   #panel-outbound .moviebox-proxy-card__actions { width:100%; }
   #panel-outbound .moviebox-proxy-download { width:100%; }
   #panel-outbound .moviebox-proxy-card__footer { align-items:stretch; flex-direction:column; padding:16px 20px; }

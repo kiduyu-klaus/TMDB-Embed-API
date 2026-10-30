@@ -48,7 +48,7 @@
   },
   "vidfastProxyEnabled": true,
   "vidyProxyEnabled": true,
-  "bingebangProxyEnabled": false,
+  "bingebangProxyEnabled": true,
   "tmdbApiKeys": [
     "9de3de623b579f6e127c6ec603b9f74d"
   ],
@@ -93,7 +93,7 @@
   "enableWcoflixProvider": false,
   "videasyProxyEnabled": true,
   "vidloveProxyEnabled": false,
-  "enableVidrockProvider": false,
+  "enableVidrockProvider": true,
   "enableVegamoviesProvider": false,
   "enableHdmovie2Provider": false,
   "enableFramextvProvider": false,
@@ -107,5 +107,21 @@
   "minerProxyEnabled": false,
   "titanProxyEnabled": false,
   "valkyrieProxyEnabled": false,
-  "vidrockProxyEnabled": true
+  "vidrockProxyEnabled": true,
+  "proxyAutoDownloadMinutes": 5,
+  "movieboxPreferredProxyEnabled": true,
+  "vidfastPreferredProxyEnabled": true,
+  "vidrockPreferredProxyEnabled": true,
+  "vidyPreferredProxyEnabled": true,
+  "bingebangPreferredProxyEnabled": true,
+  "videasyPreferredProxyEnabled": true,
+  "vidlovePreferredProxyEnabled": true,
+  "superstreamPreferredProxyEnabled": true,
+  "bowlerPreferredProxyEnabled": true,
+  "cinesrcPreferredProxyEnabled": true,
+  "barbarianPreferredProxyEnabled": true,
+  "framextvPreferredProxyEnabled": true,
+  "minerPreferredProxyEnabled": true,
+  "titanPreferredProxyEnabled": true,
+  "valkyriePreferredProxyEnabled": true
 }

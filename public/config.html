@@ -222,6 +222,33 @@
       <section id="panel-outbound" class="panel">
         <h1>Outbound connection</h1>
         <p class="hint">Configure provider-specific outbound proxies. Providers can share the downloaded proxy list while keeping independent enable settings and proxy selections.</p>
+        <div class="moviebox-proxy-card proxy-automation-card">
+          <div class="moviebox-proxy-card__top">
+            <div class="moviebox-proxy-card__intro">
+              <span class="moviebox-proxy-card__icon" aria-hidden="true"><i class="bi bi-arrow-repeat"></i></span>
+              <div>
+                <p class="moviebox-proxy-card__eyebrow">Global Outbound controls</p>
+                <h3>Proxy list automation</h3>
+                <p class="moviebox-proxy-card__description">Automatically download and replace both <code>utils/vidfast-proxies.json</code> and <code>utils/moviebox-proxies.json</code>.</p>
+              </div>
+            </div>
+          </div>
+          <div class="moviebox-proxy-card__source proxy-automation-controls">
+            <label class="proxy-automation-field" for="proxyAutoDownloadMinutes">
+              <span class="moviebox-proxy-card__eyebrow">Automatic list refresh</span>
+              <select id="proxyAutoDownloadMinutes">
+                <option value="0">Off (manual only)</option>
+                <option value="5">Every 5 minutes</option>
+                <option value="10">Every 10 minutes</option>
+                <option value="15">Every 15 minutes</option>
+              </select>
+            </label>
+          </div>
+          <div class="moviebox-proxy-card__footer">
+            <span class="hint" id="outboundProxyOptionsStatus" role="status" aria-live="polite"></span>
+            <button class="btn btn-outline-primary" id="saveOutboundProxyOptionsBtn" type="button">Save Outbound options</button>
+          </div>
+        </div>
         <div class="moviebox-proxy-card">
           <div class="moviebox-proxy-card__top">
             <div class="moviebox-proxy-card__intro">
@@ -244,7 +271,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">The preferred proxy is checked first. If unavailable, MovieBox probes its own downloaded list in sequence and uses the first proxy that passes.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, the preferred proxy is checked first. If unavailable or disabled, MovieBox probes its own downloaded list in sequence and uses the first proxy that passes.</p>
+              <label class="moviebox-proxy-toggle" id="movieboxPreferredProxyEnabledLabel"><input id="movieboxPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="movieboxProxyStatus" role="status" aria-live="polite">No proxy selected yet.</p>
@@ -281,7 +309,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">VidFast checks the preferred proxy first, then probes candidates from its own downloaded list.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, VidFast checks the preferred proxy first, then probes candidates from its own downloaded list.</p>
+              <label class="moviebox-proxy-toggle" id="vidfastPreferredProxyEnabledLabel"><input id="vidfastPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="vidfastProxyStatus" role="status" aria-live="polite">No proxy selected yet.</p>
@@ -318,7 +347,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">VidRock checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, VidRock checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast.</p>
+              <label class="moviebox-proxy-toggle" id="vidrockPreferredProxyEnabledLabel"><input id="vidrockPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="vidrockProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -355,7 +385,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">Vidy checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, Vidy checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast.</p>
+              <label class="moviebox-proxy-toggle" id="vidyPreferredProxyEnabledLabel"><input id="vidyPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="vidyProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -392,7 +423,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">BingeBang checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and Vidy.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, BingeBang checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and Vidy.</p>
+              <label class="moviebox-proxy-toggle" id="bingebangPreferredProxyEnabledLabel"><input id="bingebangPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="bingebangProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -429,7 +461,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">Videasy checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, Videasy checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+              <label class="moviebox-proxy-toggle" id="videasyPreferredProxyEnabledLabel"><input id="videasyPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="videasyProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -466,7 +499,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">Vidlove checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, Vidlove checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list used by VidFast and the other providers.</p>
+              <label class="moviebox-proxy-toggle" id="vidlovePreferredProxyEnabledLabel"><input id="vidlovePreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="vidloveProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -503,7 +537,8 @@
               <a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">
                 ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
               </a>
-              <p class="moviebox-proxy-card__description">Superstream checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list shared by the other providers.</p>
+              <p class="moviebox-proxy-card__description">When enabled below, Superstream checks the preferred proxy first, then probes the same <code>utils/vidfast-proxies.json</code> list shared by the other providers.</p>
+              <label class="moviebox-proxy-toggle" id="superstreamPreferredProxyEnabledLabel"><input id="superstreamPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label>
             </div>
             <div class="moviebox-proxy-card__actions">
               <p class="moviebox-proxy-status" id="superstreamProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p>
@@ -526,7 +561,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="bowlerProxyEnabledLabel"><input id="bowlerProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="bowlerPreferredProxyEnabledLabel"><input id="bowlerPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="bowlerProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadBowlerProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="bowlerProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveBowlerProxySettingsBtn" type="button">Save Bowler connection</button></div>
         </div>
@@ -538,7 +573,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="cinesrcProxyEnabledLabel"><input id="cinesrcProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="cinesrcPreferredProxyEnabledLabel"><input id="cinesrcPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="cinesrcProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadCinesrcProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="cinesrcProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveCinesrcProxySettingsBtn" type="button">Save CineSrc connection</button></div>
         </div>
@@ -550,7 +585,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="barbarianProxyEnabledLabel"><input id="barbarianProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="barbarianPreferredProxyEnabledLabel"><input id="barbarianPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="barbarianProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadBarbarianProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="barbarianProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveBarbarianProxySettingsBtn" type="button">Save Barbarian connection</button></div>
         </div>
@@ -562,7 +597,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="framextvProxyEnabledLabel"><input id="framextvProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="framextvPreferredProxyEnabledLabel"><input id="framextvPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="framextvProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadFrameXTVProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="framextvProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveFrameXTVProxySettingsBtn" type="button">Save FrameXTV connection</button></div>
         </div>
@@ -574,7 +609,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="minerProxyEnabledLabel"><input id="minerProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="minerPreferredProxyEnabledLabel"><input id="minerPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="minerProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadMinerProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="minerProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveMinerProxySettingsBtn" type="button">Save Miner connection</button></div>
         </div>
@@ -586,7 +621,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="titanProxyEnabledLabel"><input id="titanProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="titanPreferredProxyEnabledLabel"><input id="titanPreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="titanProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadTitanProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="titanProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveTitanProxySettingsBtn" type="button">Save Titan connection</button></div>
         </div>
@@ -598,7 +633,7 @@
             </div></div>
             <label class="moviebox-proxy-toggle" id="valkyrieProxyEnabledLabel"><input id="valkyrieProxyEnabled" type="checkbox" /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Enable proxy</span></label>
           </div>
-          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">Checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p></div>
+          <div class="moviebox-proxy-card__source"><div class="moviebox-proxy-card__source-copy"><p class="moviebox-proxy-card__eyebrow">Shared proxy list</p><a class="moviebox-proxy-card__link" href="https://proxyscrape.com/free-proxy-list" target="_blank" rel="noopener noreferrer">ProxyScrape free proxy list <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a><p class="moviebox-proxy-card__description">When enabled below, checks the preferred proxy first, then uses <code>utils/vidfast-proxies.json</code>.</p><label class="moviebox-proxy-toggle" id="valkyriePreferredProxyEnabledLabel"><input id="valkyriePreferredProxyEnabled" type="checkbox" checked /><span class="moviebox-proxy-toggle__track" aria-hidden="true"></span><span class="moviebox-proxy-toggle__label">Use PREFERRED_PROXY first</span></label></div>
             <div class="moviebox-proxy-card__actions"><p class="moviebox-proxy-status" id="valkyrieProxyStatus" role="status" aria-live="polite">Checking shared proxy-list status...</p><button class="btn btn-outline-primary moviebox-proxy-download" id="downloadValkyrieProxyListBtn" type="button"><i class="bi bi-cloud-arrow-down" aria-hidden="true"></i><span>Download shared proxy list</span></button></div></div>
           <div class="moviebox-proxy-card__footer"><span class="hint" id="valkyrieProxySettingsStatus" role="status"></span><button class="btn btn-outline-primary" id="saveValkyrieProxySettingsBtn" type="button">Save Valkyrie connection</button></div>
         </div>

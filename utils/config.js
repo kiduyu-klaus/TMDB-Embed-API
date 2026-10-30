@@ -110,6 +110,8 @@ function normalizeConfig(base) {
   cfg.excludeCodecs = parseJsonMaybe(cfg.excludeCodecsRaw) || null;
   cfg.febboxCookies = Array.isArray(cfg.febboxCookies) ? cfg.febboxCookies : parseCookies(cfg.febboxCookies);
   cfg.movieboxSettings = normalizeMovieboxSettings(cfg.movieboxSettings);
+  const autoDownloadMinutes = Number(cfg.proxyAutoDownloadMinutes);
+  cfg.proxyAutoDownloadMinutes = [5, 10, 15].includes(autoDownloadMinutes) ? autoDownloadMinutes : 0;
   if (cfg.vidfastProxyEnabled === 'true') cfg.vidfastProxyEnabled = true;
   else if (cfg.vidfastProxyEnabled === 'false') cfg.vidfastProxyEnabled = false;
   if (cfg.vidfastProxyEnabled === undefined) cfg.vidfastProxyEnabled = false;
@@ -119,12 +121,24 @@ function normalizeConfig(base) {
   if (cfg.bingebangProxyEnabled === 'true') cfg.bingebangProxyEnabled = true;
   else if (cfg.bingebangProxyEnabled === 'false') cfg.bingebangProxyEnabled = false;
   if (cfg.bingebangProxyEnabled === undefined) cfg.bingebangProxyEnabled = false;
-  for (const provider of ['videasy', 'vidlove', 'superstream', 'bowler', 'cinesrc', 'barbarian', 'framextv', 'miner', 'titan', 'valkyrie', 'vidrock']) {
+  const legacyPreferredProxyEnabled = cfg.preferredProxyEnabled;
+  for (const provider of ['moviebox', 'vidfast', 'vidrock', 'vidy', 'bingebang', 'videasy', 'vidlove', 'superstream', 'bowler', 'cinesrc', 'barbarian', 'framextv', 'miner', 'titan', 'valkyrie']) {
     const key = `${provider}ProxyEnabled`;
-    if (cfg[key] === 'true') cfg[key] = true;
-    else if (cfg[key] === 'false') cfg[key] = false;
-    if (cfg[key] === undefined) cfg[key] = false;
+    if (provider !== 'moviebox') {
+      if (cfg[key] === 'true') cfg[key] = true;
+      else if (cfg[key] === 'false') cfg[key] = false;
+      if (cfg[key] === undefined) cfg[key] = false;
+    }
+    const preferredKey = `${provider}PreferredProxyEnabled`;
+    if (cfg[preferredKey] === 'true') cfg[preferredKey] = true;
+    else if (cfg[preferredKey] === 'false') cfg[preferredKey] = false;
+    if (cfg[preferredKey] === undefined) {
+      cfg[preferredKey] = legacyPreferredProxyEnabled === undefined
+        ? true
+        : legacyPreferredProxyEnabled !== false && legacyPreferredProxyEnabled !== 'false';
+    }
   }
+  delete cfg.preferredProxyEnabled;
   // TMDB multi-key support: allow tmdbApiKeys (array) or legacy single tmdbApiKey
   if (cfg.tmdbApiKeys && !Array.isArray(cfg.tmdbApiKeys)) {
     if (typeof cfg.tmdbApiKeys === 'string') {
@@ -273,6 +287,7 @@ const config = loadConfig();
 function saveConfigPatch(patch) {
   const currentOverride = readOverrideFile();
   const updated = { ...currentOverride, ...patch };
+  delete updated.preferredProxyEnabled;
   if (!updated.configVersion) updated.configVersion = CONFIG_SCHEMA_VERSION;
   // Remove keys set to null to fall back to env
   Object.keys(updated).forEach(k => { if (updated[k] === null) delete updated[k]; });

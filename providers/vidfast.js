@@ -25,8 +25,9 @@ const HEADERS = {
 };
 
 let vidfastProxyAgent = null;
-let vidfastProxyUrl = "";
+let vidfastProxyUrl = '';
 let vidfastProxySelection = null;
+let vidfastPreferredState = config.vidfastPreferredProxyEnabled !== false;
 
 // ---------------------------------------------------------------------------
 // Hard timeout helper
@@ -118,9 +119,13 @@ const selectVidfastProxy = async () => {
         return null;
     };
 
-    console.info(`[VidFast][Proxy] checking preferred proxy first: ${VIDFAST_PREFERRED_PROXY}`);
-    const preferredAgent = await probe(VIDFAST_PREFERRED_PROXY, "preferred proxy");
-    if (preferredAgent) return preferredAgent;
+    if (config.vidfastPreferredProxyEnabled !== false) {
+        console.info(`[VidFast][Proxy] checking preferred proxy first: ${VIDFAST_PREFERRED_PROXY}`);
+        const preferredAgent = await probe(VIDFAST_PREFERRED_PROXY, 'preferred proxy');
+        if (preferredAgent) return preferredAgent;
+    } else {
+        console.info('[VidFast][Proxy] preferred proxy disabled by Outbound settings');
+    }
 
     const candidates = readProxyCandidates();
     console.info(`[VidFast][Proxy] preferred proxy unavailable; probing ${candidates.length} list candidate(s)`);
@@ -131,7 +136,15 @@ const selectVidfastProxy = async () => {
     throw new Error(`No working VidFast proxy found after probing ${candidates.length} list candidates`);
 };
 
-const getVidfastProxyAgent = () => {
+const getVidfastProxyAgent = async () => {
+    const preferredState = config.vidfastPreferredProxyEnabled !== false;
+    if (preferredState !== vidfastPreferredState) {
+        vidfastPreferredState = preferredState;
+        const oldAgent = vidfastProxyAgent;
+        vidfastProxyAgent = null;
+        vidfastProxyUrl = '';
+        if (oldAgent) await oldAgent.close().catch(error => console.warn('[VidFast][Proxy] unable to close previous agent:', error.message));
+    }
     if (vidfastProxyAgent) return Promise.resolve(vidfastProxyAgent);
     if (!vidfastProxySelection) {
         vidfastProxySelection = selectVidfastProxy().finally(() => {
@@ -552,7 +565,8 @@ function getVidfastProxyStatus() {
         selectedProxy: vidfastProxyUrl || null,
         listAvailable: fs.existsSync(VIDFAST_PROXY_LIST_PATH),
         probeLimit: PROXY_PROBE_LIMIT,
-        preferredProxy: VIDFAST_PREFERRED_PROXY,
+        preferredProxy: config.vidfastPreferredProxyEnabled !== false ? VIDFAST_PREFERRED_PROXY : null,
+        preferredProxyEnabled: config.vidfastPreferredProxyEnabled !== false,
     };
 }
 

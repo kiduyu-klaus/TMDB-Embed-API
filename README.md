@@ -243,14 +243,15 @@ Saving in the UI writes only changed keys. Setting a field to empty removes the 
 
 Session is revalidated on visibility and back/forward navigation to prevent stale access.
 
-MovieBox, VidFast, Vidy, BingeBang, Videasy, Vidlove, Superstream, Bowler,
-CineSrc, Barbarian, FrameXTV, Miner, Titan, and Valkyrie proxying are optional
+MovieBox, VidFast, VidRock, Vidy, BingeBang, Videasy, Vidlove, Superstream,
+Bowler, CineSrc, Barbarian, FrameXTV, Miner, Titan, and Valkyrie proxying are optional
 in the Outbound connection panel. MovieBox uses `utils/moviebox-proxies.json`;
 the other providers share `utils/vidfast-proxies.json` while keeping independent
-enable settings and proxy selection. Each provider checks the preferred proxy
-first, then probes the shared list if needed. TMDB API requests from Videasy,
+proxy enable and preferred-proxy-first settings. Each provider can try the
+preferred proxy first or skip directly to list candidates. TMDB API requests from VidRock, Videasy,
 Vidlove, Superstream, Bowler, CineSrc, Barbarian, FrameXTV, Miner, Titan, and
-Valkyrie bypass the proxy. Free proxies are third-party services and may be
+Valkyrie bypass the proxy. Every provider has an independent setting for trying
+the preferred proxy first. Free proxies are third-party services and may be
 unreliable.
 
 ---

@@ -270,6 +270,11 @@ router.get('/api/config', (req,res) => {
 });
 router.post('/api/config', (req,res) => {
   const patch = req.body || {};
+  if (Object.prototype.hasOwnProperty.call(patch, 'proxyAutoDownloadMinutes')) {
+    const minutes = Number(patch.proxyAutoDownloadMinutes);
+    if (![0, 5, 10, 15].includes(minutes)) return res.status(400).json({ success:false, error:'INVALID_PROXY_AUTO_DOWNLOAD_MINUTES' });
+    patch.proxyAutoDownloadMinutes = minutes;
+  }
   if (Object.prototype.hasOwnProperty.call(patch, 'movieboxSettings') && !getSession(req)) {
     return res.status(401).json({ success:false, error:'AUTH_REQUIRED' });
   }
@@ -286,6 +291,7 @@ router.post('/api/config', (req,res) => {
   }
   if (patch.defaultProviders && !Array.isArray(patch.defaultProviders)) return res.status(400).json({ success:false, error:'DEFAULT_PROVIDERS_NOT_ARRAY'});
   const ok = saveConfigPatch(patch);
+  if (ok && Object.prototype.hasOwnProperty.call(patch, 'proxyAutoDownloadMinutes')) configureProxyListAutoDownload();
   res.json({ success: ok, merged: config });
 });
 
@@ -438,6 +444,67 @@ router.get('/api/providers/moviebox/settings', requireAuth, async (_req, res) =>
   }
 });
 
+const PROXY_AUTO_DOWNLOAD_FILES = ['vidfast-proxies.json', 'moviebox-proxies.json'];
+let proxyAutoDownloadTimer = null;
+let proxyAutoDownloadInFlight = null;
+
+async function refreshAllProxyJsonFiles() {
+  const response = await fetch(
+    'https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=json',
+    { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) }
+  );
+  if (!response.ok) throw new Error(`ProxyScrape returned HTTP ${response.status}`);
+  const payload = await response.json();
+  if (!payload || !Array.isArray(payload.proxies) || payload.proxies.length === 0) throw new Error('ProxyScrape returned an invalid or empty proxy list');
+
+  const fs = require('fs');
+  const serialized = `${JSON.stringify(payload)}\n`;
+  const replacements = [];
+  try {
+    for (const file of PROXY_AUTO_DOWNLOAD_FILES) {
+      const target = path.join(__dirname, 'utils', file);
+      const temporary = `${target}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+      fs.writeFileSync(temporary, serialized);
+      replacements.push({ target, temporary });
+    }
+    for (const file of replacements) fs.renameSync(file.temporary, file.target);
+  } finally {
+    for (const file of replacements) {
+      try { if (fs.existsSync(file.temporary)) fs.unlinkSync(file.temporary); }
+      catch (error) { console.warn('[proxy-auto-download] unable to remove temporary file:', error.message); }
+    }
+  }
+  const usableCount = payload.proxies.filter(proxy =>
+    proxy && proxy.alive === true && proxy.ssl === true &&
+    proxy.protocol === 'http' && proxy.anonymity !== 'transparent' &&
+    isValidHttpProxyUrl(proxy.proxy)
+  ).length;
+  return { count: payload.proxies.length, usableCount, files: PROXY_AUTO_DOWNLOAD_FILES.map(file => `utils/${file}`) };
+}
+
+function runProxyAutoDownload() {
+  if (proxyAutoDownloadInFlight) return proxyAutoDownloadInFlight;
+  proxyAutoDownloadInFlight = refreshAllProxyJsonFiles()
+    .then(result => console.info('[proxy-auto-download] replaced proxy lists', result))
+    .catch(error => console.error('[proxy-auto-download] refresh failed:', error.message))
+    .finally(() => { proxyAutoDownloadInFlight = null; });
+  return proxyAutoDownloadInFlight;
+}
+
+function configureProxyListAutoDownload() {
+  if (proxyAutoDownloadTimer) clearInterval(proxyAutoDownloadTimer);
+  proxyAutoDownloadTimer = null;
+  const minutes = Number(config.proxyAutoDownloadMinutes);
+  if (![5, 10, 15].includes(minutes)) {
+    console.info('[proxy-auto-download] disabled');
+    return;
+  }
+  console.info(`[proxy-auto-download] refreshing both proxy lists every ${minutes} minutes`);
+  proxyAutoDownloadTimer = setInterval(() => { void runProxyAutoDownload(); }, minutes * 60 * 1000);
+  proxyAutoDownloadTimer.unref?.();
+  void runProxyAutoDownload();
+}
+
 async function downloadProviderProxyList(providerName, res) {
   try {
     const response = await fetch(
@@ -453,7 +520,7 @@ async function downloadProviderProxyList(providerName, res) {
       return res.status(502).json({ success:false, error:'INVALID_PROXY_LIST' });
     }
     const proxyListPath = path.join(__dirname, 'utils', `${providerName}-proxies.json`);
-    const temporaryPath = `${proxyListPath}.tmp`;
+    const temporaryPath = `${proxyListPath}.${process.pid}.${Date.now()}.tmp`;
     const fs = require('fs');
     fs.writeFileSync(temporaryPath, JSON.stringify(payload));
     fs.renameSync(temporaryPath, proxyListPath);
@@ -520,13 +587,16 @@ router.get('/api/providers/vidfast/proxy-status', requireAuth, (_req, res) => {
 
 router.post('/api/providers/vidfast/proxy-settings', requireAuth, (req, res) => {
   const enabled = req.body && req.body.enabled;
-  if (typeof enabled !== 'boolean') {
+  const usePreferredProxy = req.body && req.body.usePreferredProxy;
+  if (typeof enabled !== 'boolean' || (usePreferredProxy !== undefined && typeof usePreferredProxy !== 'boolean')) {
     return res.status(400).json({ success:false, error:'INVALID_VIDFAST_PROXY_SETTING' });
   }
-  if (!saveConfigPatch({ vidfastProxyEnabled: enabled })) {
+  const patch = { vidfastProxyEnabled: enabled };
+  if (usePreferredProxy !== undefined) patch.vidfastPreferredProxyEnabled = usePreferredProxy;
+  if (!saveConfigPatch(patch)) {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
-  res.json({ success:true, enabled:config.vidfastProxyEnabled });
+  res.json({ success:true, enabled:config.vidfastProxyEnabled, usePreferredProxy:config.vidfastPreferredProxyEnabled });
 });
 
 router.get('/api/providers/vidy/proxy-status', requireAuth, (_req, res) => {
@@ -537,13 +607,16 @@ router.get('/api/providers/vidy/proxy-status', requireAuth, (_req, res) => {
 
 router.post('/api/providers/vidy/proxy-settings', requireAuth, (req, res) => {
   const enabled = req.body && req.body.enabled;
-  if (typeof enabled !== 'boolean') {
+  const usePreferredProxy = req.body && req.body.usePreferredProxy;
+  if (typeof enabled !== 'boolean' || (usePreferredProxy !== undefined && typeof usePreferredProxy !== 'boolean')) {
     return res.status(400).json({ success:false, error:'INVALID_VIDY_PROXY_SETTING' });
   }
-  if (!saveConfigPatch({ vidyProxyEnabled: enabled })) {
+  const patch = { vidyProxyEnabled: enabled };
+  if (usePreferredProxy !== undefined) patch.vidyPreferredProxyEnabled = usePreferredProxy;
+  if (!saveConfigPatch(patch)) {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
-  res.json({ success:true, enabled:config.vidyProxyEnabled });
+  res.json({ success:true, enabled:config.vidyProxyEnabled, usePreferredProxy:config.vidyPreferredProxyEnabled });
 });
 
 router.get('/api/providers/bingebang/proxy-status', requireAuth, (_req, res) => {
@@ -554,13 +627,16 @@ router.get('/api/providers/bingebang/proxy-status', requireAuth, (_req, res) => 
 
 router.post('/api/providers/bingebang/proxy-settings', requireAuth, (req, res) => {
   const enabled = req.body && req.body.enabled;
-  if (typeof enabled !== 'boolean') {
+  const usePreferredProxy = req.body && req.body.usePreferredProxy;
+  if (typeof enabled !== 'boolean' || (usePreferredProxy !== undefined && typeof usePreferredProxy !== 'boolean')) {
     return res.status(400).json({ success:false, error:'INVALID_BINGEBANG_PROXY_SETTING' });
   }
-  if (!saveConfigPatch({ bingebangProxyEnabled: enabled })) {
+  const patch = { bingebangProxyEnabled: enabled };
+  if (usePreferredProxy !== undefined) patch.bingebangPreferredProxyEnabled = usePreferredProxy;
+  if (!saveConfigPatch(patch)) {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
-  res.json({ success:true, enabled:config.bingebangProxyEnabled });
+  res.json({ success:true, enabled:config.bingebangProxyEnabled, usePreferredProxy:config.bingebangPreferredProxyEnabled });
 });
 
 for (const provider of sharedProxyProviders) {
@@ -572,18 +648,25 @@ for (const provider of sharedProxyProviders) {
   });
   router.post(`/api/providers/${provider.slug}/proxy-settings`, requireAuth, (req, res) => {
     const enabled = req.body && req.body.enabled;
-    if (typeof enabled !== 'boolean') {
+    const usePreferredProxy = req.body && req.body.usePreferredProxy;
+    if (typeof enabled !== 'boolean' || (usePreferredProxy !== undefined && typeof usePreferredProxy !== 'boolean')) {
       return res.status(400).json({ success:false, error:`INVALID_${provider.slug.toUpperCase()}_PROXY_SETTING` });
     }
-    if (!saveConfigPatch({ [settingKey]: enabled })) {
+    const patch = { [settingKey]: enabled };
+    if (usePreferredProxy !== undefined) patch[`${provider.slug}PreferredProxyEnabled`] = usePreferredProxy;
+    if (!saveConfigPatch(patch)) {
       return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
     }
-    res.json({ success:true, enabled:config[settingKey] });
+    res.json({ success:true, enabled:config[settingKey], usePreferredProxy:config[`${provider.slug}PreferredProxyEnabled`] });
   });
 }
 
 router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {
   const settingsPatch = req.body && req.body.settings;
+  const usePreferredProxy = req.body && req.body.usePreferredProxy;
+  if (usePreferredProxy !== undefined && typeof usePreferredProxy !== 'boolean') {
+    return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_PREFERRED_PROXY_SETTING' });
+  }
   if (!isValidMovieboxSettings(settingsPatch)) {
     return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
   }
@@ -591,10 +674,12 @@ router.post('/api/providers/moviebox/settings', requireAuth, (req, res) => {
   if (!isValidMovieboxSettings(settings)) {
     return res.status(400).json({ success:false, error:'INVALID_MOVIEBOX_SETTINGS' });
   }
-  if (!saveConfigPatch({ movieboxSettings: settings })) {
+  const patch = { movieboxSettings: settings };
+  if (usePreferredProxy !== undefined) patch.movieboxPreferredProxyEnabled = usePreferredProxy;
+  if (!saveConfigPatch(patch)) {
     return res.status(500).json({ success:false, error:'SETTINGS_SAVE_FAILED' });
   }
-  res.json({ success:true, settings: config.movieboxSettings });
+  res.json({ success:true, settings: config.movieboxSettings, usePreferredProxy:config.movieboxPreferredProxyEnabled });
 });
 
 function providerSupportsCategory(provider, category) {
@@ -721,6 +806,7 @@ app.use(errorPages.onError);
 const PORT = config.port;
 const HOST = process.env.BIND_HOST || '0.0.0.0';
 const server = app.listen(PORT, HOST, () => {
+  configureProxyListAutoDownload();
   const base = `http://${HOST}:${PORT}${MOUNT_PATH}`;
   console.log(`KiduyuTvProviders listening on ${base}`);
   if (HOST !== 'localhost') {
@@ -744,6 +830,7 @@ const { resources, createShutdownManager } = require('./utils/appLifecycle');
 shutdownManager = createShutdownManager(server, {
   resources,
   beforeExit(reason) {
+    if (proxyAutoDownloadTimer) clearInterval(proxyAutoDownloadTimer);
     if (reason !== 'restart' || restartMode() !== 'passenger') return;
     const fs = require('fs');
     fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });

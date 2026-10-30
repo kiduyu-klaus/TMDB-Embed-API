@@ -124,6 +124,7 @@ let requestCounter = 0;
 let movieboxProxyAgent = null;
 let movieboxProxyUrl = "";
 let movieboxProxySelection = null;
+let movieboxPreferredState = config.movieboxPreferredProxyEnabled !== false;
 const MOVIEBOX_PROXY_LIST_PATH = path.join(__dirname, "..", "utils", "moviebox-proxies.json");
 const MOVIEBOX_PROXY_PROBE_URL = "https://httpbin.org/ip";
 const MOVIEBOX_PROXY_PROBE_TIMEOUT_MS = 2500;
@@ -275,9 +276,13 @@ async function selectMovieboxProxy() {
         return null;
     }
 
-    logInfo("proxy", `checking preferred proxy ${MOVIEBOX_PREFERRED_PROXY} first`);
-    const preferredAgent = await probeProxy(MOVIEBOX_PREFERRED_PROXY, "preferred proxy");
-    if (preferredAgent) return preferredAgent;
+    if (config.movieboxPreferredProxyEnabled !== false) {
+        logInfo("proxy", `checking preferred proxy ${MOVIEBOX_PREFERRED_PROXY} first`);
+        const preferredAgent = await probeProxy(MOVIEBOX_PREFERRED_PROXY, "preferred proxy");
+        if (preferredAgent) return preferredAgent;
+    } else {
+        logInfo("proxy", "preferred proxy disabled by Outbound settings");
+    }
 
     const candidates = readMovieboxProxyCandidates();
     if (!candidates.length) throw new Error("Preferred MovieBox proxy is unavailable and the proxy list contains no usable HTTP proxies");
@@ -290,7 +295,15 @@ async function selectMovieboxProxy() {
     throw new Error(`No working MovieBox proxy found after probing ${candidates.length} candidates`);
 }
 
-function getMovieboxProxyAgent() {
+async function getMovieboxProxyAgent() {
+    const preferredState = config.movieboxPreferredProxyEnabled !== false;
+    if (preferredState !== movieboxPreferredState) {
+        movieboxPreferredState = preferredState;
+        const oldAgent = movieboxProxyAgent;
+        movieboxProxyAgent = null;
+        movieboxProxyUrl = "";
+        if (oldAgent) await oldAgent.close().catch(error => logWarn("proxy", "unable to close previous proxy agent", error.message));
+    }
     if (movieboxProxyAgent) return Promise.resolve(movieboxProxyAgent);
     if (!movieboxProxySelection) {
         movieboxProxySelection = selectMovieboxProxy().finally(() => {
@@ -313,6 +326,8 @@ function getMovieboxProxyStatus() {
         selectedProxy: movieboxProxyUrl || null,
         listAvailable: fs.existsSync(MOVIEBOX_PROXY_LIST_PATH),
         probeLimit: MOVIEBOX_PROXY_PROBE_LIMIT,
+        preferredProxy: config.movieboxPreferredProxyEnabled !== false ? MOVIEBOX_PREFERRED_PROXY : null,
+        preferredProxyEnabled: config.movieboxPreferredProxyEnabled !== false,
     };
 }
 

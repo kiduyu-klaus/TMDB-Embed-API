@@ -177,12 +177,15 @@ async function renderMovieboxSettings(settings = {}){
 			const statusResponse = await fetch(U('/api/providers/moviebox/proxy-status'), { cache:'no-store' });
 			const proxy = await statusResponse.json();
 			if(!statusResponse.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${statusResponse.status}`);
+			renderPreferredProxyToggle('MovieBox', proxy.preferredProxyEnabled);
 			if(proxyStatus) {
 				proxyStatus.textContent = proxy.selectedProxy
 					? `Selected: ${proxy.selectedProxy}`
 					: proxy.listAvailable
 						? `Proxy list is saved in utils. ${proxy.enabled ? 'A proxy will be selected on the next MovieBox request.' : 'Enable proxying to select one on the next MovieBox request.'}`
-						: 'The preferred proxy will be checked first. Download the ProxyScrape JSON to provide fallback candidates.';
+						: proxy.preferredProxyEnabled === false
+							? 'Preferred proxy is disabled. Download the ProxyScrape JSON to provide fallback candidates.'
+							: 'The preferred proxy will be checked first. Download the ProxyScrape JSON to provide fallback candidates.';
 			}
 		} catch(error) {
 			if(proxyStatus) proxyStatus.textContent = `Unable to load proxy status: ${error.message}`;
@@ -219,11 +222,14 @@ async function renderVidfastProxySettings(enabled = false){
 		const response = await fetch(U('/api/providers/vidfast/proxy-status'), { cache:'no-store' });
 		const proxy = await response.json();
 		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		renderPreferredProxyToggle('VidFast', proxy.preferredProxyEnabled);
 		status.textContent = proxy.selectedProxy
 			? `Selected: ${proxy.selectedProxy}`
 			: proxy.listAvailable
 				? `VidFast proxy list is saved in utils/vidfast-proxies.json. ${proxy.enabled ? 'A proxy will be selected on the next VidFast request.' : 'Enable proxying to select one on the next VidFast request.'}`
-				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the independent VidFast proxy list for fallback candidates.`;
+				: proxy.preferredProxyEnabled === false
+					? 'Preferred proxy is disabled. Download the VidFast proxy list for fallback candidates.'
+					: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the independent VidFast proxy list for fallback candidates.`;
 	} catch(error) {
 		status.textContent = `Unable to load VidFast proxy status: ${error.message}`;
 	}
@@ -244,11 +250,14 @@ async function renderVidyProxySettings(enabled = false){
 		const response = await fetch(U('/api/providers/vidy/proxy-status'), { cache:'no-store' });
 		const proxy = await response.json();
 		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		renderPreferredProxyToggle('Vidy', proxy.preferredProxyEnabled);
 		status.textContent = proxy.selectedProxy
 			? `Selected: ${proxy.selectedProxy}`
 			: proxy.listAvailable
 				? `Shared list is saved in ${proxy.sharedList}. ${proxy.enabled ? 'A proxy will be selected on the next Vidy request.' : 'Enable proxying to select one on the next Vidy request.'}`
-				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
+				: proxy.preferredProxyEnabled === false
+					? 'Preferred proxy is disabled. Download the shared VidFast proxy list for fallback candidates.'
+					: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
 	} catch(error) {
 		status.textContent = `Unable to load Vidy proxy status: ${error.message}`;
 	}
@@ -269,11 +278,14 @@ async function renderBingebangProxySettings(enabled = false){
 		const response = await fetch(U('/api/providers/bingebang/proxy-status'), { cache:'no-store' });
 		const proxy = await response.json();
 		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		renderPreferredProxyToggle('BingeBang', proxy.preferredProxyEnabled);
 		status.textContent = proxy.selectedProxy
 			? `Selected: ${proxy.selectedProxy}`
 			: proxy.listAvailable
 				? `Shared list is saved in ${proxy.sharedList}. ${proxy.enabled ? 'A proxy will be selected on the next BingeBang request.' : 'Enable proxying to select one on the next BingeBang request.'}`
-				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
+				: proxy.preferredProxyEnabled === false
+					? 'Preferred proxy is disabled. Download the shared VidFast proxy list for fallback candidates.'
+					: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
 	} catch(error) {
 		status.textContent = `Unable to load BingeBang proxy status: ${error.message}`;
 	}
@@ -295,11 +307,14 @@ async function renderSharedProviderProxySettings(provider, enabled = false){
 		const response = await fetch(U(`/api/providers/${slug}/proxy-status`), { cache:'no-store' });
 		const proxy = await response.json();
 		if(!response.ok || !proxy.success) throw new Error(proxy.error || `HTTP ${response.status}`);
+		renderPreferredProxyToggle(provider, proxy.preferredProxyEnabled);
 		status.textContent = proxy.selectedProxy
 			? `Selected: ${proxy.selectedProxy}`
 			: proxy.listAvailable
 				? `Shared list is saved in ${proxy.sharedList}. ${proxy.enabled ? `A proxy will be selected on the next ${provider} request.` : `Enable proxying to select one on the next ${provider} request.`}`
-				: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
+				: proxy.preferredProxyEnabled === false
+					? `Preferred proxy is disabled. Download the shared VidFast proxy list for fallback candidates.`
+					: `Preferred proxy ${proxy.preferredProxy} will be checked first. Download the shared VidFast proxy list for fallback candidates.`;
 	} catch(error) {
 		status.textContent = `Unable to load ${provider} proxy status: ${error.message}`;
 	}
@@ -347,6 +362,56 @@ async function renderValkyrieProxySettings(enabled = false){
 
 async function renderVidrockProxySettings(enabled = false){
 	return renderSharedProviderProxySettings('Vidrock', enabled);
+}
+
+function renderPreferredProxyToggle(provider, enabled = true){
+	const slug = provider.toLowerCase();
+	const checkbox = document.getElementById(`${slug}PreferredProxyEnabled`);
+	const label = document.getElementById(`${slug}PreferredProxyEnabledLabel`);
+	const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+	if(!checkbox) return;
+	checkbox.checked = enabled !== false;
+	label?.classList.toggle('on', checkbox.checked);
+	if(labelText) labelText.textContent = checkbox.checked ? 'Use PREFERRED_PROXY first' : 'Skip PREFERRED_PROXY';
+}
+
+function bindPreferredProxyToggles(){
+	document.querySelectorAll('#panel-outbound input[id$="PreferredProxyEnabled"]').forEach(checkbox=>{
+		const label = checkbox.closest('.moviebox-proxy-toggle');
+		const labelText = label?.querySelector('.moviebox-proxy-toggle__label');
+		checkbox.addEventListener('change', ()=>{
+			label?.classList.toggle('on', checkbox.checked);
+			if(labelText) labelText.textContent = checkbox.checked ? 'Use PREFERRED_PROXY first' : 'Skip PREFERRED_PROXY';
+		});
+	});
+}
+
+function renderOutboundProxyOptions(settings = {}){
+	const timer = document.getElementById('proxyAutoDownloadMinutes');
+	if(timer) timer.value = String([0, 5, 10, 15].includes(Number(settings.proxyAutoDownloadMinutes)) ? Number(settings.proxyAutoDownloadMinutes) : 0);
+}
+
+async function saveOutboundProxyOptions(){
+	const button = document.getElementById('saveOutboundProxyOptionsBtn');
+	const status = document.getElementById('outboundProxyOptionsStatus');
+	if(button) button.disabled = true;
+	if(status) status.textContent = 'Saving Outbound options...';
+	try {
+		const minutes = Number(document.getElementById('proxyAutoDownloadMinutes')?.value || 0);
+		const response = await fetch(U('/api/config'), {
+			method:'POST',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify({ proxyAutoDownloadMinutes:minutes })
+		});
+		const data = await response.json();
+		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
+		renderOutboundProxyOptions(data.merged || { proxyAutoDownloadMinutes:minutes });
+		if(status) status.textContent = minutes ? `Saved. Both proxy lists will refresh now and every ${minutes} minutes.` : 'Saved. Automatic proxy-list refresh is off.';
+	} catch(error) {
+		if(status) status.textContent = `Save failed: ${error.message}`;
+	} finally {
+		if(button) button.disabled = false;
+	}
 }
 
 async function downloadProviderProxyList(provider){
@@ -417,7 +482,10 @@ async function saveMovieboxProxySettings(){
 		const response = await fetch(U('/api/providers/moviebox/settings'), {
 			method:'POST',
 			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify({ settings:{ proxy_enabled:document.getElementById('movieboxProxyEnabled').checked } })
+			body:JSON.stringify({
+				settings:{ proxy_enabled:document.getElementById('movieboxProxyEnabled').checked },
+				usePreferredProxy:document.getElementById('movieboxPreferredProxyEnabled').checked
+			})
 		});
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
@@ -438,10 +506,11 @@ async function saveVidfastProxySettings(){
 	if(status) status.textContent = 'Saving...';
 	try {
 		const enabled = document.getElementById('vidfastProxyEnabled').checked;
+		const usePreferredProxy = document.getElementById('vidfastPreferredProxyEnabled').checked;
 		const response = await fetch(U('/api/providers/vidfast/proxy-settings'), {
 			method:'POST',
 			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify({ enabled })
+			body:JSON.stringify({ enabled, usePreferredProxy })
 		});
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
@@ -462,10 +531,11 @@ async function saveVidyProxySettings(){
 	if(status) status.textContent = 'Saving...';
 	try {
 		const enabled = document.getElementById('vidyProxyEnabled').checked;
+		const usePreferredProxy = document.getElementById('vidyPreferredProxyEnabled').checked;
 		const response = await fetch(U('/api/providers/vidy/proxy-settings'), {
 			method:'POST',
 			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify({ enabled })
+			body:JSON.stringify({ enabled, usePreferredProxy })
 		});
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
@@ -486,10 +556,11 @@ async function saveBingebangProxySettings(){
 	if(status) status.textContent = 'Saving...';
 	try {
 		const enabled = document.getElementById('bingebangProxyEnabled').checked;
+		const usePreferredProxy = document.getElementById('bingebangPreferredProxyEnabled').checked;
 		const response = await fetch(U('/api/providers/bingebang/proxy-settings'), {
 			method:'POST',
 			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify({ enabled })
+			body:JSON.stringify({ enabled, usePreferredProxy })
 		});
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
@@ -511,10 +582,11 @@ async function saveSharedProviderProxySettings(provider){
 	if(status) status.textContent = 'Saving...';
 	try {
 		const enabled = document.getElementById(`${slug}ProxyEnabled`).checked;
+		const usePreferredProxy = document.getElementById(`${slug}PreferredProxyEnabled`).checked;
 		const response = await fetch(U(`/api/providers/${slug}/proxy-settings`), {
 			method:'POST',
 			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify({ enabled })
+			body:JSON.stringify({ enabled, usePreferredProxy })
 		});
 		const data = await response.json();
 		if(!response.ok || !data.success) throw new Error(data.error || `HTTP ${response.status}`);
@@ -779,6 +851,7 @@ document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && e.target.id==='
 function fillForm(data){
 	const merged = data.merged || {};
 	const override = data.override || {};
+	renderOutboundProxyOptions(merged);
 	renderMovieboxSettings(merged.movieboxSettings || {});
 	renderVidfastProxySettings(merged.vidfastProxyEnabled === true);
 	renderVidyProxySettings(merged.vidyProxyEnabled === true);
@@ -1072,6 +1145,7 @@ async function clearAll(){
 			res_360p: true
 		},
 		vidfastProxyEnabled: false,
+		vidrockProxyEnabled: false,
 		vidyProxyEnabled: false,
 		bingebangProxyEnabled: false,
 		videasyProxyEnabled: false,
@@ -1084,6 +1158,21 @@ async function clearAll(){
 		minerProxyEnabled: false,
 		titanProxyEnabled: false,
 		valkyrieProxyEnabled: false,
+		movieboxPreferredProxyEnabled: true,
+		vidfastPreferredProxyEnabled: true,
+		vidrockPreferredProxyEnabled: true,
+		vidyPreferredProxyEnabled: true,
+		bingebangPreferredProxyEnabled: true,
+		videasyPreferredProxyEnabled: true,
+		vidlovePreferredProxyEnabled: true,
+		superstreamPreferredProxyEnabled: true,
+		bowlerPreferredProxyEnabled: true,
+		cinesrcPreferredProxyEnabled: true,
+		barbarianPreferredProxyEnabled: true,
+		framextvPreferredProxyEnabled: true,
+		minerPreferredProxyEnabled: true,
+		titanPreferredProxyEnabled: true,
+		valkyriePreferredProxyEnabled: true,
 		// Stream auth returns to "disabled" (env may still supply a hash)
 		streamTokenHash: null
 	};
@@ -1360,8 +1449,10 @@ async function saveAnimeProviderCheckTmdbId(){
 }
 document.addEventListener('DOMContentLoaded', ()=> {
 	initTheme();
+	bindPreferredProxyToggles();
 	attachCoreListeners();
 	document.getElementById('saveMovieboxSettingsBtn')?.addEventListener('click', saveMovieboxSettings);
+	document.getElementById('saveOutboundProxyOptionsBtn')?.addEventListener('click', saveOutboundProxyOptions);
 	document.getElementById('saveMovieboxProxySettingsBtn')?.addEventListener('click', saveMovieboxProxySettings);
 	document.getElementById('saveVidfastProxySettingsBtn')?.addEventListener('click', saveVidfastProxySettings);
 	document.getElementById('saveVidyProxySettingsBtn')?.addEventListener('click', saveVidyProxySettings);
